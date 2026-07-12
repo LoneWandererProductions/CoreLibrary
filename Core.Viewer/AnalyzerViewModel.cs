@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Core.Viewer
- * FILE:        CoreViewer/AnalyzerViewModel.cs
+ * FILE:        AnalyzerViewModel.cs
  * PURPOSE:     ViewModel for Analyzer Viewer, handles loading and running analyzers, filtering diagnostics, and folder selection
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -33,6 +33,11 @@ namespace Core.Viewer
         /// The target directory
         /// </summary>
         private string _targetDirectory;
+
+        /// <summary>
+        /// The progress value
+        /// </summary>
+        private double _progressValue;
 
         /// <summary>
         /// The selected analyzer
@@ -78,6 +83,18 @@ namespace Core.Viewer
         {
             get => _selectedAnalyzer;
             set => SetProperty(ref _selectedAnalyzer, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the progress value.
+        /// </summary>
+        /// <value>
+        /// The progress value.
+        /// </value>
+        public double ProgressValue
+        {
+            get => _progressValue;
+            set => SetProperty(ref _progressValue, value);
         }
 
         /// <summary>
@@ -129,38 +146,50 @@ namespace Core.Viewer
 
         /// <summary>
         /// Runs analyzers on all C# files in the target directory.
-        /// If <see cref="SelectedAnalyzer"/> is set, only that analyzer is run.
-        /// Results are stored in <see cref="DiagnosticsView"/> and filtered according to <see cref="FilterText"/>.
+        /// If <see cref="SelectedAnalyzer" /> is set, only that analyzer is run.
+        /// Results are stored in <see cref="DiagnosticsView" /> and filtered according to <see cref="FilterText" />.
         /// </summary>
         private async Task RunAnalyzerAsync()
         {
-            if (!Directory.Exists(TargetDirectory))
-                return;
-
-            IEnumerable<ICodeAnalyzer> analyzersToRun = SelectedAnalyzer is not null
-                ? new[] { SelectedAnalyzer }
-                : _analyzers;
+            if (!Directory.Exists(TargetDirectory)) return;
 
             _currentDiagnostics.Clear();
+            var files = SafeEnumerateFiles(TargetDirectory, CoreResources.ResourceCsExtension).ToList();
+            int totalFiles = files.Count;
+            int processedFiles = 0;
 
-            // Run file enumeration and analysis on a background thread
-            var files = await Task.Run(() => SafeEnumerateFiles(TargetDirectory, CoreResources.ResourceCsExtension));
+            // Progress<T> captures the SynchronizationContext (the UI thread) automatically
+            var progress = new Progress<double>(val => ProgressValue = val);
 
-            foreach (var file in files)
+            // Call directly. Parallel.ForEachAsync is already async-aware.
+            await Parallel.ForEachAsync(files, async (file, ct) =>
             {
-                // Read file and analyze in background thread
-                var content = await Task.Run(() => File.ReadAllText(file));
+                var content = await File.ReadAllTextAsync(file);
+
+                // Determine the set of analyzers to run for THIS file
+                var analyzersToRun = SelectedAnalyzer is not null
+                    ? new[] { SelectedAnalyzer }
+                    : _analyzers;
 
                 foreach (var analyzer in analyzersToRun)
                 {
-                    var diagnostics = await Task.Run(() => analyzer.Analyze(file, content));
-                    _currentDiagnostics.AddRange(diagnostics);
+                    var results = analyzer.Analyze(file, content);
+
+                    lock (_currentDiagnostics)
+                    {
+                        _currentDiagnostics.AddRange(results);
+                    }
                 }
-            }
 
-            ApplyFilter(); // This can stay on UI thread
+                // Update progress
+                var currentProcessed = Interlocked.Increment(ref processedFiles);
+                ((IProgress<double>)progress).Report((double)currentProcessed / totalFiles * 100);
+            });
+
+            // Code here resumes on the UI thread automatically
+            ApplyFilter();
+            ProgressValue = 0;
         }
-
 
         /// <summary>
         /// Safes the enumerate files.
@@ -263,14 +292,30 @@ namespace Core.Viewer
         /// <param name="name">The name.</param>
         private void HandleOpen(string name)
         {
-            // Minimal implementation: just show a message box with the file paths
-            var files = DiagnosticsView
-                .Where(d => d.Diagnostic.Name == name)
-                .Select(d => d.Diagnostic.FilePath)
-                .Distinct();
+            // Find all diagnostics for this specific name
+            var diagnosticItems = DiagnosticsView.Where(d => d.Diagnostic.Name == name).ToList();
 
-            var message = string.Join(Environment.NewLine, files);
-            System.Windows.MessageBox.Show(message, $"Open files for {name}");
+            if (!diagnosticItems.Any()) return;
+
+            // For simplicity, if there are multiple, let's open the first one.
+            // Or you could loop through them to open all.
+            var target = diagnosticItems.First().Diagnostic;
+
+            try
+            {
+                // Many editors support: /file/path:line_number
+                // e.g., "code -g C:\path\file.cs:15" or just passing the path
+                var psi = new ProcessStartInfo
+                {
+                    FileName = target.FilePath, UseShellExecute = true // Opens with the default system application
+                };
+
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Could not open file: {ex.Message}", "Error");
+            }
         }
 
         /// <summary>

@@ -276,7 +276,7 @@ namespace ExtendedSystemObjects
         /// </returns>
         /// <exception cref="ValueNotFoundException"><paramref name="dic" /> value not found.</exception>
         public static Dictionary<TKey, TValue> GetDictionaryByValues<TKey, TValue>(this IDictionary<TKey, TValue> dic,
-            IEnumerable<TKey> value)
+            IEnumerable<TKey> value) where TKey : notnull
         {
             var collection = value.Where(dic.ContainsKey).ToDictionary(key => key, key => dic[key]);
 
@@ -296,7 +296,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">Internal Value</typeparam>
         /// <param name="dic">Internal Target Dictionary</param>
         /// <returns>Clone of the Input Dictionary</returns>
-        public static Dictionary<TKey, TValue>? Clone<TKey, TValue>(this IDictionary<TKey, TValue> dic)
+        public static Dictionary<TKey, TValue>? Clone<TKey, TValue>(this IDictionary<TKey, TValue>? dic)
             where TKey : notnull
         {
             return dic?.ToDictionary(dctClone => dctClone.Key, dctClone => dctClone.Value);
@@ -337,7 +337,7 @@ namespace ExtendedSystemObjects
         /// <returns>
         ///     [true] if success, else [false], Reduces Dictionary, first Element will be removed until it empty
         /// </returns>
-        public static bool Reduce<TKey, TValue>(this Dictionary<TKey, TValue> dic)
+        public static bool Reduce<TKey, TValue>(this Dictionary<TKey, TValue> dic) where TKey : notnull
         {
             return !dic.IsNullOrEmpty() && dic.Remove(dic.Keys.First());
         }

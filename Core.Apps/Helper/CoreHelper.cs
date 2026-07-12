@@ -226,6 +226,22 @@ namespace Core.Apps.Helper
         }
 
         /// <summary>
+        /// Determines whether [is symbol used] [the specified model].
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="root">The root.</param>
+        /// <param name="symbol">The symbol.</param>
+        /// <returns>
+        ///   <c>true</c> if [is symbol used] [the specified model]; otherwise, <c>false</c>.
+        /// </returns>
+        internal static bool IsSymbolUsed(SemanticModel model, SyntaxNode root, ISymbol symbol)
+        {
+            return root.DescendantNodes()
+                .OfType<IdentifierNameSyntax>()
+                .Any(id => SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, symbol));
+        }
+
+        /// <summary>
         /// Determines whether a <c>for</c> loop has a constant numeric bound.
         /// </summary>
         /// <param name="loop">The <see cref="ForStatementSyntax"/> to analyze.</param>

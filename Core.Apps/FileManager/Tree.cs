@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.IO;
@@ -66,15 +67,15 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// Recursively builds the directory structure.
         /// </summary>
-        private void BuildTree(string path, StringBuilder sb, string indent, bool last)
+        private static void BuildTree(string path, StringBuilder sb, string indent, bool last)
         {
             var prefix = last ? "└── " : "├── ";
             sb.AppendLine($"{indent}{prefix}{Path.GetFileName(path)}");
 
             indent += last ? "    " : "│   ";
 
-            var dirs = Array.Empty<string>();
-            var files = Array.Empty<string>();
+            string[] dirs;
+            string[] files;
 
             try
             {

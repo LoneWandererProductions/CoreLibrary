@@ -614,15 +614,6 @@ namespace RenderEngine
             GL.UseProgram(0);
         }
 
-        /// <summary>
-        /// Draws the textured ellipse.
-        /// </summary>
-        /// <param name="cx">The cx.</param>
-        /// <param name="cy">The cy.</param>
-        /// <param name="radiusX">The radius x.</param>
-        /// <param name="radiusY">The radius y.</param>
-        /// <param name="segments">The segments.</param>
-        /// <param name="textureId">The texture identifier.</param>
         public void DrawTexturedEllipse(
             float cx, float cy,
             float radiusX, float radiusY,
@@ -969,22 +960,14 @@ namespace RenderEngine
                 }
             }
 
-            var imgBuffer = new UnmanagedImageBuffer(atlasW, atlasH);
-            var rect = new System.Drawing.Rectangle(0, 0, atlasW, atlasH);
-            var bmpData = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            unsafe
-            {
-                var srcSpan = new ReadOnlySpan<byte>((void*)bmpData.Scan0, atlasW * atlasH * 4);
-                srcSpan.CopyTo(imgBuffer.BufferSpan);
-            }
-
-            //Debug: Save the font atlas to a PNG file for verification
-            //bitmap.Save(@"font_atlas_diagnostic.png", System.Drawing.Imaging.ImageFormat.Png);
-            bitmap.UnlockBits(bmpData);
-
-            _fontTextureId = UploadImage(imgBuffer, linearFilter: false);
+        /// <summary>
+        /// Binds the shader and viewport.
+        /// </summary>
+        /// <param name="shaderId">The shader identifier.</param>
+        private void BindShaderAndViewport(int shaderId)
+        {
+            GL.UseProgram(shaderId);
+            GL.Uniform2(GL.GetUniformLocation(shaderId, "uViewport"), (float)Width, (float)Height);
         }
 
         /// <summary>

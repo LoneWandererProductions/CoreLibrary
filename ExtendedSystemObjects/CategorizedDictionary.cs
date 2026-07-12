@@ -18,15 +18,17 @@ using System.Threading;
 
 namespace ExtendedSystemObjects
 {
+    /// <inheritdoc />
     /// <summary>
     /// A thread-safe dictionary that associates each key with a category.
     /// Provides fast lookups by key or by category.
     /// </summary>
     /// <typeparam name="TK">Type of dictionary keys.</typeparam>
     /// <typeparam name="TV">Type of dictionary values.</typeparam>
-    /// <seealso cref="System.Collections.Generic.IEnumerable&lt;(TK Key, System.String Category, TV Value)&gt;" />
+    /// <seealso cref="!:System.Collections.Generic.IEnumerable&lt;(TK Key, System.String Category, TV Value)&gt;" />
     [Serializable]
     public sealed class CategorizedDictionary<TK, TV> : IEnumerable<(TK Key, string Category, TV Value)>
+        where TK : notnull
     {
         /// <summary>
         /// Internal storage mapping keys to (Category, Value) pairs.
@@ -43,7 +45,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="category">The category.</param>
         /// <returns>string Empty if category was empty.</returns>
-        private static string NormalizeCategory(string category) => category ?? string.Empty;
+        private static string NormalizeCategory(string? category) => category ?? string.Empty;
 
         /// <summary>
         /// Lock for thread-safety.

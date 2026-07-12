@@ -38,10 +38,6 @@ namespace Communication
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Saves the file.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
         public Task SaveFile(string filePath, IEnumerable<string> urls, IProgress<int>? progress = null,
             CancellationToken cancellationToken = default)
         {

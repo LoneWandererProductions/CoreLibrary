@@ -6,6 +6,12 @@
  *              Unlike typical dictionaries, entries are marked as deleted (tombstoned)
  *              and only physically removed during explicit compaction, improving
  *              insertion and deletion performance by avoiding frequent reallocations.
+<<<<<<< HEAD
+ *              Optimized for integer keys and unmanaged value types, with open addressing and linear probing.
+ *              Not thread-safe.
+ *              Second it is not good with bigger datatypes since it has no separate container for values and uses open addressing, so it is best used with small structs or primitive types as values.
+=======
+>>>>>>> f0801e635c3ba81f09f1576542ea953bd75ade08
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -169,6 +175,7 @@ namespace ExtendedSystemObjects
         public void Dispose()
         {
             if (_disposed) return;
+
             Free();
             GC.SuppressFinalize(this);
             _disposed = true;

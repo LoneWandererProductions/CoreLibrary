@@ -203,7 +203,7 @@ namespace ExtendedSystemObjects
             Length = 0;
 
             // Clear the entire allocated capacity, not just Length items
-            UnmanagedMemoryHelper.Clear<int>(_ptr, Capacity);
+            UnmanagedMemoryHelper.Clear(_ptr, Capacity);
         }
 
         /// <inheritdoc />
@@ -425,7 +425,7 @@ namespace ExtendedSystemObjects
                 return;
             }
 
-            _ptr = UnmanagedMemoryHelper.Reallocate<int>(_ptr, Length);
+            _ptr = UnmanagedMemoryHelper.Reallocate(_ptr, Length);
             Capacity = Length;
         }
 
@@ -566,7 +566,7 @@ namespace ExtendedSystemObjects
                 newCapacity = min;
             }
 
-            _ptr = UnmanagedMemoryHelper.Reallocate<int>(_ptr, newCapacity);
+            _ptr = UnmanagedMemoryHelper.Reallocate(_ptr, newCapacity);
             Capacity = newCapacity;
         }
     }

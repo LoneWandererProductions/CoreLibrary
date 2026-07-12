@@ -22,8 +22,7 @@ namespace Common.ExtendedObject.Tests
         [TestMethod]
         public void Add_ValidPair_AddsToBothSides()
         {
-            var map = new BiMap<string>();
-            map.Add("Key", "Value");
+            var map = new BiMap<string> { { "Key", "Value" } };
 
             Assert.AreEqual("Value", map.GetForward("Key"));
             Assert.AreEqual("Key", map.GetReverse("Value"));
@@ -36,9 +35,8 @@ namespace Common.ExtendedObject.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void Add_DuplicateValue_ThrowsException()
         {
-            var map = new BiMap<string>();
-            map.Add("A", "Shared");
-            map.Add("B", "Shared"); // This should trigger your duplicate check
+            var map = new BiMap<string> { { "A", "Shared" }, { "B", "Shared" } // This should trigger your duplicate check
+            };
         }
 
         /// <summary>
@@ -47,8 +45,7 @@ namespace Common.ExtendedObject.Tests
         [TestMethod]
         public void Remove_RemovesFromBothSides()
         {
-            var map = new BiMap<int>();
-            map.Add(1, 100);
+            var map = new BiMap<int> { { 1, 100 } };
             map.RemoveByLeft(1);
 
             Assert.IsFalse(map.Contains(1));

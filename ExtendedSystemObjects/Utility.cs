@@ -146,7 +146,7 @@ namespace ExtendedSystemObjects
         /// <param name="position">The position.</param>
         /// <param name="lst">The LST.</param>
         /// <returns>Next Element</returns>
-        public static int GetNextElement(int position, List<int> lst)
+        public static int GetNextElement(int position, List<int>? lst)
         {
             if (lst == null || lst.Count == 0) return -1;
 
@@ -165,7 +165,7 @@ namespace ExtendedSystemObjects
         /// <param name="position">The position.</param>
         /// <param name="lst">The LST.</param>
         /// <returns>Previous Element</returns>
-        public static int GetPreviousElement(int position, List<int> lst)
+        public static int GetPreviousElement(int position, List<int>? lst)
         {
             if (lst == null || lst.Count == 0) return -1;
 
@@ -259,7 +259,7 @@ namespace ExtendedSystemObjects
         /// <param name="numbers">The input list.</param>
         /// <param name="sequenceLength">The min count of the sequence.</param>
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
-        public static List<KeyValuePair<int, int>>? Sequencer(List<int> numbers, int sequenceLength)
+        public static List<KeyValuePair<int, int>>? Sequencer(List<int>? numbers, int sequenceLength)
         {
             if (numbers == null || numbers.Count < sequenceLength || sequenceLength <= 1)
             {
@@ -306,7 +306,7 @@ namespace ExtendedSystemObjects
         /// <param name="stepWidth">The step width.</param>
         /// <param name="sequenceLength">The sequence.</param>
         /// <returns>List of Sequences, with start and end index, null if none were found.</returns>
-        public static List<KeyValuePair<int, int>>? Sequencer(List<int> numbers, int stepWidth, int sequenceLength)
+        public static List<KeyValuePair<int, int>>? Sequencer(List<int>? numbers, int stepWidth, int sequenceLength)
         {
             if (numbers == null || numbers.Count < sequenceLength || sequenceLength <= 1)
             {
@@ -354,7 +354,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="numbers">The numbers.</param>
         /// <returns>Return the start, end, and the repeated value of that streak.</returns>
-        public static List<(int start, int end, int value)> FindSequences(List<int> numbers)
+        public static List<(int start, int end, int value)> FindSequences(List<int>? numbers)
         {
             var result = new List<(int start, int end, int value)>();
             if (numbers == null || numbers.Count == 0) return result;
