@@ -178,7 +178,7 @@ namespace ExtendedSystemObjects
         /// <param name="array">The array.</param>
         /// <returns>True if the collection contains at least one element; otherwise false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool AnyFast<T>(this T[] array)
+        public static bool AnyFast<T>(this T[]? array)
         {
             return array != null && array.Length != 0;
         }

@@ -7,6 +7,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -122,12 +125,12 @@ namespace ExtendedSystemObjects
         /// </summary>
         public void Dispose()
         {
-            if(_disposed) return;
+            if (_disposed) return;
+
             _entries.Dispose();
             _disposed = true;
         }
 
-        /// <inheritdoc />
         /// <summary>
         ///      Gets the value associated with the specified key.
         /// </summary>
@@ -219,18 +222,24 @@ namespace ExtendedSystemObjects
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// High performance enumerator for iterating over the entries in the lookup map. Uses unsafe code and pointer arithmetic for maximum speed.
         /// </summary>
-        /// <seealso cref="System.IDisposable" />
-        /// <seealso cref="System.Collections.Generic.IEnumerable&lt;System.Collections.Generic.KeyValuePair&lt;TKey, TValue&gt;&gt;" />
-        public unsafe struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        /// <seealso cref="T:System.IDisposable" />
+        /// <seealso cref="!:System.Collections.Generic.IEnumerable&lt;System.Collections.Generic.KeyValuePair&lt;TKey, TValue&gt;&gt;" />
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private readonly Entry* _entries;
             private readonly int _capacity;
             private int _index;
             private KeyValuePair<TKey, TValue> _current;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Enumerator"/> struct.
+            /// </summary>
+            /// <param name="entries">The entries.</param>
+            /// <param name="capacity">The capacity.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal Enumerator(Entry* entries, int capacity)
             {
@@ -244,7 +253,6 @@ namespace ExtendedSystemObjects
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
-                // Nutzt superschnelle Pointer-Arithmetik statt des Array-Indexers
                 while (++_index < _capacity)
                 {
                     Entry* entry = _entries + _index;
@@ -254,6 +262,7 @@ namespace ExtendedSystemObjects
                         return true;
                     }
                 }
+
                 return false;
             }
 
@@ -267,6 +276,7 @@ namespace ExtendedSystemObjects
             /// <inheritdoc />
             readonly object IEnumerator.Current => Current;
 
+            /// <inheritdoc />
             /// <summary>
             /// Sets the enumerator to its initial position, which is before the first element in the collection.
             /// </summary>
@@ -276,6 +286,7 @@ namespace ExtendedSystemObjects
                 _current = default;
             }
 
+            /// <inheritdoc />
             /// <summary>
             /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             /// </summary>

@@ -28,11 +28,6 @@ namespace ExtendedSystemObjects
     public sealed unsafe class UnmanagedArray<T> : IUnmanagedArray<T>, IEnumerable<T> where T : unmanaged
     {
         /// <summary>
-        ///     The buffer
-        /// </summary>
-        private IntPtr _buffer;
-
-        /// <summary>
         ///     Check if we disposed the object
         /// </summary>
         private bool _disposed;
@@ -60,7 +55,7 @@ namespace ExtendedSystemObjects
             Length = size;
 
             _ptr = (T*)UnmanagedMemoryHelper.Allocate<T>(size);
-            UnmanagedMemoryHelper.Clear<T>(_ptr, size);
+            UnmanagedMemoryHelper.Clear(_ptr, size);
         }
 
         /// <summary>
@@ -197,11 +192,11 @@ namespace ExtendedSystemObjects
 
             if (newSize == Capacity) return;
 
-            _ptr = UnmanagedMemoryHelper.Reallocate<T>(_ptr, newSize);
+            _ptr = UnmanagedMemoryHelper.Reallocate(_ptr, newSize);
 
             if (newSize > Capacity)
             {
-                UnmanagedMemoryHelper.Clear<T>(_ptr + Capacity, newSize - Capacity);
+                UnmanagedMemoryHelper.Clear(_ptr + Capacity, newSize - Capacity);
             }
 
             Capacity = newSize;
@@ -219,7 +214,7 @@ namespace ExtendedSystemObjects
         public void Clear()
         {
             EnsureNotDisposed();
-            UnmanagedMemoryHelper.Clear<T>(_ptr, Length);
+            UnmanagedMemoryHelper.Clear(_ptr, Length);
         }
 
         /// <inheritdoc />

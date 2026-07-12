@@ -131,7 +131,7 @@ namespace Weaver.Registry
             this IVariableRegistry? registry,
             string name,
             out EnumTypes type,
-            out string pointer)
+            out string? pointer)
         {
             type = default;
             pointer = null;

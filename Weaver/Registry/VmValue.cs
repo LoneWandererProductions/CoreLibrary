@@ -1,10 +1,15 @@
 ﻿/*
- * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Weaver.Registry
- * FILE:        VmValue.cs
- * PURPOSE:     Struct that contains all possible VM value types for VariableRegistry.
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * COPYRIGHT:    See COPYING in the top level directory
+ * PROJECT:      Weaver.Registry
+ * FILE:         VmValue.cs
+ * PURPOSE:      Struct that contains all possible VM value types for VariableRegistry.
+ * ARCHITECTURE: Primitives (Wint, Wdouble, Wstring, etc.) store their actual data here. 
+ *               Collections (Wlist, Wobject) use this struct purely as a Type Marker 
+ *               to point the registry toward the Heap (_store).
+ * PROGRAMMER:   Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable MemberCanBeInternal
 
 using System.Globalization;
 using Weaver.Messages;
@@ -89,7 +94,9 @@ namespace Weaver.Registry
         /// From string.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <returns>New VmValue</returns>
+        /// <returns>
+        /// New VmValue
+        /// </returns>
         public static VmValue FromString(string? value) =>
             new(EnumTypes.Wstring, default, default, default, value);
 
@@ -98,30 +105,36 @@ namespace Weaver.Registry
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="attribute">The attribute.</param>
-        /// <returns>New VmValue</returns>
+        /// <returns>
+        /// New VmValue
+        /// </returns>
         public static VmValue FromInt(long value, string? attribute = null) =>
             new VmValue(EnumTypes.Wint, i: value, d: 0, b: false, s: null, attribute: attribute);
 
         /// <summary>
-        /// Froms the double.
+        /// New Value from double.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="attribute">The attribute.</param>
-        /// <returns>New VmValue</returns>
+        /// <returns>
+        /// New VmValue
+        /// </returns>
         public static VmValue FromDouble(double value, string? attribute = null) =>
             new VmValue(EnumTypes.Wdouble, i: 0, d: value, b: false, s: null, attribute: attribute);
 
         /// <summary>
-        /// Froms the bool.
+        /// New Value from  bool.
         /// </summary>
         /// <param name="value">if set to <c>true</c> [value].</param>
         /// <param name="attribute">The attribute.</param>
-        /// <returns>New VmValue</returns>
+        /// <returns>
+        /// New VmValue
+        /// </returns>
         public static VmValue FromBool(bool value, string? attribute = null) =>
             new VmValue(EnumTypes.Wbool, i: 0, d: 0, b: value, s: null, attribute: attribute);
 
         /// <summary>
-        /// From string.
+        /// New Value from  string.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="attribute">The attribute.</param>
@@ -130,7 +143,7 @@ namespace Weaver.Registry
             new VmValue(EnumTypes.Wstring, i: 0, d: 0, b: false, s: value, attribute: attribute);
 
         /// <summary>
-        /// From pointer.
+        /// New Value from  pointer.
         /// </summary>
         /// <param name="pointerKey">The pointer key.</param>
         /// <returns>New VmValue</returns>
@@ -138,15 +151,25 @@ namespace Weaver.Registry
             new VmValue(EnumTypes.Wpointer, i: 0, d: 0, b: false, s: pointerKey);
 
         /// <summary>
-        /// From object.
+        /// Creates a new VM value representing an object reference.
         /// </summary>
-        /// <returns>New VmValue</returns>
+        /// <remarks>
+        /// This does not store the object's properties. It acts as a Type Marker (breadcrumb)
+        /// telling the VariableRegistry that the actual data lives on the Heap (_store)
+        /// and must be evaluated via the _lookUp table.
+        /// </remarks>
+        /// <returns>New VmValue of type Wobject</returns>
         public static VmValue FromObject() =>
             new VmValue(EnumTypes.Wobject, i: 0, d: 0, b: false, s: null);
 
         /// <summary>
         /// Creates a new VM value representing a list reference.
         /// </summary>
+        /// <remarks>
+        /// This does not store the list's elements. It acts as a Type Marker (breadcrumb)
+        /// telling the VariableRegistry that the actual data lives on the Heap (_store)
+        /// and must be evaluated via the _lookUp table.
+        /// </remarks>
         /// <returns>New VmValue of type Wlist</returns>
         public static VmValue FromList() =>
             new VmValue(EnumTypes.Wlist, i: 0, d: 0, b: false, s: null);
@@ -155,7 +178,7 @@ namespace Weaver.Registry
         /// Clones the VmValue but applies a new attribute (used for Object keys).
         /// </summary>
         /// <param name="newAttribute">The new attribute.</param>
-        /// <returns></returns>
+        /// <returns>Value Type corresponding with the selected type.</returns>
         public VmValue WithAttribute(string newAttribute) =>
             new VmValue(Type, Int64, Double, Bool, String, newAttribute);
 

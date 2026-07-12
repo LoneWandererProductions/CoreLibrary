@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects
  * FILE:        UnmanagedList.cs
- * PURPOSE:     
+ * PURPOSE:     A dynamic array implementation that manages its own unmanaged memory, allowing for high-performance operations on large datasets without the overhead of garbage collection.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -28,11 +28,6 @@ namespace ExtendedSystemObjects
     public sealed unsafe class UnmanagedList<T> : IUnmanagedArray<T>, IEnumerable<T> where T : unmanaged
     {
         /// <summary>
-        ///     The buffer
-        /// </summary>
-        private IntPtr _buffer;
-
-        /// <summary>
         ///     Check if we disposed the object
         /// </summary>
         private bool _disposed;
@@ -55,7 +50,7 @@ namespace ExtendedSystemObjects
         /// The <see cref="Span{T}"/>.
         /// </value>
         /// <param name="range">The range.</param>
-        /// <returns></returns>
+        /// <returns>A span representing the specified range of elements.</returns>
         public Span<T> this[Range range] => AsSpan()[range];
 
         /// <summary>
@@ -276,11 +271,11 @@ namespace ExtendedSystemObjects
 
             if (newSize == Capacity) return;
 
-            _ptr = UnmanagedMemoryHelper.Reallocate<T>(_ptr, newSize);
+            _ptr = UnmanagedMemoryHelper.Reallocate(_ptr, newSize);
 
             if (newSize > Capacity)
             {
-                UnmanagedMemoryHelper.Clear<T>(_ptr + Capacity, newSize - Capacity);
+                UnmanagedMemoryHelper.Clear(_ptr + Capacity, newSize - Capacity);
             }
 
             Capacity = newSize;
@@ -394,8 +389,15 @@ namespace ExtendedSystemObjects
             return _ptr[Length - 1];
         }
 
+        /// <summary>
+        /// Sorts this instance.
+        /// </summary>
         public void Sort() => AsSpan().Sort();
 
+        /// <summary>
+        /// Clones this instance.
+        /// </summary>
+        /// <returns>A new <see cref="UnmanagedList{T}"/> that is a copy of the current instance.</returns>
         public UnmanagedList<T> Clone()
         {
             var clone = new UnmanagedList<T>(Length);
@@ -425,7 +427,7 @@ namespace ExtendedSystemObjects
         {
             if (Length == Capacity) return;
 
-            _ptr = UnmanagedMemoryHelper.Reallocate<T>(_ptr, Length);
+            _ptr = UnmanagedMemoryHelper.Reallocate(_ptr, Length);
             Capacity = Length;
         }
 

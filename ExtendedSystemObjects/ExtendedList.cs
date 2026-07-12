@@ -118,7 +118,7 @@ namespace ExtendedSystemObjects
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="lst">The List.</param>
         /// <returns>A Dictionary from a list with int as the key</returns>
-        public static Dictionary<int, TValue>? ToDictionary<TValue>(this IEnumerable<TValue> lst)
+        public static Dictionary<int, TValue>? ToDictionary<TValue>(this IEnumerable<TValue>? lst)
         {
             var index = 0;
             return lst?.ToDictionary(_ => index++);

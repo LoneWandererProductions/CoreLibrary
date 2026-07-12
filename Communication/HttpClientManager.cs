@@ -23,9 +23,17 @@ namespace Communication
     public static class HttpClientManager
     {
         /// <summary>
+        /// The tracing handler
+        /// </summary>
+        private static readonly HttpWireTracingHandler TracingHandler = new()
+        {
+            InnerHandler = new HttpClientHandler()
+        };
+
+        /// <summary>
         ///  Singleton pattern is correct here
         /// </summary>
-        private static readonly HttpClient HttpClient = new();
+        private static readonly HttpClient HttpClient = new(TracingHandler);
 
         /// <summary>
         ///      Calls a SOAP service asynchronously.

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:Common.Converter;assembly=Common.Converter"
         xmlns:local="clr-namespace:Core.Viewer"
         mc:Ignorable="d"
         Title="Analyzer Viewer" Height="450" Width="900">
@@ -10,16 +11,20 @@
     <Window.DataContext>
         <local:AnalyzerViewModel />
     </Window.DataContext>
-
+    <Window.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BoolToVisibility" Collapse="True" />
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
         </Grid.RowDefinitions>
+        <ProgressBar Value="{Binding ProgressValue}" Minimum="0" Maximum="100" Grid.Row="2" />
 
         <!-- Analyzer selection and controls -->
-        <StackPanel Orientation="Horizontal" Margin="5">
+        <StackPanel Orientation="Horizontal" Margin="5,5,5,5" Grid.Row="0" Grid.ColumnSpan="2">
             <ComboBox ItemsSource="{Binding Analyzers}"
                       SelectedItem="{Binding SelectedAnalyzer}"
                       Width="200" DisplayMemberPath="Name" />
@@ -30,20 +35,39 @@
         </StackPanel>
 
         <!-- Diagnostics display -->
-        <ListView Grid.Row="1" ItemsSource="{Binding DiagnosticsView}">
+        <ListView Grid.Row="1" ItemsSource="{Binding DiagnosticsView}" Grid.ColumnSpan="2">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="Status" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Diagnostic.SeveritySymbol}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Segoe UI Emoji"
+                                           FontSize="14" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
                     <GridViewColumn Header="Analyzer" DisplayMemberBinding="{Binding Diagnostic.Name}" />
                     <GridViewColumn Header="File" DisplayMemberBinding="{Binding Diagnostic.FilePath}" />
                     <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Diagnostic.Message}" />
-                    <GridViewColumn Header="Actions">
+
+                    <GridViewColumn Header="Actions" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="Open File" Command="{Binding OpenFileCommand}" />
-                                    <Button Content="Fix" Command="{Binding FixCommand}"
-                                            Visibility="{Binding CanFix, Converter={StaticResource BoolToVisibility}}" />
-                                    <Button Content="Ignore" Command="{Binding IgnoreCommand}" />
+                                    <Button Content="Open File"
+                                            Command="{Binding OpenFileCommand}"
+                                            Margin="2" />
+                                    <Button Content="Fix"
+                                            Command="{Binding FixCommand}"
+                                            Visibility="{Binding CanFix, Converter={StaticResource BoolToVisibility}}"
+                                            Margin="2" />
+                                    <Button Content="Ignore"
+                                            Command="{Binding IgnoreCommand}"
+                                            Margin="2" />
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
