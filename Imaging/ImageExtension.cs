@@ -10,8 +10,10 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
+using Imaging.Texture;
 using Color = System.Windows.Media.Color;
 
 namespace Imaging
@@ -21,6 +23,32 @@ namespace Imaging
     /// </summary>
     public static class ImageExtension
     {
+        /// <summary>
+        /// Instantiates a standard GDI+ UI container directly from raw mathematical results.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns>A managed Bitmap instance.</returns>
+        public static unsafe Bitmap ToManagedBitmap(this RawTextureBuffer source)
+        {
+            var bitmap = new Bitmap(source.Width, source.Height, PixelFormat.Format32bppArgb);
+            var rect = new Rectangle(0, 0, source.Width, source.Height);
+            var data = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+            try
+            {
+                fixed (byte* pSource = source.PixelData)
+                {
+                    System.Buffer.MemoryCopy(pSource, (void*)data.Scan0, source.Length, source.Length);
+                }
+            }
+            finally
+            {
+                bitmap.UnlockBits(data);
+            }
+
+            return bitmap;
+        }
+
         /// <summary>
         /// Extension Method
         /// Converts Bitmap to BitmapImage.

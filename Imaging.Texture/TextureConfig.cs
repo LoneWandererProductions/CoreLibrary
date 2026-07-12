@@ -1,0 +1,56 @@
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Imaging.Texture
+ * FILE:        TextureConfig.cs
+ * PURPOSE:     Primitive Data Configuration Object for Texture Generation Parameters
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+namespace Imaging.Texture
+{
+    /// <summary>
+    /// A pure primitive configuration object. 
+    /// No references to System.Drawing or higher-level Imaging concepts.
+    /// </summary>
+    public class TextureConfig
+    {
+        /// <summary>
+        /// Gets or sets the size of the turbulence.
+        /// </summary>
+        /// <value>
+        /// The size of the turbulence.
+        /// </value>
+        public double TurbulenceSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the RGB ramp.
+        /// </summary>
+        /// <value>
+        /// The RGB ramp.
+        /// </value>
+        public byte[] RgbRamp { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the cell.
+        /// </summary>
+        /// <value>
+        /// The size of the cell.
+        /// </value>
+        public int CellSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the center RGB.
+        /// </summary>
+        /// <value>
+        /// The center RGB.
+        /// </value>
+        public byte[] CenterRgb { get; set; }
+
+        /// <summary>
+        /// Gets or sets the edge RGB.
+        /// </summary>
+        /// <value>
+        /// The edge RGB.
+        /// </value>
+        public byte[] EdgeRgb { get; set; }
+    }
+}

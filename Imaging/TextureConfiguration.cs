@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/TextureConfiguration.cs
+ * FILE:        TextureConfiguration.cs
  * PURPOSE:     Basic stuff for generating textures, this class is used for finetuning
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
@@ -202,5 +202,45 @@ namespace Imaging
         ///     The jaggedness threshold.
         /// </value>
         public int JaggednessThreshold { get; init; } = 10;
+
+        /// <summary>
+        /// Gets the size of the cell.
+        /// </summary>
+        /// <value>
+        /// The size of the cell.
+        /// </value>
+        public int CellSize { get; init; }
+
+        /// <summary>
+        /// Gets the color of the center.
+        /// </summary>
+        /// <value>
+        /// The color of the center.
+        /// </value>
+        public Color CenterColor { get; init; }
+
+        /// <summary>
+        /// Gets the color of the edge.
+        /// </summary>
+        /// <value>
+        /// The color of the edge.
+        /// </value>
+        public Color EdgeColor { get; init; }
+
+        /// <summary>
+        /// Gets the color ramp.
+        /// </summary>
+        /// <value>
+        /// The color ramp.
+        /// </value>
+        public Color[]? ColorRamp { get; init; }
+
+        /// <summary>
+        /// Gets the color of the secondary.
+        /// </summary>
+        /// <value>
+        /// The color of the secondary.
+        /// </value>
+        public Color SecondaryColor { get; init; }
     }
 }

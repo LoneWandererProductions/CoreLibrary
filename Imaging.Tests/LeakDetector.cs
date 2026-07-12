@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests
  * FILE:        LeakDetector.cs
  * PURPOSE:     Really basic memory leak detector for unit tests. It runs an action and checks if the memory usage increased significantly.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 using System.Diagnostics;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     /// Really basic memory leak detector for unit tests. It runs an action and checks if the memory usage increased significantly.

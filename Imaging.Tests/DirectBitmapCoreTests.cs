@@ -1,14 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests.Tests
  * FILE:        DirectBitmapCoreTests.cs
  * PURPOSE:     Test for blending in DirectBitmapCore.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using Imaging;
-
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     /// Core tests for DirectBitmapCore, especially the BlendInt method which is critical for correct blending behavior in DirectBitmap and DirectBitmapImage.

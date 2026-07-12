@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests
  * FILE:        ImageRenderTests.cs
  * PURPOSE:     Interface testing and dependency Injection, plus some functional tests
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -8,11 +8,10 @@
 
 
 using System.Drawing;
-using Imaging;
 using Imaging.Enums;
 using Imaging.Interfaces;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     ///     Some Basic Image Render tets

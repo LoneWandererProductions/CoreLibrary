@@ -93,6 +93,17 @@ namespace Imaging.Helpers
                     settings.WaveFrequency, settings.WaveAmplitude, settings.RandomizationFactor,
                     settings.EdgeJaggednessLimit, settings.JaggednessThreshold),
 
+                TextureType.Cellular => TextureStream.GenerateCellularBitmap(
+                    width, height, settings.CellSize, settings.Alpha, settings.CenterColor, settings.EdgeColor),
+
+                TextureType.ColorMapped => TextureStream.GenerateColorMappedBitmap(
+                    width, height, settings.ColorRamp, settings.TurbulenceSize, settings.Alpha),
+
+                //Preset textures, no settings can be provided.
+                TextureType.MagicalEther => TexturePresets.GenerateMagicalEther(width, height),
+                TextureType.Cobblestone => TexturePresets.GenerateCobblestone(width, height),
+                TextureType.DragonScales => TexturePresets.GenerateDragonScales(width, height),
+                TextureType.LavaPool => TexturePresets.GenerateCobblestone(width, height),
                 _ => throw new ArgumentOutOfRangeException(nameof(texture), texture,
                     ImagingResources.UnsupportedTexture)
             };

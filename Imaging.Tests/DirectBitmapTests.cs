@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top-level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests.Tests
  * FILE:        DirectBitmapTests.cs
  * PURPOSE:     Validate some functions in DirectBitmap
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,9 +9,8 @@
 using System.Diagnostics;
 using System.Drawing;
 using ImageCompare;
-using Imaging;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     /// Some basic tests to validate some functions in DirectBitmap, including color matching and performance comparisons with System.Drawing. These tests ensure that DirectBitmap correctly manipulates pixel data and performs efficiently for common drawing operations.

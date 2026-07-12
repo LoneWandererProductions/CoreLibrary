@@ -34,16 +34,6 @@ namespace RenderEngine
         internal const string ErrorNoLayers = "No layers to composite.";
 
         /// <summary>
-        /// The shader skybox vertex
-        /// </summary>
-        internal const string ShaderSkyboxVertex = "skybox_vertex.glsl";
-
-        /// <summary>
-        /// The shader skybox fragment
-        /// </summary>
-        internal const string ShaderSkyboxFragment = "skybox_fragment.glsl";
-
-        /// <summary>
         /// The error layer size mismatch
         /// </summary>
         internal const string ErrorLayerSizeMismatch = "Layer size mismatch.";

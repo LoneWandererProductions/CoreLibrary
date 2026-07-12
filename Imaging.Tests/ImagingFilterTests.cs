@@ -1,16 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests
  * FILE:        ImagingFilterTests.cs
  * PURPOSE:     Tests for Image Tools, here mostly filters
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;
-using Imaging;
 using Imaging.Interfaces;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     ///     Add some filter tests

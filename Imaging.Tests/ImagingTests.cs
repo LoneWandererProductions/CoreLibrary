@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests
  * FILE:        ImagingTests.cs
  * PURPOSE:     Tests for Image Tools
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -11,12 +11,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using FileHandler;
 using ImageCompare;
-using Imaging;
 using Imaging.Cifs;
 using Imaging.Helpers;
 using Mathematics;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     ///     Test some image related stuff
@@ -32,17 +31,17 @@ namespace ImagingTests
         /// <summary>
         ///     The executable folder
         /// </summary>
-        private static readonly DirectoryInfo ExeFolder = new(Path.GetDirectoryName(Codebase) ?? string.Empty);
+        private static readonly string ExecutionFolder = AppContext.BaseDirectory;
 
         /// <summary>
         ///     The project folder
         /// </summary>
-        private static readonly DirectoryInfo ProjectFolder = ExeFolder.Parent?.Parent;
+        private static readonly DirectoryInfo ProjectFolder = new(Directory.GetParent(ExecutionFolder)?.FullName ?? string.Empty);
 
         /// <summary>
-        ///     The sample images folder
+        ///     The sample images folder in the output directory
         /// </summary>
-        private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Images"));
+        private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ExecutionFolder, "Images"));
 
         /// <summary>
         ///     The images folder
@@ -68,7 +67,6 @@ namespace ImagingTests
         ///     The custom Image Format
         /// </summary>
         private static readonly CustomImageFormat Custom = new();
-
 
         /// <summary>
         ///     Converts to argbvalidcolorreturnscorrectargbvalue.

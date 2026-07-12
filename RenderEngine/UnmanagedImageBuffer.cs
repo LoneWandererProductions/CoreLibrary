@@ -467,7 +467,7 @@ namespace RenderEngine
         /// <summary>
         /// Converts the unmanaged buffer into a managed <see cref="Bitmap"/>.
         /// </summary>
-        public Bitmap? ToBitmap()
+        public Bitmap ToBitmap()
         {
             var bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
             var rect = new Rectangle(0, 0, Width, Height);

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests
  * FILE:        ImagingLeakTests.cs
  * PURPOSE:     Search for leaks in the ImagingFacade methods by running them multiple times and monitoring memory usage. This is a very basic test and should be used as a starting point for more comprehensive leak detection.
  *              Should be run in a loop or with a profiler for best results, as small leaks might not be detected in a single run.
@@ -10,9 +10,8 @@
  */
 
 using System.Drawing;
-using Imaging;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     /// Simple Memory checker for the ImagingFacade methods. It runs the method multiple times and checks if the memory usage increased significantly, which would indicate a leak.
@@ -54,7 +53,7 @@ namespace ImagingTests
             LeakDetector.Monitor(() =>
             {
                 // Testing if ApplyFilter cleans up its internal DirectBitmap
-                var filtered = ImagingFacade.ApplyFilter(testBmp, Imaging.Enums.FiltersType.Sepia);
+                var filtered = ImagingFacade.ApplyFilter(testBmp, Enums.FiltersType.Sepia);
                 filtered?.Dispose();
             }, "Sepia Filter Disposal Test");
         }

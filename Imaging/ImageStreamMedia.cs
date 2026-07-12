@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageStreamMedia.cs
+ * FILE:        ImageStreamMedia.cs
  * PURPOSE:     Does all the leg work for the Image operations, in this case the newer Media.Imaging
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageFilterStream.cs
+ * FILE:        ImageFilterStream.cs
  * PURPOSE:     Generic Image Operations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://lodev.org/cgtutor/imagearithmetic.html

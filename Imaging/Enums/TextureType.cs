@@ -53,6 +53,20 @@ namespace Imaging.Enums
         /// <summary>
         ///     The canvas
         /// </summary>
-        Canvas = 7
+        Canvas = 7,
+
+        /// <summary>
+        /// The cellular
+        /// </summary>
+        Cellular = 8,
+
+        /// <summary>
+        /// The color mapped
+        /// </summary>
+        ColorMapped = 9,
+        MagicalEther = 10,
+        Cobblestone = 11,
+        DragonScales = 12,
+        LavaPool = 13
     }
 }

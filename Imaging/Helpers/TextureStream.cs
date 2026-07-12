@@ -6,11 +6,8 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
+using Imaging.Texture;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Runtime.CompilerServices;
 
 // ReSharper disable UnusedMember.Local
 
@@ -22,65 +19,35 @@ namespace Imaging.Helpers
     internal static class TextureStream
     {
         /// <summary>
-        ///     Generates the noise bitmap.
+        /// Generates the noise bitmap.
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="minValue">The minimum value.</param>
         /// <param name="maxValue">The maximum value.</param>
         /// <param name="alpha">The alpha.</param>
-        /// <param name="useSmoothNoise">if set to <c>true</c> [use smooth noise].</param>
-        /// <param name="useTurbulence">if set to <c>true</c> [use turbulence].</param>
+        /// <param name="isMonochrome">if set to <c>true</c> [is monochrome].</param>
+        /// <param name="isTiled">if set to <c>true</c> [is tiled].</param>
         /// <param name="turbulenceSize">Size of the turbulence.</param>
-        /// <returns>Texture Bitmap</returns>
+        /// <returns>
+        /// Texture Bitmap
+        /// </returns>
         internal static Bitmap GenerateNoiseBitmap(
             int width,
             int height,
             int minValue = 0,
             int maxValue = 255,
             int alpha = 255,
-            bool useSmoothNoise = false,
-            bool useTurbulence = false,
+            bool isMonochrome = false, // Maps to useSmoothNoise parameter
+            bool isTiled = false, // Maps to useTurbulence parameter
             double turbulenceSize = 64)
         {
-            // Validate parameters
             ImageHelper.ValidateParameters(minValue, maxValue, alpha);
 
-            // Generate noise
             var noiseGen = new NoiseGenerator(width, height);
-
-            // Create DirectBitmap
-            var noiseBitmap = new DirectBitmap(width, height);
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            // Set pixels directly
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x++)
-                {
-                    var value = useTurbulence
-                        ? noiseGen.Turbulence(x, y, turbulenceSize)
-                        : useSmoothNoise
-                            ? noiseGen.SmoothNoise(x, y)
-                            : noiseGen.GetNoise(x, y); // Use GetNoise for basic noise
-
-                    // Normalize value to 0.0 - 1.0 range
-                    var normalizedValue = Math.Clamp(value / 255.0, 0.0, 1.0);
-
-                    // Then, apply the color scaling
-                    var colorValue = Math.Clamp(minValue + (int)((maxValue - minValue) * normalizedValue), minValue,
-                        maxValue);
-
-                    pixelData.Add((x, y, Color.FromArgb(alpha, colorValue, colorValue, colorValue)));
-                }
-            }
-
-            // Use SIMD-based bulk pixel setting
-            noiseBitmap.SetPixels(pixelData.ToArray());
-            pixelData.Clear();
-
-            // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return noiseBitmap.ToBitmap();
+            var buffer = TextureMathEngine.GenerateNoise(
+                width, height, noiseGen, minValue, maxValue, alpha, isMonochrome, isTiled, turbulenceSize);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
@@ -102,38 +69,11 @@ namespace Imaging.Helpers
             double turbulenceSize = 64)
         {
             ImageHelper.ValidateParameters(minValue, maxValue, alpha);
+
             var noiseGen = new NoiseGenerator(width, height);
-
-            var cloudsBitmap = new DirectBitmap(width, height);
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                // Generate turbulence value
-                var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
-
-                // Adjust turbulence value like in the C code (divide by 4)
-                var l = (byte)Math.Clamp(192 + (int)(turbulenceValue / 4), 192, 230); // Lightness adjustment
-
-                // Set Hue and Saturation (H = 190 for light blue, S = 200 for muted saturation)
-                const int h = 190; // Adjusted Hue value closer to light blue
-                const int s = 200; // Reduced Saturation for a more muted, light blue
-
-                // Convert HSL to RGB
-                var color = HsLtoRgb(h, s, l);
-
-                // Add the pixel data for SIMD processing
-                pixelData.Add((x, y, color));
-            }
-
-            // Convert list to array for SIMD processing
-            var pixelArray = pixelData.ToArray();
-            cloudsBitmap.SetPixels(pixelArray);
-            pixelData.Clear();
-
-            // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return cloudsBitmap.ToBitmap();
+            var buffer = TextureMathEngine.GenerateClouds(
+                width, height, noiseGen, minValue, maxValue, alpha, turbulenceSize);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
@@ -160,35 +100,12 @@ namespace Imaging.Helpers
             double turbulenceSize = 32.0,
             Color baseColor = default)
         {
-            baseColor = baseColor == default ? Color.FromArgb(30, 10, 0) : baseColor;
-            var noiseGen = new NoiseGenerator(width, height); // Dynamically sized noise
-
-            var marbleBitmap = new DirectBitmap(width, height);
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                // Replace fixed NoiseWidth/NoiseHeight with width/height
-                var xyValue = x * xPeriod / width + y * yPeriod / height +
-                              turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 128.0 +
-                              Math.Sin((x + y) * 0.1) * 0.5; // Slight random distortion
-
-                var sineValue = 255 * Math.Abs(Math.Sin(xyValue * Math.PI * 2));
-
-                var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
-                var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
-                var b = Math.Clamp(baseColor.B + (int)sineValue, 0, 255);
-
-                pixelData.Add((x, y, Color.FromArgb(alpha, r, g, b)));
-            }
-
-            // Use SIMD-based bulk pixel setting
-            marbleBitmap.SetPixels(pixelData.ToArray());
-            pixelData.Clear();
-
-            // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return marbleBitmap.ToBitmap();
+            var baseC = baseColor == default ? Color.FromArgb(30, 10, 0) : baseColor;
+            var noiseGen = new NoiseGenerator(width, height);
+            var buffer = TextureMathEngine.GenerateMarble(
+                width, height, noiseGen, xPeriod, yPeriod, alpha, turbulencePower, turbulenceSize, baseC.R, baseC.G,
+                baseC.B);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
@@ -213,38 +130,11 @@ namespace Imaging.Helpers
             double turbulenceSize = 32.0,
             Color baseColor = default)
         {
-            baseColor = baseColor == default ? Color.FromArgb(80, 30, 30) : baseColor;
+            var baseC = baseColor == default ? Color.FromArgb(80, 30, 30) : baseColor;
             var noiseGen = new NoiseGenerator(width, height);
-
-            var woodBitmap = new DirectBitmap(width, height);
-            var pixelData = new List<(int x, int y, Color color)>();
-
-            for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                var xValue = (x - width / 2.0) / width;
-                var yValue = (y - height / 2.0) / height;
-                var distValue = Math.Sqrt(xValue * xValue + yValue * yValue) +
-                                turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0;
-                var sineValue = 128.0 * Math.Abs(Math.Sin(2 * xyPeriod * distValue * Math.PI));
-
-                var r = Math.Clamp(baseColor.R + (int)sineValue, 0, 255);
-                var g = Math.Clamp(baseColor.G + (int)sineValue, 0, 255);
-                // Reuse base color's B component without adding sineValue for more natural wood grain
-                // This is a byte so no need to clamp, but we can still ensure it doesn't exceed 255
-                var b = (int)baseColor.B;
-
-                var color = Color.FromArgb(alpha, r, g, b);
-                pixelData.Add((x, y, color));
-            }
-
-            // Convert list to array for SIMD processing
-            var pixelArray = pixelData.ToArray();
-            woodBitmap.SetPixels(pixelArray);
-            pixelData.Clear();
-
-            // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return woodBitmap.ToBitmap();
+            var buffer = TextureMathEngine.GenerateWood(
+                width, height, noiseGen, alpha, xyPeriod, turbulencePower, turbulenceSize, baseC.R, baseC.G, baseC.B);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
@@ -268,37 +158,9 @@ namespace Imaging.Helpers
             double turbulenceSize = 32.0)
         {
             var noiseGen = new NoiseGenerator(width, height);
-
-            var waveBitmap = new DirectBitmap(width, height);
-            var pixelArray = new (int x, int y, Color color)[width * height];
-            var index = 0;
-
-            for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                var turbulenceValue = noiseGen.Turbulence(x, y, turbulenceSize);
-                var xValue = (x - width / 2.0) / width + turbulencePower * turbulenceValue / 256.0;
-                var yValue = (y - height / 2.0) / height +
-                             turbulencePower * noiseGen.Turbulence(height - y, width - x, turbulenceSize) / 256.0;
-
-                var sineValue = 22.0 *
-                                Math.Abs(Math.Sin(xyPeriod * xValue * Math.PI) +
-                                         Math.Sin(xyPeriod * yValue * Math.PI));
-
-
-                var hue = sineValue % 360.0;
-                if (hue < 0) hue += 360.0;
-
-                var hsvColor = ColorHsv.FromHsv(hue, 1.0, 1.0, alpha);
-
-                pixelArray[index++] = (x, y, hsvColor.GetDrawingColor());
-            }
-
-            // Convert list to array for SIMD processing
-            waveBitmap.SetPixels(pixelArray);
-
-            // Return the final Bitmap, disposing of the DirectBitmap to free resources
-            return waveBitmap.ToBitmap();
+            var buffer = TextureMathEngine.GenerateWave(
+                width, height, noiseGen, alpha, xyPeriod, turbulencePower, turbulenceSize);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
@@ -323,57 +185,11 @@ namespace Imaging.Helpers
             double angleSecondary = -45.0,
             int alpha = 255)
         {
-            lineColor = lineColor == default ? Color.Black : lineColor;
-
-            var crosshatchBitmap = new Bitmap(width, height);
-            using var graphics = Graphics.FromImage(crosshatchBitmap);
-            graphics.Clear(Color.Transparent);
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-            using var pen = new Pen(Color.FromArgb(alpha, lineColor), lineThickness);
-
-            // Cover the entire image by looping along the top and left edges
-            for (var offset = 0; offset < width + height; offset += lineSpacing)
-            {
-                var topEdgePoint = new Point(offset, 0); // Shift along the top edge
-                var leftEdgePoint = new Point(0, offset); // Shift along the left edge
-
-                DrawFullLine(graphics, crosshatchBitmap, topEdgePoint, anglePrimary, pen);
-                DrawFullLine(graphics, crosshatchBitmap, leftEdgePoint, anglePrimary, pen);
-                DrawFullLine(graphics, crosshatchBitmap, topEdgePoint, angleSecondary, pen);
-                DrawFullLine(graphics, crosshatchBitmap, leftEdgePoint, angleSecondary, pen);
-            }
-
-            return crosshatchBitmap;
-        }
-
-        /// <summary>
-        /// Draws a line from the given start point at the specified angle, covering the entire image.
-        /// </summary>
-        /// <param name="graphics">The graphics.</param>
-        /// <param name="bitmap">The image on which to draw.</param>
-        /// <param name="startPoint">The starting point of the line.</param>
-        /// <param name="angleDegrees">The angle of the line, in degrees.</param>
-        /// <param name="pen">The pen used to draw the line.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DrawFullLine(Graphics graphics, Image bitmap, Point startPoint, double angleDegrees,
-            Pen pen)
-        {
-            var angleRadians = angleDegrees * Math.PI / 180.0;
-            var dx = Math.Cos(angleRadians);
-            var dy = Math.Sin(angleRadians);
-
-            var width = bitmap.Width;
-            var height = bitmap.Height;
-            var maxDistance = Math.Max(width, height) * Math.Sqrt(2); // Diagonal coverage
-
-            // Calculate line endpoints far enough to cover the entire image
-            var endpointStart = new PointF((float)(startPoint.X + dx * maxDistance),
-                (float)(startPoint.Y + dy * maxDistance));
-            var endpointEnd = new PointF((float)(startPoint.X - dx * maxDistance),
-                (float)(startPoint.Y - dy * maxDistance));
-
-            graphics.DrawLine(pen, endpointStart, endpointEnd);
+            var lineC = lineColor == default ? Color.Black : lineColor;
+            var buffer = TextureMathEngine.GenerateCrosshatch(
+                width, height, lineSpacing, lineThickness, anglePrimary, angleSecondary, alpha, lineC.R, lineC.G,
+                lineC.B);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
@@ -403,24 +219,9 @@ namespace Imaging.Helpers
             double turbulenceSize = 16)
         {
             var noiseGen = new NoiseGenerator(width, height);
-            var bitmap = new Bitmap(width, height);
-
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x++)
-                {
-                    var xyValue = x * xPeriod / width + y * yPeriod / height +
-                                  turbulencePower * noiseGen.Turbulence(x, y, turbulenceSize) / 256.0;
-
-                    var sineValue = 256 * Math.Abs(Math.Sin(xyValue * Math.PI));
-
-                    var grayscale = Math.Clamp((int)sineValue, minValue, maxValue);
-                    var color = Color.FromArgb(alpha, grayscale, grayscale, grayscale);
-                    bitmap.SetPixel(x, y, color);
-                }
-            }
-
-            return bitmap;
+            var buffer = TextureMathEngine.GenerateConcrete(
+                width, height, noiseGen, minValue, maxValue, alpha, xPeriod, yPeriod, turbulencePower, turbulenceSize);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
@@ -453,132 +254,73 @@ namespace Imaging.Helpers
             int edgeJaggednessLimit = 20, // Limit jaggedness to within 20% of the image's edges
             int jaggednessThreshold = 10) // Reduced jagged chance for edge lines
         {
-            var canvasBitmap = new Bitmap(width, height);
-
-            using var graphics = Graphics.FromImage(canvasBitmap);
-            graphics.Clear(Color.Transparent);
-
-            var lineColorWithAlpha = Color.FromArgb(alpha, lineColor == default ? Color.Black : lineColor);
-
-            using var fiberPen = new Pen(lineColorWithAlpha, lineThickness);
-            var random = new Random();
-
-            // Draw vertical wavy and edge-jagged fibers
-            for (var x = 0; x < width; x += lineSpacing)
-            {
-                using var path = new GraphicsPath();
-                var shouldCutOff = random.Next(0, 100) < jaggednessThreshold;
-
-                // Limit cutoff to top/bottom 20% of the image height
-                var cutoffStart = shouldCutOff ? random.Next(0, height / edgeJaggednessLimit) : 0;
-                var cutoffEnd = shouldCutOff ? height - random.Next(0, height / edgeJaggednessLimit) : height;
-
-                for (var y = cutoffStart; y < cutoffEnd; y += 5)
-                {
-                    var xOffset = waveAmplitude * Math.Sin(waveFrequency * y)
-                                  + randomizationFactor * (random.NextDouble() - 0.5);
-                    path.AddLine(x + (float)xOffset, y, x + (float)xOffset, y + 5);
-                }
-
-                graphics.DrawPath(fiberPen, path);
-            }
-
-            // Draw horizontal wavy and edge-jagged fibers
-            for (var y = 0; y < height; y += lineSpacing)
-            {
-                using var path = new GraphicsPath();
-                var shouldCutOff = random.Next(0, 100) < jaggednessThreshold;
-
-                // Limit cutoff to left/right 20% of the image width
-                var cutoffStart = shouldCutOff ? random.Next(0, width / edgeJaggednessLimit) : 0;
-                var cutoffEnd = shouldCutOff ? width - random.Next(0, width / edgeJaggednessLimit) : width;
-
-                for (var x = cutoffStart; x < cutoffEnd; x += 5)
-                {
-                    var yOffset = waveAmplitude * Math.Sin(waveFrequency * x)
-                                  + randomizationFactor * (random.NextDouble() - 0.5);
-                    path.AddLine(x, y + (float)yOffset, x + 5, y + (float)yOffset);
-                }
-
-                graphics.DrawPath(fiberPen, path);
-            }
-
-            return canvasBitmap;
+            var lineC = lineColor == default ? Color.Black : lineColor;
+            var buffer = TextureMathEngine.GenerateCanvas(
+                width, height, lineSpacing, lineThickness, alpha, waveFrequency, waveAmplitude, randomizationFactor,
+                edgeJaggednessLimit, jaggednessThreshold, lineC.R, lineC.G, lineC.B);
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
-        ///     HSL to RGB.
+        /// Generates the cellular bitmap.
         /// </summary>
-        /// <param name="h">The h.</param>
-        /// <param name="s">The s.</param>
-        /// <param name="l">The l.</param>
-        /// <returns>The converted color.</returns>
-        private static Color HsLtoRgb(double h, double s, double l)
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="cellSize">The size of the cells.</param>
+        /// <param name="alpha">The alpha transparency level.</param>
+        /// <param name="centerColor">The color of the cell centers.</param>
+        /// <param name="edgeColor">The color of the cell edges.</param>
+        /// <returns>The generated cellular bitmap.</returns>
+        internal static Bitmap GenerateCellularBitmap(
+            int width,
+            int height,
+            int cellSize = 32,
+            int alpha = 255,
+            Color centerColor = default,
+            Color edgeColor = default)
         {
-            h /= 360.0; // Normalize Hue to [0,1]
-            s /= 255.0; // Normalize Saturation to [0,1]
-            l /= 255.0; // Normalize Lightness to [0,1]
+            var centerC = centerColor == default ? Color.FromArgb(150, 150, 150) : centerColor;
+            var edgeC = edgeColor == default ? Color.FromArgb(40, 40, 40) : edgeColor;
 
-            double r, g, b;
+            var buffer = TextureMathEngine.GenerateCellular(
+                width, height, cellSize, alpha,
+                centerC.R, centerC.G, centerC.B,
+                edgeC.R, edgeC.G, edgeC.B);
 
-            if (s == 0)
-            {
-                // Grayscale (no saturation)
-                r = g = b = l;
-            }
-            else
-            {
-                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                var p = 2 * l - q;
-
-                r = HueToRgb(p, q, h + 1.0 / 3.0);
-                g = HueToRgb(p, q, h);
-                b = HueToRgb(p, q, h - 1.0 / 3.0);
-            }
-
-            return Color.FromArgb(
-                255, // Full alpha
-                (int)(r * 255),
-                (int)(g * 255),
-                (int)(b * 255)
-            );
+            return buffer.ToManagedBitmap();
         }
 
         /// <summary>
-        ///     Hues to RGB.
+        /// Generates the color mapped bitmap.
         /// </summary>
-        /// <param name="p">The p.</param>
-        /// <param name="q">The q.</param>
-        /// <param name="t">The t.</param>
-        /// <returns>Hue to Rgb</returns>
-        private static double HueToRgb(double p, double q, double t)
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="colorRamp">The color ramp.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns>The generated color mapped bitmap.</returns>
+        internal static Bitmap GenerateColorMappedBitmap(
+            int width,
+            int height,
+            Color[]? colorRamp,
+            double turbulenceSize = 64.0,
+            int alpha = 255)
         {
-            if (t < 0)
+            var noiseGen = new NoiseGenerator(width, height);
+
+            // Flatten Color array into a byte array for the high-performance math engine
+            byte[] rgbRamp = new byte[colorRamp.Length * 3];
+            for (int i = 0; i < colorRamp.Length; i++)
             {
-                t++;
+                rgbRamp[i * 3] = colorRamp[i].R;
+                rgbRamp[i * 3 + 1] = colorRamp[i].G;
+                rgbRamp[i * 3 + 2] = colorRamp[i].B;
             }
 
-            if (t > 1)
-            {
-                t--;
-            }
+            var buffer = TextureMathEngine.GenerateColorMapped(
+                width, height, noiseGen, rgbRamp, turbulenceSize, alpha);
 
-            if (t < 1.0 / 6.0)
-            {
-                return p + (q - p) * 6 * t;
-            }
-
-            if (t < 1.0 / 2.0)
-            {
-                return q;
-            }
-
-            if (t < 2.0 / 3.0)
-            {
-                return p + (q - p) * (2.0 / 3.0 - t) * 6;
-            }
-
-            return p;
+            return buffer.ToManagedBitmap();
         }
     }
 }

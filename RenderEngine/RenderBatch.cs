@@ -305,6 +305,7 @@ namespace RenderEngine
         public void AddHostAction(Action action)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
+
             HostActions.Add(action);
         }
     }

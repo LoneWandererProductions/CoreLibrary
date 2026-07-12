@@ -8,7 +8,7 @@
 
 using Mathematics;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     ///     The helper methods class.

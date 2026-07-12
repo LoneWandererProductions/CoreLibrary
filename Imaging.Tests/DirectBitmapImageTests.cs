@@ -1,16 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImagingTests
+ * PROJECT:     Imaging.Tests
  * FILE:        DirectBitmapImageTests.cs
  * PURPOSE:     Custom Image Class, some tests for validations
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.Windows.Media;
-using Imaging;
 using Mathematics;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     ///     DirectBitmapImage test cases

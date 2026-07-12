@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
- * FILE:        Imaging/ImageRegister.cs
+ * FILE:        ImageRegister.cs
  * PURPOSE:     Register for Image Operations, and some helpful extensions
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
@@ -9,6 +9,8 @@
  *              https://www.codeproject.com/Articles/3772/ColorMatrix-Basics-Simple-Image-Color-Adjustment
  */
 
+using Imaging.Enums;
+using Imaging.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,7 +18,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text.Json;
-using Imaging.Enums;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
@@ -386,6 +387,7 @@ namespace Imaging
             FilterSettings[FiltersType.PencilSketchEffect] = new FilterConfiguration { Sigma = 1.0 };
             // Add more default settings as needed
 
+
             // Initialize default Texture settings
             TextureSetting[TextureType.Noise] = new TextureConfiguration
             {
@@ -456,6 +458,9 @@ namespace Imaging
                 EdgeJaggednessLimit = 20,
                 JaggednessThreshold = 10
             };
+
+            //custom Texture presets
+            TexturePresets.RegisterAllPresets();
 
             // Add more default settings as needed
         }

@@ -1,15 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
+ * PROJECT:     Imaging.Tests
  * FILE:        ImageExtensionTests.cs
  * PURPOSE:     Image Extension tests, I think that are helpful and should be there from the beginning
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using Imaging;
 using System.Drawing;
 
-namespace ImagingTests
+namespace Imaging.Tests
 {
     /// <summary>
     /// Test my extension method for Bitmap to BitmapImage, to make sure it preserves transparency and color correctly.
