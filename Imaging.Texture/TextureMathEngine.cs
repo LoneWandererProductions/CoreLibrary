@@ -892,12 +892,12 @@ namespace Imaging.Texture
                     // Ridged Multifractal Octave Loop
                     for (var i = 0; i < octaves; i++)
                     {
-                        // FIX 1: Swap out GetNoise for SmoothNoise(double, double).
+                        // FSwap out GetNoise for SmoothNoise(double, double).
                         // This fixes the RuntimeBinderException by passing doubles natively, and provides 
                         // the bilinear interpolation required to form coherent plasma contours.
                         var rawNoise = (double)noiseGen.SmoothNoise(freqX, freqY);
 
-                        // FIX 2: Remap 0.0 to 1.0 up to a -1.0 to 1.0 range.
+                        // Remap 0.0 to 1.0 up to a -1.0 to 1.0 range.
                         // The old code assumed a 0-255 footprint, causing values to clip out and render solid black.
                         var n = (rawNoise * 2.0) - 1.0;
 
@@ -938,6 +938,240 @@ namespace Imaging.Texture
                     span[idx++] = (byte)(g1 + (g2 - g1) * blend); // G
                     span[idx++] = (byte)(r1 + (r2 - r1) * blend); // R
                     span[idx++] = (byte)alpha; // A
+                }
+            }
+
+            return buffer;
+        }
+        /// <summary>
+        /// Generates an organic foliage pattern composed of dense, structurally pinched leaf cells.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="leafSize">Size of the leaf.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="leafR">The leaf r.</param>
+        /// <param name="leafG">The leaf g.</param>
+        /// <param name="leafB">The leaf b.</param>
+        /// <param name="shadowR">The shadow r.</param>
+        /// <param name="shadowG">The shadow g.</param>
+        /// <param name="shadowB">The shadow b.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateFoliage(int width,
+            int height,
+            int leafSize = 40,
+            int alpha = 255,
+            byte leafR = 34, byte leafG = 110, byte leafB = 24,    // Main Leaf Green
+            byte shadowR = 12, byte shadowG = 35, byte shadowB = 10) // Deep Shade/Background
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            var rand = new Random(54321); // Grounded stable seed
+
+            var gridCols = (width / leafSize) + 2;
+            var gridRows = (height / leafSize) + 2;
+            var featurePointsX = new int[gridCols, gridRows];
+            var featurePointsY = new int[gridCols, gridRows];
+
+            // Distribute feature points randomly inside our cell matrix grids
+            for (var y = 0; y < gridRows; y++)
+            {
+                for (var x = 0; x < gridCols; x++)
+                {
+                    featurePointsX[x, y] = (x * leafSize) + rand.Next(0, leafSize);
+                    featurePointsY[x, y] = (y * leafSize) + rand.Next(0, leafSize);
+                }
+            }
+
+            var idx = 0;
+            var maxLeafRadius = leafSize * 1.1;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var cellX = x / leafSize;
+                    var cellY = y / leafSize;
+
+                    var minLeafDist = double.MaxValue;
+                    var leafSeedValue = 0.0;
+
+                    var startX = Math.Max(0, cellX - 1);
+                    var endX = Math.Min(gridCols - 1, cellX + 1);
+                    var startY = Math.Max(0, cellY - 1);
+                    var endY = Math.Min(gridRows - 1, cellY + 1);
+
+                    for (var checkY = startY; checkY <= endY; checkY++)
+                    {
+                        for (var checkX = startX; checkX <= endX; checkX++)
+                        {
+                            double dx = x - featurePointsX[checkX, checkY];
+                            double dy = y - featurePointsY[checkX, checkY];
+
+                            // SHAPE MATH: Elongate vertically (dx * 1.8) and pinch the lateral sides (|dx| * 0.5)
+                            // This mathematically morphs raw circular cell structures into pointed lanceolate leaf shapes.
+                            var leafShapeDist = Math.Sqrt(dx * dx * 1.8 + dy * dy * 0.8) + Math.Abs(dx) * 0.5;
+
+                            if (leafShapeDist < minLeafDist)
+                            {
+                                minLeafDist = leafShapeDist;
+                                // Derive a unique pseudo-random modifier per leaf based on its coordinates
+                                leafSeedValue = (featurePointsX[checkX, checkY] % 100) / 100.0;
+                            }
+                        }
+                    }
+
+                    // Normalize distance to build a rounded 3D lighting/shading envelope profile
+                    var blendFactor = Math.Clamp(minLeafDist / maxLeafRadius, 0.0, 1.0);
+
+                    // Invert layout so centers are bright and leaf boundaries drop safely into shadow gradients
+                    var lightIntensity = 1.0 - blendFactor;
+
+                    // Infuse slight leaf-to-leaf color variation using our seed tracker
+                    var rColorModifier = 0.85 + (leafSeedValue * 0.3); // +/- 15% variance
+
+                    // Blend base color with deep ambient shadows toward edge structures
+                    var finalR = (byte)Math.Clamp((shadowR + (leafR - shadowR) * lightIntensity) * rColorModifier, 0, 255);
+                    var finalG = (byte)Math.Clamp((shadowG + (leafG - shadowG) * lightIntensity) * 1.0, 0, 255); // Keep greens prominent
+                    var finalB = (byte)Math.Clamp((shadowB + (leafB - shadowB) * lightIntensity) * rColorModifier, 0, 255);
+
+                    span[idx++] = finalB;
+                    span[idx++] = finalG;
+                    span[idx++] = finalR;
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a rough, furrowed tree bark texture using anisotropic domain-warped noise.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="scaleX">The scale x.</param>
+        /// <param name="scaleY">The scale y.</param>
+        /// <param name="warpStrength">The warp strength.</param>
+        /// <param name="barkR">The bark r.</param>
+        /// <param name="barkG">The bark g.</param>
+        /// <param name="barkB">The bark b.</param>
+        /// <param name="woodR">The wood r.</param>
+        /// <param name="woodG">The wood g.</param>
+        /// <param name="woodB">The wood b.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateTreeBark(int width,
+            int height,
+            object noiseGenInstance,
+            int alpha = 255,
+            double scaleX = 16.0,
+            double scaleY = 70.0,
+            double warpStrength = 12.0,
+            byte barkR = 75, byte barkG = 45, byte barkB = 25,     // Base Dark Furrow Brown
+            byte woodR = 140, byte woodG = 95, byte woodB = 55)   // Highlight Ridge Wood
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // 1. Setup high-frequency domain warp offsets to bend the vertical fibers
+                    var warpX = (double)noiseGen.SmoothNoise(x / 24.0, y / 32.0) * warpStrength;
+                    var warpY = (double)noiseGen.SmoothNoise(x / 32.0, y / 24.0) * warpStrength;
+
+                    // 2. Map coordinates heavily stretched on the Y-axis to form vertical grain lines
+                    var freqX = (x + warpX) / scaleX;
+                    var freqY = (y + warpY) / scaleY;
+
+                    // 3. Layer low-frequency structure with a high-frequency bark roughness overlay
+                    var baseNoise = (double)noiseGen.SmoothNoise(freqX, freqY);
+                    var detailNoise = (double)noiseGen.SmoothNoise(x / 4.0, y / 6.0) * 0.25;
+
+                    // Combine and shape into sharp furrowed valleys using a power function or absolute curve
+                    var barkFactor = Math.Clamp(baseNoise + detailNoise, 0.0, 1.0);
+                    barkFactor = Math.Pow(barkFactor, 1.5); // Sharpens the deep cracks
+
+                    // 4. Interpolate between dark crack color and highlighted bark plating
+                    span[idx++] = (byte)(barkB + (woodB - barkB) * barkFactor); // B
+                    span[idx++] = (byte)(barkG + (woodG - barkG) * barkFactor); // G
+                    span[idx++] = (byte)(barkR + (woodR - barkR) * barkFactor); // R
+                    span[idx++] = (byte)alpha;                                  // A
+                }
+            }
+
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// Generates a longitudinal wooden plank texture with sweeping grain and cathedral arches.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="xyPeriod">The xy period.</param>
+        /// <param name="turbulencePower">The turbulence power.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <param name="baseR">The base r.</param>
+        /// <param name="baseG">The base g.</param>
+        /// <param name="baseB">The base b.</param>
+        /// <param name="grainR">The grain r.</param>
+        /// <param name="grainG">The grain g.</param>
+        /// <param name="grainB">The grain b.</param>
+        /// <returns>The generated raw texture buffer containing the wooden plank texture.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateWoodPlank(int width,
+            int height,
+            object noiseGenInstance,
+            int alpha = 255,
+            double xyPeriod = 6.0,
+            double turbulencePower = 0.15,
+            double turbulenceSize = 32.0,
+            byte baseR = 130, byte baseG = 85, byte baseB = 45,     // Main Plank Wood Color
+            byte grainR = 70, byte grainG = 40, byte grainB = 20)   // Darker Grain Line Color
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var idx = 0;
+
+            // Shift the ring core far to the left off-screen, and slightly down
+            double centerX = -width * 1.0;
+            double centerY = height * 0.5;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    double dx = x - centerX;
+                    double dy = y - centerY;
+
+                    // Multiply dy by a tiny fraction (0.04). This squashes the circular tree rings
+                    // into extremely elongated vertical ellipses, perfectly mimicking longitudinal tree trunk growth.
+                    double distortedDist = Math.Sqrt(dx * dx + dy * dy * 0.04) +
+                        turbulencePower * (double)noiseGen.Turbulence(x, y, turbulenceSize);
+
+                    // Calculate the oscillating grain frequency line paths
+                    double continuousValue = Math.Abs(Math.Sin(xyPeriod * distortedDist * Math.PI / width));
+
+                    // Sharp dark grain lines mixed with wide soft wood planks
+                    double grainFactor = Math.Pow(continuousValue, 0.6);
+
+                    // Interpolate smoothly between the raw board color and the dark grain rings
+                    span[idx++] = (byte)(grainB + (baseB - grainB) * grainFactor); // B
+                    span[idx++] = (byte)(grainG + (baseG - grainG) * grainFactor); // G
+                    span[idx++] = (byte)(grainR + (baseR - grainR) * grainFactor); // R
+                    span[idx++] = (byte)alpha;                                     // A
                 }
             }
 

@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Runtime.CompilerServices;
+
 namespace Imaging.Texture
 {
     /// <summary>
@@ -100,6 +102,50 @@ namespace Imaging.Texture
                 Persistence = 0.5,
                 // Black background -> dark purple -> bright cyan -> white hot core
                 RgbRamp =  [0, 0, 0, 40, 0, 80, 0, 200, 255, 255, 255, 255]
+            };
+        }
+
+        /// <summary>
+        /// Gets the furrowed tree bark configuration.
+        /// </summary>
+        /// <returns>The tree bark configuration.</returns>
+        public static TextureConfig GetTreeBarkConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 16.0,       // Maps to horizontal frequency scale
+                WarpStrength = 12.0,         // Grain twisting displacement power
+                CenterRgb = [140, 95, 55],   // Bright ridge wood highlight color
+                EdgeRgb = [75, 45, 25]       // Dark deep furrow crease color
+            };
+        }
+
+        /// <summary>
+        /// Gets the leaf foliage configuration.
+        /// </summary>
+        /// <returns>The leaf foliage configuration.</returns>
+        public static TextureConfig GetFoliageConfig()
+        {
+            return new TextureConfig
+            {
+                CellSize = 40,
+                CenterRgb = [34, 110, 24],   // Primary outer leaf green color
+                EdgeRgb = [12, 35, 10]       // Deep background ambient shadow drop color
+            };
+        }
+
+        /// <summary>
+        /// Gets the wooden plank board configuration.
+        /// </summary>
+        /// <returns>The wooden plank board configuration.</returns>
+        public static TextureConfig GetWoodPlankConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 32.0,
+                WarpStrength = 0.15,         // Reusing WarpStrength for internal Engine TurbulencePower
+                CenterRgb = [130, 85, 45],   // Base board brown
+                EdgeRgb = [70, 40, 20]       // Dark grain accent lines
             };
         }
 
@@ -210,6 +256,74 @@ namespace Imaging.Texture
             return TextureMathEngine.GenerateRidgedMapped(
                 width, height, noiseGen, config.RgbRamp,
                 config.TurbulenceSize, config.Octaves, config.Persistence, 255);
+        }
+
+        /// <summary>
+        /// Generates the furrowed organic tree bark.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen instance wrapper.</param>
+        /// <returns>The generated raw texture buffer containing tree bark.</returns>
+        public static RawTextureBuffer GenerateTreeBark(int width, int height, object noiseGen)
+        {
+            var config = GetTreeBarkConfig();
+
+            return TextureMathEngine.GenerateTreeBark(
+                width,
+                height,
+                noiseGen,
+                255,
+                config.TurbulenceSize,
+                70.0, // Stretched macro Y-scaling baseline footprint
+                config.WarpStrength,
+                config.EdgeRgb[0], config.EdgeRgb[1], config.EdgeRgb[2],
+                config.CenterRgb[0], config.CenterRgb[1], config.CenterRgb[2]
+            );
+        }
+
+        /// <summary>
+        /// Generates the interlocking leaf foliage canopy.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>The generated raw texture buffer containing leaf foliage.</returns>
+        public static RawTextureBuffer GenerateFoliage(int width, int height)
+        {
+            var config = GetFoliageConfig();
+
+            return TextureMathEngine.GenerateFoliage(
+                width,
+                height,
+                config.CellSize,
+                255,
+                config.CenterRgb[0], config.CenterRgb[1], config.CenterRgb[2],
+                config.EdgeRgb[0], config.EdgeRgb[1], config.EdgeRgb[2]
+            );
+        }
+
+        /// <summary>
+        /// Generates a longitudinal sawn wood board texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen instance wrapper.</param>
+        /// <returns>The generated raw texture buffer containing a wood plank.</returns>
+        public static RawTextureBuffer GenerateWoodPlank(int width, int height, object noiseGen)
+        {
+            var config = GetWoodPlankConfig();
+
+            return TextureMathEngine.GenerateWoodPlank(
+                width,
+                height,
+                noiseGen,
+                255,
+                6.0,
+                config.WarpStrength,
+                config.TurbulenceSize,
+                config.CenterRgb[0], config.CenterRgb[1], config.CenterRgb[2],
+                config.EdgeRgb[0], config.EdgeRgb[1], config.EdgeRgb[2]
+            );
         }
     }
 }

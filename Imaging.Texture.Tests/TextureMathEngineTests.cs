@@ -183,6 +183,39 @@ namespace Imaging.Texture.Tests
         }
 
         /// <summary>
+        /// Generates the furrowed tree bark visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateTreeBark_VisualTest()
+        {
+            // Anisotropic domain warped vertical grain lines
+            var buffer = TextureMathEngine.GenerateTreeBark(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "12_TreeBark.png");
+        }
+
+        /// <summary>
+        /// Generates the pointed leaf foliage visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateFoliage_VisualTest()
+        {
+            // Distance-pinched cellular matrix mapping
+            var buffer = TextureMathEngine.GenerateFoliage(TestWidth, TestHeight);
+            SaveBufferToImage(buffer, "13_Foliage.png");
+        }
+
+        /// <summary>
+        /// Generates the longitudinal wooden plank board visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateWoodPlank_VisualTest()
+        {
+            // Longitudinal sawn tree trunk ellipse mapping
+            var buffer = TextureFactory.GenerateWoodPlank(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "14_WoodPlank.png");
+        }
+
+        /// <summary>
         /// Converts the RawTextureBuffer span (BGRA) into a standard PNG file.
         /// </summary>
         private void SaveBufferToImage(RawTextureBuffer buffer, string filename)
