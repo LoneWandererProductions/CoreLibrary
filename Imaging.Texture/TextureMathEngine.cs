@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Texture
  * FILE:        TextureMathEngine.cs
@@ -173,16 +173,23 @@ namespace Imaging.Texture
             {
                 for (var x = 0; x < width; x++)
                 {
-                    // Compute projection alignments relative to current grid matrix
-                    var distPrimary = Math.Abs(x * sinP - y * cosP);
-                    var distSecondary = Math.Abs(x * sinS - y * cosS);
+                    // Compute coordinate projections along the continuous line axes (keep signs)
+                    var projP = x * sinP - y * cosP;
+                    var projS = x * sinS - y * cosS;
 
-                    // Check if current coordinate sits within a periodic line stride module step
-                    var modP = distPrimary % lineSpacing;
-                    var modS = distSecondary % lineSpacing;
+                    // Find the distance to the absolute nearest line center to avoid origin mirror thickness anomalies
+                    var nearestP = Math.Round(projP / lineSpacing) * lineSpacing;
+                    var nearestS = Math.Round(projS / lineSpacing) * lineSpacing;
 
-                    var isLine = (modP <= halfThickness || modP >= lineSpacing - halfThickness) ||
-                                 (modS <= halfThickness || modS >= lineSpacing - halfThickness);
+                    var distP = Math.Abs(projP - nearestP);
+                    var distS = Math.Abs(projS - nearestS);
+
+                    // Normalize distances to true pixel steps using the dominant projection angle component.
+                    // This forces lines to maintain an identical, uniform pixel width across the entire texture canvas.
+                    var pixelDistP = distP / Math.Max(Math.Abs(sinP), Math.Abs(cosP));
+                    var pixelDistS = distS / Math.Max(Math.Abs(sinS), Math.Abs(cosS));
+
+                    var isLine = (pixelDistP <= halfThickness) || (pixelDistS <= halfThickness);
 
                     if (isLine)
                     {
@@ -704,7 +711,7 @@ namespace Imaging.Texture
             var featurePointsX = new int[gridCols, gridRows];
             var featurePointsY = new int[gridCols, gridRows];
 
-            // Generate feature points
+            // Generate stable feature points
             for (var y = 0; y < gridRows; y++)
             {
                 for (var x = 0; x < gridCols; x++)
@@ -715,8 +722,6 @@ namespace Imaging.Texture
             }
 
             var idx = 0;
-
-            // F2-F1 magic numbers
             var normalizationScale = cellSize * 0.7;
 
             for (var y = 0; y < height; y++)
@@ -729,13 +734,18 @@ namespace Imaging.Texture
                     var f1 = double.MaxValue; // Closest
                     var f2 = double.MaxValue; // Second closest
 
-                    for (var offsetY = -1; offsetY <= 1; offsetY++)
-                    {
-                        for (var offsetX = -1; offsetX <= 1; offsetX++)
-                        {
-                            var checkX = Math.Clamp(cellX + offsetX, 0, gridCols - 1);
-                            var checkY = Math.Clamp(cellY + offsetY, 0, gridRows - 1);
+                    // FIX: Pre-clamp loop bounds globally instead of clamping inside the loop.
+                    // Clamping inside caused border cells to evaluate the same cell index multiple times,
+                    // corrupting the second-closest (f2) tracker calculation.
+                    var startX = Math.Max(0, cellX - 1);
+                    var endX = Math.Min(gridCols - 1, cellX + 1);
+                    var startY = Math.Max(0, cellY - 1);
+                    var endY = Math.Min(gridRows - 1, cellY + 1);
 
+                    for (var checkY = startY; checkY <= endY; checkY++)
+                    {
+                        for (var checkX = startX; checkX <= endX; checkX++)
+                        {
                             double distX = x - featurePointsX[checkX, checkY];
                             double distY = y - featurePointsY[checkX, checkY];
                             var dist = Math.Sqrt(distX * distX + distY * distY);
@@ -758,11 +768,13 @@ namespace Imaging.Texture
                     // Normalize and invert so ridges are 1.0 (bright) and deep cells are 0.0
                     var factor = 1.0 - Math.Clamp(rawValue / normalizationScale, 0.0, 1.0);
 
-                    // Interpolate colors (assuming RGB byte array layout)
-                    span[idx++] = (byte)(edgeRgb[2] + (centerRgb[2] - edgeRgb[2]) * factor); // B
-                    span[idx++] = (byte)(edgeRgb[1] + (centerRgb[1] - edgeRgb[1]) * factor); // G
-                    span[idx++] = (byte)(edgeRgb[0] + (centerRgb[0] - edgeRgb[0]) * factor); // R
-                    span[idx++] = (byte)alpha;
+                    // FIX: Corrected inverted color interpolation layout to match expected parameters.
+                    // factor = 0.0 (Deep cell center) -> draws centerRgb
+                    // factor = 1.0 (Ridge crystal border) -> draws edgeRgb
+                    span[idx++] = (byte)(centerRgb[2] + (edgeRgb[2] - centerRgb[2]) * factor); // B
+                    span[idx++] = (byte)(centerRgb[1] + (edgeRgb[1] - centerRgb[1]) * factor); // G
+                    span[idx++] = (byte)(centerRgb[0] + (edgeRgb[0] - centerRgb[0]) * factor); // R
+                    span[idx++] = (byte)alpha; // A
                 }
             }
 
@@ -873,16 +885,17 @@ namespace Imaging.Texture
                     var weight = 1.0;
                     var maxPossibleValue = 0.0;
 
+                    // Establish frequency coordinates scaled down to generate macro layout structures
                     var freqX = x / turbulenceSize;
                     var freqY = y / turbulenceSize;
 
                     // Ridged Multifractal Octave Loop
                     for (var i = 0; i < octaves; i++)
                     {
-                        // Assume GetNoise returns 0-255 based on standard engine configurations.
-                        // Map it to -1.0 to 1.0 for Ridged math.
-                        var n = ((double)noiseGen.GetNoise((int)(freqX * turbulenceSize),
-                            (int)(freqY * turbulenceSize)) / 127.5) - 1.0;
+                        // FIX 1: Explicitly cast parameters to (int) to match NoiseGenerator.GetNoise(int, int) and fix the test crash.
+                        // FIX 2: Removed the redundant '* turbulenceSize' inside the call. Keeping coordinates scaled down 
+                        // preserves macro structural contours, preventing the layers from flattening out into a uniform black sheet.
+                        var n = ((double)noiseGen.GetNoise((int)freqX, (int)freqY) / 127.5) - 1.0;
 
                         // The Ridged Math
                         n = 1.0 - Math.Abs(n);
@@ -916,10 +929,10 @@ namespace Imaging.Texture
                     int g2 = colorRampRgb[index2 * 3 + 1];
                     int b2 = colorRampRgb[index2 * 3 + 2];
 
-                    span[idx++] = (byte)(b1 + (b2 - b1) * blend);
-                    span[idx++] = (byte)(g1 + (g2 - g1) * blend);
-                    span[idx++] = (byte)(r1 + (r2 - r1) * blend);
-                    span[idx++] = (byte)alpha;
+                    span[idx++] = (byte)(b1 + (b2 - b1) * blend); // B
+                    span[idx++] = (byte)(g1 + (g2 - g1) * blend); // G
+                    span[idx++] = (byte)(r1 + (r2 - r1) * blend); // R
+                    span[idx++] = (byte)alpha; // A
                 }
             }
 
