@@ -206,8 +206,8 @@ namespace RenderEngine
         /// <returns>OpenGL texture identifier index slot pointer.</returns>
         public int GetTexture(RawTextureBuffer rawBuffer, bool linearFilter = false)
         {
-            var SampleId = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, SampleId);
+            var sampleId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, sampleId);
 
             // Reverted directly back to PixelInternalFormat.Rgba from Last Known Good state
             GL.TexImage2D(
@@ -252,11 +252,70 @@ namespace RenderEngine
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
-            return SampleId;
+            return sampleId;
         }
 
         /// <summary>
-        /// Creates the master textures.
+        /// Gets the fallback texture.
+        /// </summary>
+        /// <returns>Id of Texture, fallback, checkerboard</returns>
+        public int GetFallbackTexture()
+        {
+            if (_fallbackTextureId >= 0) return _fallbackTextureId;
+
+            // 1. Expand the 2x2 grid to 64x64 to create a deep, smooth Mipmap chain
+            var size = 64;
+            var halfSize = size / 2;
+            var pixels = new byte[size * size * 4];
+
+            for (var y = 0; y < size; y++)
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    // Recreates your exact Black/White/White/Black 4-square pattern
+                    var isWhite = (x >= halfSize) ^ (y >= halfSize);
+                    var color = isWhite ? (byte)255 : (byte)0;
+
+                    var idx = (y * size + x) * 4;
+                    pixels[idx] = color; // R
+                    pixels[idx + 1] = color; // G
+                    pixels[idx + 2] = color; // B
+                    pixels[idx + 3] = 255; // A
+                }
+            }
+
+            _fallbackTextureId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, _fallbackTextureId);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, size, size, 0,
+                PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+
+            // 2. Wrap mode (Assuming your custom meshes require clamping instead of repeating)
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
+                (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
+                (int)TextureWrapMode.ClampToEdge);
+
+            // 3. The filtering hybrid (Smooth distance, Sharp close-up)
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
+                (int)TextureMinFilter.LinearMipmapLinear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
+                (int)TextureMagFilter.Nearest);
+
+            // 4. Mipmap generation (Now generates a 6-level deep chain instead of just 1)
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            // 5. Anisotropic Filtering (Disabled temporarily for the fallback)
+            // High-contrast procedurals like checkerboards often fight with Anisotropic sampling. 
+            // Since we created proper mipmaps, we can turn this off for the fallback texture.
+            GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)0x84FE, 1.0f);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            return _fallbackTextureId;
+        }
+
+        /// <summary>
+        /// Creates a lookup collection of compiled GPU texture resources directly from raw math arrays.
         /// </summary>
         /// <param name="textures">The procedural textures data map.</param>
         /// <returns>Dictionary of Input id and Id of texture</returns>

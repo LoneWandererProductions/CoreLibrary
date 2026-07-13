@@ -5,6 +5,7 @@
  * PURPOSE:     Primitive Data Configuration Object for Texture Generation Parameters
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
 namespace Imaging.Texture
 {
     /// <summary>
@@ -27,7 +28,7 @@ namespace Imaging.Texture
         /// <value>
         /// The RGB ramp.
         /// </value>
-        public byte[] RgbRamp { get; set; }
+        public byte[]? RgbRamp { get; set; }
 
         /// <summary>
         /// Gets or sets the size of the cell.
@@ -43,7 +44,7 @@ namespace Imaging.Texture
         /// <value>
         /// The center RGB.
         /// </value>
-        public byte[] CenterRgb { get; set; }
+        public byte[]? CenterRgb { get; set; }
 
         /// <summary>
         /// Gets or sets the edge RGB.
@@ -51,6 +52,42 @@ namespace Imaging.Texture
         /// <value>
         /// The edge RGB.
         /// </value>
-        public byte[] EdgeRgb { get; set; }
+        public byte[]? EdgeRgb { get; set; }
+
+        // --- New for Domain Warping ---
+
+        /// <summary>
+        /// Gets or sets the warp scale.
+        /// </summary>
+        /// <value>
+        /// The warp scale.
+        /// </value>
+        public double WarpScale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the warp strength.
+        /// </summary>
+        /// <value>
+        /// The warp strength.
+        /// </value>
+        public double WarpStrength { get; set; }
+
+        // --- New for Ridged Multifractal ---
+
+        /// <summary>
+        /// Gets or sets the octaves.
+        /// </summary>
+        /// <value>
+        /// The octaves.
+        /// </value>
+        public int Octaves { get; set; }
+
+        /// <summary>
+        /// Gets or sets the persistence.
+        /// </summary>
+        /// <value>
+        /// The persistence.
+        /// </value>
+        public double Persistence { get; set; }
     }
 }

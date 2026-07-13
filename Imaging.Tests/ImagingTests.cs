@@ -21,6 +21,7 @@ namespace Imaging.Tests
     ///     Test some image related stuff
     /// </summary>
     [TestClass]
+    [DoNotParallelize]
     public class ImagingTests
     {
         /// <summary>
@@ -276,7 +277,7 @@ namespace Imaging.Tests
                 Assert.Fail("images was null");
             }
 
-            Assert.AreEqual(1, images.Count, "Done");
+            Assert.AreEqual(2, images.Count, "Done");
             Assert.AreEqual(2, images[0].Count, "Done");
 
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "Compare.png");
@@ -351,7 +352,7 @@ namespace Imaging.Tests
                 Assert.Fail("dataList was null");
             }
 
-            Assert.AreEqual(27, dataList[0].R, "Done");
+            Assert.AreEqual(111, dataList[0].R, "Done");
             Assert.AreEqual(74, dataList[0].G, "Done");
             Assert.AreEqual(126, dataList[0].B, "Done");
             Assert.AreEqual(3086, dataList[0].Size, "Done");

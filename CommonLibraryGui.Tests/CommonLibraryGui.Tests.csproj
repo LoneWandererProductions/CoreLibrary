@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 1. Changed from MSTest.Sdk to standard SDK -->
+
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- UseWpf is required because your tests use System.Windows (Canvas, Line, Point) -->
+    <UseWpf>true</UseWpf>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Image\example Polaris.png" />
+    <None Remove="Image\example.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Image\example Polaris.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\example.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Landscape.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\LayerOne.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Layertwo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\result_base.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\result_layer_other.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Tile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- 2. Core Testing Packages for NUnit -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="NUnit" Version="4.6.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <!-- Required for VS to see NUnit tests -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Controls\Common.Controls.csproj" />
+    <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
+    <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
+    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
+    <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
+    <ProjectReference Include="..\InterOp\InterOp.csproj" />
+    <ProjectReference Include="..\LightVector\LightVector.csproj" />
+    <ProjectReference Include="..\Solaris\Solaris.csproj" />
+  </ItemGroup>
+
+</Project>

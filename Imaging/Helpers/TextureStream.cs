@@ -309,8 +309,8 @@ namespace Imaging.Helpers
             var noiseGen = new NoiseGenerator(width, height);
 
             // Flatten Color array into a byte array for the high-performance math engine
-            byte[] rgbRamp = new byte[colorRamp.Length * 3];
-            for (int i = 0; i < colorRamp.Length; i++)
+            var rgbRamp = new byte[colorRamp.Length * 3];
+            for (var i = 0; i < colorRamp.Length; i++)
             {
                 rgbRamp[i * 3] = colorRamp[i].R;
                 rgbRamp[i * 3 + 1] = colorRamp[i].G;

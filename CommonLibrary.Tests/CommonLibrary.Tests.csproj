@@ -1,0 +1,37 @@
+﻿<Project Sdk="MSTest.Sdk/3.6.4">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!--
+      Displays error on console in addition to the log file. Note that this feature comes with a performance impact.
+      For more information, visit https://learn.microsoft.com/dotnet/core/testing/unit-testing-platform-integration-dotnet-test#show-failure-per-test
+      -->
+    <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Encoding\ansi.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Encoding\UTF8.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonFilter\CommonFilter.csproj" />
+    <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
+    <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
+    <ProjectReference Include="..\InterOp\InterOp.csproj" />
+    <ProjectReference Include="..\LightVector\LightVector.csproj" />
+    <ProjectReference Include="..\Mathematics.Constants\Mathematics.Constants.csproj" />
+    <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
+    <ProjectReference Include="..\Pathfinder\Pathfinder.csproj" />
+    <ProjectReference Include="..\Serializer\Serializer.csproj" />
+  </ItemGroup>
+
+</Project>

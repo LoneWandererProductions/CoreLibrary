@@ -562,14 +562,14 @@ namespace Imaging.Texture
             var rand = new Random(12345); // Fixed seed for stable feature points
 
             // Precompute feature points for each grid cell to speed up rendering
-            int gridCols = (width / cellSize) + 2;
-            int gridRows = (height / cellSize) + 2;
+            var gridCols = (width / cellSize) + 2;
+            var gridRows = (height / cellSize) + 2;
             var featurePointsX = new int[gridCols, gridRows];
             var featurePointsY = new int[gridCols, gridRows];
 
-            for (int y = 0; y < gridRows; y++)
+            for (var y = 0; y < gridRows; y++)
             {
-                for (int x = 0; x < gridCols; x++)
+                for (var x = 0; x < gridCols; x++)
                 {
                     featurePointsX[x, y] = (x * cellSize) + rand.Next(0, cellSize);
                     featurePointsY[x, y] = (y * cellSize) + rand.Next(0, cellSize);
@@ -577,35 +577,35 @@ namespace Imaging.Texture
             }
 
             var idx = 0;
-            double maxDist = cellSize * 1.2; // Approximate max distance for normalization
+            var maxDist = cellSize * 1.2; // Approximate max distance for normalization
 
             for (var y = 0; y < height; y++)
             {
                 for (var x = 0; x < width; x++)
                 {
-                    int cellX = x / cellSize;
-                    int cellY = y / cellSize;
+                    var cellX = x / cellSize;
+                    var cellY = y / cellSize;
 
-                    double minDist = double.MaxValue;
+                    var minDist = double.MaxValue;
 
                     // Check surrounding 3x3 cells for the closest feature point
-                    for (int offsetY = -1; offsetY <= 1; offsetY++)
+                    for (var offsetY = -1; offsetY <= 1; offsetY++)
                     {
-                        for (int offsetX = -1; offsetX <= 1; offsetX++)
+                        for (var offsetX = -1; offsetX <= 1; offsetX++)
                         {
-                            int checkX = Math.Clamp(cellX + offsetX, 0, gridCols - 1);
-                            int checkY = Math.Clamp(cellY + offsetY, 0, gridRows - 1);
+                            var checkX = Math.Clamp(cellX + offsetX, 0, gridCols - 1);
+                            var checkY = Math.Clamp(cellY + offsetY, 0, gridRows - 1);
 
                             double distX = x - featurePointsX[checkX, checkY];
                             double distY = y - featurePointsY[checkX, checkY];
-                            double dist = Math.Sqrt(distX * distX + distY * distY);
+                            var dist = Math.Sqrt(distX * distX + distY * distY);
 
                             if (dist < minDist) minDist = dist;
                         }
                     }
 
                     // Normalize distance and interpolate between center and edge color
-                    double factor = Math.Clamp(minDist / maxDist, 0.0, 1.0);
+                    var factor = Math.Clamp(minDist / maxDist, 0.0, 1.0);
 
                     span[idx++] = (byte)(centerB + (edgeB - centerB) * factor); // B
                     span[idx++] = (byte)(centerG + (edgeG - centerG) * factor); // G
@@ -624,7 +624,7 @@ namespace Imaging.Texture
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="noiseGenInstance">The noise gen instance.</param>
-        /// <param name="colorRampRGB">The color ramp RGB.</param>
+        /// <param name="colorRampRgb">The color ramp RGB.</param>
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated texture buffer.</returns>
@@ -632,7 +632,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateColorMapped(int width,
             int height,
             object noiseGenInstance,
-            byte[] colorRampRGB, // Format: [R1,G1,B1, R2,G2,B2, ...]
+            byte[] colorRampRgb, // Format: [R1,G1,B1, R2,G2,B2, ...]
             double turbulenceSize = 64.0,
             int alpha = 255)
         {
@@ -640,7 +640,7 @@ namespace Imaging.Texture
             var span = buffer.AsSpan();
             dynamic noiseGen = noiseGenInstance;
 
-            int numColors = colorRampRGB.Length / 3;
+            var numColors = colorRampRgb.Length / 3;
             var idx = 0;
 
             for (var y = 0; y < height; y++)
@@ -648,29 +648,278 @@ namespace Imaging.Texture
                 for (var x = 0; x < width; x++)
                 {
                     // Get normalized turbulence (0.0 to 1.0)
-                    double noiseValue = (double)noiseGen.Turbulence(x, y, turbulenceSize) / 255.0;
+                    var noiseValue = (double)noiseGen.Turbulence(x, y, turbulenceSize) / 255.0;
                     noiseValue = Math.Clamp(noiseValue, 0.0, 0.999);
 
                     // Map to color ramp
-                    double rampPos = noiseValue * (numColors - 1);
-                    int index1 = (int)Math.Floor(rampPos);
-                    int index2 = Math.Min(index1 + 1, numColors - 1);
-                    double blend = rampPos - index1;
+                    var rampPos = noiseValue * (numColors - 1);
+                    var index1 = (int)Math.Floor(rampPos);
+                    var index2 = Math.Min(index1 + 1, numColors - 1);
+                    var blend = rampPos - index1;
 
                     // Fetch RGB from flattened array
-                    int r1 = colorRampRGB[index1 * 3];
-                    int g1 = colorRampRGB[index1 * 3 + 1];
-                    int b1 = colorRampRGB[index1 * 3 + 2];
+                    int r1 = colorRampRgb[index1 * 3];
+                    int g1 = colorRampRgb[index1 * 3 + 1];
+                    int b1 = colorRampRgb[index1 * 3 + 2];
 
-                    int r2 = colorRampRGB[index2 * 3];
-                    int g2 = colorRampRGB[index2 * 3 + 1];
-                    int b2 = colorRampRGB[index2 * 3 + 2];
+                    int r2 = colorRampRgb[index2 * 3];
+                    int g2 = colorRampRgb[index2 * 3 + 1];
+                    int b2 = colorRampRgb[index2 * 3 + 2];
 
                     // Lerp colors
                     span[idx++] = (byte)(b1 + (b2 - b1) * blend); // B
                     span[idx++] = (byte)(g1 + (g2 - g1) * blend); // G
                     span[idx++] = (byte)(r1 + (r2 - r1) * blend); // R
                     span[idx++] = (byte)alpha; // A
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates the advanced cellular.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="cellSize">Size of the cell.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="centerRgb">The center RGB.</param>
+        /// <param name="edgeRgb">The edge RGB.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateAdvancedCellular(int width,
+            int height,
+            int cellSize,
+            int alpha,
+            byte[] centerRgb,
+            byte[] edgeRgb)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            var rand = new Random(12345);
+
+            var gridCols = (width / cellSize) + 2;
+            var gridRows = (height / cellSize) + 2;
+            var featurePointsX = new int[gridCols, gridRows];
+            var featurePointsY = new int[gridCols, gridRows];
+
+            // Generate feature points
+            for (var y = 0; y < gridRows; y++)
+            {
+                for (var x = 0; x < gridCols; x++)
+                {
+                    featurePointsX[x, y] = (x * cellSize) + rand.Next(0, cellSize);
+                    featurePointsY[x, y] = (y * cellSize) + rand.Next(0, cellSize);
+                }
+            }
+
+            var idx = 0;
+
+            // F2-F1 magic numbers
+            var normalizationScale = cellSize * 0.7;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var cellX = x / cellSize;
+                    var cellY = y / cellSize;
+
+                    var f1 = double.MaxValue; // Closest
+                    var f2 = double.MaxValue; // Second closest
+
+                    for (var offsetY = -1; offsetY <= 1; offsetY++)
+                    {
+                        for (var offsetX = -1; offsetX <= 1; offsetX++)
+                        {
+                            var checkX = Math.Clamp(cellX + offsetX, 0, gridCols - 1);
+                            var checkY = Math.Clamp(cellY + offsetY, 0, gridRows - 1);
+
+                            double distX = x - featurePointsX[checkX, checkY];
+                            double distY = y - featurePointsY[checkX, checkY];
+                            var dist = Math.Sqrt(distX * distX + distY * distY);
+
+                            if (dist < f1)
+                            {
+                                f2 = f1;
+                                f1 = dist;
+                            }
+                            else if (dist < f2)
+                            {
+                                f2 = dist;
+                            }
+                        }
+                    }
+
+                    // F2 - F1 ridge math
+                    var rawValue = f2 - f1;
+
+                    // Normalize and invert so ridges are 1.0 (bright) and deep cells are 0.0
+                    var factor = 1.0 - Math.Clamp(rawValue / normalizationScale, 0.0, 1.0);
+
+                    // Interpolate colors (assuming RGB byte array layout)
+                    span[idx++] = (byte)(edgeRgb[2] + (centerRgb[2] - edgeRgb[2]) * factor); // B
+                    span[idx++] = (byte)(edgeRgb[1] + (centerRgb[1] - edgeRgb[1]) * factor); // G
+                    span[idx++] = (byte)(edgeRgb[0] + (centerRgb[0] - edgeRgb[0]) * factor); // R
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates the warped mapped.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="colorRampRgb">The color ramp RGB.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <param name="warpScale">The warp scale.</param>
+        /// <param name="warpStrength">The warp strength.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateWarpedMapped(int width,
+            int height,
+            object noiseGenInstance,
+            byte[] colorRampRgb,
+            double turbulenceSize,
+            double warpScale,
+            double warpStrength,
+            int alpha = 255)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var numColors = colorRampRgb.Length / 3;
+            var idx = 0;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // 1. Generate Domain Warp offsets (offset the X/Y slightly so they warp differently)
+                    // We cast back to int to ensure compatibility with your dynamic noise Gen methods
+                    var warpX = (int)(((double)noiseGen.Turbulence(x + 53, y + 17, warpScale) / 255.0) * warpStrength);
+                    var warpY = (int)(((double)noiseGen.Turbulence(x - 28, y + 84, warpScale) / 255.0) * warpStrength);
+
+                    // 2. Sample noise at warped coordinates
+                    var noiseValue = (double)noiseGen.Turbulence(x + warpX, y + warpY, turbulenceSize) / 255.0;
+                    noiseValue = Math.Clamp(noiseValue, 0.0, 0.999);
+
+                    // 3. Map to Color Ramp
+                    var rampPos = noiseValue * (numColors - 1);
+                    var index1 = (int)Math.Floor(rampPos);
+                    var index2 = Math.Min(index1 + 1, numColors - 1);
+                    var blend = rampPos - index1;
+
+                    int r1 = colorRampRgb[index1 * 3];
+                    int g1 = colorRampRgb[index1 * 3 + 1];
+                    int b1 = colorRampRgb[index1 * 3 + 2];
+
+                    int r2 = colorRampRgb[index2 * 3];
+                    int g2 = colorRampRgb[index2 * 3 + 1];
+                    int b2 = colorRampRgb[index2 * 3 + 2];
+
+                    span[idx++] = (byte)(b1 + (b2 - b1) * blend);
+                    span[idx++] = (byte)(g1 + (g2 - g1) * blend);
+                    span[idx++] = (byte)(r1 + (r2 - r1) * blend);
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates the ridged mapped.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="colorRampRgb">The color ramp RGB.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <param name="octaves">The octaves.</param>
+        /// <param name="persistence">The persistence.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateRidgedMapped(int width,
+            int height,
+            object noiseGenInstance,
+            byte[] colorRampRgb,
+            double turbulenceSize,
+            int octaves,
+            double persistence,
+            int alpha = 255)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var numColors = colorRampRgb.Length / 3;
+            var idx = 0;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var value = 0.0;
+                    var amplitude = 1.0;
+                    var weight = 1.0;
+                    var maxPossibleValue = 0.0;
+
+                    var freqX = x / turbulenceSize;
+                    var freqY = y / turbulenceSize;
+
+                    // Ridged Multifractal Octave Loop
+                    for (var i = 0; i < octaves; i++)
+                    {
+                        // Assume GetNoise returns 0-255 based on standard engine configurations.
+                        // Map it to -1.0 to 1.0 for Ridged math.
+                        var n = ((double)noiseGen.GetNoise((int)(freqX * turbulenceSize),
+                            (int)(freqY * turbulenceSize)) / 127.5) - 1.0;
+
+                        // The Ridged Math
+                        n = 1.0 - Math.Abs(n);
+                        n *= n;
+                        n *= weight;
+
+                        // Keep ridges sharp
+                        weight = Math.Clamp(n * 2.0, 0.0, 1.0);
+
+                        value += n * amplitude;
+                        maxPossibleValue += amplitude;
+
+                        freqX *= 2.0;
+                        freqY *= 2.0;
+                        amplitude *= persistence;
+                    }
+
+                    var normalizedValue = Math.Clamp(value / maxPossibleValue, 0.0, 0.999);
+
+                    // Map to Color Ramp
+                    var rampPos = normalizedValue * (numColors - 1);
+                    var index1 = (int)Math.Floor(rampPos);
+                    var index2 = Math.Min(index1 + 1, numColors - 1);
+                    var blend = rampPos - index1;
+
+                    int r1 = colorRampRgb[index1 * 3];
+                    int g1 = colorRampRgb[index1 * 3 + 1];
+                    int b1 = colorRampRgb[index1 * 3 + 2];
+
+                    int r2 = colorRampRgb[index2 * 3];
+                    int g2 = colorRampRgb[index2 * 3 + 1];
+                    int b2 = colorRampRgb[index2 * 3 + 2];
+
+                    span[idx++] = (byte)(b1 + (b2 - b1) * blend);
+                    span[idx++] = (byte)(g1 + (g2 - g1) * blend);
+                    span[idx++] = (byte)(r1 + (r2 - r1) * blend);
+                    span[idx++] = (byte)alpha;
                 }
             }
 

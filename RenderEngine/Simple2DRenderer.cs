@@ -614,6 +614,15 @@ namespace RenderEngine
             GL.UseProgram(0);
         }
 
+        /// <summary>
+        /// Draws the textured ellipse.
+        /// </summary>
+        /// <param name="cx">The cx.</param>
+        /// <param name="cy">The cy.</param>
+        /// <param name="radiusX">The radius x.</param>
+        /// <param name="radiusY">The radius y.</param>
+        /// <param name="segments">The segments.</param>
+        /// <param name="textureId">The texture identifier.</param>
         public void DrawTexturedEllipse(
             float cx, float cy,
             float radiusX, float radiusY,

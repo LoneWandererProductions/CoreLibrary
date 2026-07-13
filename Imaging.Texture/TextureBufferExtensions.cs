@@ -41,7 +41,7 @@ namespace Imaging.Texture
             {
                 // Access pinned array destination through Address handle pointer
                 IntPtr pDestHandle = directBitmap.BitsHandle.AddrOfPinnedObject();
-                System.Buffer.MemoryCopy(pSource, (void*)pDestHandle, source.Length, source.Length);
+                Buffer.MemoryCopy(pSource, (void*)pDestHandle, source.Length, source.Length);
             }
         }
     }
