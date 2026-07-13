@@ -885,17 +885,21 @@ namespace Imaging.Texture
                     var weight = 1.0;
                     var maxPossibleValue = 0.0;
 
-                    // Establish frequency coordinates scaled down to generate macro layout structures
+                    // Establish fractional frequency positions relative to structural layout size
                     var freqX = x / turbulenceSize;
                     var freqY = y / turbulenceSize;
 
                     // Ridged Multifractal Octave Loop
                     for (var i = 0; i < octaves; i++)
                     {
-                        // FIX 1: Explicitly cast parameters to (int) to match NoiseGenerator.GetNoise(int, int) and fix the test crash.
-                        // FIX 2: Removed the redundant '* turbulenceSize' inside the call. Keeping coordinates scaled down 
-                        // preserves macro structural contours, preventing the layers from flattening out into a uniform black sheet.
-                        var n = ((double)noiseGen.GetNoise((int)freqX, (int)freqY) / 127.5) - 1.0;
+                        // FIX 1: Swap out GetNoise for SmoothNoise(double, double).
+                        // This fixes the RuntimeBinderException by passing doubles natively, and provides 
+                        // the bilinear interpolation required to form coherent plasma contours.
+                        var rawNoise = (double)noiseGen.SmoothNoise(freqX, freqY);
+
+                        // FIX 2: Remap 0.0 to 1.0 up to a -1.0 to 1.0 range.
+                        // The old code assumed a 0-255 footprint, causing values to clip out and render solid black.
+                        var n = (rawNoise * 2.0) - 1.0;
 
                         // The Ridged Math
                         n = 1.0 - Math.Abs(n);
@@ -908,6 +912,7 @@ namespace Imaging.Texture
                         value += n * amplitude;
                         maxPossibleValue += amplitude;
 
+                        // Dynamically step up frequency scales across octave passes
                         freqX *= 2.0;
                         freqY *= 2.0;
                         amplitude *= persistence;
