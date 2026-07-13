@@ -11,7 +11,7 @@ namespace Imaging.Texture
     /// <summary>
     /// Static class for converting colors between different formats.
     /// </summary>
-    public static class ColorConverter
+    internal static class ColorConverter
     {
         /// <summary>
         /// HSLs to RGB tuple.
@@ -20,7 +20,7 @@ namespace Imaging.Texture
         /// <param name="s">The s.</param>
         /// <param name="l">The l.</param>
         /// <returns>RGB tuple.</returns>
-        public static (byte r, byte g, byte b) HslToRgbTuple(double h, double s, double l)
+        internal static (byte r, byte g, byte b) HslToRgbTuple(double h, double s, double l)
         {
             h /= 360.0;
             s /= 255.0;
@@ -51,7 +51,7 @@ namespace Imaging.Texture
         /// <param name="s">The s.</param>
         /// <param name="v">The v.</param>
         /// <returns>RGB tuple.</returns>
-        public static (byte r, byte g, byte b) HsvToRgbTuple(double h, double s, double v)
+        internal static (byte r, byte g, byte b) HsvToRgbTuple(double h, double s, double v)
         {
             var hi = Convert.ToInt32(Math.Floor(h / 60.0)) % 6;
             var f = (h / 60.0) - Math.Floor(h / 60.0);
@@ -87,6 +87,7 @@ namespace Imaging.Texture
             if (t < 1.0 / 6.0) return p + (q - p) * 6.0 * t;
             if (t < 1.0 / 2.0) return q;
             if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6.0;
+
             return p;
         }
     }

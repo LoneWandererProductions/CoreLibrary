@@ -161,7 +161,7 @@ namespace ImageCompare
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="id">The identifier.</param>
         /// <returns>Image Object to compare</returns>
-        private static ImageDuplicate GenerateData(Bitmap bitmap, int id)
+        private static ImageDuplicate GenerateData(Bitmap? bitmap, int id)
         {
             //resize
             bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);

@@ -62,8 +62,8 @@ namespace Core.Apps.Rules
                 var optimalOrder = fieldList.OrderByDescending(f => f.Size).ToList();
 
                 // Check if current matches optimal
-                bool isOptimal = true;
-                for (int i = 0; i < fieldList.Count; i++)
+                var isOptimal = true;
+                for (var i = 0; i < fieldList.Count; i++)
                 {
                     if (fieldList[i].Name != optimalOrder[i].Name)
                     {
@@ -75,7 +75,7 @@ namespace Core.Apps.Rules
                 if (!isOptimal)
                 {
                     var line = structDecl.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-                    string suggestion = string.Join(", ", optimalOrder.Select(f => f.Name));
+                    var suggestion = string.Join(", ", optimalOrder.Select(f => f.Name));
 
                     yield return new Diagnostic(
                         Name,

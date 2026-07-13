@@ -59,7 +59,7 @@ namespace Imaging
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException"></exception>
-        public Bitmap GetBitmapFile(string path)
+        public Bitmap? GetBitmapFile(string path)
         {
             return ImageStream.LoadBitmapFromFile(path);
         }
@@ -94,7 +94,7 @@ namespace Imaging
         /// <exception cref="ArgumentException">
         /// </exception>
         /// <exception cref="InsufficientMemoryException"></exception>
-        public Bitmap BitmapScaling(Bitmap image, int width, int height)
+        public Bitmap? BitmapScaling(Bitmap? image, int width, int height)
         {
             return ImageStream.BitmapScaling(image, width, height);
         }
@@ -109,7 +109,7 @@ namespace Imaging
         ///     A resized version of the original image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
-        public Bitmap BitmapScaling(Bitmap image, float scaling)
+        public Bitmap BitmapScaling(Bitmap? image, float scaling)
         {
             return ImageStream.BitmapScaling(image, scaling);
         }
@@ -127,7 +127,7 @@ namespace Imaging
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException">Memory Exceeded</exception>
-        public Bitmap? FilterImage(Bitmap image, FiltersType filter)
+        public Bitmap? FilterImage(Bitmap? image, FiltersType filter)
         {
             return FiltersStream.FilterImage(image, filter, ImageSettings);
         }
@@ -151,7 +151,7 @@ namespace Imaging
         ///     or
         ///     shape - null
         /// </exception>
-        public Bitmap FilterImageArea(Bitmap image,
+        public Bitmap FilterImageArea(Bitmap? image,
             int? width,
             int? height,
             FiltersType filter,
@@ -194,7 +194,7 @@ namespace Imaging
         /// <param name="y">The y position.</param>
         /// <returns>Combined Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public Bitmap CombineBitmap(Bitmap original, Bitmap overlay, int x, int y)
+        public Bitmap? CombineBitmap(Bitmap? original, Bitmap? overlay, int x, int y)
         {
             return ImageStream.CombineBitmap(original, overlay, x, y);
         }
@@ -210,7 +210,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <returns>The cut Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public Bitmap CutBitmap(Bitmap image, int x, int y, int height, int width)
+        public Bitmap? CutBitmap(Bitmap? image, int x, int y, int height, int width)
         {
             return ImageStream.CutBitmap(image, x, y, height, width);
         }
@@ -227,7 +227,7 @@ namespace Imaging
         /// <param name="startPoint">The start point.</param>
         /// <returns>The selected Image area.</returns>
         /// <exception cref="T:System.ArgumentOutOfRangeException">shape - null</exception>
-        public Bitmap CutBitmap(Bitmap image, int width, int height, MaskShape shape, object? shapeParams = null,
+        public Bitmap? CutBitmap(Bitmap? image, int width, int height, MaskShape shape, object? shapeParams = null,
             Point? startPoint = null)
         {
             var btm = ImageStream.CutBitmap(image, 0, 0, image.Height, image.Width);
@@ -262,7 +262,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <returns>List of cut Images</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public List<Bitmap> CutBitmaps(Bitmap image, int x, int y, int height, int width)
+        public List<Bitmap?> CutBitmaps(Bitmap? image, int x, int y, int height, int width)
         {
             return ImageStream.CutBitmaps(image, x, y, height, width);
         }
@@ -278,7 +278,7 @@ namespace Imaging
         /// <param name="width">The width.</param>
         /// <returns>Original Image with the erased area</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width)
+        public Bitmap? EraseRectangle(Bitmap? image, int x, int y, int height, int width)
         {
             return ImageStream.EraseRectangle(image, x, y, height, width);
         }
@@ -366,7 +366,7 @@ namespace Imaging
         /// The Image as <see cref="BitmapImage" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public BitmapImage BitmapToBitmapImage(Bitmap image)
+        public BitmapImage BitmapToBitmapImage(Bitmap? image)
         {
             return ImageStreamMedia.BitmapToBitmapImage(image);
         }
@@ -380,7 +380,7 @@ namespace Imaging
         ///     The Image as <see cref="T:System.Drawing.Bitmap" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public Bitmap BitmapImageToBitmap(BitmapImage image)
+        public Bitmap? BitmapImageToBitmap(BitmapImage image)
         {
             return ImageStreamMedia.BitmapImageToBitmap(image);
         }
@@ -396,7 +396,7 @@ namespace Imaging
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OverflowException">Degrees have a certain allowed radius</exception>
-        public Bitmap RotateImage(Bitmap image, int degree)
+        public Bitmap? RotateImage(Bitmap? image, int degree)
         {
             return ImageStream.RotateImage(image, degree);
         }
@@ -424,7 +424,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         /// <exception cref="IOException">File already exists</exception>
         /// <exception cref="ExternalException">Errors with the Path</exception>
-        public void SaveBitmap(Bitmap image, string path, ImageFormat format)
+        public void SaveBitmap(Bitmap? image, string path, ImageFormat format)
         {
             ImageStream.SaveBitmap(image, path, format);
         }
@@ -437,7 +437,7 @@ namespace Imaging
         /// <param name="threshold">The threshold when the color is still white.</param>
         /// <returns>The Transparent Image</returns>
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
-        public Bitmap ConvertWhiteToTransparent(Bitmap image, int threshold)
+        public Bitmap? ConvertWhiteToTransparent(Bitmap? image, int threshold)
         {
             return ImageStream.ConvertWhiteToTransparent(image, threshold);
         }
@@ -451,7 +451,7 @@ namespace Imaging
         /// <returns>
         ///     Pixelated Image
         /// </returns>
-        public Bitmap Pixelate(Bitmap image, int stepWidth = 2)
+        public Bitmap Pixelate(Bitmap? image, int stepWidth = 2)
         {
             return FiltersStream.Pixelate(image, stepWidth);
         }
@@ -466,7 +466,7 @@ namespace Imaging
         ///     The Color at the point
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        public Color GetPixel(Bitmap image, Point point)
+        public Color GetPixel(Bitmap? image, Point point)
         {
             return ImageStream.GetPixel(image, point);
         }
@@ -484,7 +484,7 @@ namespace Imaging
         ///     or
         ///     nameof(image)
         /// </exception>
-        public Color GetPixel(Bitmap image, Point point, int radius)
+        public Color GetPixel(Bitmap? image, Point point, int radius)
         {
             return ImageStream.GetPixel(image, point, radius);
         }
@@ -500,7 +500,7 @@ namespace Imaging
         ///     The changed image as Bitmap
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        public Bitmap SetPixel(Bitmap image, Point point, Color color)
+        public Bitmap? SetPixel(Bitmap? image, Point point, Color color)
         {
             return ImageStream.SetPixel(image, point, color);
         }
@@ -517,7 +517,7 @@ namespace Imaging
         ///     The Changed Image
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        public Bitmap SetPixel(Bitmap image, Point point, Color color, int radius)
+        public Bitmap? SetPixel(Bitmap? image, Point point, Color color, int radius)
         {
             return ImageStream.SetPixel(image, point, color, radius);
         }
@@ -563,7 +563,7 @@ namespace Imaging
         /// <param name="y">The y.</param>
         /// <param name="newColor">The new color.</param>
         /// <returns>Bitmap with filled area</returns>
-        public Bitmap FloodFillScanLineStack(Bitmap image, int x, int y, Color newColor)
+        public Bitmap? FloodFillScanLineStack(Bitmap? image, int x, int y, Color newColor)
         {
             return ImageStream.FloodFillScanLineStack(image, x, y, newColor);
         }
@@ -577,7 +577,7 @@ namespace Imaging
         /// <returns>
         ///     The changed image as Bitmap
         /// </returns>
-        public Bitmap AdjustBrightness(Bitmap image, float brightnessFactor)
+        public Bitmap? AdjustBrightness(Bitmap? image, float brightnessFactor)
         {
             return ImageStream.AdjustBrightness(image, brightnessFactor);
         }
@@ -591,7 +591,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the average of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap AverageImages(Image imgOne, Image imgTwo)
+        public Bitmap AverageImages(Image? imgOne, Image? imgTwo)
         {
             return ImageOverlays.AverageImages(imgOne, imgTwo);
         }
@@ -605,7 +605,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the addition of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap AddImages(Image imgOne, Image imgTwo)
+        public Bitmap AddImages(Image? imgOne, Image? imgTwo)
         {
             return ImageOverlays.AddImages(imgOne, imgTwo);
         }
@@ -619,7 +619,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the subtraction of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap SubtractImages(Image imgOne, Image imgTwo)
+        public Bitmap SubtractImages(Image? imgOne, Image? imgTwo)
         {
             return ImageOverlays.SubtractImages(imgOne, imgTwo);
         }
@@ -633,7 +633,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the multiplication of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap MultiplyImages(Image imgOne, Image imgTwo)
+        public Bitmap MultiplyImages(Image? imgOne, Image? imgTwo)
         {
             return ImageOverlays.MultiplyImages(imgOne, imgTwo);
         }
@@ -648,7 +648,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the cross-fading of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap CrossFadeImages(Image imgOne, Image imgTwo, float factor)
+        public Bitmap CrossFadeImages(Image? imgOne, Image? imgTwo, float factor)
         {
             return ImageOverlays.CrossFadeImages(imgOne, imgTwo, factor);
         }
@@ -662,7 +662,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the minimum values of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap MinImages(Image imgOne, Image imgTwo)
+        public Bitmap MinImages(Image? imgOne, Image? imgTwo)
         {
             return ImageOverlays.MinImages(imgOne, imgTwo);
         }
@@ -676,7 +676,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the maximum values of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap MaxImages(Image imgOne, Image imgTwo)
+        public Bitmap MaxImages(Image? imgOne, Image? imgTwo)
         {
             return ImageOverlays.MaxImages(imgOne, imgTwo);
         }
@@ -690,7 +690,7 @@ namespace Imaging
         /// <returns>
         ///     A bitmap resulting from the amplitude of the two images, or null if an error occurs.
         /// </returns>
-        public Bitmap AmplitudeImages(Image imgOne, Image imgTwo)
+        public Bitmap AmplitudeImages(Image? imgOne, Image? imgTwo)
         {
             return ImageOverlays.AmplitudeImages(imgOne, imgTwo);
         }
@@ -705,7 +705,7 @@ namespace Imaging
         ///     Bitmap with adjusted Hue.
         /// </returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Bitmap AdjustHue(Bitmap image, double hueShift)
+        public Bitmap? AdjustHue(Bitmap? image, double hueShift)
         {
             return ImageStreamHsv.AdjustHue(image, hueShift);
         }
@@ -720,7 +720,7 @@ namespace Imaging
         ///     Bitmap with adjusted Saturation.
         /// </returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Bitmap AdjustSaturation(Bitmap image, double saturationFactor)
+        public Bitmap? AdjustSaturation(Bitmap? image, double saturationFactor)
         {
             return ImageStreamHsv.AdjustSaturation(image, saturationFactor);
         }
@@ -735,7 +735,7 @@ namespace Imaging
         ///     Bitmap with adjusted brightness.
         /// </returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Bitmap AdjustBrightness(Bitmap image, double brightnessFactor)
+        public Bitmap? AdjustBrightness(Bitmap? image, double brightnessFactor)
         {
             return ImageStreamHsv.AdjustBrightness(image, brightnessFactor);
         }
@@ -749,7 +749,7 @@ namespace Imaging
         /// <returns>
         ///     Bitmap with adjusted Gamma.
         /// </returns>
-        public Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
+        public Bitmap? ApplyGammaCorrection(Bitmap? image, double gamma)
         {
             return ImageStreamHsv.ApplyGammaCorrection(image, gamma);
         }

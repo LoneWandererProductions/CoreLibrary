@@ -107,7 +107,7 @@ namespace ImageCompare
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="path">The Path to the image.</param>
         /// <returns>ImageColor Object</returns>
-        internal static ImageColor GenerateData(Bitmap bitmap, string path)
+        internal static ImageColor GenerateData(Bitmap? bitmap, string path)
         {
             _render = new ImageRender();
 
@@ -167,7 +167,7 @@ namespace ImageCompare
         ///     Converts the Image into a Dictionary of Colors.
         /// </summary>
         /// <param name="image">The color Dictionary.</param>
-        internal static Dictionary<Color, int> GetColors(Bitmap image)
+        internal static Dictionary<Color, int> GetColors(Bitmap? image)
         {
             var cif = new Cif(image);
             return cif.ColorCount;
@@ -208,7 +208,7 @@ namespace ImageCompare
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Image Data</returns>
-        internal static ImageData? GetImageDetails(Bitmap image)
+        internal static ImageData? GetImageDetails(Bitmap? image)
         {
             var color = GenerateData(image, string.Empty);
 
@@ -230,7 +230,7 @@ namespace ImageCompare
         /// <param name="second">The second bitmap.</param>
         /// <param name="highlight">The color.</param>
         /// <returns>The difference Bitmap</returns>
-        internal static Bitmap DifferenceImage(Bitmap first, Bitmap second, Color highlight)
+        internal static Bitmap? DifferenceImage(Bitmap? first, Bitmap? second, Color highlight)
         {
             _render = new ImageRender();
 

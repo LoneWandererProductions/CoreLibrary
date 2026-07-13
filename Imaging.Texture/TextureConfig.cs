@@ -6,13 +6,15 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 namespace Imaging.Texture
 {
     /// <summary>
     /// A pure primitive configuration object. 
     /// No references to System.Drawing or higher-level Imaging concepts.
     /// </summary>
-    public class TextureConfig
+    public sealed class TextureConfig
     {
         /// <summary>
         /// Gets or sets the size of the turbulence.
@@ -20,7 +22,7 @@ namespace Imaging.Texture
         /// <value>
         /// The size of the turbulence.
         /// </value>
-        public double TurbulenceSize { get; set; }
+        public double TurbulenceSize { get; init; }
 
         /// <summary>
         /// Gets or sets the RGB ramp.
@@ -28,7 +30,7 @@ namespace Imaging.Texture
         /// <value>
         /// The RGB ramp.
         /// </value>
-        public byte[]? RgbRamp { get; set; }
+        public byte[]? RgbRamp { get; init; }
 
         /// <summary>
         /// Gets or sets the size of the cell.
@@ -36,7 +38,7 @@ namespace Imaging.Texture
         /// <value>
         /// The size of the cell.
         /// </value>
-        public int CellSize { get; set; }
+        public int CellSize { get; init; }
 
         /// <summary>
         /// Gets or sets the center RGB.
@@ -44,7 +46,7 @@ namespace Imaging.Texture
         /// <value>
         /// The center RGB.
         /// </value>
-        public byte[]? CenterRgb { get; set; }
+        public byte[]? CenterRgb { get; init; }
 
         /// <summary>
         /// Gets or sets the edge RGB.
@@ -52,7 +54,7 @@ namespace Imaging.Texture
         /// <value>
         /// The edge RGB.
         /// </value>
-        public byte[]? EdgeRgb { get; set; }
+        public byte[]? EdgeRgb { get; init; }
 
         // --- New for Domain Warping ---
 
@@ -62,7 +64,7 @@ namespace Imaging.Texture
         /// <value>
         /// The warp scale.
         /// </value>
-        public double WarpScale { get; set; }
+        public double WarpScale { get; init; }
 
         /// <summary>
         /// Gets or sets the warp strength.
@@ -70,7 +72,7 @@ namespace Imaging.Texture
         /// <value>
         /// The warp strength.
         /// </value>
-        public double WarpStrength { get; set; }
+        public double WarpStrength { get; init; }
 
         // --- New for Ridged Multifractal ---
 
@@ -80,7 +82,7 @@ namespace Imaging.Texture
         /// <value>
         /// The octaves.
         /// </value>
-        public int Octaves { get; set; }
+        public int Octaves { get; init; }
 
         /// <summary>
         /// Gets or sets the persistence.
@@ -88,6 +90,6 @@ namespace Imaging.Texture
         /// <value>
         /// The persistence.
         /// </value>
-        public double Persistence { get; set; }
+        public double Persistence { get; init; }
     }
 }

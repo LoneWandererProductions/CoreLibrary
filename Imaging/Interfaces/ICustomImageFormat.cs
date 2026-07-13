@@ -38,20 +38,20 @@ namespace Imaging.Interfaces
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Custom Image Format of the Image</returns>
-        Cif GenerateCifFromBitmap(Bitmap image);
+        Cif GenerateCifFromBitmap(Bitmap? image);
 
         /// <summary>
         ///     Saves Bitmap to cif file.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        void GenerateBitmapToCifFile(Bitmap image, string path);
+        void GenerateBitmapToCifFile(Bitmap? image, string path);
 
         /// <summary>
         ///     Compressed cif file.
         /// </summary>
         /// <param name="image">The image.</param>
         /// <param name="path">The path.</param>
-        void GenerateCifCompressedFromBitmap(Bitmap image, string path);
+        void GenerateCifCompressedFromBitmap(Bitmap? image, string path);
     }
 }

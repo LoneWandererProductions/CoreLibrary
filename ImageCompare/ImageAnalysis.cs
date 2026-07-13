@@ -94,7 +94,7 @@ namespace ImageCompare
         /// <param name="second">The Bitmap two.</param>
         /// <returns>Data about two images</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
-        public ImageCompareData CompareImages(Bitmap first, Bitmap second)
+        public ImageCompareData CompareImages(Bitmap? first, Bitmap? second)
         {
             if (first == null)
             {
@@ -148,7 +148,7 @@ namespace ImageCompare
         /// <param name="image">The image.</param>
         /// <returns>Color Dictionary</returns>
         /// <exception cref="T:System.ArgumentException">Argument Exception</exception>
-        public Dictionary<Color, int> GetColors(Bitmap image)
+        public Dictionary<Color, int> GetColors(Bitmap? image)
         {
             if (image == null)
             {
@@ -169,7 +169,7 @@ namespace ImageCompare
         ///     The difference Bitmap
         /// </returns>
         /// <exception cref="T:System.ArgumentException"></exception>
-        public Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color)
+        public Bitmap? DifferenceImage(Bitmap? first, Bitmap? second, Color color)
         {
             if (first == null)
             {
@@ -194,7 +194,7 @@ namespace ImageCompare
         /// <returns>
         ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsPartOf(Bitmap bigImage, Bitmap smallImage, out Coordinate2D startCoordinates)
+        public bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate2D startCoordinates)
         {
             return ImageSlider.IsPartOf(bigImage, smallImage, out startCoordinates);
         }

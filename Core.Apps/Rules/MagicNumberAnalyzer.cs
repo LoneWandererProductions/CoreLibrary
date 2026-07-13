@@ -74,7 +74,7 @@ namespace Core.Apps.Rules
 
                 foreach (var literal in literals)
                 {
-                    string value = literal.Token.ValueText;
+                    var value = literal.Token.ValueText;
 
                     // Skip "safe" numbers and ignore if it's already part of a constant definition
                     if (SafeNumbers.Contains(value) || IsInConstantDefinition(literal))

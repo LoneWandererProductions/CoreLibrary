@@ -26,7 +26,7 @@ namespace Common.ExtendedObject.Tests
             const int count = 10;
 
             // 1. Allocate directly to a strongly-typed int*
-            int* ptr = (int*)UnmanagedMemoryHelper.Allocate<int>(count);
+            var ptr = (int*)UnmanagedMemoryHelper.Allocate<int>(count);
             Assert.IsTrue(ptr != null, "Allocation failed; pointer is null.");
 
             try
@@ -39,7 +39,7 @@ namespace Common.ExtendedObject.Tests
 
                 // Reallocate to a bigger size
                 const int newCount = 20;
-                int* newPtr = UnmanagedMemoryHelper.Reallocate<int>(ptr, newCount);
+                var newPtr = UnmanagedMemoryHelper.Reallocate<int>(ptr, newCount);
                 Assert.IsTrue(newPtr != null, "Reallocation failed; pointer is null.");
                 ptr = newPtr;
 
@@ -75,7 +75,7 @@ namespace Common.ExtendedObject.Tests
         public void Clear_SetsMemoryToZero()
         {
             const int count = 5;
-            int* ptr = (int*)UnmanagedMemoryHelper.Allocate<int>(count);
+            var ptr = (int*)UnmanagedMemoryHelper.Allocate<int>(count);
 
             try
             {

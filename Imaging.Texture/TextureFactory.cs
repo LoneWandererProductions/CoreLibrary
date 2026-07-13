@@ -28,7 +28,18 @@ namespace Imaging.Texture
             {
                 TurbulenceSize = 32.0,
                 // Stored purely as flat [R, G, B] bytes for the math engine
-                RgbRamp =  [40, 10, 10, 180, 20, 0, 255, 120, 0, 255, 220, 50]
+                RgbRamp =  [40,
+                10,
+                10,
+                180,
+                20,
+                0,
+                255,
+                120,
+                0,
+                255,
+                220,
+                50]
             };
         }
 
@@ -41,8 +52,12 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 CellSize = 48,
-                CenterRgb =  [140, 140, 145],
-                EdgeRgb =  [30, 30, 30]
+                CenterRgb =  [140,
+                140,
+                145],
+                EdgeRgb =  [30,
+                30,
+                30]
             };
         }
 
@@ -56,7 +71,18 @@ namespace Imaging.Texture
             {
                 TurbulenceSize = 128.0,
                 // Flat [R, G, B] bytes for: Dark Navy -> Deep Blue -> Bright Purple -> White
-                RgbRamp =  [5, 5, 20, 0, 150, 200, 180, 50, 255, 255, 255, 255]
+                RgbRamp =  [5,
+                5,
+                20,
+                0,
+                150,
+                200,
+                180,
+                50,
+                255,
+                255,
+                255,
+                255]
             };
         }
 
@@ -69,8 +95,12 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 CellSize = 64,
-                CenterRgb =  [230, 245, 255], // Bright icy white for the sharp ridges
-                EdgeRgb =  [10, 40, 80] // Deep water blue for the flat cells
+                CenterRgb =  [230,
+                245,
+                255], // Bright icy white for the sharp ridges
+                EdgeRgb =  [10,
+                40,
+                80] // Deep water blue for the flat cells
             };
         }
 
@@ -85,7 +115,18 @@ namespace Imaging.Texture
                 TurbulenceSize = 64.0,
                 WarpScale = 128.0,
                 WarpStrength = 4.0, // High strength creates deep liquid swirls
-                RgbRamp =  [0, 0, 10, 40, 10, 120, 150, 40, 255, 255, 200, 255]
+                RgbRamp =  [0,
+                0,
+                10,
+                40,
+                10,
+                120,
+                150,
+                40,
+                255,
+                255,
+                200,
+                255]
             };
         }
 
@@ -101,7 +142,18 @@ namespace Imaging.Texture
                 Octaves = 5,
                 Persistence = 0.5,
                 // Black background -> dark purple -> bright cyan -> white hot core
-                RgbRamp =  [0, 0, 0, 40, 0, 80, 0, 200, 255, 255, 255, 255]
+                RgbRamp =  [0,
+                0,
+                0,
+                40,
+                0,
+                80,
+                0,
+                200,
+                255,
+                255,
+                255,
+                255]
             };
         }
 
@@ -113,10 +165,14 @@ namespace Imaging.Texture
         {
             return new TextureConfig
             {
-                TurbulenceSize = 16.0,       // Maps to horizontal frequency scale
-                WarpStrength = 12.0,         // Grain twisting displacement power
-                CenterRgb = [140, 95, 55],   // Bright ridge wood highlight color
-                EdgeRgb = [75, 45, 25]       // Dark deep furrow crease color
+                TurbulenceSize = 16.0, // Maps to horizontal frequency scale
+                WarpStrength = 12.0, // Grain twisting displacement power
+                CenterRgb =  [140,
+                95,
+                55], // Bright ridge wood highlight color
+                EdgeRgb =  [75,
+                45,
+                25] // Dark deep furrow crease color
             };
         }
 
@@ -129,8 +185,12 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 CellSize = 40,
-                CenterRgb = [34, 110, 24],   // Primary outer leaf green color
-                EdgeRgb = [12, 35, 10]       // Deep background ambient shadow drop color
+                CenterRgb =  [34,
+                110,
+                24], // Primary outer leaf green color
+                EdgeRgb =  [12,
+                35,
+                10] // Deep background ambient shadow drop color
             };
         }
 
@@ -143,9 +203,13 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 32.0,
-                WarpStrength = 0.15,         // Reusing WarpStrength for internal Engine TurbulencePower
-                CenterRgb = [130, 85, 45],   // Base board brown
-                EdgeRgb = [70, 40, 20]       // Dark grain accent lines
+                WarpStrength = 0.15, // Reusing WarpStrength for internal Engine TurbulencePower
+                CenterRgb =  [130,
+                85,
+                45], // Base board brown
+                EdgeRgb =  [70,
+                40,
+                20] // Dark grain accent lines
             };
         }
 

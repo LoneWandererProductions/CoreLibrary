@@ -19,7 +19,7 @@ namespace Communication
     /// Intercept Http messages and trace results. Supports toggling between System.Diagnostics.Trace and String output.
     /// </summary>
     /// <seealso cref="DelegatingHandler" />
-    public class HttpWireTracingHandler : DelegatingHandler
+    public sealed class HttpWireTracingHandler : DelegatingHandler
     {
         private readonly object _lockObj = new object();
         private string _lastTrace = string.Empty;
@@ -59,7 +59,8 @@ namespace Communication
         /// <returns>
         /// The task object representing the asynchronous operation.
         /// </returns>
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             // Lokaler Speicher für diese spezifische Anfrage (Thread-Safety!)
             var sb = new StringBuilder();
@@ -104,6 +105,7 @@ namespace Communication
             {
                 sb.AppendLine($"< {header.Key}: {string.Join(", ", header.Value)}");
             }
+
             if (response.Content != null)
             {
                 foreach (var header in response.Content.Headers)
@@ -122,7 +124,7 @@ namespace Communication
             sb.AppendLine("\n* ------------------- WIRE TRACE END ------------------- *\n");
 
             // --- AUSWERTUNG DES WECHSELSCHALTERS ---
-            string finalTraceLog = sb.ToString();
+            var finalTraceLog = sb.ToString();
             LastTrace = finalTraceLog;
 
             // Schalter 1: Standard System.Diagnostics.Trace

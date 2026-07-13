@@ -95,7 +95,7 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ShiftRight<T>(T* ptr, int index, int count, int length) where T : unmanaged
         {
-            int elementsToShift = length - index;
+            var elementsToShift = length - index;
             if (elementsToShift <= 0 || count <= 0)
             {
                 return;
@@ -120,7 +120,7 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ShiftLeft<T>(T* ptr, int index, int count, int length) where T : unmanaged
         {
-            int elementsToShift = length - (index + count);
+            var elementsToShift = length - (index + count);
             if (elementsToShift <= 0)
             {
                 return;
@@ -140,7 +140,7 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Copy<T>(T* source, T* destination, int count) where T : unmanaged
         {
-            nuint byteCount = (nuint)(count * sizeof(T));
+            var byteCount = (nuint)(count * sizeof(T));
             Buffer.MemoryCopy(source, destination, byteCount, byteCount);
         }
 
@@ -150,8 +150,8 @@ namespace ExtendedSystemObjects.Helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T* Clone<T>(T* source, int count) where T : unmanaged
         {
-            nuint byteCount = (nuint)(sizeof(T) * count);
-            T* dest = (T*)NativeMemory.Alloc(byteCount);
+            var byteCount = (nuint)(sizeof(T) * count);
+            var dest = (T*)NativeMemory.Alloc(byteCount);
             Buffer.MemoryCopy(source, dest, byteCount, byteCount);
             return dest;
         }

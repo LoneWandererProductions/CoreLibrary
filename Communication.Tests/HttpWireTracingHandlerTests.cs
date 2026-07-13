@@ -40,12 +40,12 @@ namespace Communication.Tests
             var tracingHandler = new HttpWireTracingHandler
             {
                 //switch Trace one and off
-                LogToTrace = true,
-                InnerHandler = innerHandler
+                LogToTrace = true, InnerHandler = innerHandler
             };
 
             using var client = new HttpClient(tracingHandler);
-            var requestContent = new StringContent("{\"input\":\"data_from_riesa\"}", Encoding.UTF8, "application/json");
+            var requestContent =
+                new StringContent("{\"input\":\"data_from_riesa\"}", Encoding.UTF8, "application/json");
 
             try
             {
@@ -66,13 +66,17 @@ namespace Communication.Tests
                 Assert.IsTrue(traceOutput.Contains("WIRE TRACE END"), "Trace missing end boundary.");
 
                 // Assert 3: Validierung der Request-Daten (>)
-                Assert.IsTrue(traceOutput.Contains("> POST /test/api/endpoint"), "Request method or path path not traced correctly.");
+                Assert.IsTrue(traceOutput.Contains("> POST /test/api/endpoint"),
+                    "Request method or path path not traced correctly.");
                 Assert.IsTrue(traceOutput.Contains("> Host: localhost"), "Request host header missing in trace.");
-                Assert.IsTrue(traceOutput.Contains("Content-Type: application/json"), "Content-Type header missing in request trace.");
-                Assert.IsTrue(traceOutput.Contains("{\"input\":\"data_from_riesa\"}"), "Request body payload missing in trace.");
+                Assert.IsTrue(traceOutput.Contains("Content-Type: application/json"),
+                    "Content-Type header missing in request trace.");
+                Assert.IsTrue(traceOutput.Contains("{\"input\":\"data_from_riesa\"}"),
+                    "Request body payload missing in trace.");
 
                 // Assert 4: Validierung der Response-Daten (<)
-                Assert.IsTrue(traceOutput.Contains("< HTTP/1.1 200 OK"), "Response status code line missing or incorrect in trace.");
+                Assert.IsTrue(traceOutput.Contains("< HTTP/1.1 200 OK"),
+                    "Response status code line missing or incorrect in trace.");
                 Assert.IsTrue(traceOutput.Contains(expectedResponseBody), "Response body payload missing in trace.");
             }
             finally
@@ -97,7 +101,8 @@ namespace Communication.Tests
                 _content = content;
             }
 
-            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+                CancellationToken cancellationToken)
             {
                 var response = new HttpResponseMessage(_statusCode)
                 {

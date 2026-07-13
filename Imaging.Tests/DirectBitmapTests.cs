@@ -294,7 +294,7 @@ namespace Imaging.Tests
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="blackPen">The black pen.</param>
         /// <param name="directBitmap">The direct bitmap.</param>
-        private static void WarmUpDrawing(Image bitmap, Pen blackPen, DirectBitmap directBitmap)
+        private static void WarmUpDrawing(Image? bitmap, Pen blackPen, DirectBitmap directBitmap)
         {
             for (var i = 0; i < 10; i++)
             {
@@ -328,7 +328,7 @@ namespace Imaging.Tests
         /// <param name="source">The source.</param>
         /// <param name="target">The target.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void VerifyColorsMatch(Bitmap source, DirectBitmap target, params (int x, int y)[] coordinates)
+        private static void VerifyColorsMatch(Bitmap? source, DirectBitmap target, params (int x, int y)[] coordinates)
         {
             foreach (var (x, y) in coordinates)
             {
@@ -361,7 +361,7 @@ namespace Imaging.Tests
         /// <param name="target">The target.</param>
         /// <param name="color">The color.</param>
         /// <param name="coordinates">The coordinates.</param>
-        private static void VerifyReplacementColors(Bitmap bitmap, DirectBitmap target, Color color,
+        private static void VerifyReplacementColors(Bitmap? bitmap, DirectBitmap target, Color color,
             params (int x, int y)[] coordinates)
         {
             var expected = PixelToUintC(color);

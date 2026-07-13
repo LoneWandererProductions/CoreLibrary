@@ -41,7 +41,7 @@ namespace Imaging.Helpers
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException">File not Found</exception>
-        internal static Bitmap LoadBitmapFromFile(string path)
+        internal static Bitmap? LoadBitmapFromFile(string path)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -102,7 +102,7 @@ namespace Imaging.Helpers
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InsufficientMemoryException"></exception>
-        internal static Bitmap BitmapScaling(Bitmap image, int width, int height)
+        internal static Bitmap? BitmapScaling(Bitmap? image, int width, int height)
         {
             ImageHelper.ValidateImage(nameof(BitmapScaling), image);
 
@@ -143,7 +143,7 @@ namespace Imaging.Helpers
         ///     A resized version of the original image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
-        internal static Bitmap BitmapScaling(Bitmap image, float scaling)
+        internal static Bitmap BitmapScaling(Bitmap? image, float scaling)
         {
             ImageHelper.ValidateImage(nameof(BitmapScaling), image);
 
@@ -251,7 +251,7 @@ namespace Imaging.Helpers
         /// <param name="y">The y position.</param>
         /// <returns>Combined Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static Bitmap CombineBitmap(Bitmap image, Bitmap overlay, int x, int y)
+        internal static Bitmap? CombineBitmap(Bitmap? image, Bitmap? overlay, int x, int y)
         {
             ImageHelper.ValidateImage(nameof(CombineBitmap), image);
 
@@ -281,7 +281,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <returns>The cut Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static Bitmap CutBitmap(Bitmap image, int x, int y, int height, int width)
+        internal static Bitmap? CutBitmap(Bitmap? image, int x, int y, int height, int width)
         {
             ImageHelper.ValidateImage(nameof(CutBitmap), image);
 
@@ -311,12 +311,12 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <returns>List of cut Images</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static List<Bitmap> CutBitmaps(Bitmap image, int x, int y, int height, int width)
+        internal static List<Bitmap?> CutBitmaps(Bitmap? image, int x, int y, int height, int width)
         {
             ImageHelper.ValidateImage(nameof(CutBitmaps), image);
 
             //read all images into memory
-            var images = new List<Bitmap>(x * y);
+            var images = new List<Bitmap?>(x * y);
 
             for (var j = 0; j < y; j++)
             for (var i = 0; i < x; i++)
@@ -338,7 +338,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <returns>Original Image with the erased area</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static Bitmap EraseRectangle(Bitmap image, int x, int y, int height, int width)
+        internal static Bitmap? EraseRectangle(Bitmap? image, int x, int y, int height, int width)
         {
             ImageHelper.ValidateImage(nameof(EraseRectangle), image);
 
@@ -363,7 +363,7 @@ namespace Imaging.Helpers
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OverflowException">Degrees have a certain allowed radius</exception>
-        internal static Bitmap RotateImage(Bitmap image, int degree)
+        internal static Bitmap? RotateImage(Bitmap? image, int degree)
         {
             ImageHelper.ValidateImage(nameof(RotateImage), image);
 
@@ -463,7 +463,7 @@ namespace Imaging.Helpers
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         /// <exception cref="IOException">File already exists</exception>
         /// <exception cref="ExternalException">Errors with the Path</exception>
-        internal static void SaveBitmap(Bitmap image, string path, ImageFormat format)
+        internal static void SaveBitmap(Bitmap? image, string path, ImageFormat format)
         {
             ImageHelper.ValidateImage(nameof(SaveBitmap), image);
 
@@ -524,7 +524,7 @@ namespace Imaging.Helpers
         /// <param name="threshold">The threshold when the color is still white.</param>
         /// <returns>The Transparent Image</returns>
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
-        internal static Bitmap ConvertWhiteToTransparent(Bitmap image, int threshold)
+        internal static Bitmap? ConvertWhiteToTransparent(Bitmap? image, int threshold)
         {
             ImageHelper.ValidateImage(nameof(ConvertWhiteToTransparent), image);
 
@@ -579,7 +579,7 @@ namespace Imaging.Helpers
         /// </returns>
         /// <exception cref="ArgumentNullException">Image was null</exception>
         /// <exception cref="ArgumentOutOfRangeException">Point was out of bound.</exception>
-        internal static Color GetPixel(Bitmap image, Point point)
+        internal static Color GetPixel(Bitmap? image, Point point)
         {
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
@@ -606,7 +606,7 @@ namespace Imaging.Helpers
         /// <exception cref="ArgumentOutOfRangeException">
         ///     radius or point is out of bounds.
         /// </exception>
-        internal static Color GetPixel(Bitmap image, Point point, int radius)
+        internal static Color GetPixel(Bitmap? image, Point point, int radius)
         {
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
@@ -649,7 +649,7 @@ namespace Imaging.Helpers
         ///     The changed image as Bitmap
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        internal static Bitmap SetPixel(Bitmap image, Point point, Color color)
+        internal static Bitmap? SetPixel(Bitmap? image, Point point, Color color)
         {
             ImageHelper.ValidateImage(nameof(SetPixel), image);
 
@@ -668,7 +668,7 @@ namespace Imaging.Helpers
         /// <returns>
         ///     The changed image as Bitmap
         /// </returns>
-        internal static Bitmap AdjustBrightness(Bitmap image, float brightnessFactor)
+        internal static Bitmap? AdjustBrightness(Bitmap? image, float brightnessFactor)
         {
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
@@ -700,7 +700,7 @@ namespace Imaging.Helpers
         /// <param name="radius">The radius.</param>
         /// <returns>The Changed Image</returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        internal static Bitmap SetPixel(Bitmap image, Point point, Color color, int radius)
+        internal static Bitmap? SetPixel(Bitmap? image, Point point, Color color, int radius)
         {
             ImageHelper.ValidateImage(nameof(SetPixel), image);
 
@@ -787,7 +787,7 @@ namespace Imaging.Helpers
         /// <param name="y">The y.</param>
         /// <param name="newColor">The new color.</param>
         /// <returns>Bitmap with filled area</returns>
-        internal static Bitmap FloodFillScanLineStack(Bitmap image, int x, int y, Color newColor)
+        internal static Bitmap? FloodFillScanLineStack(Bitmap? image, int x, int y, Color newColor)
         {
             // Create a new bitmap to store the processed image
             var dbm = new DirectBitmap(image);

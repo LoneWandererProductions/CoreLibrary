@@ -155,11 +155,11 @@ namespace Common.ExtendedObject.Tests
             const int iterations = 100_000;
             const int sampleRuns = 3; // Sample multiple iterations to filter out OS context switching
 
-            double bestDictMs = double.MaxValue;
-            double bestMapMs = double.MaxValue;
+            var bestDictMs = double.MaxValue;
+            var bestMapMs = double.MaxValue;
 
             // We execute multiple loops and track the *minimum* time recorded to eliminate environmental spikes
-            for (int run = 0; run < sampleRuns; run++)
+            for (var run = 0; run < sampleRuns; run++)
             {
                 var dict = new Dictionary<int, int>(iterations);
                 var map = new UnmanagedMap<int>(18); // 2^17
@@ -180,6 +180,7 @@ namespace Common.ExtendedObject.Tests
                 {
                     dict[i] = i;
                 }
+
                 swDict.Stop();
 
                 if (swDict.Elapsed.TotalMilliseconds < bestDictMs)
@@ -193,6 +194,7 @@ namespace Common.ExtendedObject.Tests
                 {
                     map.Set(i, i);
                 }
+
                 swMap.Stop();
 
                 if (swMap.Elapsed.TotalMilliseconds < bestMapMs)
@@ -210,7 +212,7 @@ namespace Common.ExtendedObject.Tests
 
             // Fail-safe defense evaluation:
             // Pass if the ratio remains healthy (under 20x) OR if the total operation speed is objectively exceptional (under 40ms)
-            bool isPerformanceAcceptable = ratio < 20.0 || bestMapMs < 40.0;
+            var isPerformanceAcceptable = ratio < 20.0 || bestMapMs < 40.0;
 
             Assert.IsTrue(isPerformanceAcceptable,
                 $"UnmanagedMap insert performance threshold violated. Best Ratio: {ratio:F2}, Best Map Time: {bestMapMs:F3} ms");

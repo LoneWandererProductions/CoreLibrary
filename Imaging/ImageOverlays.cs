@@ -26,7 +26,7 @@ namespace Imaging
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the average of the two images, or null if an error occurs.</returns>
-        public static Bitmap AverageImages(Image imgOne, Image imgTwo)
+        public static Bitmap AverageImages(Image? imgOne, Image? imgTwo)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -43,7 +43,7 @@ namespace Imaging
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the combination of the two images, or null if an error occurs.</returns>
-        public static Bitmap AddImages(Image imgOne, Image imgTwo)
+        public static Bitmap AddImages(Image? imgOne, Image? imgTwo)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -60,7 +60,7 @@ namespace Imaging
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the subtraction of the two images, or null if an error occurs.</returns>
-        public static Bitmap SubtractImages(Image imgOne, Image imgTwo)
+        public static Bitmap SubtractImages(Image? imgOne, Image? imgTwo)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -77,7 +77,7 @@ namespace Imaging
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the multiplication of the two images, or null if an error occurs.</returns>
-        public static Bitmap MultiplyImages(Image imgOne, Image imgTwo)
+        public static Bitmap MultiplyImages(Image? imgOne, Image? imgTwo)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -95,7 +95,7 @@ namespace Imaging
         /// <param name="imgTwo">The second image.</param>
         /// <param name="factor">The blending factor (0.0 to 1.0).</param>
         /// <returns>A bitmap resulting from the cross-fading of the two images, or null if an error occurs.</returns>
-        public static Bitmap CrossFadeImages(Image imgOne, Image imgTwo, float factor)
+        public static Bitmap CrossFadeImages(Image? imgOne, Image? imgTwo, float factor)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -112,7 +112,7 @@ namespace Imaging
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the minimum values of the two images, or null if an error occurs.</returns>
-        public static Bitmap MinImages(Image imgOne, Image imgTwo)
+        public static Bitmap MinImages(Image? imgOne, Image? imgTwo)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -129,7 +129,7 @@ namespace Imaging
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the maximum values of the two images, or null if an error occurs.</returns>
-        public static Bitmap MaxImages(Image imgOne, Image imgTwo)
+        public static Bitmap MaxImages(Image? imgOne, Image? imgTwo)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -146,7 +146,7 @@ namespace Imaging
         /// <param name="imgOne">The first image.</param>
         /// <param name="imgTwo">The second image.</param>
         /// <returns>A bitmap resulting from the amplitude of the two images, or null if an error occurs.</returns>
-        public static Bitmap AmplitudeImages(Image imgOne, Image imgTwo)
+        public static Bitmap AmplitudeImages(Image? imgOne, Image? imgTwo)
         {
             return ProcessImages(imgOne, imgTwo, (color1, color2) =>
             {
@@ -164,7 +164,7 @@ namespace Imaging
         /// <param name="imgTwo">The second image.</param>
         /// <param name="pixelOperation">A function that defines how to combine the pixel values.</param>
         /// <returns>A bitmap resulting from applying the pixel operation, or null if an error occurs.</returns>
-        private static Bitmap? ProcessImages(Image imgOne, Image imgTwo, Func<Color, Color, Color> pixelOperation)
+        private static Bitmap? ProcessImages(Image? imgOne, Image? imgTwo, Func<Color, Color, Color> pixelOperation)
         {
             if (imgOne.Width != imgTwo.Width || imgOne.Height != imgTwo.Height)
             {

@@ -32,7 +32,8 @@ namespace Imaging.Tests
         /// <summary>
         ///     The project folder
         /// </summary>
-        private static readonly DirectoryInfo ProjectFolder = new(Directory.GetParent(ExecutionFolder)?.FullName ?? string.Empty);
+        private static readonly DirectoryInfo ProjectFolder =
+            new(Directory.GetParent(ExecutionFolder)?.FullName ?? string.Empty);
 
         /// <summary>
         ///     The sample images folder in the output directory
@@ -207,7 +208,7 @@ namespace Imaging.Tests
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
             var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
-            var btm = image.ToBitmap();
+            Bitmap? btm = image.ToBitmap();
 
             var point = new Point { X = 51, Y = 51 };
 
@@ -361,7 +362,8 @@ namespace Imaging.Tests
             Assert.IsTrue(Math.Abs(compareData.B - 126) <= 2, $"B value was {compareData.B}, expected close to 110.");
 
             // Accept either environment-specific file size variant safely
-            Assert.IsTrue(compareData.Size == 3086 || compareData.Size == 3117, $"Unexpected file size: {compareData.Size}");
+            Assert.IsTrue(compareData.Size == 3086 || compareData.Size == 3117,
+                $"Unexpected file size: {compareData.Size}");
 
 
             // 2. TEST BATCH PROCESSING FUNCTIONALITY
@@ -379,7 +381,8 @@ namespace Imaging.Tests
             if (similaritySample != null)
             {
                 // Assert that the similarity calculation is active and near a standard round baseline
-                Assert.IsTrue(similaritySample.Similarity >= 80, $"Expected a high similarity score, got: {similaritySample.Similarity}");
+                Assert.IsTrue(similaritySample.Similarity >= 80,
+                    $"Expected a high similarity score, got: {similaritySample.Similarity}");
                 Trace.WriteLine($"Batch similarity evaluated successfully: {similaritySample.Similarity}");
             }
         }
@@ -550,7 +553,7 @@ namespace Imaging.Tests
             var cifPath = Path.Combine(SampleImagesFolder.FullName, "base.cif");
 
             var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
-            var btm = image.ToBitmap();
+            Bitmap? btm = image.ToBitmap();
 
             //convert to cif
             Custom.GenerateBitmapToCifFile(btm, cifPath);

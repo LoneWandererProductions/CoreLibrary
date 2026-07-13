@@ -21,7 +21,7 @@ namespace Common.Converter
     /// Boolean to Visibility converter.
     /// </summary>
     /// <seealso cref="T:System.Windows.Data.IValueConverter" />
-    public class BooleanToVisibilityConverter : IValueConverter
+    public sealed class BooleanToVisibilityConverter : IValueConverter
     {
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="BooleanToVisibilityConverter"/> is collapse.

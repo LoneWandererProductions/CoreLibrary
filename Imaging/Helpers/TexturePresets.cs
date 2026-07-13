@@ -35,7 +35,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Bitmap texture, magical ether.</returns>
-        public static Bitmap GenerateMagicalEther(int width, int height)
+        public static Bitmap? GenerateMagicalEther(int width, int height)
         {
             var s = GetMagicalEtherSettings();
             return TextureStream.GenerateColorMappedBitmap(width, height, s.ColorRamp, s.TurbulenceSize);
@@ -47,7 +47,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Bitmap texture, lava.</returns>
-        public static Bitmap GenerateLavaPool(int width, int height)
+        public static Bitmap? GenerateLavaPool(int width, int height)
         {
             var s = GetLavaPoolSettings();
             return TextureStream.GenerateColorMappedBitmap(width, height, s.ColorRamp, s.TurbulenceSize);
@@ -59,7 +59,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Bitmap texture, cobblestone.</returns>
-        public static Bitmap GenerateCobblestone(int width, int height)
+        public static Bitmap? GenerateCobblestone(int width, int height)
         {
             var s = GetCobblestoneSettings();
             return TextureStream.GenerateCellularBitmap(width, height, s.CellSize, 255, s.BaseColor, s.SecondaryColor);
@@ -71,7 +71,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Bitmap texture, dragonscale.</returns>
-        public static Bitmap GenerateDragonScales(int width, int height)
+        public static Bitmap? GenerateDragonScales(int width, int height)
         {
             var s = GetDragonScalesSettings();
             return TextureStream.GenerateCellularBitmap(width, height, s.CellSize, 255, s.BaseColor, s.SecondaryColor);
@@ -89,10 +89,7 @@ namespace Imaging.Helpers
                 // Color mapping: Deep Void -> Cyan -> Bright Magic Purple -> White
                 ColorRamp = new Color[]
                 {
-                    Color.FromArgb(5, 5, 20),
-                    Color.FromArgb(0, 150, 200),
-                    Color.FromArgb(180, 50, 255),
-                    Color.White
+                    Color.FromArgb(5, 5, 20), Color.FromArgb(0, 150, 200), Color.FromArgb(180, 50, 255), Color.White
                 }
             };
         }
@@ -109,9 +106,7 @@ namespace Imaging.Helpers
                 // Color mapping: Hardened Magma -> Deep Red -> Bright Orange -> Yellow Hot
                 ColorRamp = new Color[]
                 {
-                    Color.FromArgb(40, 10, 10),
-                    Color.FromArgb(180, 20, 0),
-                    Color.FromArgb(255, 120, 0),
+                    Color.FromArgb(40, 10, 10), Color.FromArgb(180, 20, 0), Color.FromArgb(255, 120, 0),
                     Color.FromArgb(255, 220, 50)
                 }
             };

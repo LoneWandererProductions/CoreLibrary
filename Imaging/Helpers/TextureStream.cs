@@ -32,7 +32,7 @@ namespace Imaging.Helpers
         /// <returns>
         /// Texture Bitmap
         /// </returns>
-        internal static Bitmap GenerateNoiseBitmap(
+        internal static Bitmap? GenerateNoiseBitmap(
             int width,
             int height,
             int minValue = 0,
@@ -60,7 +60,7 @@ namespace Imaging.Helpers
         /// <param name="alpha">The alpha.</param>
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>Texture Bitmap</returns>
-        internal static Bitmap GenerateCloudsBitmap(
+        internal static Bitmap? GenerateCloudsBitmap(
             int width,
             int height,
             int minValue = 0,
@@ -90,7 +90,7 @@ namespace Imaging.Helpers
         /// <returns>
         ///     Texture Bitmap
         /// </returns>
-        internal static Bitmap GenerateMarbleBitmap(
+        internal static Bitmap? GenerateMarbleBitmap(
             int width,
             int height,
             double xPeriod = 5.0,
@@ -121,7 +121,7 @@ namespace Imaging.Helpers
         /// <returns>
         ///     Texture Bitmap
         /// </returns>
-        internal static Bitmap GenerateWoodBitmap(
+        internal static Bitmap? GenerateWoodBitmap(
             int width,
             int height,
             int alpha = 255,
@@ -149,7 +149,7 @@ namespace Imaging.Helpers
         /// <returns>
         ///     Texture Bitmap
         /// </returns>
-        internal static Bitmap GenerateWaveBitmap(
+        internal static Bitmap? GenerateWaveBitmap(
             int width,
             int height,
             int alpha = 255,
@@ -175,7 +175,7 @@ namespace Imaging.Helpers
         /// <param name="angleSecondary">The angle of the second set of lines, in degrees.</param>
         /// <param name="alpha">The alpha value for the color.</param>
         /// <returns>Texture Bitmap</returns>
-        internal static Bitmap GenerateCrosshatchBitmap(
+        internal static Bitmap? GenerateCrosshatchBitmap(
             int width,
             int height,
             int lineSpacing = 50,
@@ -207,7 +207,7 @@ namespace Imaging.Helpers
         /// <returns>
         ///     Concrete Texture Bitmap
         /// </returns>
-        internal static Bitmap GenerateConcreteBitmap(
+        internal static Bitmap? GenerateConcreteBitmap(
             int width,
             int height,
             int minValue = 50,
@@ -241,7 +241,7 @@ namespace Imaging.Helpers
         /// <returns>
         ///     Canvas Texture Bitmap
         /// </returns>
-        internal static Bitmap GenerateCanvasBitmap(
+        internal static Bitmap? GenerateCanvasBitmap(
             int width,
             int height,
             int lineSpacing = 8,
@@ -271,7 +271,7 @@ namespace Imaging.Helpers
         /// <param name="centerColor">The color of the cell centers.</param>
         /// <param name="edgeColor">The color of the cell edges.</param>
         /// <returns>The generated cellular bitmap.</returns>
-        internal static Bitmap GenerateCellularBitmap(
+        internal static Bitmap? GenerateCellularBitmap(
             int width,
             int height,
             int cellSize = 32,
@@ -299,7 +299,7 @@ namespace Imaging.Helpers
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated color mapped bitmap.</returns>
-        internal static Bitmap GenerateColorMappedBitmap(
+        internal static Bitmap? GenerateColorMappedBitmap(
             int width,
             int height,
             Color[]? colorRamp,

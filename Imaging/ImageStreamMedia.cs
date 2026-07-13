@@ -121,7 +121,7 @@ namespace Imaging
         /// <param name="image">Source image.</param>
         /// <returns>A <see cref="Bitmap"/>.</returns>
         /// <exception cref="ArgumentNullException">If image is null.</exception>
-        internal static Bitmap BitmapImageToBitmap(BitmapImage image)
+        internal static Bitmap? BitmapImageToBitmap(BitmapImage image)
         {
             ImageHelper.ValidateImage(nameof(BitmapImageToBitmap), image);
 
@@ -142,7 +142,7 @@ namespace Imaging
         /// <param name="bitmap">The source bitmap.</param>
         /// <returns>A <see cref="BitmapImage"/>.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
+        internal static BitmapImage BitmapToBitmapImage(Bitmap? bitmap)
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 

@@ -30,7 +30,7 @@ namespace Solaris
         /// <summary>
         ///     Cache for thread-safe bitmap loading
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Bitmap> ImageCache = new();
+        private static readonly ConcurrentDictionary<string, Bitmap?> ImageCache = new();
 
         /// <summary>
         /// Generates the final image based on map and textures.
@@ -199,14 +199,14 @@ namespace Solaris
 
             foreach (var kp in glyphMap)
             {
-                int tileIndex = kp.Key;
-                OverlayGlyph glyph = kp.Value;
+                var tileIndex = kp.Key;
+                var glyph = kp.Value;
 
                 if (string.IsNullOrEmpty(glyph.Symbol)) continue;
 
                 // Map flat index location straight into 2D chessboard pixel boundaries
-                int cellX = (tileIndex % width) * textureSize;
-                int cellY = (tileIndex / width) * textureSize;
+                var cellX = (tileIndex % width) * textureSize;
+                var cellY = (tileIndex / width) * textureSize;
 
                 // Calculate the exact destination boundaries of the chessboard cell space
                 var targetRect = new RectangleF(cellX, cellY, textureSize, textureSize);
@@ -282,7 +282,7 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The identifier tile.</param>
         /// <returns>Image on screen</returns>
-        public static Bitmap AddDisplay(
+        public static Bitmap? AddDisplay(
             int width, int textureSize, Dictionary<int, Texture> textures, Bitmap? layer,
             KeyValuePair<int, int> idTile)
         {
@@ -302,7 +302,7 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="position">The position.</param>
         /// <returns>Cleaned Image.</returns>
-        public static Bitmap RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
+        public static Bitmap? RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
         {
             var x = position % width * textureSize;
             var y = position / width * textureSize;

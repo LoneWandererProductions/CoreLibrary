@@ -313,6 +313,7 @@ namespace Common.ExtendedObject.Tests
             {
                 list.Add(i);
             }
+
             swList.Stop();
 
             // CLEAN SLATE AGAIN
@@ -326,6 +327,7 @@ namespace Common.ExtendedObject.Tests
             {
                 unmanaged.Add(i);
             }
+
             swUnmanaged.Stop();
 
             Trace.WriteLine($"List<int>.Add: {swList.ElapsedMilliseconds} ms");
@@ -334,7 +336,7 @@ namespace Common.ExtendedObject.Tests
             unmanaged.Dispose();
 
             // 5. RELAX TOLERANCE: Native heap allocation variance can easily be 20x slower than the CLR 
-            long maxAllowedTime = swList.ElapsedMilliseconds * 25;
+            var maxAllowedTime = swList.ElapsedMilliseconds * 25;
             Assert.IsTrue(swUnmanaged.ElapsedMilliseconds <= maxAllowedTime,
                 $"UnmanagedIntList.Add is too slow. Actual: {swUnmanaged.ElapsedMilliseconds} ms, Allowed Max: {maxAllowedTime} ms.");
         }

@@ -28,7 +28,7 @@ namespace Imaging
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns>A managed Bitmap instance.</returns>
-        public static unsafe Bitmap ToManagedBitmap(this RawTextureBuffer source)
+        public static unsafe Bitmap? ToManagedBitmap(this RawTextureBuffer source)
         {
             var bitmap = new Bitmap(source.Width, source.Height, PixelFormat.Format32bppArgb);
             var rect = new Rectangle(0, 0, source.Width, source.Height);
@@ -58,7 +58,7 @@ namespace Imaging
         /// <returns>
         /// A BitmapImage
         /// </returns>
-        public static BitmapImage ToBitmapImage(this Bitmap bmp, bool lossless = false)
+        public static BitmapImage ToBitmapImage(this Bitmap? bmp, bool lossless = false)
         {
             return ImageStreamMedia.BitmapToBitmapImage(bmp);
         }
@@ -83,7 +83,7 @@ namespace Imaging
         /// <returns>
         ///     A BitmapImage
         /// </returns>
-        public static Bitmap ToBitmap(this BitmapImage bmp)
+        public static Bitmap? ToBitmap(this BitmapImage bmp)
         {
             return ImageStreamMedia.BitmapImageToBitmap(bmp);
         }

@@ -74,7 +74,7 @@ namespace Imaging.Cifs
         /// <param name="image">The image.</param>
         /// <param name="imageFormat">The custom image format.</param>
         /// <exception cref="ArgumentNullException">Image was null. - image</exception>
-        public Cif(Bitmap image, ICustomImageFormat imageFormat = null)
+        public Cif(Bitmap? image, ICustomImageFormat imageFormat = null)
         {
             if (image == null)
             {

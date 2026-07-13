@@ -161,7 +161,7 @@ namespace ExtendedSystemObjects
         {
             lock (_lock)
             {
-                if (!_forward.TryGetValue(left, out T? right)) return false;
+                if (!_forward.TryGetValue(left, out var right)) return false;
 
                 _forward.Remove(left);
                 _reverse.Remove(right);

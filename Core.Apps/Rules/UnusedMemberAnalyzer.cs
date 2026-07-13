@@ -78,7 +78,7 @@ namespace Core.Apps.Rules
                 if (!CoreHelper.IsSymbolUsed(model, root, symbol))
                 {
                     // We need a name for the diagnostic message
-                    string memberName = CoreHelper.GetMemberName(member);
+                    var memberName = CoreHelper.GetMemberName(member);
 
                     yield return new Diagnostic(
                         Name,

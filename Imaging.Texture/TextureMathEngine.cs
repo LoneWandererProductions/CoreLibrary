@@ -943,6 +943,7 @@ namespace Imaging.Texture
 
             return buffer;
         }
+
         /// <summary>
         /// Generates an organic foliage pattern composed of dense, structurally pinched leaf cells.
         /// </summary>
@@ -962,7 +963,7 @@ namespace Imaging.Texture
             int height,
             int leafSize = 40,
             int alpha = 255,
-            byte leafR = 34, byte leafG = 110, byte leafB = 24,    // Main Leaf Green
+            byte leafR = 34, byte leafG = 110, byte leafB = 24, // Main Leaf Green
             byte shadowR = 12, byte shadowG = 35, byte shadowB = 10) // Deep Shade/Background
         {
             var buffer = new RawTextureBuffer(width, height);
@@ -1032,9 +1033,13 @@ namespace Imaging.Texture
                     var rColorModifier = 0.85 + (leafSeedValue * 0.3); // +/- 15% variance
 
                     // Blend base color with deep ambient shadows toward edge structures
-                    var finalR = (byte)Math.Clamp((shadowR + (leafR - shadowR) * lightIntensity) * rColorModifier, 0, 255);
-                    var finalG = (byte)Math.Clamp((shadowG + (leafG - shadowG) * lightIntensity) * 1.0, 0, 255); // Keep greens prominent
-                    var finalB = (byte)Math.Clamp((shadowB + (leafB - shadowB) * lightIntensity) * rColorModifier, 0, 255);
+                    var finalR = (byte)Math.Clamp((shadowR + (leafR - shadowR) * lightIntensity) * rColorModifier, 0,
+                        255);
+                    var finalG =
+                        (byte)Math.Clamp((shadowG + (leafG - shadowG) * lightIntensity) * 1.0, 0,
+                            255); // Keep greens prominent
+                    var finalB = (byte)Math.Clamp((shadowB + (leafB - shadowB) * lightIntensity) * rColorModifier, 0,
+                        255);
 
                     span[idx++] = finalB;
                     span[idx++] = finalG;
@@ -1071,8 +1076,8 @@ namespace Imaging.Texture
             double scaleX = 16.0,
             double scaleY = 70.0,
             double warpStrength = 12.0,
-            byte barkR = 75, byte barkG = 45, byte barkB = 25,     // Base Dark Furrow Brown
-            byte woodR = 140, byte woodG = 95, byte woodB = 55)   // Highlight Ridge Wood
+            byte barkR = 75, byte barkG = 45, byte barkB = 25, // Base Dark Furrow Brown
+            byte woodR = 140, byte woodG = 95, byte woodB = 55) // Highlight Ridge Wood
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
@@ -1103,7 +1108,7 @@ namespace Imaging.Texture
                     span[idx++] = (byte)(barkB + (woodB - barkB) * barkFactor); // B
                     span[idx++] = (byte)(barkG + (woodG - barkG) * barkFactor); // G
                     span[idx++] = (byte)(barkR + (woodR - barkR) * barkFactor); // R
-                    span[idx++] = (byte)alpha;                                  // A
+                    span[idx++] = (byte)alpha; // A
                 }
             }
 
@@ -1136,8 +1141,8 @@ namespace Imaging.Texture
             double xyPeriod = 6.0,
             double turbulencePower = 0.15,
             double turbulenceSize = 32.0,
-            byte baseR = 130, byte baseG = 85, byte baseB = 45,     // Main Plank Wood Color
-            byte grainR = 70, byte grainG = 40, byte grainB = 20)   // Darker Grain Line Color
+            byte baseR = 130, byte baseG = 85, byte baseB = 45, // Main Plank Wood Color
+            byte grainR = 70, byte grainG = 40, byte grainB = 20) // Darker Grain Line Color
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
@@ -1146,32 +1151,32 @@ namespace Imaging.Texture
             var idx = 0;
 
             // Shift the ring core far to the left off-screen, and slightly down
-            double centerX = -width * 1.0;
-            double centerY = height * 0.5;
+            var centerX = -width * 1.0;
+            var centerY = height * 0.5;
 
             for (var y = 0; y < height; y++)
             {
                 for (var x = 0; x < width; x++)
                 {
-                    double dx = x - centerX;
-                    double dy = y - centerY;
+                    var dx = x - centerX;
+                    var dy = y - centerY;
 
                     // Multiply dy by a tiny fraction (0.04). This squashes the circular tree rings
                     // into extremely elongated vertical ellipses, perfectly mimicking longitudinal tree trunk growth.
-                    double distortedDist = Math.Sqrt(dx * dx + dy * dy * 0.04) +
-                        turbulencePower * (double)noiseGen.Turbulence(x, y, turbulenceSize);
+                    var distortedDist = Math.Sqrt(dx * dx + dy * dy * 0.04) +
+                                        turbulencePower * (double)noiseGen.Turbulence(x, y, turbulenceSize);
 
                     // Calculate the oscillating grain frequency line paths
-                    double continuousValue = Math.Abs(Math.Sin(xyPeriod * distortedDist * Math.PI / width));
+                    var continuousValue = Math.Abs(Math.Sin(xyPeriod * distortedDist * Math.PI / width));
 
                     // Sharp dark grain lines mixed with wide soft wood planks
-                    double grainFactor = Math.Pow(continuousValue, 0.6);
+                    var grainFactor = Math.Pow(continuousValue, 0.6);
 
                     // Interpolate smoothly between the raw board color and the dark grain rings
                     span[idx++] = (byte)(grainB + (baseB - grainB) * grainFactor); // B
                     span[idx++] = (byte)(grainG + (baseG - grainG) * grainFactor); // G
                     span[idx++] = (byte)(grainR + (baseR - grainR) * grainFactor); // R
-                    span[idx++] = (byte)alpha;                                     // A
+                    span[idx++] = (byte)alpha; // A
                 }
             }
 

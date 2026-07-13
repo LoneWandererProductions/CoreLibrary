@@ -69,7 +69,8 @@ namespace CommonLibraryGuiTests
             // Assert
             // Circle radius 100 + thickness 10 = total diameter 210.
             // Our GetGraphicBounds should account for this.
-            NUnit.Framework.Assert.That(image.Width, Is.GreaterThanOrEqualTo(200), "Image must be wide enough for the diameter.");
+            NUnit.Framework.Assert.That(image.Width, Is.GreaterThanOrEqualTo(200),
+                "Image must be wide enough for the diameter.");
         }
     }
 }

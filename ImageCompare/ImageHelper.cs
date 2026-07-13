@@ -24,7 +24,7 @@ namespace ImageCompare
         /// <param name="second">The second.</param>
         /// <returns>Image compare results</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
-        internal static ImageCompareData CompareImages(Bitmap first, Bitmap second)
+        internal static ImageCompareData CompareImages(Bitmap? first, Bitmap? second)
         {
             var oneSimilar = ImageProcessing.GenerateData(first, 0);
             var twoSimilar = ImageProcessing.GenerateData(second, 1);

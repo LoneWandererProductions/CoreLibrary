@@ -208,7 +208,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <exception cref="ArgumentNullException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ValidateImage(string method, Bitmap image)
+        internal static void ValidateImage(string method, Bitmap? image)
         {
             if (image != null)
             {

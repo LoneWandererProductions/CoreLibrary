@@ -67,7 +67,7 @@ namespace Imaging
         ///     GCHandleType, Retrieves the address of object data in a Pinned handle.
         /// </summary>
         /// <param name="image">The image in question.</param>
-        public DirectBitmap(Image image)
+        public DirectBitmap(Image? image)
         {
             Width = image.Width;
             Height = image.Height;
@@ -147,7 +147,7 @@ namespace Imaging
         /// Creates a standalone, managed copy of the current state of this bitmap.
         /// This copy survives even after this DirectBitmap is disposed.
         /// </summary>
-        public Bitmap ToBitmap()
+        public Bitmap? ToBitmap()
         {
             if (Disposed) throw new ObjectDisposedException(nameof(DirectBitmap));
 
@@ -245,7 +245,7 @@ namespace Imaging
         ///     Gets the instance.
         /// </summary>
         /// <param name="btm">The custom Bitmap.</param>
-        public static DirectBitmap GetInstance(Bitmap btm)
+        public static DirectBitmap GetInstance(Bitmap? btm)
         {
             var dbm = new DirectBitmap(btm.Width, btm.Height);
 

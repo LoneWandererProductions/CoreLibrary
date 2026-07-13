@@ -32,7 +32,7 @@ namespace Imaging.Helpers
         ///     A Bitmap with the applied texture.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown for unsupported texture or shape types.</exception>
-        internal static Bitmap GenerateTexture(
+        internal static Bitmap? GenerateTexture(
             Bitmap? image,
             int width,
             int height,

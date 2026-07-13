@@ -78,7 +78,7 @@ namespace CommonLibraryGuiTests
             TestContext.WriteLine($"NativeBitmapDisplay Average Time: {nativeDisplayTime}ms");
 
             // FIXED: Switched from strict 1ms addition to a percentage multiplier threshold
-            double maxAllowedTime = mediaImageTime * ToleranceMultiplier;
+            var maxAllowedTime = mediaImageTime * ToleranceMultiplier;
 
             Assert.That(nativeDisplayTime, Is.LessThanOrEqualTo(maxAllowedTime),
                 $"NativeBitmapDisplay ({nativeDisplayTime}ms) should be roughly as fast or faster than Media.Image ({mediaImageTime}ms). " +

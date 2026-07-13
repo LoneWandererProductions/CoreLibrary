@@ -64,7 +64,7 @@ namespace ImageCompare
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="id">The identifier.</param>
         /// <returns>Image Object to compare</returns>
-        internal static ImageSimilar GenerateData(Bitmap bitmap, int id)
+        internal static ImageSimilar GenerateData(Bitmap? bitmap, int id)
         {
             // Resize
             bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);

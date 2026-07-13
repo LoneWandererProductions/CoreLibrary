@@ -255,7 +255,7 @@ namespace ExtendedSystemObjects
             {
                 while (++_index < _capacity)
                 {
-                    Entry* entry = _entries + _index;
+                    var entry = _entries + _index;
                     if (entry->IsPresent != 0)
                     {
                         _current = new KeyValuePair<TKey, TValue>(entry->Key, entry->Value);

@@ -1,10 +1,12 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Texture
  * FILE:        RawTextureBuffer.cs
  * PURPOSE:     Texture buffer for raw pixel data, used for texture generation and manipulation.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable MemberCanBeInternal
 
 namespace Imaging.Texture
 {

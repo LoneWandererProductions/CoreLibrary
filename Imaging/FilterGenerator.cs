@@ -79,7 +79,7 @@ namespace Imaging
         ///     or
         ///     shape - null
         /// </exception>
-        public Bitmap? GenerateFilterOverlay(Bitmap image, int width, int height, FiltersType filter, MaskShape shape,
+        public Bitmap? GenerateFilterOverlay(Bitmap? image, int width, int height, FiltersType filter, MaskShape shape,
             Point? startPoint = null,
             object? shapeParams = null)
         {

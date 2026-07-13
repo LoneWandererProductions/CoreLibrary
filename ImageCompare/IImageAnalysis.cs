@@ -63,7 +63,7 @@ namespace ImageCompare
         /// <param name="second">The Bitmap two.</param>
         /// <returns>Data about two images</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
-        ImageCompareData CompareImages(Bitmap first, Bitmap second);
+        ImageCompareData CompareImages(Bitmap? first, Bitmap? second);
 
         /// <summary>
         ///     Compares the two images.
@@ -88,7 +88,7 @@ namespace ImageCompare
         /// <param name="image">The image.</param>
         /// <returns>Color Dictionary</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
-        Dictionary<Color, int> GetColors(Bitmap image);
+        Dictionary<Color, int> GetColors(Bitmap? image);
 
         /// <summary>
         ///     Generates a differences bitmap.
@@ -100,7 +100,7 @@ namespace ImageCompare
         ///     The difference Bitmap
         /// </returns>
         /// <exception cref="T:System.ArgumentException"></exception>
-        Bitmap DifferenceImage(Bitmap first, Bitmap second, Color color);
+        Bitmap? DifferenceImage(Bitmap? first, Bitmap? second, Color color);
 
         /// <summary>
         ///     Determines whether [is part of] [the specified big image].
@@ -111,7 +111,7 @@ namespace ImageCompare
         /// <returns>
         ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
-        bool IsPartOf(Bitmap bigImage, Bitmap smallImage, out Coordinate2D startCoordinates);
+        bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate2D startCoordinates);
 
 
         /// <summary>

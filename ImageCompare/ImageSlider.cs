@@ -46,7 +46,7 @@ namespace ImageCompare
         /// <returns>
         ///     <c>true</c> if the small image is part of the big image; otherwise, <c>false</c>.
         /// </returns>
-        internal static bool IsPartOf(Bitmap bigImage, Bitmap smallImage, out Coordinate2D startCoordinates,
+        internal static bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate2D startCoordinates,
             int threshold = 0)
         {
             var bigHeight = bigImage.Height;

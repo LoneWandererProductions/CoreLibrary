@@ -155,8 +155,8 @@ namespace Core.Viewer
 
             _currentDiagnostics.Clear();
             var files = SafeEnumerateFiles(TargetDirectory, CoreResources.ResourceCsExtension).ToList();
-            int totalFiles = files.Count;
-            int processedFiles = 0;
+            var totalFiles = files.Count;
+            var processedFiles = 0;
 
             // Progress<T> captures the SynchronizationContext (the UI thread) automatically
             var progress = new Progress<double>(val => ProgressValue = val);

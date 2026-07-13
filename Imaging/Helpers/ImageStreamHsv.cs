@@ -22,7 +22,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="hueShift">The hue shift.</param>
         /// <returns>Processed Image</returns>
-        internal static Bitmap AdjustHue(Bitmap image, double hueShift)
+        internal static Bitmap? AdjustHue(Bitmap? image, double hueShift)
         {
             return ProcessImage(image, colorHsv =>
             {
@@ -38,7 +38,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="saturationFactor">The saturation factor.</param>
         /// <returns>Processed Image</returns>
-        internal static Bitmap AdjustSaturation(Bitmap image, double saturationFactor)
+        internal static Bitmap? AdjustSaturation(Bitmap? image, double saturationFactor)
         {
             return ProcessImage(image, colorHsv => colorHsv.S = ImageHelper.Clamp(colorHsv.S * saturationFactor, 0, 1));
         }
@@ -49,7 +49,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="brightnessFactor">The brightness factor.</param>
         /// <returns>Processed Image</returns>
-        internal static Bitmap AdjustBrightness(Bitmap image, double brightnessFactor)
+        internal static Bitmap? AdjustBrightness(Bitmap? image, double brightnessFactor)
         {
             return ProcessImage(image, colorHsv => colorHsv.V = ImageHelper.Clamp(colorHsv.V * brightnessFactor, 0, 1));
         }
@@ -61,7 +61,7 @@ namespace Imaging.Helpers
         /// <param name="gamma">The gamma.</param>
         /// <returns>Processed Image</returns>
         /// <exception cref="ArgumentOutOfRangeException">gamma - Gamma must be greater than 0.</exception>
-        internal static Bitmap ApplyGammaCorrection(Bitmap image, double gamma)
+        internal static Bitmap? ApplyGammaCorrection(Bitmap? image, double gamma)
         {
             if (gamma <= 0)
             {
@@ -83,7 +83,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="pixelOp">The pixel operation.</param>
         /// <returns>Processed Image</returns>
-        private static Bitmap ProcessImage(Bitmap image, Action<ColorHsv> pixelOp)
+        private static Bitmap? ProcessImage(Bitmap? image, Action<ColorHsv> pixelOp)
         {
             ImageHelper.ValidateImage(nameof(ProcessImage), image);
 

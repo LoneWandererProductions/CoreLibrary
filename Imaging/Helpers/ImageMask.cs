@@ -23,7 +23,7 @@ namespace Imaging.Helpers
         /// <param name="height">The height of the rectangle.</param>
         /// <param name="startPoint">The starting point (top-left corner) of the rectangle, optional.</param>
         /// <returns>Rectangle Bitmap</returns>
-        internal static Bitmap ApplyRectangleMask(Image bitmap, int width, int height, Point? startPoint = null)
+        internal static Bitmap? ApplyRectangleMask(Image? bitmap, int width, int height, Point? startPoint = null)
         {
             // Default start point
             var actualStartPoint = startPoint ?? new Point(0, 0);
@@ -54,7 +54,7 @@ namespace Imaging.Helpers
         /// <returns>
         ///     Circle Bitmap
         /// </returns>
-        internal static Bitmap ApplyCircleMask(Image bitmap, int width, int height, Point? startPoint = null)
+        internal static Bitmap? ApplyCircleMask(Image? bitmap, int width, int height, Point? startPoint = null)
         {
             // Default start point
             var actualStartPoint = startPoint ?? new Point(0, 0);
@@ -76,7 +76,7 @@ namespace Imaging.Helpers
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="points">The points.</param>
         /// <returns>Polygon Bitmap</returns>
-        internal static Bitmap ApplyPolygonMask(Image bitmap, Point[] points)
+        internal static Bitmap? ApplyPolygonMask(Image? bitmap, Point[] points)
         {
             var polyBitmap = new Bitmap(bitmap.Width, bitmap.Height);
             using var g = Graphics.FromImage(polyBitmap);

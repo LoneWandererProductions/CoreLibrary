@@ -25,7 +25,7 @@ namespace Solaris
         /// <value>
         ///     The path.
         /// </value>
-        public string? Path { get; init; }
+        public string Path { get; init; }
 
         /// <summary>
         ///     Gets the layer.

@@ -62,7 +62,7 @@ namespace Imaging.Interfaces
         ///     or
         ///     shape - null
         /// </exception>
-        Bitmap? GenerateFilterOverlay(Bitmap image, int width, int height, FiltersType filter, MaskShape shape,
+        Bitmap? GenerateFilterOverlay(Bitmap? image, int width, int height, FiltersType filter, MaskShape shape,
             Point? startPoint = null,
             object? shapeParams = null);
     }

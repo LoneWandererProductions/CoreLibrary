@@ -27,7 +27,7 @@ namespace Imaging.Cifs
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Get Cif from Bitmap</returns>
-        internal static Dictionary<Color, SortedSet<int>> ConvertToCifFromBitmap(Bitmap image)
+        internal static Dictionary<Color, SortedSet<int>> ConvertToCifFromBitmap(Bitmap? image)
         {
             var imageFormat = new Dictionary<Color, SortedSet<int>>();
 

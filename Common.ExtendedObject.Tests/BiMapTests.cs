@@ -35,7 +35,9 @@ namespace Common.ExtendedObject.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void Add_DuplicateValue_ThrowsException()
         {
-            var map = new BiMap<string> { { "A", "Shared" }, { "B", "Shared" } // This should trigger your duplicate check
+            var map = new BiMap<string>
+            {
+                { "A", "Shared" }, { "B", "Shared" } // This should trigger your duplicate check
             };
         }
 

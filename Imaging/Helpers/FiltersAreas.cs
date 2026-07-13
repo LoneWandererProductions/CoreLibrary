@@ -36,7 +36,7 @@ namespace Imaging.Helpers
         ///     or
         ///     shape - null
         /// </exception>
-        internal static Bitmap? GenerateFilter(Bitmap image,
+        internal static Bitmap? GenerateFilter(Bitmap? image,
             int? width,
             int? height,
             FiltersType filter,
