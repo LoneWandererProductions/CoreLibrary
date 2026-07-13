@@ -14,42 +14,42 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Images\Base.png">
+    <Content Include="Images\Base.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\Color.png">
+    </Content>
+    <Content Include="Images\Color.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\ColorShade.png">
+    </Content>
+    <Content Include="Images\ColorShade.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\Compare.png">
+    </Content>
+    <Content Include="Images\Compare.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\CompareCopy.png">
+    </Content>
+    <Content Include="Images\CompareCopy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\CompareSimilar.png">
+    </Content>
+    <Content Include="Images\CompareSimilar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\compressed.cif">
+    </Content>
+    <Content Include="Images\compressed.cif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\result_uncompressed.png">
+    </Content>
+    <Content Include="Images\result_uncompressed.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Image\LayerOne.png">
+    </Content>
+    <Content Include="Image\LayerOne.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Image\Layertwo.png">
+    </Content>
+    <Content Include="Image\Layertwo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Image\ResultOne.png">
+    </Content>
+    <Content Include="Image\ResultOne.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Image\Tile.png">
+    </Content>
+    <Content Include="Image\Tile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
