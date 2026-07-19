@@ -97,7 +97,7 @@ namespace Common.Controls
         /// <param name="rowHeights">List of row heights in pixels.</param>
         /// <param name="gridLines">Indicates whether grid lines should be shown.</param>
         /// <returns>A <see cref="Grid" /> with custom row and column dimensions.</returns>
-        public static Grid ExtendGrid(List<int> columnWidths, List<int> rowHeights, bool gridLines)
+        public static Grid ExtendGrid(List<int>? columnWidths, List<int>? rowHeights, bool gridLines)
         {
             if (columnWidths == null || rowHeights == null)
             {
@@ -121,7 +121,7 @@ namespace Common.Controls
         /// <param name="rowHeights">Custom row heights if any, null otherwise.</param>
         /// <returns>A <see cref="Grid" /> configured with the specified parameters.</returns>
         private static Grid InitializeGridBase(bool gridLines, int width, int height,
-            IReadOnlyCollection<int> columnWidths, IReadOnlyCollection<int> rowHeights)
+            IReadOnlyCollection<int>? columnWidths, IReadOnlyCollection<int>? rowHeights)
         {
             var dynamicGrid = new Grid
             {
@@ -169,8 +169,13 @@ namespace Common.Controls
         }
 
         /// <summary>
-        ///     Validates the grid parameters to ensure they are non-negative.
+        /// Validates the grid parameters to ensure they are non-negative.
         /// </summary>
+        /// <param name="columns">The columns.</param>
+        /// <param name="rows">The rows.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <exception cref="Common.Controls.CommonControlsException"></exception>
         private static void ValidateParameters(int columns, int rows, int width = 1, int height = 1)
         {
             if (columns < 0 || rows < 0 || width < 1 || height < 1)
@@ -180,11 +185,19 @@ namespace Common.Controls
         }
 
         /// <summary>
-        ///     Calculates the total width of the grid.
+        /// Calculates the total width of the grid.
         /// </summary>
-        private static int CalculateTotalWidth(IEnumerable<int> columnWidths)
+        /// <param name="columnWidths">The column widths.</param>
+        /// <returns>The column width of the grid.</returns>
+        /// <exception cref="Common.Controls.CommonControlsException"></exception>
+        private static int CalculateTotalWidth(IEnumerable<int>? columnWidths)
         {
             var totalWidth = 0;
+            if (columnWidths == null)
+            {
+                return totalWidth;
+            }
+
             foreach (var width in columnWidths)
             {
                 if (width < 0)
@@ -199,11 +212,19 @@ namespace Common.Controls
         }
 
         /// <summary>
-        ///     Calculates the total height of the grid.
+        /// Calculates the total height of the grid.
         /// </summary>
-        private static int CalculateTotalHeight(IEnumerable<int> rowHeights)
+        /// <param name="rowHeights">The row heights.</param>
+        /// <returns>The height we need for the grid.</returns>
+        /// <exception cref="Common.Controls.CommonControlsException"></exception>
+        private static int CalculateTotalHeight(IEnumerable<int>? rowHeights)
         {
             var totalHeight = 0;
+            if (rowHeights == null)
+            {
+                return totalHeight;
+            }
+
             foreach (var height in rowHeights)
             {
                 if (height < 0)

@@ -27,9 +27,7 @@ namespace DataFormatter
         /// <returns>split Parts</returns>
         internal static List<string> GetParts(string str, char separator)
         {
-            if (string.IsNullOrEmpty(str)) return new List<string>();
-
-            return str.Split(separator).ToList();
+            return string.IsNullOrEmpty(str) ? new List<string>() : str.Split(separator).ToList();
         }
 
         /// <summary>

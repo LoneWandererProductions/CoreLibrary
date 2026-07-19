@@ -539,7 +539,8 @@ namespace RenderEngine
             // Note: For better performance, store actualAtlasW and actualAtlasH as class 
             // fields when you initially generate/load _fontTextureId.
             GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out int actualAtlasW);
-            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out int actualAtlasH);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight,
+                out int actualAtlasH);
 
             //config variables
             const float charSpacing = 1.0f; // Increase this to spread letters apart
@@ -598,14 +599,32 @@ namespace RenderEngine
                 var y1 = currentY + (FontCellHeight * scale) + verticalOffset;
 
                 // --- Triangle 1 (CCW) ---
-                vertexData[idx++] = x0; vertexData[idx++] = y0; vertexData[idx++] = u0; vertexData[idx++] = v0; // Top-Left
-                vertexData[idx++] = x0; vertexData[idx++] = y1; vertexData[idx++] = u0; vertexData[idx++] = v1; // Bottom-Left
-                vertexData[idx++] = x1; vertexData[idx++] = y1; vertexData[idx++] = u1; vertexData[idx++] = v1; // Bottom-Right
+                vertexData[idx++] = x0;
+                vertexData[idx++] = y0;
+                vertexData[idx++] = u0;
+                vertexData[idx++] = v0; // Top-Left
+                vertexData[idx++] = x0;
+                vertexData[idx++] = y1;
+                vertexData[idx++] = u0;
+                vertexData[idx++] = v1; // Bottom-Left
+                vertexData[idx++] = x1;
+                vertexData[idx++] = y1;
+                vertexData[idx++] = u1;
+                vertexData[idx++] = v1; // Bottom-Right
 
                 // --- Triangle 2 (CCW) ---
-                vertexData[idx++] = x0; vertexData[idx++] = y0; vertexData[idx++] = u0; vertexData[idx++] = v0; // Top-Left
-                vertexData[idx++] = x1; vertexData[idx++] = y1; vertexData[idx++] = u1; vertexData[idx++] = v1; // Bottom-Right
-                vertexData[idx++] = x1; vertexData[idx++] = y0; vertexData[idx++] = u1; vertexData[idx++] = v0; // Top-Right
+                vertexData[idx++] = x0;
+                vertexData[idx++] = y0;
+                vertexData[idx++] = u0;
+                vertexData[idx++] = v0; // Top-Left
+                vertexData[idx++] = x1;
+                vertexData[idx++] = y1;
+                vertexData[idx++] = u1;
+                vertexData[idx++] = v1; // Bottom-Right
+                vertexData[idx++] = x1;
+                vertexData[idx++] = y0;
+                vertexData[idx++] = u1;
+                vertexData[idx++] = v0; // Top-Right
 
                 //adjust spacing
                 currentX += (FontCellWidth * scale) + charSpacing;

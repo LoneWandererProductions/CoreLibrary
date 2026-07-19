@@ -35,6 +35,6 @@ namespace CommonFilter
         /// <value>
         ///     The entry text.
         /// </value>
-        internal string EntryText { get; init; }
+        internal string? EntryText { get; init; }
     }
 }

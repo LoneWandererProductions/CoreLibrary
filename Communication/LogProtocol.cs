@@ -13,8 +13,19 @@ namespace Communication
     /// </summary>
     public enum LogProtocol
     {
-        Tcp,
-        Udp,
-        Both
+        /// <summary>
+        /// The TCP Protocol
+        /// </summary>
+        Tcp = 0,
+
+        /// <summary>
+        /// The UDP Protocol
+        /// </summary>
+        Udp = 1,
+
+        /// <summary>
+        /// Both Protocols
+        /// </summary>
+        Both = 2
     }
 }

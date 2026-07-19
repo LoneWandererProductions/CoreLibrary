@@ -6,6 +6,9 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -63,7 +66,7 @@ namespace DataFormatter
             foreach (var line in lst)
                 // When the layer keyword is encountered, store the current layer
             {
-                if (line.StartsWith(layerKeyword))
+                if (line.StartsWith(layerKeyword, StringComparison.Ordinal))
                 {
                     if (currentLayer.Length > 0)
                     {

@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+
 using Core.Apps.Development;
 using Core.Apps.Extensions;
 using Core.Apps.FileManager;
@@ -31,7 +33,7 @@ namespace Core.Apps
         /// <returns>
         /// All commands.
         /// </returns>
-        public static IReadOnlyList<ICommand> GetCommands(Weave? weave = null)
+        public static IEnumerable<ICommand> GetCommands(Weave? weave = null)
         {
             // 1. Use a List instead of an array so we can dynamically add commands
             var modules = new List<ICommand>();

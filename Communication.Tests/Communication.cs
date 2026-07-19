@@ -25,7 +25,7 @@ namespace Communication.Tests
         {
             var communication = new NetCom();
             // Use a URL that actually ends in a filename
-            var url = "https://www.google.de/favicon.ico";
+            const string url = "https://www.google.de/favicon.ico";
             var targetFolder = Path.Combine(Directory.GetCurrentDirectory(), "TestDownloads");
 
             var success = await communication.SaveFile(targetFolder, url);

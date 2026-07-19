@@ -66,9 +66,17 @@ namespace CommonLibraryGuiTests
             {
                 AuroraTextures = new Dictionary<int, Texture>
                 {
-                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") } },
-                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") } },
-                    { 2, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") } }
+                    {
+                        0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") }
+                    },
+                    {
+                        1,
+                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") }
+                    },
+                    {
+                        2,
+                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
+                    }
                 },
                 AuroraTextureSize = 100,
                 AuroraHeight = 2,
@@ -132,9 +140,17 @@ namespace CommonLibraryGuiTests
             {
                 PolarisTextures = new Dictionary<int, Texture>
                 {
-                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") } },
-                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") } },
-                    { 2, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") } }
+                    {
+                        0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") }
+                    },
+                    {
+                        1,
+                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") }
+                    },
+                    {
+                        2,
+                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
+                    }
                 },
                 PolarisTextureSize = 100,
                 PolarisHeight = 2,
