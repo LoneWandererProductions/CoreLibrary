@@ -46,7 +46,7 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// The store key
         /// </summary>
-        private string StoreKey = "lockedfiles";
+        private readonly string StoreKey = "lockedfiles";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileLockScanner"/> class.

@@ -28,19 +28,9 @@ namespace Communication
     public sealed class SimpleLogServer : IDisposable
     {
         /// <summary>
-        /// The internal server
-        /// </summary>
-        private readonly LogCollectorServer _internalServer;
-
-        /// <summary>
         /// The CTS
         /// </summary>
         private readonly CancellationTokenSource _cts;
-
-        /// <summary>
-        /// The server task
-        /// </summary>
-        private Task _serverTask;
 
         /// <summary>
         /// The TCP log server

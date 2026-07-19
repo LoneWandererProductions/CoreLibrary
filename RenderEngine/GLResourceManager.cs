@@ -84,7 +84,11 @@ namespace RenderEngine
                 { 10004, ("Wave", "Continuous fluid phase wave spectrum running on a pure HSV scale.") },
                 { 10005, ("Crosshatch", "Pixel-perfect grid intersecting alignment lines overlay.") },
                 { 10006, ("Concrete", "Industrial high-contrast gritty stone concrete texture map.") },
-                { 10007, ("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.") }
+                { 10007, ("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.") },
+                // WIRED: New nature engine assets added below
+                { 10008, ("TreeBark", "Anisotropic domain-warped vertical furrowed bark grain.") },
+                { 10009, ("Foliage", "Dense organic canopy composed of distance-pinched leaf profiles.") },
+                { 10010, ("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.") }
             };
 
         // =================================================================================
@@ -162,6 +166,10 @@ namespace RenderEngine
                     lineThickness: 2),
                 10006 => TextureMathEngine.GenerateConcrete(_procWidth, _procHeight, _lazyNoiseGen),
                 10007 => TextureMathEngine.GenerateCanvas(_procWidth, _procHeight, lineSpacing: 8, lineThickness: 1),
+                // WIRED: Divert requests safely into your custom factory configurations
+                10008 => TextureFactory.GenerateTreeBark(_procWidth, _procHeight, _lazyNoiseGen),
+                10009 => TextureFactory.GenerateFoliage(_procWidth, _procHeight),
+                10010 => TextureFactory.GenerateWoodPlank(_procWidth, _procHeight, _lazyNoiseGen),
                 _ => null
             };
 
@@ -264,7 +272,7 @@ namespace RenderEngine
             if (_fallbackTextureId >= 0) return _fallbackTextureId;
 
             // 1. Expand the 2x2 grid to 64x64 to create a deep, smooth Mipmap chain
-            var size = 64;
+            const int size = 64;
             var halfSize = size / 2;
             var pixels = new byte[size * size * 4];
 

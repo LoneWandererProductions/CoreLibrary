@@ -17,7 +17,10 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using System;
+using System.Windows.Media.TextFormatting;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RenderEngine
 {
@@ -524,78 +527,94 @@ namespace RenderEngine
             GL.BindTexture(TextureTarget.Texture2D, _fontTextureId);
             GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
 
+            // --- NEW: Apply the color parameter via uniform ---
+            // Make sure "uColor" matches the uniform name in your fragment shader
+            int colorLoc = GL.GetUniformLocation(_ui2DTextureShader, "uColor");
+            if (colorLoc >= 0)
+            {
+                GL.Uniform4(colorLoc, color.r / 255f, color.g / 255f, color.b / 255f, color.a / 255f);
+            }
+
+            // --- Retrieve the actual texture bounds ---
+            // Note: For better performance, store actualAtlasW and actualAtlasH as class 
+            // fields when you initially generate/load _fontTextureId.
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out int actualAtlasW);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out int actualAtlasH);
+
+            //config variables
+            const float charSpacing = 1.0f; // Increase this to spread letters apart
+            const float verticalOffset = 0.0f; // Adjust this if the font is floating too high/low
+            const float inset = 0.25f; // Prevents texture bleeding by shrinking the UV map by half a texel
+
+
+            // Fallback just in case the query fails, but use the real resolution first
+            var atlasW = actualAtlasW > 0 ? (float)actualAtlasW : (FontCellWidth * 16f);
+            var atlasH = actualAtlasH > 0 ? (float)actualAtlasH : (FontCellHeight * 6f);
+
             var vertexData = new float[text.Length * 24];
             var idx = 0;
 
             var scale = (float)fontSize / FontCellHeight;
             var currentX = x;
-
-            var atlasW = FontCellWidth * 16;
-            var atlasH = FontCellHeight * 6;
+            var currentY = y;
 
             foreach (var ch in text)
             {
                 var ascii = (int)ch;
-                if (ascii < 32 || ascii > 126) ascii = 63; // Fallback to '?' for missing characters
+                if (ascii < 32 || ascii > 126) ascii = 63; // Fallback to '?'
+
+                // Handle newlines
+                if (ch == '\n')
+                {
+                    currentX = x; // Reset to start of line
+                    currentY += (FontCellHeight * scale); // Move down one full line height
+                    continue;
+                }
+
 
                 var charIdx = ascii - 32;
                 var col = charIdx % 16;
                 var row = charIdx / 16;
 
-                const float texelInset = 0.5f; // half a texel, in atlas pixels
+                // Calculate pixel coordinates for the sub-rectangle
+                var pixelLeft = (col * FontCellWidth) + inset;
+                var pixelRight = ((col + 1) * FontCellWidth) - inset;
+                var pixelTop = (row * FontCellHeight) + inset;
+                var pixelBottom = ((row + 1) * FontCellHeight) - inset;
 
-                var pixelLeft = col * FontCellWidth + texelInset;
-                var pixelRight = (col + 1) * FontCellWidth - texelInset;
-                var pixelTop = row * FontCellHeight + texelInset;
-                var pixelBottom = (row + 1) * FontCellHeight - texelInset;
+                // Map to UV space
+                // Compute exact horizontal texture boundaries using TRUE atlas bounds
+                var u0 = pixelLeft / atlasW;
+                var u1 = pixelRight / atlasW;
 
-                // Compute exact horizontal texture boundaries
-                var u0 = pixelLeft / (float)atlasW;
-                var u1 = pixelRight / (float)atlasW;
                 // Invert V coordinates (1.0f - ...) to flip the texture right-side up!
-                var v0 = pixelTop / (float)atlasH;
-                var v1 = pixelBottom / (float)atlasH;
+                var v0 = 1.0f - (pixelTop / atlasH);
+                var v1 = 1.0f - (pixelBottom / atlasH);
 
+                // Physical geometry - Ensure y1 covers the full height
                 var x0 = currentX;
-                var y0 = y;
+                var y0 = currentY + verticalOffset;
                 var x1 = currentX + (FontCellWidth * scale);
-                var y1 = y + (FontCellHeight * scale);
+                var y1 = currentY + (FontCellHeight * scale) + verticalOffset;
 
                 // --- Triangle 1 (CCW) ---
-                vertexData[idx++] = x0;
-                vertexData[idx++] = y0;
-                vertexData[idx++] = u0;
-                vertexData[idx++] = v0; // Top-Left
-                vertexData[idx++] = x0;
-                vertexData[idx++] = y1;
-                vertexData[idx++] = u0;
-                vertexData[idx++] = v1; // Bottom-Left
-                vertexData[idx++] = x1;
-                vertexData[idx++] = y1;
-                vertexData[idx++] = u1;
-                vertexData[idx++] = v1; // Bottom-Right
+                vertexData[idx++] = x0; vertexData[idx++] = y0; vertexData[idx++] = u0; vertexData[idx++] = v0; // Top-Left
+                vertexData[idx++] = x0; vertexData[idx++] = y1; vertexData[idx++] = u0; vertexData[idx++] = v1; // Bottom-Left
+                vertexData[idx++] = x1; vertexData[idx++] = y1; vertexData[idx++] = u1; vertexData[idx++] = v1; // Bottom-Right
 
                 // --- Triangle 2 (CCW) ---
-                vertexData[idx++] = x0;
-                vertexData[idx++] = y0;
-                vertexData[idx++] = u0;
-                vertexData[idx++] = v0; // Top-Left
-                vertexData[idx++] = x1;
-                vertexData[idx++] = y1;
-                vertexData[idx++] = u1;
-                vertexData[idx++] = v1; // Bottom-Right
-                vertexData[idx++] = x1;
-                vertexData[idx++] = y0;
-                vertexData[idx++] = u1;
-                vertexData[idx++] = v0; // Top-Right
+                vertexData[idx++] = x0; vertexData[idx++] = y0; vertexData[idx++] = u0; vertexData[idx++] = v0; // Top-Left
+                vertexData[idx++] = x1; vertexData[idx++] = y1; vertexData[idx++] = u1; vertexData[idx++] = v1; // Bottom-Right
+                vertexData[idx++] = x1; vertexData[idx++] = y0; vertexData[idx++] = u1; vertexData[idx++] = v0; // Top-Right
 
-                currentX += (FontCellWidth * scale);
+                //adjust spacing
+                currentX += (FontCellWidth * scale) + charSpacing;
             }
 
             // --- 1. SAVE & ISOLATE STATES FOR 2D OVERLAY ---
-            GL.Disable(EnableCap.DepthTest); // Stop 3D geometry depths from chewing up text fragments
-            GL.Disable(EnableCap.CullFace); // Ensure both triangles of the character quads render
-            GL.Enable(EnableCap.Blend); // Turn on alpha blending so black boxes become transparent
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
+            GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             // Ensure your buffer capacity and bind your structures as normal
@@ -607,7 +626,7 @@ namespace RenderEngine
             GL.DrawArrays(PrimitiveType.Triangles, 0, text.Length * 6);
 
             // --- 3. CLEAN UP & RESTORE STATES FOR 3D ENGINE ---
-            GL.Enable(EnableCap.DepthTest); // Turn depth testing back on for the next 3D frame pass
+            GL.Enable(EnableCap.DepthTest);
             GL.Disable(EnableCap.Blend);
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindVertexArray(0);
@@ -938,8 +957,8 @@ namespace RenderEngine
         {
             if (_fontTextureId >= 0) return;
 
-            var atlasW = FontCellWidth * 16;
-            var atlasH = FontCellHeight * 6;
+            const int atlasW = FontCellWidth * 16;
+            const int atlasH = FontCellHeight * 6;
 
             using var bitmap =
                 new System.Drawing.Bitmap(atlasW, atlasH, System.Drawing.Imaging.PixelFormat.Format32bppArgb);

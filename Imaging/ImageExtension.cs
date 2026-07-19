@@ -54,11 +54,10 @@ namespace Imaging
         /// Converts Bitmap to BitmapImage.
         /// </summary>
         /// <param name="bmp">The Bitmap.</param>
-        /// <param name="lossless">if set to <c>true</c> [lossless].</param>
         /// <returns>
         /// A BitmapImage
         /// </returns>
-        public static BitmapImage ToBitmapImage(this Bitmap? bmp, bool lossless = false)
+        public static BitmapImage ToBitmapImage(this Bitmap? bmp)
         {
             return ImageStreamMedia.BitmapToBitmapImage(bmp);
         }
@@ -67,9 +66,8 @@ namespace Imaging
         /// Bitmaps to source.
         /// </summary>
         /// <param name="bmp">The BMP.</param>
-        /// <param name="lossless">if set to <c>true</c> [lossless].</param>
-        /// <returns></returns>
-        public static BitmapSource BitmapToSource(this Bitmap bmp, bool lossless = false)
+        /// <returns>The BitmapSource from Bitmap.</returns>
+        public static BitmapSource BitmapToSource(this Bitmap bmp)
         {
             return ImageStreamMedia.BitmapToSource(bmp);
         }

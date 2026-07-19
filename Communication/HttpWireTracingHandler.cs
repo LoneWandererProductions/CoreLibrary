@@ -84,7 +84,7 @@ namespace Communication
                 }
 
                 // Buffer content safely so we don't disrupt the stream
-                await request.Content.LoadIntoBufferAsync();
+                await request.Content.LoadIntoBufferAsync(cancellationToken);
                 var reqBody = await request.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(reqBody))
                 {

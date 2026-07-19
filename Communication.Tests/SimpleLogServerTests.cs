@@ -74,7 +74,7 @@ namespace Communication.Tests
                     await using var stream = client.GetStream();
                     // Important: Add NewLine (\n) so ReadLineAsync fires!
                     var data = Encoding.UTF8.GetBytes(message + Environment.NewLine);
-                    await stream.WriteAsync(data, 0, data.Length);
+                    await stream.WriteAsync(data);
                     await stream.FlushAsync();
 
                     return true; // Success!
@@ -110,7 +110,7 @@ namespace Communication.Tests
             Assert.IsTrue(connected, "Could not connect to the server (Timeout).");
 
             // Wait for the processor to get the message (Polling with timeout)
-            string received = null;
+            string? received = null;
             for (var i = 0; i < 20; i++) // Try for 2 seconds (20 * 100ms)
             {
                 if (fakeProcessor.LastMessage != null)
@@ -167,8 +167,32 @@ namespace Communication.Tests
 
             // Assert
             var buffer = new byte[10];
-            var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-            Assert.AreEqual(0, bytesRead, "Server should have closed the connection due to timeout.");
+            var disconnected = false;
+            var timeout = DateTime.Now.AddSeconds(2);
+
+            // Poll for a bit to allow the TCP stack to finish the handshake
+            while (DateTime.Now < timeout)
+            {
+                // Try to read one byte; if the connection is closed, this will return 0 or throw
+                try
+                {
+                    var bytesRead = await stream.ReadAsync(buffer, 0, 1);
+                    if (bytesRead == 0)
+                    {
+                        disconnected = true;
+                        break;
+                    }
+                }
+                catch (Exception) // Socket might throw if connection is abruptly reset
+                {
+                    disconnected = true;
+                    break;
+                }
+
+                await Task.Delay(100); // Give the OS a moment to process the closing
+            }
+
+            Assert.IsTrue(disconnected, "Server failed to close the connection in time.");
         }
 
         /// <inheritdoc />
@@ -184,7 +208,7 @@ namespace Communication.Tests
             /// <value>
             /// The last message.
             /// </value>
-            public string LastMessage { get; private set; }
+            public string? LastMessage { get; private set; }
 
             /// <summary>
             /// Processes the received message (e.g., save to DB, log to file).

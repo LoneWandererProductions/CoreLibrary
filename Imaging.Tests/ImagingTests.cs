@@ -88,7 +88,7 @@ namespace Imaging.Tests
             Assert.IsTrue(File.Exists(imagePath), $"File does not exist: {imagePath}");
 
             var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
-            var btm = image.ToBitmap();
+            var btm = image?.ToBitmap();
             var lst = ImageStream.CutBitmaps(btm, 2, 2, 50, 50);
 
             //save for test purposes
@@ -115,28 +115,28 @@ namespace Imaging.Tests
             var check = await FileHandleDelete.DeleteFiles(ret);
             Assert.AreEqual(true, check, "done");
 
-            var col = lst[0].GetPixel(25, 25);
-            var colOld = btm.GetPixel(25, 25);
+            var col = lst[0]!.GetPixel(25, 25);
+            var colOld = btm!.GetPixel(25, 25);
 
             Assert.AreEqual(colOld.R, col.R, "done");
             Assert.AreEqual(colOld.B, col.B, "done");
             Assert.AreEqual(colOld.G, col.G, "done");
 
-            col = lst[1].GetPixel(25, 25);
+            col = lst[1]!.GetPixel(25, 25);
             colOld = btm.GetPixel(55, 25);
 
             Assert.AreEqual(colOld.R, col.R, "done");
             Assert.AreEqual(colOld.B, col.B, "done");
             Assert.AreEqual(colOld.G, col.G, "done");
 
-            col = lst[2].GetPixel(25, 25);
+            col = lst[2]!.GetPixel(25, 25);
             colOld = btm.GetPixel(25, 55);
 
             Assert.AreEqual(colOld.R, col.R, "done");
             Assert.AreEqual(colOld.B, col.B, "done");
             Assert.AreEqual(colOld.G, col.G, "done");
 
-            col = lst[3].GetPixel(25, 25);
+            col = lst[3]!.GetPixel(25, 25);
             colOld = btm.GetPixel(55, 55);
 
             Assert.AreEqual(colOld.R, col.R, "done");

@@ -18,45 +18,40 @@ using Solaris;
 namespace CommonLibraryGuiTests
 {
     /// <summary>
-    ///     Some Basic tests for the Aurora Engine and the image Combining
+    /// Some Basic tests for the Aurora Engine and the image Combining
     /// </summary>
-    [TestFixture] // Added for explicit NUnit discovery
+    [TestFixture]
+    [Apartment(ApartmentState.STA)]
     public sealed class AuroraTests
     {
-        /// <summary>
-        ///     The codebase
-        /// </summary>
-        private static readonly string Codebase = Directory.GetCurrentDirectory();
+        private string _sampleImagesFolder;
+
+        [SetUp]
+        public void Setup()
+        {
+            // Resolve the path dynamically based on the test execution directory
+            var baseDirectory = TestContext.CurrentContext.TestDirectory;
+            _sampleImagesFolder = Path.Combine(baseDirectory, "Image");
+
+            if (!Directory.Exists(_sampleImagesFolder))
+            {
+                Assert.Ignore($"The Image folder could not be found at: {_sampleImagesFolder}. " +
+                              "Ensure the 'Image' folder is set to 'Copy to Output Directory'.");
+            }
+        }
 
         /// <summary>
-        ///     The executable folder
-        /// </summary>
-        private static readonly DirectoryInfo ExeFolder = new(Path.GetDirectoryName(Codebase) ?? string.Empty);
-
-        /// <summary>
-        ///     The project folder
-        /// </summary>
-        private static readonly DirectoryInfo ProjectFolder = ExeFolder.Parent?.Parent;
-
-        /// <summary>
-        ///     The sample images folder
-        /// </summary>
-        private static readonly DirectoryInfo SampleImagesFolder = new(Path.Combine(ProjectFolder.FullName, "Image"));
-
-        /// <summary>
-        ///     Test Aurora.
+        /// Test Aurora.
         /// </summary>
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void Aurora()
         {
-            var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
-            var bmResultBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_base.png"));
+            using var bmResultLayerOther = LoadBitmap("result_layer_other.png");
+            using var bmResultBase = LoadBitmap("result_base.png");
 
             var compare = new ImageAnalysis();
 
-            //new Test with UI
-            //generate texture Dictionary, and all the other data;
+            // Generate texture Dictionary, and all the other data
             var map = new Dictionary<int, List<int>>
             {
                 { 0, new List<int> { 0 } },
@@ -71,27 +66,9 @@ namespace CommonLibraryGuiTests
             {
                 AuroraTextures = new Dictionary<int, Texture>
                 {
-                    {
-                        0,
-                        new Texture
-                        {
-                            Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
-                        }
-                    },
-                    {
-                        1,
-                        new Texture
-                        {
-                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png")
-                        }
-                    },
-                    {
-                        2,
-                        new Texture
-                        {
-                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png")
-                        }
-                    }
+                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") } },
+                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") } },
+                    { 2, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") } }
                 },
                 AuroraTextureSize = 100,
                 AuroraHeight = 2,
@@ -99,12 +76,10 @@ namespace CommonLibraryGuiTests
                 AuroraMap = map
             };
 
-            //way hacky but works for for now....
             aurora.Initiate();
 
             var data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
 
-            // NUnit Syntax: Assert.That(actual, Is.EqualTo(expected))
             Assert.That(data.Similarity, Is.EqualTo(100), $"Map was not correct: {data.Similarity}");
 
             map = new Dictionary<int, List<int>>
@@ -120,13 +95,13 @@ namespace CommonLibraryGuiTests
             aurora.AuroraMap = map;
             aurora.Initiate();
 
-            aurora.BitmapLayerOne.Save($"{SampleImagesFolder}/example.png", ImageFormat.Png);
+            aurora.BitmapLayerOne.Save(Path.Combine(_sampleImagesFolder, "example.png"), ImageFormat.Png);
 
             data = compare.CompareImages(bmResultLayerOther, aurora.BitmapLayerOne);
 
             Assert.That(data.Similarity, Is.EqualTo(100), $"Aurora Map was not correct: {data.Similarity}");
 
-            //test remove
+            // Test remove
             aurora.AuroraRemove = new KeyValuePair<int, int>(0, 2);
             aurora.AuroraRemove = new KeyValuePair<int, int>(0, 1);
             aurora.AuroraRemove = new KeyValuePair<int, int>(1, 1);
@@ -137,20 +112,19 @@ namespace CommonLibraryGuiTests
 
             data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
 
-            aurora.BitmapLayerOne.Save($"{SampleImagesFolder}/example.png", ImageFormat.Png);
+            aurora.BitmapLayerOne.Save(Path.Combine(_sampleImagesFolder, "example.png"), ImageFormat.Png);
 
             Assert.That(data.Similarity, Is.EqualTo(100), $"Aurora Map remove was not correct: {data.Similarity}");
         }
 
         /// <summary>
-        ///     Test Polaris.
+        /// Test Polaris.
         /// </summary>
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void Polaris()
         {
-            var bmResultLayerOther = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_layer_other.png"));
-            var bmResultBase = new Bitmap(Path.Combine(SampleImagesFolder.FullName, "result_base.png"));
+            using var bmResultLayerOther = LoadBitmap("result_layer_other.png");
+            using var bmResultBase = LoadBitmap("result_base.png");
 
             var compare = new ImageAnalysis();
 
@@ -158,27 +132,9 @@ namespace CommonLibraryGuiTests
             {
                 PolarisTextures = new Dictionary<int, Texture>
                 {
-                    {
-                        0,
-                        new Texture
-                        {
-                            Layer = 0, Id = 0, Path = Path.Combine(SampleImagesFolder.FullName, "Tile.png")
-                        }
-                    },
-                    {
-                        1,
-                        new Texture
-                        {
-                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "layerOne.png")
-                        }
-                    },
-                    {
-                        2,
-                        new Texture
-                        {
-                            Layer = 1, Id = 1, Path = Path.Combine(SampleImagesFolder.FullName, "LayerTwo.png")
-                        }
-                    }
+                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") } },
+                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") } },
+                    { 2, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") } }
                 },
                 PolarisTextureSize = 100,
                 PolarisHeight = 2,
@@ -186,6 +142,9 @@ namespace CommonLibraryGuiTests
             };
 
             polaris.Initiate();
+
+            // Note: If BitmapLayerThree is managed by Polaris and needs disposal, 
+            // do not dispose it here while it is in use.
             var blank = polaris.BitmapLayerThree;
 
             // 0
@@ -207,7 +166,7 @@ namespace CommonLibraryGuiTests
             // 5
             polaris.AddTile(new KeyValuePair<int, int>(5, 0));
 
-            polaris.BitmapLayerOne.Save($"{SampleImagesFolder}/example Polaris.png", ImageFormat.Png);
+            polaris.BitmapLayerOne.Save(Path.Combine(_sampleImagesFolder, "example Polaris.png"), ImageFormat.Png);
 
             var data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
             Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
@@ -239,7 +198,7 @@ namespace CommonLibraryGuiTests
                 var check = lst.Equal(map[i], EnumerableCompare.IgnoreOrder);
                 if (!check)
                 {
-                    Assert.Fail("wrong map"); // Native NUnit Fail
+                    Assert.Fail("wrong map");
                 }
             }
 
@@ -255,7 +214,7 @@ namespace CommonLibraryGuiTests
             data = compare.CompareImages(blank, polaris.BitmapLayerThree);
             Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
 
-            // this is a duplicate so this should not be added
+            // This is a duplicate so this should not be added
             polaris.AddDisplay(new KeyValuePair<int, int>(0, 0));
 
             for (var i = 0; i <= 5; i++)
@@ -266,6 +225,37 @@ namespace CommonLibraryGuiTests
                 {
                     Assert.Fail("wrong map");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Loads the bitmap.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>A new Bitmap object.</returns>
+        /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
+        private Bitmap LoadBitmap(string fileName)
+        {
+            var path = Path.Combine(_sampleImagesFolder, fileName);
+
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"Bitmap file not found: {path}");
+            }
+
+            // Check if file is empty
+            var fileInfo = new FileInfo(path);
+            if (fileInfo.Length == 0)
+            {
+                throw new InvalidDataException($"The file is 0 bytes and cannot be loaded as an image: {path}");
+            }
+
+            // Open with FileShare.ReadWrite to prevent locking issues
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                // We create a copy so the stream can be closed immediately
+                var bitmap = new Bitmap(stream);
+                return new Bitmap(bitmap);
             }
         }
     }
