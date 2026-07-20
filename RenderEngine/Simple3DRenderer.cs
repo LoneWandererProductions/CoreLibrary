@@ -262,7 +262,12 @@ namespace RenderEngine
             var b = color.b / 255f;
             var a = color.a / 255f;
 
-            float[] data = { v0.X, v0.Y, v0.Z, r, g, b, a, v1.X, v1.Y, v1.Z, r, g, b, a, v2.X, v2.Y, v2.Z, r, g, b, a };
+            float[] data =
+            {
+                v0.X, v0.Y, v0.Z, r, g, b, a,
+                v1.X, v1.Y, v1.Z, r, g, b, a,
+                v2.X, v2.Y, v2.Z, r, g, b, a
+            };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
@@ -281,13 +286,21 @@ namespace RenderEngine
         /// <param name="textureId">The texture identifier.</param>
         /// <param name="color">Optional color parameter mapping voxel light scales directly into shader engines.</param>
         public void DrawTexturedTriangle(Vector3 v0, Vector2 uv0, Vector3 v1, Vector2 uv1, Vector3 v2, Vector2 uv2,
-            int textureId, (int r, int g, int b, int a)? color = null)
+                   int textureId, (int r, int g, int b, int a)? color = null)
         {
-            if (textureId <= 0) textureId = _resources.GetFallbackTexture();
+            // Route through the resource manager to resolve procedurals/fallbacks
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             GL.UseProgram(_shaderTex);
             GL.BindVertexArray(_vaoTex);
+
+            // Explicitly link the 3D texturing uniform sampler to texture slot 0
+            int texUniformLoc = GL.GetUniformLocation(_shaderTex, "uTexture");
+            if (texUniformLoc >= 0)
+            {
+                GL.Uniform1(texUniformLoc, 0);
+            }
 
             var model = TK.Matrix4.Identity;
             GL.UniformMatrix4(_locModelTex, false, ref model);
@@ -306,8 +319,9 @@ namespace RenderEngine
 
             float[] data =
             {
-                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, r, g, b, a, v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, r, g, b, a, v2.X, v2.Y,
-                v2.Z, uv2.X, uv2.Y, r, g, b, a
+                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, r, g, b, a,
+                v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, r, g, b, a,
+                v2.X, v2.Y, v2.Z, uv2.X, uv2.Y, r, g, b, a
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -325,11 +339,14 @@ namespace RenderEngine
         public void DrawSprite(Vector3 position, float radius, int textureId,
             (int r, int g, int b, int a)? color = null)
         {
-            if (textureId <= 0) textureId = _resources.GetFallbackTexture();
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             GL.UseProgram(_shaderTex);
             GL.BindVertexArray(_vaoTex);
+
+            // Secure texture unit alignment for sprites
+            GL.Uniform1(GL.GetUniformLocation(_shaderTex, "uTexture"), 0);
 
             // Reverse-engineer active look-at orientations straight out of the view matrix channels
             TK.Vector3 right = new(_view[0, 0], _view[1, 0], _view[2, 0]);
@@ -358,9 +375,12 @@ namespace RenderEngine
 
             float[] data =
             {
-                v0.X, v0.Y, v0.Z, 0, 0, r, g, b, a, v1.X, v1.Y, v1.Z, 1, 0, r, g, b, a, v2.X, v2.Y, v2.Z, 1, 1, r,
-                g, b, a, v0.X, v0.Y, v0.Z, 0, 0, r, g, b, a, v2.X, v2.Y, v2.Z, 1, 1, r, g, b, a, v3.X, v3.Y, v3.Z,
-                0, 1, r, g, b, a
+                v0.X, v0.Y, v0.Z, 0, 0, r, g, b, a,
+                v1.X, v1.Y, v1.Z, 1, 0, r, g, b, a,
+                v2.X, v2.Y, v2.Z, 1, 1, r, g, b, a,
+                v0.X, v0.Y, v0.Z, 0, 0, r, g, b, a,
+                v2.X, v2.Y, v2.Z, 1, 1, r, g, b, a,
+                v3.X, v3.Y, v3.Z, 0, 1, r, g, b, a
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
@@ -417,6 +437,14 @@ namespace RenderEngine
             {
                 GL.UseProgram(_shaderTex);
                 GL.BindVertexArray(_vaoTex);
+
+                // Force the 3D shader sampler to look explicitly at Texture Unit 0
+                // (Replace "uTexture" with whatever your sampler2D variable is named in your 3D fragment shader)
+                int texUniformLoc = GL.GetUniformLocation(_shaderTex, "uTexture");
+                if (texUniformLoc >= 0)
+                {
+                    GL.Uniform1(texUniformLoc, 0);
+                }
 
                 var id = TK.Matrix4.Identity;
                 GL.UniformMatrix4(_locModelTex, false, ref id);

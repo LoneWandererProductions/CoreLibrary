@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryGuiTests
+ * PROJECT:     CommonLibraryGui.Tests
  * FILE:        WpfVectorRendererTests.cs
  * PURPOSE:     Basic tests for the WpfVectorRenderer, especially to catch the "Double Offset" bug where the line's internal coordinates are incorrectly offset by the StartCoordinates.
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -14,7 +14,7 @@ using LightVector;
 using LightVector.Enums;
 using NUnit.Framework;
 
-namespace CommonLibraryGuiTests
+namespace CommonLibraryGui.Tests
 {
     /// <summary>
     /// Simple tests for the WpfVectorRenderer, especially to catch the "Double Offset" bug where the line's internal coordinates are incorrectly offset by the StartCoordinates.
@@ -43,9 +43,9 @@ namespace CommonLibraryGuiTests
             // Assert
             // Because of normalization, the line is shifted.
             // It should now be at 'padding' (Thickness / 2)
-            NUnit.Framework.Assert.That(Canvas.GetLeft(renderedLine), Is.EqualTo(1.0d),
+            Assert.That(Canvas.GetLeft(renderedLine), Is.EqualTo(1.0d),
                 "Line should be shifted to the edge of the canvas.");
-            NUnit.Framework.Assert.That(renderedLine.X1, Is.EqualTo(0), "Internal offset must remain 0.");
+            Assert.That(renderedLine.X1, Is.EqualTo(0), "Internal offset must remain 0.");
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace CommonLibraryGuiTests
             // Assert
             // Circle radius 100 + thickness 10 = total diameter 210.
             // Our GetGraphicBounds should account for this.
-            NUnit.Framework.Assert.That(image.Width, Is.GreaterThanOrEqualTo(200),
+            Assert.That(image.Width, Is.GreaterThanOrEqualTo(200),
                 "Image must be wide enough for the diameter.");
         }
     }

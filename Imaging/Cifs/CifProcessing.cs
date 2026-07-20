@@ -27,8 +27,10 @@ namespace Imaging.Cifs
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Get Cif from Bitmap</returns>
-        internal static Dictionary<Color, SortedSet<int>> ConvertToCifFromBitmap(Bitmap? image)
+        internal static Dictionary<Color, SortedSet<int>>? ConvertToCifFromBitmap(Bitmap? image)
         {
+            if (image == null) return null;
+
             var imageFormat = new Dictionary<Color, SortedSet<int>>();
 
             var dbm = DirectBitmap.GetInstance(image);
@@ -39,13 +41,13 @@ namespace Imaging.Cifs
             {
                 var color = colorMap[i];
 
-                if (!imageFormat.ContainsKey(color))
+                if (!imageFormat.TryGetValue(color, out var value))
                 {
-                    imageFormat[color] =  []
-                    ;
+                    value = [];
+                    imageFormat[color] = value;
                 }
 
-                imageFormat[color].Add(i);
+                value.Add(i);
             }
 
             return imageFormat;
@@ -55,7 +57,7 @@ namespace Imaging.Cifs
         ///     Cifs to image.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns></returns>
+        /// <returns>Bitmap from cif.</returns>
         internal static Bitmap? CifFileToImage(string path)
         {
             var cif = CifFromFile(path);

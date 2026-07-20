@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Threading;
 using Core.Apps.Interface;
 
 namespace Core.Apps.UI
@@ -25,7 +26,7 @@ namespace Core.Apps.UI
         /// <summary>
         /// The lock
         /// </summary>
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WpfEventOutput"/> class.

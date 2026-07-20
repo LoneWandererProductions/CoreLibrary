@@ -6,9 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using RenderEngine;
-
-namespace RenderEngineTests
+namespace RenderEngine.Tests
 {
     [TestClass]
     public class LayeredImageContainerTests

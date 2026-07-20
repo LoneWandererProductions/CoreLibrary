@@ -31,7 +31,7 @@ namespace Communication
         public bool LogToTrace { get; set; } = true;
 
         /// <summary>
-        /// Optional callback that triggers whenever a new full wire trace string is generated. 
+        /// Optional callback that triggers whenever a new full wire trace string is generated.
         /// Perfect for UI bindings (e.g., updating a Blazor log terminal).
         /// </summary>
         public Action<string>? OnTraceCaptured { get; set; }

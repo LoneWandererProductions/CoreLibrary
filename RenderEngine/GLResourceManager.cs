@@ -18,7 +18,7 @@ using System.IO;
 namespace RenderEngine
 {
     /// <summary>
-    /// Texture and Shader manager for OpenGL. Handles standard image streaming 
+    /// Texture and Shader manager for OpenGL. Handles standard image streaming
     /// and manages a high-range virtual procedural texture atlas catalog with lazy loading.
     /// </summary>
     /// <seealso cref="IDisposable" />
@@ -71,7 +71,7 @@ namespace RenderEngine
         // =================================================================================
 
         /// <summary>
-        /// Immutable structural menu catalog outlining every procedural texture type 
+        /// Immutable structural menu catalog outlining every procedural texture type
         /// available for generation, mapped by its high-range safe identity key.
         /// </summary>
         public static IReadOnlyDictionary<int, (string Name, string Description)> ProceduralCatalogue { get; } =
@@ -109,7 +109,7 @@ namespace RenderEngine
         }
 
         /// <summary>
-        /// Safely translates texture parameter pointers. If a virtual ID >= 10000 is requested 
+        /// Safely translates texture parameter pointers. If a virtual ID >= 10000 is requested
         /// and has not been baked yet, it intercepts the sequence and builds it natively on demand.
         /// </summary>
         /// <param name="textureId">The structural raw source key identifier parameter passing through.</param>
@@ -126,7 +126,21 @@ namespace RenderEngine
                 return LazyBakeTexture(textureId);
             }
 
-            return textureId <= 0 ? GetFallbackTexture() : textureId;
+            if (textureId <= 0)
+            {
+                return GetFallbackTexture();
+            }
+
+            // Handle Collision Safeguard
+            // If the incoming ID is a low integer, check if it exists as a loaded handle in your file cache.
+            // If it's NOT a recognized file handle, it's a loose structural placeholder (like your terrain's default '4').
+            // Intercept it and force the fallback checkerboard texture to render instead!
+            if (textureId < 10000 && !_textureCache.ContainsValue(textureId))
+            {
+                return GetFallbackTexture();
+            }
+
+            return textureId;
         }
 
         /// <summary>
@@ -269,7 +283,10 @@ namespace RenderEngine
         /// <returns>Id of Texture, fallback, checkerboard</returns>
         public int GetFallbackTexture()
         {
-            if (_fallbackTextureId >= 0) return _fallbackTextureId;
+            // If GL.GenTexture() runs early or on a background thread without a current context, 
+            // it returns 0. Checking >= 0 erroneously caches 0, causing the 3D engine to unbind 
+            // textures and bleed your last active asset (the font atlas) into the scene.
+            if (_fallbackTextureId > 0) return _fallbackTextureId;
 
             // 1. Expand the 2x2 grid to 64x64 to create a deep, smooth Mipmap chain
             const int size = 64;

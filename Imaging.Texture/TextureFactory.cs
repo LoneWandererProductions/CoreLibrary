@@ -6,8 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System.Runtime.CompilerServices;
-
 namespace Imaging.Texture
 {
     /// <summary>

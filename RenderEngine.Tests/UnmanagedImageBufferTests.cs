@@ -7,9 +7,8 @@
  */
 
 using System.Drawing;
-using RenderEngine;
 
-namespace RenderEngineTests
+namespace RenderEngine.Tests
 {
     /// <summary>
     /// Some basic tests for my Unmanaged Buffer Image Format
@@ -39,7 +38,7 @@ namespace RenderEngineTests
             using var buffer = new UnmanagedImageBuffer(2, 2);
             buffer.SetPixel(1, 1, 100, 150, 200); // R,G,B,A
 
-            const int offset = (1 + (1 * 2)) * 4;
+            const int offset = (1 + 1 * 2) * 4;
             var span = buffer.BufferSpan;
 
             Assert.AreEqual(200, span[offset]); // B
@@ -96,7 +95,7 @@ namespace RenderEngineTests
             Assert.AreEqual(0xFF, span[3]); // A
 
             // Check pixel (1,1)
-            const int offset = (1 + (1 * 2)) * 4;
+            const int offset = (1 + 1 * 2) * 4;
             Assert.AreEqual(0x56, span[offset]);
             Assert.AreEqual(0x34, span[offset + 1]);
             Assert.AreEqual(0x12, span[offset + 2]);

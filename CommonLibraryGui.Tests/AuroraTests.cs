@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryGuiTests
+ * PROJECT:     CommonLibraryGui.Tests
  * FILE:        AuroraTests.cs
  * PURPOSE:     Tests the Aurorae Display
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -15,7 +15,7 @@ using ImageCompare;
 using NUnit.Framework;
 using Solaris;
 
-namespace CommonLibraryGuiTests
+namespace CommonLibraryGui.Tests
 {
     /// <summary>
     /// Some Basic tests for the Aurora Engine and the image Combining

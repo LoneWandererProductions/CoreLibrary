@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryGuiTests
+ * PROJECT:     CommonLibraryGui.Tests
  * FILE:        CommonCtrl.cs
  * PURPOSE:     Tests for CommonCtrl some Controls, not all yet
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -14,7 +14,7 @@ using Imaging;
 using InterOp;
 using NUnit.Framework;
 
-namespace CommonLibraryGuiTests
+namespace CommonLibraryGui.Tests
 {
     /// <summary>
     ///     The common Controls unit test class.

@@ -17,10 +17,9 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using System;
-using System.Windows.Media.TextFormatting;
-using static System.Net.Mime.MediaTypeNames;
+using System.Diagnostics;
+
 
 namespace RenderEngine
 {
@@ -51,8 +50,16 @@ namespace RenderEngine
         /// </summary>
         private readonly GlResourceManager _resources;
 
-        // Solid VAO/VBO
+        // --- Solid VAO/VBO ---
+
+        /// <summary>
+        /// The vao solid
+        /// </summary>
         private int _vaoSolid;
+
+        /// <summary>
+        /// The vbo solid
+        /// </summary>
         private int _vboSolid;
 
         // --- Textured VAO/VBO ---
@@ -67,7 +74,14 @@ namespace RenderEngine
         /// </summary>
         private int _vboTex;
 
+        /// <summary>
+        /// The ui2 d color shader
+        /// </summary>
         private int _ui2DColorShader;
+
+        /// <summary>
+        /// The ui2 d texture shader
+        /// </summary>
         private int _ui2DTextureShader;
 
         /// <summary>
@@ -75,9 +89,21 @@ namespace RenderEngine
         /// </summary>
         private bool _initialized;
 
-        private int _vboSolidCapacity = 4096; // Start with a more reasonable size
+        /// <summary>
+        /// The vbo solid capacity
+        /// </summary>
+        private int _vboSolidCapacity = 4096;
+
+        /// <summary>
+        /// The vbo tex capacity
+        /// </summary>
         private int _vboTexCapacity = 4096;
-        private int _fallbackTextureId = -1; // Caches the checkerboard texture
+
+        /// <summary>
+        /// The fallback texture identifier
+        ///  Caches the checkerboard texture
+        /// </summary>
+        private int _fallbackTextureId = -1;
 
         // --- 2D TEXT ATLAS REGISTRIES ---
 
@@ -97,6 +123,16 @@ namespace RenderEngine
         /// High-legibility cell metrics
         /// </summary>
         private const int FontCellHeight = 24;
+
+        /// <summary>
+        /// The font atlas w
+        /// </summary>
+        private float _fontAtlasW;
+
+        /// <summary>
+        /// The font atlas h
+        /// </summary>
+        private float _fontAtlasH;
 
         /// <summary>
         /// Dynamically updates the 2D resolution parameters when the host screen or canvas transforms.
@@ -319,8 +355,7 @@ namespace RenderEngine
             (int x, int y) p2,
             int textureId)
         {
-            if (textureId < 0)
-                textureId = _resources.GetFallbackTexture();
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             BindShaderAndViewport(_ui2DTextureShader);
@@ -354,8 +389,7 @@ namespace RenderEngine
         public void DrawTexturedQuad((int x, int y) p0, (int x, int y) p1, (int x, int y) p2, (int x, int y) p3,
             int textureId)
         {
-            if (textureId < 0)
-                textureId = _resources.GetFallbackTexture();
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             BindShaderAndViewport(_ui2DTextureShader);
@@ -535,22 +569,10 @@ namespace RenderEngine
                 GL.Uniform4(colorLoc, color.r / 255f, color.g / 255f, color.b / 255f, color.a / 255f);
             }
 
-            // --- Retrieve the actual texture bounds ---
-            // Note: For better performance, store actualAtlasW and actualAtlasH as class 
-            // fields when you initially generate/load _fontTextureId.
-            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out int actualAtlasW);
-            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight,
-                out int actualAtlasH);
-
             //config variables
             const float charSpacing = 1.0f; // Increase this to spread letters apart
             const float verticalOffset = 0.0f; // Adjust this if the font is floating too high/low
             const float inset = 0.25f; // Prevents texture bleeding by shrinking the UV map by half a texel
-
-
-            // Fallback just in case the query fails, but use the real resolution first
-            var atlasW = actualAtlasW > 0 ? (float)actualAtlasW : (FontCellWidth * 16f);
-            var atlasH = actualAtlasH > 0 ? (float)actualAtlasH : (FontCellHeight * 6f);
 
             var vertexData = new float[text.Length * 24];
             var idx = 0;
@@ -585,12 +607,12 @@ namespace RenderEngine
 
                 // Map to UV space
                 // Compute exact horizontal texture boundaries using TRUE atlas bounds
-                var u0 = pixelLeft / atlasW;
-                var u1 = pixelRight / atlasW;
+                var u0 = pixelLeft / _fontAtlasW;
+                var u1 = pixelRight / _fontAtlasW;
 
                 // Invert V coordinates (1.0f - ...) to flip the texture right-side up!
-                var v0 = 1.0f - (pixelTop / atlasH);
-                var v1 = 1.0f - (pixelBottom / atlasH);
+                var v0 = 1.0f - (pixelTop / _fontAtlasH);
+                var v1 = 1.0f - (pixelBottom / _fontAtlasH);
 
                 // Physical geometry - Ensure y1 covers the full height
                 var x0 = currentX;
@@ -646,8 +668,11 @@ namespace RenderEngine
 
             // --- 3. CLEAN UP & RESTORE STATES FOR 3D ENGINE ---
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
             GL.Disable(EnableCap.Blend);
+            GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
+
             GL.BindVertexArray(0);
             GL.UseProgram(0);
         }
@@ -667,8 +692,7 @@ namespace RenderEngine
             int segments,
             int textureId)
         {
-            if (textureId < 0)
-                textureId = _resources.GetFallbackTexture();
+            textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
             BindShaderAndViewport(_ui2DTextureShader);
@@ -829,11 +853,12 @@ namespace RenderEngine
                     var data = dataList.ToArray();
                     EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, data.Length);
 
-                    // Bind the specific texture for this batch
                     GL.ActiveTexture(TextureUnit.Texture0);
 
-                    // Use checkerboard if the texture ID is invalid (< 0)
-                    GL.BindTexture(TextureTarget.Texture2D, texId < 0 ? _resources.GetFallbackTexture() : texId);
+                    // Route 2D batch keys safely through the unified manager
+                    var texToBind = _resources.ResolveTextureId(texId);
+                    GL.BindTexture(TextureTarget.Texture2D, texToBind);
+
                     GL.Uniform1(GL.GetUniformLocation(_ui2DTextureShader, "uTexture"), 0);
 
                     // Upload and draw
@@ -974,7 +999,7 @@ namespace RenderEngine
         /// </summary>
         private void EnsureFontInitialized()
         {
-            if (_fontTextureId >= 0) return;
+            if (_fontTextureId > 0) return;
 
             const int atlasW = FontCellWidth * 16;
             const int atlasH = FontCellHeight * 6;
@@ -987,10 +1012,10 @@ namespace RenderEngine
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
                 // Scaled down to 11f to ensure characters sit perfectly inside the 12x24 pixel limits
-                using var font = new System.Drawing.Font("Consolas", 11f, System.Drawing.FontStyle.Regular);
+                using var font = new System.Drawing.Font("Consolas", 16f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
                 using var brush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
 
-                // CRITICAL FIX: Strips out layout margins so characters align strictly to grid squares
+                //Strips out layout margins so characters align strictly to grid squares
                 var strictFormat = System.Drawing.StringFormat.GenericTypographic;
 
                 var charIdx = 32;
@@ -1023,6 +1048,9 @@ namespace RenderEngine
             bitmap.UnlockBits(bmpData);
 
             _fontTextureId = UploadImage(imgBuffer, linearFilter: false);
+            Trace.WriteLine($"Font Texture ID allocated as: {_fontTextureId}");
+            _fontAtlasW = atlasW;
+            _fontAtlasH = atlasH;
         }
 
         /// <summary>

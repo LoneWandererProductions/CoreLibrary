@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryGuiTests
+ * PROJECT:     CommonLibraryGui.Tests
  * FILE:        BitmapRenderingTests.cs
  * PURPOSE:     Mostly Performance tests for our Wpf BitmapImage Viewer
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using Imaging;
 using NUnit.Framework;
 
-namespace CommonLibraryGuiTests
+namespace CommonLibraryGui.Tests
 {
     /// <summary>
     ///     performance Tests

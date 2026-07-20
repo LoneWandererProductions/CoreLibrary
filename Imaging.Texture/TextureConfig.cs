@@ -11,7 +11,7 @@
 namespace Imaging.Texture
 {
     /// <summary>
-    /// A pure primitive configuration object. 
+    /// A pure primitive configuration object.
     /// No references to System.Drawing or higher-level Imaging concepts.
     /// </summary>
     public sealed class TextureConfig

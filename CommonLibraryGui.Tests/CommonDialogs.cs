@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     CommonLibraryGuiTests
+ * PROJECT:     CommonLibraryGui.Tests
  * FILE:        CommonDialogs.cs
  * PURPOSE:     Tests for CommonCtrl some Controls, not all yet
  * PROGRAMER:   Peter Geinitz (Wayfarer)
@@ -11,7 +11,7 @@
 using Common.Dialogs;
 using NUnit.Framework;
 
-namespace CommonLibraryGuiTests
+namespace CommonLibraryGui.Tests
 {
     /// <summary>
     ///     The common Controls unit test class.
@@ -28,7 +28,7 @@ namespace CommonLibraryGuiTests
         {
             _ = new FolderControl();
 
-            NUnit.Framework.Assert.Pass();
+            Assert.Pass();
         }
 
         /// <summary>
