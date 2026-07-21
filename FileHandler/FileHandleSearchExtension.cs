@@ -35,7 +35,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="lst">The list we want to sort.</param>
         /// <returns>Ordered FileNames</returns>
-        public static List<string> PathSortAlphaNumerical(this IEnumerable<string> lst)
+        public static List<string>? PathSortAlphaNumerical(this IEnumerable<string> lst)
         {
             return lst?.OrderBy(Path.GetFileName).CustomSort().ToList();
         }
@@ -45,7 +45,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="lst">The list of files.</param>
         /// <returns>Ordered List of files.</returns>
-        private static IEnumerable<string> CustomSort(this IEnumerable<string> lst)
+        private static IEnumerable<string>? CustomSort(this IEnumerable<string> lst)
         {
             if (lst is null || lst.Count() == 0)
             {

@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Roslynator", "RCS1123:Add parentheses when necessary", Justification = "<Ausstehend>", Scope = "member", Target = "~M:Imaging.Texture.ColorConverter.HslToRgbTuple(System.Double,System.Double,System.Double)~System.ValueTuple{System.Byte,System.Byte,System.Byte}")]
+[assembly: SuppressMessage("Roslynator", "RCS1123:Add parentheses when necessary", Justification = "<Ausstehend>", Scope = "member", Target = "~M:Imaging.Texture.TextureMathEngine.GenerateCanvas(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte)~Imaging.Texture.RawTextureBuffer")]
