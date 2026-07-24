@@ -32,6 +32,15 @@ namespace Core.Apps.Enums
         /// miscellaneous, low-risk
         /// </summary>
         Other = 3,
-        Readability = 4
+
+        /// <summary>
+        /// The readability
+        /// </summary>
+        Readability = 4,
+
+        /// <summary>
+        /// The memory bound issues
+        /// </summary>
+        MemoryBound = 5,
     }
 }

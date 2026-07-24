@@ -563,7 +563,7 @@ namespace RenderEngine
 
             // --- NEW: Apply the color parameter via uniform ---
             // Make sure "uColor" matches the uniform name in your fragment shader
-            int colorLoc = GL.GetUniformLocation(_ui2DTextureShader, "uColor");
+            var colorLoc = GL.GetUniformLocation(_ui2DTextureShader, "uColor");
             if (colorLoc >= 0)
             {
                 GL.Uniform4(colorLoc, color.r / 255f, color.g / 255f, color.b / 255f, color.a / 255f);
@@ -1012,7 +1012,8 @@ namespace RenderEngine
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
                 // Scaled down to 11f to ensure characters sit perfectly inside the 12x24 pixel limits
-                using var font = new System.Drawing.Font("Consolas", 16f, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+                using var font = new System.Drawing.Font("Consolas", 16f, System.Drawing.FontStyle.Regular,
+                    System.Drawing.GraphicsUnit.Pixel);
                 using var brush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
 
                 //Strips out layout margins so characters align strictly to grid squares

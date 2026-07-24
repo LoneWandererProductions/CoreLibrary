@@ -21,9 +21,7 @@ namespace RenderEngine
     /// <seealso cref="System.IDisposable" />
     public sealed class Simple3DRenderer : IDisposable
     {
-        // =================================================================================
-        // PROPERTIES
-        // =================================================================================
+        // --- PROPERTIES ---
 
         /// <summary>
         /// Gets the current physical pixel width of the viewport projection target.
@@ -40,9 +38,7 @@ namespace RenderEngine
         /// </summary>
         public TK.Matrix4 ViewMatrix => _view;
 
-        // =================================================================================
-        // PRIVATE STORAGE FIELDS
-        // =================================================================================
+        // --- PRIVATE STORAGE FIELDS ---
 
         /// <summary>
         /// Reference tracker managing engine-level compiled shader assets and texture definitions.
@@ -80,9 +76,7 @@ namespace RenderEngine
         /// </summary>
         private TK.Matrix4 _view;
 
-        // =================================================================================
-        // PERFORMANCE CACHE FIELDS
-        // =================================================================================
+        // --- PERFORMANCE CACHE FIELDS ---
 
         /// <summary>
         /// Cached memory uniform indices for the flat vertex-shading pipeline program.
@@ -96,9 +90,7 @@ namespace RenderEngine
         /// </summary>
         private int _locModelTex, _locViewTex, _locProjTex;
 
-        // =================================================================================
-        // CONSTRUCTOR
-        // =================================================================================
+        // --- CONSTRUCTOR ---
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Simple3DRenderer"/> class.
@@ -114,9 +106,7 @@ namespace RenderEngine
             SetCamera(new Vector3(8, 15, 25), new Vector3(8, 0, 8), Vector3.UnitY);
         }
 
-        // =================================================================================
-        // MATRIX CONFIGURATION INTERFACES
-        // =================================================================================
+        // --- MATRIX CONFIGURATION INTERFACES ---
 
         /// <summary>
         /// Explicitly overwrites the active 3D projection viewing calculations matrix template.
@@ -168,9 +158,7 @@ namespace RenderEngine
                 new TK.Vector3(up.X, up.Y, up.Z));
         }
 
-        // =================================================================================
-        // PIPELINE INITIALIZATION ENGINE
-        // =================================================================================
+        // --- PIPELINE INITIALIZATION ENGINE ---
 
         /// <summary>
         /// Allocates unmanaged layout markers and fetches cached variable indexes.
@@ -180,7 +168,13 @@ namespace RenderEngine
         {
             if (_initialized) return;
 
-            // 1. Build and configure the Solid flat-color attribute parsing pipeline
+            // 1. Disable hardware dithering and enable depth/blending
+            GL.Disable(EnableCap.Dither); // Disables the halftone dot pattern!
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+            // 2. Build and configure the Solid flat-color attribute parsing pipeline
             _vaoSolid = GL.GenVertexArray();
             _vboSolid = GL.GenBuffer();
             GL.BindVertexArray(_vaoSolid);
@@ -195,7 +189,7 @@ namespace RenderEngine
             GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 7 * sizeof(float), 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
-            // 2. Build and configure the Textured / Alpha mapping attribute parsing pipeline
+            // 3. Build and configure the Textured / Alpha mapping attribute parsing pipeline
             _vaoTex = GL.GenVertexArray();
             _vboTex = GL.GenBuffer();
             GL.BindVertexArray(_vaoTex);
@@ -215,15 +209,13 @@ namespace RenderEngine
 
             GL.BindVertexArray(0);
 
-            // 3. Extract compiled binary shader pipeline references from the manager registry
+            // 4. Extract compiled binary shader pipeline references from the manager registry
             _shaderSolid = _resources.GetShaderProgram(ShaderTypeApp.VertexColor);
             _shaderTex = _resources.GetShaderProgram(ShaderTypeApp.TexturedQuad);
 
-            // ====================================================================
             // PERFORMANCE UPGRADE: UNIFORM HANDLE CACHING PASS
             // Queries memory indices exactly once here so the rendering loop runs
             // entirely on direct numeric pointers instead of heavy string evaluations.
-            // ====================================================================
             _locModelSolid = GL.GetUniformLocation(_shaderSolid, "model");
             _locViewSolid = GL.GetUniformLocation(_shaderSolid, "view");
             _locProjSolid = GL.GetUniformLocation(_shaderSolid, "projection");
@@ -235,9 +227,7 @@ namespace RenderEngine
             _initialized = true;
         }
 
-        // =================================================================================
-        // CORE GEOMETRY GENERATION METHODS
-        // =================================================================================
+        // --- CORE GEOMETRY GENERATION METHODS ---
 
         /// <summary>
         /// Directly emits a solid flat-shaded 3D primitive triangle to the active context canvas.
@@ -286,7 +276,7 @@ namespace RenderEngine
         /// <param name="textureId">The texture identifier.</param>
         /// <param name="color">Optional color parameter mapping voxel light scales directly into shader engines.</param>
         public void DrawTexturedTriangle(Vector3 v0, Vector2 uv0, Vector3 v1, Vector2 uv1, Vector3 v2, Vector2 uv2,
-                   int textureId, (int r, int g, int b, int a)? color = null)
+            int textureId, (int r, int g, int b, int a)? color = null)
         {
             // Route through the resource manager to resolve procedurals/fallbacks
             textureId = _resources.ResolveTextureId(textureId);
@@ -296,7 +286,7 @@ namespace RenderEngine
             GL.BindVertexArray(_vaoTex);
 
             // Explicitly link the 3D texturing uniform sampler to texture slot 0
-            int texUniformLoc = GL.GetUniformLocation(_shaderTex, "uTexture");
+            var texUniformLoc = GL.GetUniformLocation(_shaderTex, "uTexture");
             if (texUniformLoc >= 0)
             {
                 GL.Uniform1(texUniformLoc, 0);
@@ -402,9 +392,7 @@ namespace RenderEngine
             );
         }
 
-        // =================================================================================
-        // HARDWARE BATCH FLUSH RUNTIMES
-        // =================================================================================
+        // --- HARDWARE BATCH FLUSH RUNTIMES ---
 
         /// <summary>
         /// Flushes accumulated data arrays out of host storage pools into hardware stream paths.
@@ -440,7 +428,7 @@ namespace RenderEngine
 
                 // Force the 3D shader sampler to look explicitly at Texture Unit 0
                 // (Replace "uTexture" with whatever your sampler2D variable is named in your 3D fragment shader)
-                int texUniformLoc = GL.GetUniformLocation(_shaderTex, "uTexture");
+                var texUniformLoc = GL.GetUniformLocation(_shaderTex, "uTexture");
                 if (texUniformLoc >= 0)
                 {
                     GL.Uniform1(texUniformLoc, 0);
@@ -486,9 +474,7 @@ namespace RenderEngine
             GL.BufferData(BufferTarget.ArrayBuffer, cap * sizeof(float), IntPtr.Zero, BufferUsageHint.DynamicDraw);
         }
 
-        // =================================================================================
-        // CLEANUP UNMANAGED ASSETS
-        // =================================================================================
+        // --- CLEANUP UNMANAGED ASSETS ---
 
         /// <inheritdoc/>
         public void Dispose()

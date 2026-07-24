@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedMember.Global
+// ReSharper disable BadListLineBreaks
 
 using Core.Apps.Development;
 using Core.Apps.Extensions;
@@ -39,7 +40,7 @@ namespace Core.Apps
             var modules = new List<ICommand>();
 
             // 2. Safely extract the registry. If weave is null, producers can't function properly.
-            var registry = weave?.Runtime?.Variables;
+            var registry = weave?.Runtime.Variables;
 
             // --- ANALYZER & DEVELOPMENT (Standalone) ---
             // These don't require the registry in their constructor
@@ -51,7 +52,8 @@ namespace Core.Apps
                 new UnusedConstantAnalyzer(), new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(),
                 new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
                 new ApiExplorerCommand(), new LogTailCommand(), new SmartPingPro(), new Tree(),
-                new StructPaddingAnalyzer(), new UnusedMemberAnalyzer(), new MagicNumberAnalyzer()
+                new StructPaddingAnalyzer(), new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(),
+                new LoopAllocationAnalyzer(), new LoopCacheAnalyzer()
             });
 
             // --- PRODUCERS (Require Registry) ---
@@ -101,16 +103,17 @@ namespace Core.Apps
         /// Gets all analyzers.
         /// </summary>
         /// <returns>All Code Analyzers</returns>
-        public static IReadOnlyList<ICodeAnalyzer> GetAllAnalyzers()
+        public static IReadOnlyList<ICodeAnalyzer>? GetAllAnalyzers()
         {
-            ICodeAnalyzer[] modules =
+            ICodeAnalyzer[]? modules =
             {
                 new AllocationAnalyzer(), new DisposableAnalyzer(), new DoubleNewlineAnalyzer(),
                 new DuplicateStringLiteralAnalyzer(), new EventHandlerAnalyzer(), new HotPathAnalyzer(),
                 new LicenseHeaderAnalyzer(), new UnusedClassAnalyzer(), new UnusedConstantAnalyzer(),
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new StructPaddingAnalyzer(),
-                new UnusedMemberAnalyzer(), new MagicNumberAnalyzer()
+                new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(), new LoopAllocationAnalyzer(),
+                new LoopCacheAnalyzer()
             };
 
             return modules;

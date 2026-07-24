@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
+
 using Common.Dialogs;
 using Core.Apps;
 using Core.Apps.Interface;
@@ -18,6 +21,7 @@ using ViewModel;
 
 namespace Core.Viewer
 {
+    /// <inheritdoc />
     /// <summary>
     /// ViewModel for the Analyzer Viewer.
     /// Handles loading analyzers, running them, filtering results, and selecting folders.
@@ -32,7 +36,7 @@ namespace Core.Viewer
         /// <summary>
         /// The target directory
         /// </summary>
-        private string _targetDirectory;
+        private string? _targetDirectory;
 
         /// <summary>
         /// The progress value
@@ -42,12 +46,12 @@ namespace Core.Viewer
         /// <summary>
         /// The selected analyzer
         /// </summary>
-        private ICodeAnalyzer? _selectedAnalyzer;
+        private ICodeAnalyzer _selectedAnalyzer;
 
         /// <summary>
         /// The analyzers
         /// </summary>
-        private IReadOnlyList<ICodeAnalyzer> _analyzers;
+        private IReadOnlyList<ICodeAnalyzer>? _analyzers;
 
         /// <summary>
         /// The current diagnostics
@@ -74,12 +78,12 @@ namespace Core.Viewer
         /// <summary>
         /// Read-only list of all available analyzers.
         /// </summary>
-        public IReadOnlyList<ICodeAnalyzer> Analyzers => _analyzers;
+        public IReadOnlyList<ICodeAnalyzer>? Analyzers => _analyzers;
 
         /// <summary>
         /// The analyzer currently selected by the user.
         /// </summary>
-        public ICodeAnalyzer? SelectedAnalyzer
+        public ICodeAnalyzer SelectedAnalyzer
         {
             get => _selectedAnalyzer;
             set => SetProperty(ref _selectedAnalyzer, value);
@@ -119,7 +123,7 @@ namespace Core.Viewer
         /// <summary>
         /// The directory to analyze. Updating this does not automatically run analyzers.
         /// </summary>
-        public string TargetDirectory
+        public string? TargetDirectory
         {
             get => _targetDirectory;
             set => SetProperty(ref _targetDirectory, value);
@@ -197,9 +201,9 @@ namespace Core.Viewer
         /// <param name="root">The root.</param>
         /// <param name="pattern">The pattern.</param>
         /// <returns>Allowed Folders.</returns>
-        private static IEnumerable<string> SafeEnumerateFiles(string root, string pattern)
+        private static IEnumerable<string> SafeEnumerateFiles(string? root, string pattern)
         {
-            var stack = new Stack<string>();
+            var stack = new Stack<string?>();
             stack.Push(root);
 
             while (stack.Count > 0)
@@ -219,7 +223,7 @@ namespace Core.Viewer
                 foreach (var file in files)
                     yield return file;
 
-                var dirs = Array.Empty<string>();
+                string?[] dirs = Array.Empty<string>();
                 try
                 {
                     dirs = Directory.GetDirectories(current);

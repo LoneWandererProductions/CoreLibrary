@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBeInternal
 
 using Core.Apps.Enums;
 using Core.Apps.Helper;

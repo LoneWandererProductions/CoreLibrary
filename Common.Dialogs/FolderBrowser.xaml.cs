@@ -32,7 +32,7 @@ namespace Common.Dialogs
         ///     Initializes the dialog with a specified starting folder.
         /// </summary>
         /// <param name="startFolder">The target folder to start in.</param>
-        public FolderBrowser(string startFolder)
+        public FolderBrowser(string? startFolder)
         {
             InitializeComponent();
 

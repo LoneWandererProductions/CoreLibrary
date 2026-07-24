@@ -26,7 +26,7 @@ namespace Common.Dialogs
         /// </summary>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>Selected Path</returns>
-        public static string? ShowFolder(string folder = "")
+        public static string? ShowFolder(string? folder = "")
         {
             if (!Directory.Exists(folder))
             {

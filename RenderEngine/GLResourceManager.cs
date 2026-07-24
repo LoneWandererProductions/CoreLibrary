@@ -24,9 +24,7 @@ namespace RenderEngine
     /// <seealso cref="IDisposable" />
     public sealed class GlResourceManager : IDisposable
     {
-        // =================================================================================
-        // STORAGE REGISTRIES
-        // =================================================================================
+        // --- STORAGE REGISTRIES ---
 
         /// <summary>
         /// The texture cache for standard file textures.
@@ -53,9 +51,26 @@ namespace RenderEngine
         /// </summary>
         private int _fallbackTextureId = -1;
 
-        // Configuration fields for dynamic on-demand lazy generation parameters
+        /// <summary>
+        /// All tracked handles
+        /// </summary>
+        private readonly HashSet<int> _allTrackedHandles = new();
+
+        // --- Configuration fields for dynamic on-demand lazy generation parameters ---
+
+        /// <summary>
+        /// The lazy noise gen
+        /// </summary>
         private object _lazyNoiseGen;
+
+        /// <summary>
+        /// The proc width
+        /// </summary>
         private int _procWidth = 256;
+
+        /// <summary>
+        /// The proc height
+        /// </summary>
         private int _procHeight = 256;
 
         /// <summary>
@@ -66,9 +81,7 @@ namespace RenderEngine
         /// </value>
         public bool UseMatrices { get; set; } = true;
 
-        // =================================================================================
-        // VIRTUAL PROCEDURAL CATALOGUE MENU
-        // =================================================================================
+        // --- VIRTUAL PROCEDURAL CATALOGUE MENU ---
 
         /// <summary>
         /// Immutable structural menu catalog outlining every procedural texture type
@@ -91,9 +104,7 @@ namespace RenderEngine
                 { 10010, ("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.") }
             };
 
-        // =================================================================================
-        // PROCEDURAL LAZY LOADING INTEGRATION PASS
-        // =================================================================================
+        // --- PROCEDURAL LAZY LOADING INTEGRATION PASS ---
 
         /// <summary>
         /// Configures the base resolution and noise algorithm context used for dynamic on-demand baking.
@@ -135,7 +146,7 @@ namespace RenderEngine
             // If the incoming ID is a low integer, check if it exists as a loaded handle in your file cache.
             // If it's NOT a recognized file handle, it's a loose structural placeholder (like your terrain's default '4').
             // Intercept it and force the fallback checkerboard texture to render instead!
-            if (textureId < 10000 && !_textureCache.ContainsValue(textureId))
+            if (!_allTrackedHandles.Contains(textureId))
             {
                 return GetFallbackTexture();
             }
@@ -146,6 +157,9 @@ namespace RenderEngine
         /// <summary>
         /// Internally intercepts execution to execute a clean math texture compilation on the fly.
         /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Id of texture.</returns>
+        /// <exception cref="System.InvalidOperationException">Procedural layout execution halted: No NoiseGenerator instance was initialized or found.</exception>
         private int LazyBakeTexture(int id)
         {
             if (!ProceduralCatalogue.TryGetValue(id, out _))
@@ -195,9 +209,7 @@ namespace RenderEngine
             return glHandle;
         }
 
-        // =================================================================================
-        // CORE TEXTURE DRIVER PASSES
-        // =================================================================================
+        // --- CORE TEXTURE DRIVER PASSES ---
 
         /// <summary>
         /// Gets the texture from file system pathing.
@@ -217,6 +229,8 @@ namespace RenderEngine
             texId = OpenTkHelper.LoadTextureFromFile(filePath);
 
             _textureCache[filePath] = texId;
+
+            _allTrackedHandles.Add(texId);
             return texId;
         }
 
@@ -274,6 +288,7 @@ namespace RenderEngine
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
+            _allTrackedHandles.Add(sampleId);
             return sampleId;
         }
 
@@ -288,18 +303,37 @@ namespace RenderEngine
             // textures and bleed your last active asset (the font atlas) into the scene.
             if (_fallbackTextureId > 0) return _fallbackTextureId;
 
-            // 1. Expand the 2x2 grid to 64x64 to create a deep, smooth Mipmap chain
+            // 1. Expand the 8x8 grid to 64x64 to create a deep, smooth Mipmap chain
             const int size = 64;
-            var halfSize = size / 2;
+            const int tileSize = 8; // 8x8 tiles
             var pixels = new byte[size * size * 4];
 
             for (var y = 0; y < size; y++)
             {
                 for (var x = 0; x < size; x++)
                 {
-                    // Recreates your exact Black/White/White/Black 4-square pattern
-                    var isWhite = (x >= halfSize) ^ (y >= halfSize);
-                    var color = isWhite ? (byte)255 : (byte)0;
+                    // Calculate distance to the tile boundary to anti-alias the edge
+                    var fx = (x % tileSize) / (float)tileSize;
+                    var fy = (y % tileSize) / (float)tileSize;
+
+                    // Soften the boundary transition by 1 pixel (removes infinite frequency)
+                    var edgeX = Math.Min(fx, 1.0f - fx) * tileSize;
+                    var edgeY = Math.Min(fy, 1.0f - fy) * tileSize;
+                    var minEdge = Math.Min(edgeX, edgeY);
+
+                    // Smoothstep factor between 0.0 and 1.0 along edges
+                    var smooth = Math.Clamp(minEdge, 0.0f, 1.0f);
+
+                    var isWhiteTile = (((x / tileSize) % 2) ^ ((y / tileSize) % 2)) == 0;
+
+                    // Soften contrast slightly (e.g., 30 to 225) to stop harsh high-frequency spikes
+                    var targetColor = isWhiteTile ? 225f : 30f;
+                    var centerColor = isWhiteTile ? 30f : 225f;
+
+                    // Blend the boundary pixel smoothly
+                    var color =
+                        (byte)Math.Clamp(Math.Min(targetColor, centerColor + smooth * (targetColor - centerColor)), 0,
+                            255);
 
                     var idx = (y * size + x) * 4;
                     pixels[idx] = color; // R
@@ -314,28 +348,32 @@ namespace RenderEngine
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, size, size, 0,
                 PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
 
-            // 2. Wrap mode (Assuming your custom meshes require clamping instead of repeating)
+            // 1. Tiling: Use Repeat so UV coordinates > 1.0 tile smoothly
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
-                (int)TextureWrapMode.ClampToEdge);
+                (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
-                (int)TextureWrapMode.ClampToEdge);
+                (int)TextureWrapMode.Repeat);
 
-            // 3. The filtering hybrid (Smooth distance, Sharp close-up)
+            // 2. Bilinear/Trilinear filtering smooths high-contrast color transitions
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
                 (int)TextureMinFilter.LinearMipmapLinear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
-                (int)TextureMagFilter.Nearest);
+                (int)TextureMagFilter.Linear);
 
-            // 4. Mipmap generation (Now generates a 6-level deep chain instead of just 1)
+            // 3. Generate deep mipmap chain
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
-            // 5. Anisotropic Filtering (Disabled temporarily for the fallback)
-            // High-contrast procedurals like checkerboards often fight with Anisotropic sampling. 
-            // Since we created proper mipmaps, we can turn this off for the fallback texture.
-            GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)0x84FE, 1.0f);
+            // 4. Anisotropic Filtering: Fixes grazing angle Moiré patterns!
+            GL.GetFloat((GetPName)0x84FF, out float maxAniso);
+            if (maxAniso > 0.0f)
+            {
+                // Push anisotropic limit up to 16.0x for sharp grazing angles
+                GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)0x84FE, Math.Min(maxAniso, 16.0f));
+            }
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
+            _allTrackedHandles.Add(_fallbackTextureId);
             return _fallbackTextureId;
         }
 
@@ -345,7 +383,7 @@ namespace RenderEngine
         /// <param name="textures">The procedural textures data map.</param>
         /// <returns>Dictionary of Input id and Id of texture</returns>
         /// <exception cref="ArgumentNullException">proceduralTextures - Procedural texture item entry ID evaluates to null.</exception>
-        public static Dictionary<int, int> CreateMasterTextures(Dictionary<int, UnmanagedImageBuffer?> textures)
+        public Dictionary<int, int> CreateMasterTextures(Dictionary<int, UnmanagedImageBuffer?> textures)
         {
             var result = new Dictionary<int, int>();
 
@@ -354,7 +392,8 @@ namespace RenderEngine
                 if (tex == null)
                     throw new ArgumentNullException(nameof(textures), $"Texture {id} is null.");
 
-                var texId = OpenTkHelper.CreateTexture(tex, opaqueFastPath: false);
+                // Delegates to GetTexture so handles are registered in _allTrackedHandles
+                var texId = GetTexture(tex, opaqueFastPath: false);
                 result[id] = texId;
             }
 
@@ -369,12 +408,12 @@ namespace RenderEngine
         /// <returns>Id of Texture</returns>
         public int GetTexture(UnmanagedImageBuffer buffer, bool opaqueFastPath = false)
         {
-            return OpenTkHelper.CreateTexture(buffer, opaqueFastPath);
+            var texId = OpenTkHelper.CreateTexture(buffer, opaqueFastPath);
+            _allTrackedHandles.Add(texId);
+            return texId;
         }
 
-        // =================================================================================
-        // SHADER ROUTING INTERFACES
-        // =================================================================================
+        // --- SHADER ROUTING INTERFACES ---
 
         /// <summary>
         /// Gets the shader program.
@@ -450,6 +489,10 @@ namespace RenderEngine
         /// <summary>
         /// Compiles the and link shader.
         /// </summary>
+        /// <param name="vertexSource">The vertex source.</param>
+        /// <param name="fragmentSource">The fragment source.</param>
+        /// <returns>Id of Shader.</returns>
+        /// <exception cref="System.Exception">Shader program link failed: " + info</exception>
         private static int CompileAndLinkShader(string vertexSource, string fragmentSource)
         {
             var vertex = CompileSingleShader(ShaderType.VertexShader, vertexSource);
@@ -479,6 +522,10 @@ namespace RenderEngine
         /// <summary>
         /// Compiles the single shader.
         /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="source">The source.</param>
+        /// <returns>Id of Shader.</returns>
+        /// <exception cref="System.Exception">Error compiling {type}: {info}</exception>
         private static int CompileSingleShader(ShaderType type, string source)
         {
             var shader = GL.CreateShader(type);
@@ -494,9 +541,7 @@ namespace RenderEngine
             throw new Exception($"Error compiling {type}: {info}");
         }
 
-        // =================================================================================
-        // CLEANUP UNMANAGED ASSET STACK
-        // =================================================================================
+        // --- CLEANUP UNMANAGED ASSET STACK ---
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -507,24 +552,23 @@ namespace RenderEngine
 
             _disposed = true;
 
-            foreach (var texId in _textureCache.Values)
+            // Delete ALL OpenGL texture handles tracked across all allocation pathways
+            foreach (var texId in _allTrackedHandles)
+            {
                 GL.DeleteTexture(texId);
-
-            foreach (var texId in _bakedProceduralCache.Values)
-                GL.DeleteTexture(texId);
+            }
 
             foreach (var program in _programCache.Values)
+            {
                 GL.DeleteProgram(program);
+            }
 
             _textureCache.Clear();
             _bakedProceduralCache.Clear();
             _programCache.Clear();
+            _allTrackedHandles.Clear();
 
-            if (_fallbackTextureId >= 0)
-            {
-                GL.DeleteTexture(_fallbackTextureId);
-                _fallbackTextureId = -1;
-            }
+            _fallbackTextureId = -1;
 
             GC.SuppressFinalize(this);
         }
