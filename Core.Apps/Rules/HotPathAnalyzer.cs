@@ -108,6 +108,20 @@ namespace Core.Apps.Rules
                 stats.Files.Add(filePath);
                 _aggregateStats[symbolName] = stats;
 
+                // Walk up the tree to find where this loop actually lives
+                var enclosingNode = invocation.Ancestors().FirstOrDefault(a =>
+                    a is MethodDeclarationSyntax ||
+                    a is ConstructorDeclarationSyntax ||
+                    a is PropertyDeclarationSyntax);
+
+                string enclosingName = enclosingNode switch
+                {
+                    MethodDeclarationSyntax m => m.Identifier.Text,
+                    ConstructorDeclarationSyntax c => c.Identifier.Text,
+                    PropertyDeclarationSyntax p => p.Identifier.Text,
+                    _ => "Unknown Context"
+                };
+
                 var line = invocation.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
 
                 var impact = loopContext switch
@@ -122,7 +136,8 @@ namespace Core.Apps.Rules
                     DiagnosticSeverity.Info,
                     filePath,
                     line,
-                    $"{BuildMessage(symbolName, loopContext)} Called {stats.Count} times so far, current risk {risk}, total risk {stats.TotalRisk}.",
+                    // Pass the enclosingName to BuildMessage
+                    $"{BuildMessage(symbolName, loopContext, enclosingName)} Called {stats.Count} times so far, current risk {risk}, total risk {stats.TotalRisk}.",
                     impact
                 );
             }
@@ -171,13 +186,13 @@ namespace Core.Apps.Rules
         /// <param name="method">The method.</param>
         /// <param name="ctx">The CTX.</param>
         /// <returns>Concated message.</returns>
-        private static string BuildMessage(string method, LoopContext ctx) =>
+        private static string BuildMessage(string method, LoopContext ctx, string enclosingMethod) =>
             ctx switch
             {
-                LoopContext.ConstantBounded => $"Method '{method}' inside constant-bounded loop.",
-                LoopContext.VariableBounded => $"Method '{method}' inside variable-bounded loop.",
-                LoopContext.Nested => $"Method '{method}' inside nested loops.",
-                _ => $"Method '{method}' inside loop."
+                LoopContext.ConstantBounded => $"Method '{method}' inside constant-bounded loop in '{enclosingMethod}'.",
+                LoopContext.VariableBounded => $"Method '{method}' inside variable-bounded loop in '{enclosingMethod}'.",
+                LoopContext.Nested => $"Method '{method}' inside nested loops in '{enclosingMethod}'.",
+                _ => $"Method '{method}' inside loop in '{enclosingMethod}'."
             };
     }
 }

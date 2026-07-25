@@ -6,11 +6,12 @@
         xmlns:conv="clr-namespace:Common.Converter;assembly=Common.Converter"
         xmlns:local="clr-namespace:Core.Viewer"
         mc:Ignorable="d"
-        Title="Analyzer Viewer" Height="450" Width="900">
+        Title="Analyzer Viewer" Height="450" Width="950">
 
     <Window.DataContext>
         <local:AnalyzerViewModel />
     </Window.DataContext>
+
     <Window.Resources>
         <conv:BooleanToVisibilityConverter x:Key="BoolToVisibility" Collapse="True" />
     </Window.Resources>
@@ -21,21 +22,46 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
+
         <ProgressBar Value="{Binding ProgressValue}" Minimum="0" Maximum="100" Grid.Row="2" />
 
         <!-- Analyzer selection and controls -->
-        <StackPanel Orientation="Horizontal" Margin="5,5,5,5" Grid.Row="0" Grid.ColumnSpan="2">
+        <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="0" Grid.ColumnSpan="2">
             <ComboBox ItemsSource="{Binding Analyzers}"
                       SelectedItem="{Binding SelectedAnalyzer}"
-                      Width="200" DisplayMemberPath="Name" />
+                      Width="160" DisplayMemberPath="Name" />
+
             <Button Content="Run Analyzer" Margin="5,0" Command="{Binding RunAnalyzerCommand}" />
             <Button Content="Select Folder" Margin="5,0" Command="{Binding SelectFolderCommand}" />
-            <TextBox Width="200" Margin="5,0"
+
+            <!-- Folder Path Display -->
+            <Border Background="#F0F0F0" 
+                    BorderBrush="#CCCCCC" 
+                    BorderThickness="1" 
+                    CornerRadius="3" 
+                    Padding="6,2" 
+                    Margin="5,0"
+                    VerticalAlignment="Center">
+                <TextBlock Text="{Binding TargetDirectory, TargetNullValue='No folder selected'}"
+                           ToolTip="{Binding TargetDirectory}"
+                           MaxWidth="250"
+                           TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center"
+                           FontSize="11"
+                           Foreground="#333333" />
+            </Border>
+
+            <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="10,0,2,0" />
+            <TextBox Width="150" Margin="2,0"
                      Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <!-- Diagnostics display -->
-        <ListView Grid.Row="1" ItemsSource="{Binding DiagnosticsView}" Grid.ColumnSpan="2">
+        <ListView x:Name="DiagnosticsListView" 
+                  Grid.Row="1" 
+                  ItemsSource="{Binding DiagnosticsView}" 
+                  Grid.ColumnSpan="2"
+                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Status" Width="50">
@@ -53,7 +79,7 @@
                     <GridViewColumn Header="Analyzer" DisplayMemberBinding="{Binding Diagnostic.Name}" />
                     <GridViewColumn Header="File" DisplayMemberBinding="{Binding Diagnostic.FilePath}" />
                     <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Diagnostic.Message}" />
-
+                    <GridViewColumn Header="LineNumber" DisplayMemberBinding="{Binding Diagnostic.LineNumber}" Width="50" />
                     <GridViewColumn Header="Actions" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -75,6 +101,5 @@
                 </GridView>
             </ListView.View>
         </ListView>
-
     </Grid>
 </Window>

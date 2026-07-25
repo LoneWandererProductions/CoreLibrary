@@ -26,15 +26,16 @@ namespace Core.Apps.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
     /// <summary>
-    /// Analyzer that detects method calls inside loops that don't depend on loop variables, suggesting hoisting or caching.
+    /// Analyzer that uses Semantic DataFlowAnalysis to safely detect loop-invariant 
+    /// method calls that can be hoisted or cached, avoiding side-effect false positives.
     /// </summary>
     public sealed class LoopCacheAnalyzer : ICodeAnalyzer, ICommand
     {
-        /// <inheritdoc cref="ICommand" />
+        /// <inheritdoc />
         public string Name => "LoopCache";
 
-        /// <inheritdoc cref="ICommand" />
-        public string Description => "Detects invariant method calls inside loops that could be cached or hoisted.";
+        /// <inheritdoc />
+        public string Description => "Detects pure, invariant method calls inside loops via DataFlow analysis.";
 
         /// <inheritdoc />
         public string Namespace => "Analyzer";
@@ -52,35 +53,55 @@ namespace Core.Apps.Rules
                 yield break;
 
             var tree = CSharpSyntaxTree.ParseText(fileContent);
+
+            // Build compilation to enable Data Flow Analysis
+            var compilation = CSharpCompilation.Create("AnalysisAssembly")
+                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddSyntaxTrees(tree);
+
+            var semanticModel = compilation.GetSemanticModel(tree);
             var root = tree.GetRoot();
 
             foreach (var invocation in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
             {
-                // Ignore basic static utilities that are trivial
-                var symbolName = invocation.Expression.ToString();
-                if (symbolName.StartsWith("System.", StringComparison.Ordinal) || symbolName.StartsWith("Math.", StringComparison.Ordinal))
+                var loopNode = invocation.Ancestors().FirstOrDefault(IsLoopSyntax);
+                if (loopNode == null)
                     continue;
 
-                // Find enclosing loop statement
-                var enclosingLoop = invocation.Ancestors().FirstOrDefault(IsLoopSyntax);
-                if (enclosingLoop == null)
+                // 1. Resolve the method symbol
+                if (semanticModel.GetSymbolInfo(invocation).Symbol is not IMethodSymbol methodSymbol)
                     continue;
 
-                // Get loop control variable identifiers (e.g., 'i' in 'for', 'item' in 'foreach')
-                var loopVariables = GetLoopVariables(enclosingLoop);
-                if (loopVariables.Count == 0)
+                // 2. Filter out guaranteed side-effect methods
+                if (methodSymbol.ReturnsVoid)
+                    continue; // Methods returning void exist solely for side effects (e.g. List.Add)
+
+                if (methodSymbol.Parameters.Any(p => p.RefKind != RefKind.None))
+                    continue; // Method mutates via ref/out parameters
+
+                // Ignore basic framework utilities where caching overhead > computation cost
+                var fqn = methodSymbol.ContainingType.ToDisplayString();
+                if (fqn.StartsWith("System.") || fqn.StartsWith("Math"))
                     continue;
 
-                // Check if invocation syntax references any of the loop's iteration variables
-                var invocationIdentifiers = invocation.DescendantNodes()
-                    .OfType<IdentifierNameSyntax>()
-                    .Select(id => id.Identifier.ValueText)
-                    .ToHashSet();
+                // 3. Perform Data Flow Analysis
+                var loopFlow = semanticModel.AnalyzeDataFlow(loopNode);
+                var invocationFlow = semanticModel.AnalyzeDataFlow(invocation);
 
-                // If none of the loop control variables are used anywhere in this method call
-                bool isInvariant = !loopVariables.Any(v => invocationIdentifiers.Contains(v));
+                if (!loopFlow.Succeeded || !invocationFlow.Succeeded)
+                    continue;
 
-                if (isInvariant)
+                // Variables mutated anywhere inside the loop (includes 'i' in for-loops, 'item' in foreach, etc.)
+                var mutatedInLoop = loopFlow.WrittenInside;
+
+                // Variables read specifically by this method call (target object + arguments)
+                var readByInvocation = invocationFlow.ReadInside;
+
+                // 4. The Intersection Test
+                // If the method reads ANY variable that is written to inside the loop, it is NOT invariant.
+                bool dependsOnLoopState = readByInvocation.Any(v => mutatedInLoop.Contains(v, SymbolEqualityComparer.Default));
+
+                if (!dependsOnLoopState)
                 {
                     var line = invocation.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
 
@@ -89,7 +110,7 @@ namespace Core.Apps.Rules
                         Enums.DiagnosticSeverity.Info,
                         filePath,
                         line,
-                        $"Method '{symbolName}' inside loop does not depend on loop variables ({string.Join(", ", loopVariables)}). Consider hoisting it outside the loop or caching the result.",
+                        $"Method '{methodSymbol.Name}' inside loop does not depend on any state mutated during the loop. Consider hoisting it or caching the result.",
                         DiagnosticImpact.CpuBound
                     );
                 }
@@ -110,7 +131,7 @@ namespace Core.Apps.Rules
             }
 
             var sb = new StringBuilder();
-            sb.AppendLine("⚡ Loop Cache / Hoisting Diagnostics:");
+            sb.AppendLine("⚡ Semantic Loop Cache / Hoisting Diagnostics:");
             sb.AppendLine(new string('-', 50));
 
             foreach (var d in results)
@@ -127,34 +148,9 @@ namespace Core.Apps.Rules
         ///   <c>true</c> if [is loop syntax] [the specified node]; otherwise, <c>false</c>.
         /// </returns>
         private static bool IsLoopSyntax(SyntaxNode node) =>
-            node is ForStatementSyntax or ForEachStatementSyntax or WhileStatementSyntax or DoStatementSyntax;
-
-        /// <summary>
-        /// Gets the loop variables.
-        /// </summary>
-        /// <param name="loop">The loop.</param>
-        /// <returns>Variables in the loop.</returns>
-        private static HashSet<string> GetLoopVariables(SyntaxNode loop)
-        {
-            var vars = new HashSet<string>();
-
-            switch (loop)
-            {
-                case ForEachStatementSyntax foreachLoop:
-                    vars.Add(foreachLoop.Identifier.ValueText);
-                    break;
-
-                case ForStatementSyntax forLoop:
-                    if (forLoop.Declaration != null)
-                    {
-                        foreach (var v in forLoop.Declaration.Variables)
-                            vars.Add(v.Identifier.ValueText);
-                    }
-
-                    break;
-            }
-
-            return vars;
-        }
+            node is ForStatementSyntax ||
+            node is ForEachStatementSyntax ||
+            node is WhileStatementSyntax ||
+            node is DoStatementSyntax;
     }
 }
