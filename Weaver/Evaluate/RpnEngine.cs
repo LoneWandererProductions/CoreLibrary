@@ -36,26 +36,27 @@ namespace Weaver.Evaluate
         /// <summary>
         /// The operators
         /// </summary>
-        private static readonly Dictionary<string, (int precedence, bool rightAssociative, int arity)> Operators = new()
-        {
-            ["!"] = (5, true, 1),
-            ["*"] = (4, false, 2),
-            ["/"] = (4, false, 2),
-            ["+"] = (3, false, 2),
-            ["-"] = (3, false, 2),
-            [">"] = (2, false, 2),
-            ["<"] = (2, false, 2),
-            [">="] = (2, false, 2),
-            ["<="] = (2, false, 2),
-            ["=="] = (2, false, 2),
-            ["!="] = (2, false, 2),
-            ["&&"] = (1, false, 2),
-            ["||"] = (0, false, 2),
-        };
+        private static readonly Dictionary<string?, (int precedence, bool rightAssociative, int arity)> Operators =
+            new()
+            {
+                ["!"] = (5, true, 1),
+                ["*"] = (4, false, 2),
+                ["/"] = (4, false, 2),
+                ["+"] = (3, false, 2),
+                ["-"] = (3, false, 2),
+                [">"] = (2, false, 2),
+                ["<"] = (2, false, 2),
+                [">="] = (2, false, 2),
+                ["<="] = (2, false, 2),
+                ["=="] = (2, false, 2),
+                ["!="] = (2, false, 2),
+                ["&&"] = (1, false, 2),
+                ["||"] = (0, false, 2),
+            };
 
 
         /// <inheritdoc />
-        public double EvaluateRpn(List<string> tokens)
+        public double EvaluateRpn(List<string?> tokens)
         {
             var rpn = ToRpn(tokens);
             return Evaluate(rpn);
@@ -66,10 +67,10 @@ namespace Weaver.Evaluate
         /// </summary>
         /// <param name="tokens">The tokens.</param>
         /// <returns>Reverse Polish Notation expression.</returns>
-        private List<string> ToRpn(IEnumerable<string> tokens)
+        private List<string?> ToRpn(IEnumerable<string?> tokens)
         {
-            var output = new List<string>();
-            var ops = new Stack<string>();
+            var output = new List<string?>();
+            var ops = new Stack<string?>();
 
             foreach (var token in tokens)
             {
@@ -133,7 +134,7 @@ namespace Weaver.Evaluate
         /// </summary>
         /// <param name="rpn">The RPN.</param>
         /// <returns>Result of evaluation 1 or 0.</returns>
-        private double Evaluate(List<string> rpn)
+        private double Evaluate(List<string?> rpn)
         {
             var stack = new Stack<double>();
 
@@ -187,7 +188,7 @@ namespace Weaver.Evaluate
         /// <param name="token">The token.</param>
         /// <returns>Registry value as numeric value</returns>
         /// <exception cref="System.InvalidOperationException">Invalid numeric token: {token}</exception>
-        private double GetNumericValue(string token)
+        private double GetNumericValue(string? token)
         {
             if (_registry != null && _registry.TryGet(token, out var val, out var type))
             {

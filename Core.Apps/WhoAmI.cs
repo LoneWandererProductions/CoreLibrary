@@ -24,7 +24,7 @@ namespace Core.Apps
     public sealed class WhoAmI : ICommand, IRegistryProducer
     {
         /// <inheritdoc />
-        public string CurrentRegistryKey => _storeKey;
+        public string? CurrentRegistryKey => _storeKey;
 
         /// <inheritdoc />
         public EnumTypes DataType => EnumTypes.Wobject;
@@ -40,7 +40,7 @@ namespace Core.Apps
         /// <summary>
         /// The store key
         /// </summary>
-        private string _storeKey = "whoami";
+        private string? _storeKey = "whoami";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WhoAmI"/> class.
@@ -74,7 +74,7 @@ namespace Core.Apps
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             _storeKey = (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
                 ? args[0]
@@ -99,7 +99,7 @@ namespace Core.Apps
                 var ipsJoined = ips.Any() ? string.Join(", ", ips) : "None";
 
                 // 2. Prepare the data for the Heap
-                var whoamiData = new Dictionary<string, VmValue>
+                var whoamiData = new Dictionary<string?, VmValue>
                 {
                     { "hostname", VmValue.FromString(hostname) },
                     { "username", VmValue.FromString(username) },

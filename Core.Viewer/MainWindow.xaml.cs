@@ -21,7 +21,7 @@ namespace Core.Viewer
         /// <summary>
         /// The last header clicked
         /// </summary>
-        private GridViewColumnHeader _lastHeaderClicked = null;
+        private GridViewColumnHeader? _lastHeaderClicked = null;
 
         /// <summary>
         /// The last direction

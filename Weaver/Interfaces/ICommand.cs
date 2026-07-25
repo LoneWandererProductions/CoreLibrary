@@ -63,7 +63,7 @@ namespace Weaver.Interfaces
         /// <returns>
         /// Result of the command. Contains execution status, a message and the if available the data of the operation.
         /// </returns>
-        CommandResult Execute(params string[] args);
+        CommandResult Execute(params string?[] args);
 
         /// <summary>
         /// Optional: expose available extensions with parameter counts
@@ -76,7 +76,7 @@ namespace Weaver.Interfaces
         /// </summary>
         /// <param name="args">The arguments.</param>
         /// <returns>A preview or null, if not implemented</returns>
-        CommandResult? TryRun(params string[] args)
+        CommandResult? TryRun(params string?[] args)
         {
             return null; // default: no preview available
         }

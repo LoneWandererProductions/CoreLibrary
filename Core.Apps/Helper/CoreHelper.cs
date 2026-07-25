@@ -26,7 +26,7 @@ namespace Core.Apps.Helper
         /// <summary>
         /// The ignore cache
         /// </summary>
-        private static readonly Dictionary<string, bool> IgnoreCache = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string?, bool> IgnoreCache = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The source file cache
@@ -41,7 +41,7 @@ namespace Core.Apps.Helper
         /// <see langword="true"/> if the file is auto-generated or excluded;
         /// otherwise, <see langword="false"/>.
         /// </returns>
-        internal static bool ShouldIgnoreFile(string filePath)
+        internal static bool ShouldIgnoreFile(string? filePath)
         {
             if (IgnoreCache.TryGetValue(filePath, out var cached))
                 return cached;
@@ -90,7 +90,7 @@ namespace Core.Apps.Helper
         /// </summary>
         /// <param name="startPath">The path to start searching from.</param>
         /// <returns>The project root directory.</returns>
-        internal static string FindProjectRoot(string startPath)
+        internal static string? FindProjectRoot(string? startPath)
         {
             if (File.Exists(startPath))
                 startPath = Path.GetDirectoryName(startPath)!;
@@ -152,16 +152,16 @@ namespace Core.Apps.Helper
         /// <param name="root">The root.</param>
         /// <param name="pattern">The pattern.</param>
         /// <returns>All Folders.</returns>
-        internal static IEnumerable<string> SafeEnumerateFiles(string root, string pattern)
+        internal static IEnumerable<string?> SafeEnumerateFiles(string? root, string pattern)
         {
-            var stack = new Stack<string>();
+            var stack = new Stack<string?>();
             stack.Push(root);
 
             while (stack.Count > 0)
             {
                 var current = stack.Pop();
 
-                var files = Array.Empty<string>();
+                string?[] files = Array.Empty<string>();
                 try
                 {
                     files = Directory.GetFiles(current, pattern);
@@ -174,7 +174,7 @@ namespace Core.Apps.Helper
                 foreach (var f in files)
                     yield return f;
 
-                var dirs = Array.Empty<string>();
+                string?[] dirs = Array.Empty<string>();
                 try
                 {
                     dirs = Directory.GetDirectories(current);
@@ -268,7 +268,7 @@ namespace Core.Apps.Helper
         /// <see langword="true"/> if the file is auto-generated or excluded;
         /// otherwise, <see langword="false"/>.
         /// </returns>
-        private static bool ShouldIgnore(string filePath)
+        private static bool ShouldIgnore(string? filePath)
         {
             if (IgnoreCache.TryGetValue(filePath, out var cached))
                 return cached;

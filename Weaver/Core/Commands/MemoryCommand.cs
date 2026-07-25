@@ -51,7 +51,7 @@ namespace Weaver.Core.Commands
         public IReadOnlyDictionary<string, int>? Extensions => null;
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             var content = _registry.ToString();
             return CommandResult.Ok(content);

@@ -46,7 +46,7 @@ namespace Weaver.Core.Commands
         public IReadOnlyDictionary<string, int>? Extensions => null;
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length != 1)
                 return CommandResult.Fail("Usage: Dec([key])");

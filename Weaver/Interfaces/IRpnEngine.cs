@@ -20,6 +20,6 @@ namespace Weaver.Interfaces
         /// <returns>
         /// Result of evaluation.
         /// </returns>
-        double EvaluateRpn(List<string> tokens);
+        double EvaluateRpn(List<string?> tokens);
     }
 }

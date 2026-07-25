@@ -52,7 +52,7 @@ namespace Core.Apps.Rules
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string content)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string content)
         {
             // Not used per-file
             return Enumerable.Empty<Diagnostic>();
@@ -72,7 +72,7 @@ namespace Core.Apps.Rules
             // Matches e.g.: public class Foo { ... }
             var classRegex = new Regex(@"\bclass\s+(?<name>\w+)\b", RegexOptions.Compiled);
 
-            var declarations = new List<(string FilePath, int Line, string Name)>();
+            var declarations = new List<(string? FilePath, int Line, string Name)>();
 
             foreach (var kvp in allFiles)
             {
@@ -113,7 +113,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> results;
             try

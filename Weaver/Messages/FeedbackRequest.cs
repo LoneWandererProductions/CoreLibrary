@@ -74,7 +74,7 @@ namespace Weaver.Messages
         /// </summary>
         /// <param name="input">User input</param>
         /// <returns>Result of Input.</returns>
-        public CommandResult Respond(string input)
+        public CommandResult Respond(string? input)
         {
             var result = _onRespond(input);
             // If the next result doesn't require more confirmation, we are done.

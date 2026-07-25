@@ -20,7 +20,7 @@ namespace Core.Apps.Development
 {
     /// <inheritdoc cref="ICommand" />
     /// <summary>
-    /// Executes all available code analyzers across all C# files in a provided directory 
+    /// Executes all available code analyzers across all C# files in a provided directory
     /// and exports the aggregated results into a CSV file in the local working directory.
     /// </summary>
     public sealed class BatchAnalyzerCommand : ICommand
@@ -41,7 +41,7 @@ namespace Core.Apps.Development
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length < 1)
                 return CommandResult.Fail("Usage: batchanalyze <root_folder>");
@@ -55,7 +55,7 @@ namespace Core.Apps.Development
                 return CommandResult.Fail("No analyzers found via CommandFactory.");
 
             var allDiagnostics = new List<Diagnostic>();
-            var csFiles = Directory.EnumerateFiles(rootPath, "*.cs", SearchOption.AllDirectories).ToList();
+            List<string?> csFiles = Directory.EnumerateFiles(rootPath, "*.cs", SearchOption.AllDirectories).ToList();
 
             foreach (var filePath in csFiles)
             {
@@ -105,7 +105,8 @@ namespace Core.Apps.Development
                 var escapedFile = $"\"{d.FilePath}\"";
                 var escapedFileName = $"\"{d.FileName}\"";
 
-                csvBuilder.AppendLine($"{d.Name},{d.Severity},{escapedFileName},{escapedFile},{d.LineNumber},{escapedMessage},{d.Impact}");
+                csvBuilder.AppendLine(
+                    $"{d.Name},{d.Severity},{escapedFileName},{escapedFile},{d.LineNumber},{escapedMessage},{d.Impact}");
             }
 
             try

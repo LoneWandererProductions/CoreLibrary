@@ -58,7 +58,7 @@ namespace Weaver.Core.Commands
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             var allCommands = _getCommands();
             var allExtensions = _getExtensions();

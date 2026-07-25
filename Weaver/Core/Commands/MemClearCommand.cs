@@ -51,7 +51,7 @@ namespace Weaver.Core.Commands
         public IReadOnlyDictionary<string, int>? Extensions => null;
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (_registry == null)
                 return CommandResult.Fail("Variable registry is not available.");

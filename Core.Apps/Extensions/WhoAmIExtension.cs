@@ -33,8 +33,8 @@ namespace Core.Apps.Extensions
         public string Namespace => "System";
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
-            string[] commandArgs)
+        public CommandResult Invoke(ICommand command, string?[] extensionArgs, Func<string[], CommandResult> executor,
+            string?[] commandArgs)
         {
             if (extensionArgs.Length == 0)
             {
@@ -57,7 +57,7 @@ namespace Core.Apps.Extensions
             {
                 // 2. Fetch existing object from the registry to allow incremental updates
                 // This ensures that whoami(x).who(ip).who(os) preserves the IP.
-                var whoamiData = new Dictionary<string, VmValue>();
+                var whoamiData = new Dictionary<string?, VmValue>();
                 if (registry.TryGetObject(storeKey, out var existingObj) && existingObj != null)
                 {
                     foreach (var kvp in existingObj)

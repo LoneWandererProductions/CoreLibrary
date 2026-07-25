@@ -41,9 +41,9 @@ namespace Weaver.Core.Extensions
         /// </remarks>
         public CommandResult Invoke(
             ICommand command,
-            string[] extensionArgs,
+            string?[] extensionArgs,
             Func<string[], CommandResult> executor,
-            string[] commandArgs)
+            string?[] commandArgs)
         {
             CommandResult preview;
 

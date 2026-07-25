@@ -26,15 +26,15 @@ namespace Core.Apps.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
     /// <summary>
-    /// Analyzer that uses Semantic DataFlowAnalysis to safely detect loop-invariant 
+    /// Analyzer that uses Semantic DataFlowAnalysis to safely detect loop-invariant
     /// method calls that can be hoisted or cached, avoiding side-effect false positives.
     /// </summary>
     public sealed class LoopCacheAnalyzer : ICodeAnalyzer, ICommand
     {
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICommand" />
         public string Name => "LoopCache";
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICommand" />
         public string Description => "Detects pure, invariant method calls inside loops via DataFlow analysis.";
 
         /// <inheritdoc />
@@ -47,7 +47,7 @@ namespace Core.Apps.Rules
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             if (CoreHelper.ShouldIgnoreFile(filePath))
                 yield break;
@@ -99,7 +99,8 @@ namespace Core.Apps.Rules
 
                 // 4. The Intersection Test
                 // If the method reads ANY variable that is written to inside the loop, it is NOT invariant.
-                bool dependsOnLoopState = readByInvocation.Any(v => mutatedInLoop.Contains(v, SymbolEqualityComparer.Default));
+                bool dependsOnLoopState =
+                    readByInvocation.Any(v => mutatedInLoop.Contains(v, SymbolEqualityComparer.Default));
 
                 if (!dependsOnLoopState)
                 {
@@ -118,7 +119,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> results;
             try

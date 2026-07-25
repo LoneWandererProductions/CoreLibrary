@@ -18,7 +18,7 @@ namespace Weaver.Interfaces
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>If expressions evaluate true or false.</returns>
-        bool Evaluate(string expression);
+        bool Evaluate(string? expression);
 
         /// <summary>
         /// Basic numeric evaluation (add/sub/mul/div) for simple arithmetic expressions.
@@ -26,7 +26,7 @@ namespace Weaver.Interfaces
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>Value as double.</returns>
-        double EvaluateNumeric(string expression);
+        double EvaluateNumeric(string? expression);
 
         /// <summary>
         /// Determines whether [is boolean expression] [the specified expression].

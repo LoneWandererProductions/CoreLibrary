@@ -27,15 +27,15 @@ namespace Core.Apps.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
     /// <summary>
-    /// Analyzer that uses Roslyn SemanticModel to detect non-escaping collection 
+    /// Analyzer that uses Roslyn SemanticModel to detect non-escaping collection
     /// allocations inside loops that can be safely hoisted and cleared.
     /// </summary>
     public sealed class LoopAllocationAnalyzer : ICodeAnalyzer, ICommand
     {
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICommand" />
         public string Name => "LoopAllocation";
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICommand" />
         public string Description => "Detects non-escaping collection allocations inside loops.";
 
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace Core.Apps.Rules
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             if (CoreHelper.ShouldIgnoreFile(filePath))
                 yield break;
@@ -117,7 +117,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> results;
             try
@@ -182,7 +182,7 @@ namespace Core.Apps.Rules
         private static bool TryGetLocalVariableSymbol(
             SyntaxNode creationNode,
             SemanticModel semanticModel,
-            out ILocalSymbol localSymbol)
+            out ILocalSymbol? localSymbol)
         {
             localSymbol = null;
 
@@ -211,7 +211,7 @@ namespace Core.Apps.Rules
         /// <returns>
         ///   <c>true</c> if [is declared inside loop] [the specified local symbol]; otherwise, <c>false</c>.
         /// </returns>
-        private static bool IsDeclaredInsideLoop(ILocalSymbol localSymbol, SyntaxNode loopNode)
+        private static bool IsDeclaredInsideLoop(ILocalSymbol? localSymbol, SyntaxNode loopNode)
         {
             var declarationSyntax = localSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax();
             return declarationSyntax != null && loopNode.Span.Contains(declarationSyntax.Span);
@@ -226,12 +226,14 @@ namespace Core.Apps.Rules
         /// <returns>
         ///   <c>true</c> if [symbol escapes] [the specified loop]; otherwise, <c>false</c>.
         /// </returns>
-        private static bool DoesSymbolEscape(ILocalSymbol localSymbol, SyntaxNode loopNode, SemanticModel semanticModel)
+        private static bool DoesSymbolEscape(ILocalSymbol? localSymbol, SyntaxNode loopNode,
+            SemanticModel semanticModel)
         {
             // Find all identifier nodes in the loop pointing to this exact symbol
             var references = loopNode.DescendantNodes()
                 .OfType<IdentifierNameSyntax>()
-                .Where(id => SymbolEqualityComparer.Default.Equals(semanticModel.GetSymbolInfo(id).Symbol, localSymbol));
+                .Where(id =>
+                    SymbolEqualityComparer.Default.Equals(semanticModel.GetSymbolInfo(id).Symbol, localSymbol));
 
             foreach (var reference in references)
             {
@@ -248,7 +250,8 @@ namespace Core.Apps.Rules
                     return true;
 
                 // Escape 4: Captured by lambda or local function
-                if (reference.Ancestors().Any(a => a is AnonymousFunctionExpressionSyntax or LocalFunctionStatementSyntax))
+                if (reference.Ancestors()
+                    .Any(a => a is AnonymousFunctionExpressionSyntax or LocalFunctionStatementSyntax))
                     return true;
             }
 

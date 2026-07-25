@@ -52,7 +52,7 @@ namespace Weaver.Core.Commands
         public int ParameterCount => 1;
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             var path = args[0];
 

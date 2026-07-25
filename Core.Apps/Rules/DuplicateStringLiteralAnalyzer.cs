@@ -58,7 +58,7 @@ namespace Core.Apps.Rules
         ///     This method intentionally yields no results per-file until project-wide analysis is performed.
         ///     Uses lazy-loading of project-wide string literals to avoid repeated scans.
         /// </remarks>
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             if (CoreHelper.ShouldIgnoreFile(filePath))
                 yield break;
@@ -90,7 +90,7 @@ namespace Core.Apps.Rules
         ///     A collection of <see cref="Diagnostic"/> instances for string literals
         ///     that occur multiple times across the project.
         /// </returns>
-        public IEnumerable<Diagnostic> AnalyzeDirectory(string directory)
+        public IEnumerable<Diagnostic> AnalyzeDirectory(string? directory)
         {
             _cachedLiterals ??= BuildProjectLiterals(directory);
 
@@ -103,7 +103,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> diagnostics;
 
@@ -151,7 +151,7 @@ namespace Core.Apps.Rules
         /// <returns>
         /// A dictionary keyed by literal string containing file+line lists.
         /// </returns>
-        private static Dictionary<string, List<(string file, int line)>> BuildProjectLiterals(string directory)
+        private static Dictionary<string, List<(string file, int line)>> BuildProjectLiterals(string? directory)
         {
             var occurrences = new Dictionary<string, List<(string file, int line)>>();
 
@@ -181,7 +181,7 @@ namespace Core.Apps.Rules
         /// </summary>
         /// <param name="filePath">The C# file path.</param>
         /// <returns>Pairs of string literal and line number.</returns>
-        private static IEnumerable<(string literal, int line)> ExtractLiteralsFromFile(string filePath)
+        private static IEnumerable<(string literal, int line)> ExtractLiteralsFromFile(string? filePath)
         {
             var content = File.ReadAllText(filePath);
             var root = CSharpSyntaxTree.ParseText(content).GetRoot();

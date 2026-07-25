@@ -63,7 +63,7 @@ namespace Core.Apps.Development
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args == null || args.Length == 0)
                 return CommandResult.Fail("Usage: apiexplore <folder>");
@@ -78,7 +78,7 @@ namespace Core.Apps.Development
             "window", ..];
 
             var sb = new StringBuilder();
-            var files = Directory
+            IEnumerable<string?> files = Directory
                 .EnumerateFiles(rootPath, CoreResources.ResourceCsExtension, SearchOption.AllDirectories)
                 .Where(f => !CoreHelper.ShouldIgnoreFile(f));
 

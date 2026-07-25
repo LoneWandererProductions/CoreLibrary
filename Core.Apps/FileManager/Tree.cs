@@ -40,7 +40,7 @@ namespace Core.Apps.FileManager
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length < 1)
                 return CommandResult.Fail("Usage: Tree [path]");
@@ -67,14 +67,14 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// Recursively builds the directory structure.
         /// </summary>
-        private static void BuildTree(string path, StringBuilder sb, string indent, bool last)
+        private static void BuildTree(string? path, StringBuilder sb, string indent, bool last)
         {
             var prefix = last ? "└── " : "├── ";
             sb.AppendLine($"{indent}{prefix}{Path.GetFileName(path)}");
 
             indent += last ? "    " : "│   ";
 
-            string[] dirs;
+            string?[] dirs;
             string[] files;
 
             try

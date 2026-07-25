@@ -32,7 +32,7 @@ namespace Core.Apps.Development
         private readonly IVariableRegistry _variables;
 
         /// <inheritdoc />
-        public string CurrentRegistryKey => "project_map";
+        public string? CurrentRegistryKey => "project_map";
 
         /// <inheritdoc />
         public EnumTypes DataType => EnumTypes.Wobject;
@@ -65,14 +65,14 @@ namespace Core.Apps.Development
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length < 1) return CommandResult.Fail("Usage: depexplore <root_folder>");
 
             var rootPath = args[0];
             if (!Directory.Exists(rootPath)) return CommandResult.Fail("Folder not found.");
 
-            var projectMap = new Dictionary<string, VmValue>();
+            var projectMap = new Dictionary<string?, VmValue>();
             var sb = new StringBuilder();
 
             // 1. Find all .csproj files

@@ -61,7 +61,7 @@ namespace Core.Apps.Development
         /// <param name="directoryPath">The directory path.</param>
         /// <param name="includeSubdirectories">if set to <c>true</c> [include subdirectories].</param>
         /// <returns>Files with added headers</returns>
-        public string ProcessFiles(string? directoryPath, bool includeSubdirectories)
+        public string? ProcessFiles(string? directoryPath, bool includeSubdirectories)
         {
             if (string.IsNullOrWhiteSpace(directoryPath) || !Directory.Exists(directoryPath))
                 return "Invalid or missing directory path.";
@@ -121,7 +121,7 @@ namespace Core.Apps.Development
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length == 0)
                 return CommandResult.Fail("Missing argument: directory path.");
@@ -139,7 +139,7 @@ namespace Core.Apps.Development
         ///     Preview mode for "tryrun". Shows files that would be affected and
         ///     requests confirmation before executing.
         /// </summary>
-        public CommandResult TryRun(params string[] args)
+        public CommandResult TryRun(params string?[] args)
         {
             if (args.Length == 0)
                 return CommandResult.Fail("Missing argument: directory path.");

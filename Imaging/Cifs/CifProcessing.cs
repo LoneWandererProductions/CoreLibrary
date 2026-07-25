@@ -43,7 +43,8 @@ namespace Imaging.Cifs
 
                 if (!imageFormat.TryGetValue(color, out var value))
                 {
-                    value = [];
+                    value =  []
+                    ;
                     imageFormat[color] = value;
                 }
 

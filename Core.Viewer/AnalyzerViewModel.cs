@@ -168,7 +168,7 @@ namespace Core.Viewer
             // Call directly. Parallel.ForEachAsync is already async-aware.
             await Parallel.ForEachAsync(files, async (file, ct) =>
             {
-                var content = await File.ReadAllTextAsync(file);
+                var content = await File.ReadAllTextAsync(file, ct);
 
                 // Determine the set of analyzers to run for THIS file
                 var analyzersToRun = SelectedAnalyzer is not null
@@ -294,7 +294,7 @@ namespace Core.Viewer
         /// Handles the open.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        private void HandleOpen(string filePath)
+        private void HandleOpen(string? filePath)
         {
             // Find the specific diagnostic matching this file path
             var target = _currentDiagnostics.FirstOrDefault(d => d.FilePath == filePath);

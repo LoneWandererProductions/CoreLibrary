@@ -46,7 +46,7 @@ namespace Weaver.Registry
         /// <summary>
         /// The look up
         /// </summary>
-        private readonly Dictionary<string, VmRange> _lookUp = new();
+        private readonly Dictionary<string, VmRange>? _lookUp = new();
 
         /// <summary>
         /// The store
@@ -59,13 +59,13 @@ namespace Weaver.Registry
         private int _heapPointer = 0;
 
         /// <inheritdoc />
-        public string Get(string key)
+        public string Get(string? key)
         {
             return _registry[key].ToString();
         }
 
         /// <inheritdoc />
-        public EnumTypes GetType(string key)
+        public EnumTypes GetType(string? key)
         {
             if (_registry.TryGetValue(key, out var vm))
                 return vm.Type;
@@ -74,13 +74,13 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc />
-        public void Set(string key, VmValue value)
+        public void Set(string? key, VmValue value)
         {
-            _registry[key] = value;
+            if (key != null) _registry[key] = value;
         }
 
         /// <inheritdoc />
-        public void SetList(string key, IReadOnlyList<VmValue> elements)
+        public void SetList(string? key, IReadOnlyList<VmValue> elements)
         {
             var newLength = elements.Count;
 
@@ -123,7 +123,7 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc />
-        public void SetObject(string key, IReadOnlyDictionary<string, VmValue> properties)
+        public void SetObject(string? key, IReadOnlyDictionary<string?, VmValue> properties)
         {
             var newLength = properties.Count;
 
@@ -175,14 +175,14 @@ namespace Weaver.Registry
         {
             // GUARD: Prevent overflow
             // We check if adding the length would push us past the absolute maximum
-            if (_heapPointer > long.MaxValue - length)
+            if (_heapPointer > int.MaxValue - length)
             {
                 // Option A: Throw an exception (Hard crash the script)
-                throw new OutOfMemoryException("Weaver VM Heap is exhausted. Please restart the engine.");
+                //throw new OutOfMemoryException("Weaver VM Heap is exhausted. Please restart the engine.");
 
                 // Option B: Return false (Let the engine handle the failure gracefully)
-                // range = default;
-                // return false;
+                range = default;
+                return false;
             }
 
             // Since _store dictionary keys in C# are ints, if you upgrade to long,
@@ -196,13 +196,13 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc />
-        public bool TryGet(string key, out VmValue value)
+        public bool TryGet(string? key, out VmValue value)
         {
             return _registry.TryGetValue(key, out value);
         }
 
         /// <inheritdoc />
-        public bool TryGetList(string key, out IReadOnlyList<VmValue>? list)
+        public bool TryGetList(string? key, out IReadOnlyList<VmValue>? list)
         {
             list = null;
             if (!_registry.TryGetValue(key, out var vm) || vm.Type != EnumTypes.Wlist) return false;
@@ -215,7 +215,7 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc />
-        public bool TryGetObject(string key, out IReadOnlyDictionary<string, VmValue>? obj)
+        public bool TryGetObject(string? key, out IReadOnlyDictionary<string?, VmValue>? obj)
         {
             obj = null;
 
@@ -240,7 +240,7 @@ namespace Weaver.Registry
 
 
         /// <inheritdoc />
-        public bool TryGetPointer(string key, out object? value, out EnumTypes type)
+        public bool TryGetPointer(string? key, out object? value, out EnumTypes type)
         {
             value = null;
             type = EnumTypes.Wstring; // default
@@ -293,12 +293,12 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc />
-        public bool Remove(string key)
+        public bool Remove(string? key)
         {
             var check = _lookUp.TryGetValue(key, out var range);
             if (check)
             {
-                for (var i = range.Start; i < range.End; i++)
+                for (var i = range.Start; i <= range.End; i++)
                 {
                     _store.Remove(i);
                 }
@@ -321,7 +321,7 @@ namespace Weaver.Registry
         /// <summary>
         /// Typed getter for Int64 values
         /// </summary>
-        public bool TryGetInt(string key, out long value)
+        public bool TryGetInt(string? key, out long value)
         {
             if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wint)
             {
@@ -336,7 +336,7 @@ namespace Weaver.Registry
         /// <summary>
         /// Typed getter for Double values
         /// </summary>
-        public bool TryGetDouble(string key, out double value)
+        public bool TryGetDouble(string? key, out double value)
         {
             if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wdouble)
             {
@@ -351,7 +351,7 @@ namespace Weaver.Registry
         /// <summary>
         /// Typed getter for Bool values
         /// </summary>
-        public bool TryGetBool(string key, out bool value)
+        public bool TryGetBool(string? key, out bool value)
         {
             if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wbool)
             {
@@ -366,7 +366,7 @@ namespace Weaver.Registry
         /// <summary>
         /// Typed getter for String values
         /// </summary>
-        public bool TryGetString(string key, out string? value)
+        public bool TryGetString(string? key, out string? value)
         {
             if (TryGet(key, out var vm) && vm.Type == EnumTypes.Wstring)
             {
@@ -379,7 +379,7 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc cref="IVariableRegistry" />
-        public override string ToString()
+        public override string? ToString()
         {
             if (_registry.Count == 0) return "Registry is empty.";
 
@@ -393,7 +393,7 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc />
-        public void Set(string key, object value, EnumTypes type)
+        public void Set(string? key, object? value, EnumTypes type)
         {
             var vm = type switch
             {
@@ -408,7 +408,7 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc />
-        public bool TryGet(string key, out object? value, out EnumTypes type)
+        public bool TryGet(string? key, out object? value, out EnumTypes type)
         {
             if (_registry.TryGetValue(key, out var vm))
             {

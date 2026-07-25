@@ -43,7 +43,7 @@ namespace Weaver.Evaluate
 
         /// <inheritdoc />
         /// <exception cref="ArgumentException">Invalid or unsupported expression.</exception>
-        public bool Evaluate(string expression)
+        public bool Evaluate(string? expression)
         {
             if (string.IsNullOrWhiteSpace(expression))
                 throw new ArgumentException("Expression cannot be empty.", nameof(expression));
@@ -71,7 +71,7 @@ namespace Weaver.Evaluate
         }
 
         /// <inheritdoc />
-        public double EvaluateNumeric(string expression)
+        public double EvaluateNumeric(string? expression)
         {
             //var tokens = Tokenizer.Tokenize(expression);
 

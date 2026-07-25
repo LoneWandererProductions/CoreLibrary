@@ -33,9 +33,9 @@ namespace Weaver.Core.Extensions
         /// <inheritdoc />
         public CommandResult Invoke(
             ICommand command,
-            string[] extensionArgs,
+            string?[] extensionArgs,
             Func<string[], CommandResult> executor,
-            string[] commandArgs)
+            string?[] commandArgs)
         {
             var sb = new StringBuilder();
 

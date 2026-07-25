@@ -46,7 +46,7 @@ namespace Core.Apps.Rules
         /// <summary>
         ///     Analyzes the file content and detects whether a license header is present.
         /// </summary>
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             if (CoreHelper.ShouldIgnoreFile(filePath))
                 yield break;
@@ -69,7 +69,7 @@ namespace Core.Apps.Rules
         /// <summary>
         /// Executes the analyzer on a directory path using centralized RunAnalyze logic.
         /// </summary>
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> results;
             try

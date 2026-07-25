@@ -20,6 +20,7 @@ using System.Linq;
 using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
+using DiagnosticSeverity = Core.Apps.Enums.DiagnosticSeverity;
 
 namespace Core.Apps.Rules
 {
@@ -27,13 +28,12 @@ namespace Core.Apps.Rules
     /// <summary>
     /// Analyzer that detects undisposed IDisposable objects.
     /// </summary>
-    /// <seealso cref="ICodeAnalyzer" />
     public sealed class DisposableAnalyzer : ICodeAnalyzer, ICommand
     {
-        /// <inheritdoc cref="ICodeAnalyzer" />
+        /// <inheritdoc cref="ICommand" />
         public string Name => "DisposableLeak";
 
-        /// <inheritdoc cref="ICodeAnalyzer" />
+        /// <inheritdoc cref="ICommand" />
         public string Description => "Analyzer that detects undisposed IDisposable objects.";
 
         /// <inheritdoc />
@@ -46,9 +46,8 @@ namespace Core.Apps.Rules
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
-            // 🔹 Ignore generated code and compiler artifacts
             if (CoreHelper.ShouldIgnoreFile(filePath))
             {
                 yield break;
@@ -57,60 +56,85 @@ namespace Core.Apps.Rules
             var tree = CSharpSyntaxTree.ParseText(fileContent);
             var root = tree.GetRoot();
 
-            var declarations = root.DescendantNodes()
-                .OfType<VariableDeclarationSyntax>()
-                .Where(v => v.Type is IdentifierNameSyntax id && ImplementsIDisposable(id.Identifier.Text));
+            // Find all individual variables declared in the file
+            var variables = root.DescendantNodes().OfType<VariableDeclaratorSyntax>();
 
-            foreach (var decl in declarations)
+            foreach (var v in variables)
             {
-                foreach (var v in decl.Variables)
-                {
-                    // check if inside using statement
-                    if (!IsDisposed(v, root))
-                    {
-                        var line = v.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                if (!IsDisposableType(v) || IsProperlyDisposed(v)) continue;
 
-                        yield return new Diagnostic(
-                            Name,
-                            Enums.DiagnosticSeverity.Warning,
-                            filePath,
-                            line,
-                            $"'{v.Identifier.Text}' implements IDisposable but is not disposed. Risk of resource leak.",
-                            DiagnosticImpact.IoBound
-                        );
-                    }
-                }
+                var line = v.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+
+                yield return new Diagnostic(
+                    Name,
+                    DiagnosticSeverity.Warning,
+                    filePath,
+                    line,
+                    $"'{v.Identifier.Text}' is a disposable type but is not safely disposed. Use a 'using' statement or call .Dispose().",
+                    DiagnosticImpact.IoBound
+                );
             }
         }
 
-        //
         /// <summary>
-        ///  Dummy check for demonstration; could be extended with semantic model
+        /// Checks if the variable is recognized as a disposable type, even if 'var' is used.
         /// </summary>
-        /// <param name="typeName">Name of the type.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified resource is disposed; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool ImplementsIDisposable(string typeName)
+        private static bool IsDisposableType(VariableDeclaratorSyntax variable)
         {
-            return typeName.EndsWith("Stream") || typeName.EndsWith("Reader") || typeName.EndsWith("Writer");
+            // 1. Check explicit type declarations (e.g., StreamReader reader = ...)
+            if (variable.Parent is VariableDeclarationSyntax decl)
+            {
+                var typeName = decl.Type.ToString();
+                if (typeName != "var" && ImplementsIDisposable(typeName))
+                    return true;
+            }
+
+            // 2. Check implicit 'var' declarations by looking at the right side of the assignment (e.g., var reader = new StreamReader(...))
+            if (variable.Initializer?.Value is ObjectCreationExpressionSyntax objCreate)
+            {
+                var typeName = objCreate.Type.ToString();
+                if (ImplementsIDisposable(typeName))
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// Determines whether the specified variable is disposed.
+        /// Dummy check for demonstration; could be extended with a semantic model.
         /// </summary>
-        /// <param name="variable">The variable.</param>
-        /// <param name="root">The root.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified variable is disposed; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool IsDisposed(VariableDeclaratorSyntax variable, SyntaxNode root)
+        private static bool ImplementsIDisposable(string typeName)
         {
-            // Simplified: check for using block
-            var usingStatements = root.DescendantNodes().OfType<UsingStatementSyntax>();
-            foreach (var u in usingStatements)
+            return typeName.EndsWith("Stream") ||
+                   typeName.EndsWith("Reader") ||
+                   typeName.EndsWith("Writer");
+        }
+
+        /// <summary>
+        /// Determines whether the specified variable is disposed safely.
+        /// </summary>
+        private static bool IsProperlyDisposed(VariableDeclaratorSyntax variable)
+        {
+            // 1. Check for traditional using block: using (var stream = new ...) { }
+            if (variable.Parent?.Parent is UsingStatementSyntax)
+                return true;
+
+            // 2. Check for modern C# 8 using declaration: using var stream = new ...;
+            if (variable.Parent?.Parent is LocalDeclarationStatementSyntax localDecl &&
+                localDecl.UsingKeyword.IsKind(SyntaxKind.UsingKeyword))
+                return true;
+
+            // 3. Check if .Dispose() is manually called on this variable within its parent method block
+            var parentMethod = variable.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
+            if (parentMethod != null)
             {
-                if (u.Declaration?.Variables.Any(v => v.Identifier.Text == variable.Identifier.Text) ?? false)
+                var isDisposedManually = parentMethod.DescendantNodes()
+                    .OfType<InvocationExpressionSyntax>()
+                    .Any(inv => inv.Expression is MemberAccessExpressionSyntax memberAccess &&
+                                memberAccess.Expression.ToString() == variable.Identifier.Text &&
+                                memberAccess.Name.Identifier.Text == "Dispose");
+
+                if (isDisposedManually)
                     return true;
             }
 
@@ -123,7 +147,7 @@ namespace Core.Apps.Rules
             List<Diagnostic> results;
             try
             {
-                results = AnalyzerExecutor.ExecutePath(this, args, "Usage: DisposableLeak<fileOrDirectoryPath>");
+                results = AnalyzerExecutor.ExecutePath(this, args, "Usage: DisposableLeak <fileOrDirectoryPath>");
             }
             catch (Exception ex)
             {

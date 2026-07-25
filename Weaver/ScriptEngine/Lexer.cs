@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Diagnostics;
 using System.Text;
 
 namespace Weaver.ScriptEngine
@@ -53,7 +54,7 @@ namespace Weaver.ScriptEngine
         /// Initializes a new instance of the <see cref="Lexer"/> class for the given script input.
         /// </summary>
         /// <param name="input">The script source text to tokenize.</param>
-        public Lexer(string input)
+        public Lexer(string? input)
         {
             // normalize line endings
             _input = input.Replace("\r\n", "\n");
@@ -64,7 +65,7 @@ namespace Weaver.ScriptEngine
         /// </summary>
         /// <param name="input">The script source text to tokenize.</param>
         /// <returns>List of lexemes in order of appearance.</returns>
-        public static List<string> Tokenize(string input)
+        public static List<string> Tokenize(string? input)
         {
             var lexer = new Lexer(input);
 
@@ -297,14 +298,11 @@ namespace Weaver.ScriptEngine
                 _ => null
             };
 
-            if (type != null)
-            {
-                tokens.Add(new Token { Type = type.Value, Lexeme = two, Line = line, Column = col });
-                Advance(2);
-                return true;
-            }
+            if (type == null) return false;
 
-            return false;
+            tokens.Add(new Token { Type = type.Value, Lexeme = two, Line = line, Column = col });
+            Advance(2);
+            return true;
         }
 
         /// <summary>
@@ -452,12 +450,12 @@ namespace Weaver.ScriptEngine
                     break;
 
                 default:
-                    var unknownChar = c;
+                    // Advance so callers aren't stuck in an infinite loop if they attempt recovery
                     Advance();
-                    Console.WriteLine(
-                        $"Unknown char: {(int)unknownChar} '{unknownChar}' at Line {line}, Col {col}");
-                    tokens.Add(Token(TokenType.Unknown, unknownChar.ToString(), line, col));
-                    break;
+
+                    Trace.WriteLine($"Unknown char: {(int)c} '{c}' at Line {line}, Col {col}");
+                    throw new ArgumentException(
+                        $"Unexpected character '{c}' (ASCII: {(int)c} at Line {line} and column {col}  )");
             }
         }
     }

@@ -22,7 +22,7 @@ namespace Weaver.ParseEngine
         /// </summary>
         /// <param name="raw">The raw input text.</param>
         /// <returns>The parsed command object.</returns>
-        public static ParsedCommand Parse(string raw)
+        public static ParsedCommand Parse(string? raw)
         {
             if (string.IsNullOrWhiteSpace(raw))
                 throw new FormatException("Empty input.");
@@ -34,7 +34,7 @@ namespace Weaver.ParseEngine
             // This handles cases like: system:delete(file.txt).log()
             var dotIndex = FindSeparatorIndex(raw, '.', fromRight: true);
 
-            string mainPart;
+            string? mainPart;
             var extPart = string.Empty;
 
             if (dotIndex != -1)
@@ -51,7 +51,7 @@ namespace Weaver.ParseEngine
             // We search for the first colon ':' that is NOT inside quotes or parentheses.
             var colonIndex = FindSeparatorIndex(mainPart, ':');
             var ns = string.Empty;
-            string cmdSig;
+            string? cmdSig;
 
             if (colonIndex != -1)
             {
@@ -103,7 +103,7 @@ namespace Weaver.ParseEngine
         /// <param name="input">The input.</param>
         /// <returns>Get command name and parameter</returns>
         /// <exception cref="System.FormatException">Missing closing parenthesis in '{input}'.</exception>
-        private static (string Name, string[] Args) ParseSignature(string input)
+        private static (string Name, string[] Args) ParseSignature(string? input)
         {
             // Find the first '(' that isn't inside quotes.
             var openParen = FindFirstOpenParen(input);
@@ -139,7 +139,7 @@ namespace Weaver.ParseEngine
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns>Index of first open Parenthesis.</returns>
-        private static int FindFirstOpenParen(string input)
+        private static int FindFirstOpenParen(string? input)
         {
             var inDoubleQuote = false;
             var inSingleQuote = false;
@@ -167,7 +167,7 @@ namespace Weaver.ParseEngine
         /// <param name="target">The target.</param>
         /// <param name="fromRight">if set to <c>true</c> [from right].</param>
         /// <returns>Find index of Separator.</returns>
-        private static int FindSeparatorIndex(string input, char target, bool fromRight = false)
+        private static int FindSeparatorIndex(string? input, char target, bool fromRight = false)
         {
             var inDoubleQuote = false;
             var inSingleQuote = false;

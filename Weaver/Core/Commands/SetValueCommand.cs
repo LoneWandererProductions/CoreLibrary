@@ -67,7 +67,7 @@ namespace Weaver.Core.Commands
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length != 3)
                 return CommandResult.Fail("Usage: setValue([key],[value],[type])");
@@ -76,7 +76,7 @@ namespace Weaver.Core.Commands
             var valueString = args[1];
             var typeString = args[2].ToLowerInvariant();
 
-            object value;
+            object? value;
             EnumTypes type;
 
             switch (typeString)

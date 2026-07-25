@@ -30,7 +30,7 @@ namespace Core.Apps.FileManager
     public sealed class FileLockScanner : ICommand, IRegistryProducer
     {
         /// <inheritdoc />
-        public string CurrentRegistryKey => StoreKey;
+        public string? CurrentRegistryKey => StoreKey;
 
         /// <inheritdoc />
         public EnumTypes DataType => EnumTypes.Wobject;
@@ -46,7 +46,7 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// The store key
         /// </summary>
-        private readonly string StoreKey = "lockedfiles";
+        private readonly string? StoreKey = "lockedfiles";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileLockScanner"/> class.
@@ -73,7 +73,7 @@ namespace Core.Apps.FileManager
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length < 1)
                 return CommandResult.Fail("Usage: FileLockScanner([path])");
@@ -87,10 +87,10 @@ namespace Core.Apps.FileManager
             sb.AppendLine("-----------------------------------");
 
             // 1. Prepare the Dictionary for the VM Heap
-            var lockedData = new Dictionary<string, VmValue>();
+            var lockedData = new Dictionary<string?, VmValue>();
 
             // 2. Use SafeEnumerateFiles to prevent UnauthorizedAccessException crashes!
-            IEnumerable<string> files;
+            IEnumerable<string?> files;
             try
             {
                 files = CoreHelper.SafeEnumerateFiles(directoryPath, "*.*");
@@ -140,7 +140,7 @@ namespace Core.Apps.FileManager
         /// </summary>
         /// <param name="file">The file.</param>
         /// <returns>Name of locking processes.</returns>
-        private static string[] GetLockingProcesses(string file)
+        private static string[] GetLockingProcesses(string? file)
         {
             try
             {

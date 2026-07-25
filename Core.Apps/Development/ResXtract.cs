@@ -110,7 +110,7 @@ namespace Core.Apps.Development
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length == 0)
                 return CommandResult.Fail("Usage:\n  ResXtract <projectPath>\n  ResXtract --detect <projectPath>");
@@ -140,7 +140,7 @@ namespace Core.Apps.Development
         }
 
         /// <inheritdoc />
-        public CommandResult TryRun(params string[] args)
+        public CommandResult TryRun(params string?[] args)
         {
             if (args.Length == 0)
                 return CommandResult.Fail("Usage:\n  ResXtract <projectPath>\n  ResXtract --detect <projectPath>");

@@ -57,7 +57,7 @@ namespace Weaver.Core.Commands
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(string[] args)
+        public CommandResult Execute(string?[] args)
         {
             var expression = args.Length > 0 ? args[0] : null;
             var targetVar = args.Length > 1 ? args[1] : null;

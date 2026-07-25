@@ -40,8 +40,8 @@ namespace Weaver.Core.Extensions
         }
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
-            string[] commandArgs)
+        public CommandResult Invoke(ICommand command, string?[] extensionArgs, Func<string[], CommandResult> executor,
+            string?[] commandArgs)
         {
             // Determine key from extension args
             var key = extensionArgs.Length > 0 && !string.IsNullOrWhiteSpace(extensionArgs[0])

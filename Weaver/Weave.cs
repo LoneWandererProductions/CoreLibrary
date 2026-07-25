@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System.Collections.Concurrent;
 using Weaver.Core;
 using Weaver.Core.Commands;
 using Weaver.Core.Extensions;
@@ -30,13 +31,13 @@ namespace Weaver
         /// <summary>
         /// Stores registered commands, keyed by (namespace, name, parameter count)
         /// </summary>
-        private readonly Dictionary<(string ns, string name, int paramCount), ICommand> _commands
+        private readonly ConcurrentDictionary<(string ns, string name, int paramCount), ICommand> _commands
             = new();
 
         /// <summary>
         /// Built-in extensions injected into every command
         /// </summary>
-        private static readonly Dictionary<string, CommandExtension> GlobalExtensions =
+        private static readonly ConcurrentDictionary<string, CommandExtension> GlobalExtensions =
             new(StringComparer.OrdinalIgnoreCase)
             {
                 [WeaverResources.GlobalExtensionHelp] =
@@ -74,7 +75,8 @@ namespace Weaver
         public readonly MessageMediator Mediator = new();
 
         /// <summary>
-        /// The pending feedback
+        /// The pending feedback, right now async handling is not supported.
+        /// We must fix that in the future.
         /// </summary>
         private FeedbackRequest? _pendingFeedback;
 
@@ -110,13 +112,8 @@ namespace Weaver
         /// <param name="command">The command to register.</param>
         public void Register(ICommand command)
         {
-            // Lock ensures we don't modify the dictionary while ProcessInput is reading it
-            lock (_syncRoot)
-            {
-                var key = (command.Namespace.ToLowerInvariant(), command.Name.ToLowerInvariant(),
-                    command.ParameterCount);
-                _commands[key] = command;
-            }
+            var key = (command.Namespace.ToLowerInvariant(), command.Name.ToLowerInvariant(), command.ParameterCount);
+            _commands[key] = command;
         }
 
         /// <summary>
@@ -128,13 +125,8 @@ namespace Weaver
         {
             if (extension == null) throw new ArgumentNullException(nameof(extension));
 
-            lock (_syncRoot)
-            {
-                if (_extensions.ContainsKey(extension.Name))
-                    throw new InvalidOperationException($"Extension '{extension.Name}' is already registered.");
-
-                _extensions[extension.Name] = extension;
-            }
+            if (!_extensions.TryAdd(extension.Name, extension))
+                throw new InvalidOperationException($"Extension '{extension.Name}' is already registered.");
         }
 
         /// <summary>
@@ -219,17 +211,14 @@ namespace Weaver
         ///   </item>
         /// </list>
         /// </remarks>
-        public CommandResult ProcessInput(string raw)
+        public CommandResult ProcessInput(string? raw)
         {
-            raw = raw.Trim();
+            raw = raw?.Trim();
             if (string.IsNullOrEmpty(raw)) return CommandResult.Fail("Empty input.");
 
-            // CRITICAL SECTION:
-            // We lock the entire execution pipeline. This ensures that checking for
-            // _pendingFeedback and executing the command happens as one atomic unit.
+            // 1. Pending Feedback (CRITICAL SECTION - Short lived)
             lock (_syncRoot)
             {
-                // 1. Pending Feedback
                 if (_pendingFeedback?.IsPending == true)
                 {
                     var associatedCommand = Mediator.Resolve(_pendingFeedback.RequestId);
@@ -248,40 +237,41 @@ namespace Weaver
                     _pendingFeedback = null;
                     return result;
                 }
+            } // <-- LOCK RELEASED. The engine is free for other threads again.
 
-                // 2. Parse
-                ParsedCommand parsed;
-                try
-                {
-                    parsed = SimpleCommandParser.Parse(raw);
-                }
-                catch (Exception ex)
-                {
-                    return CommandResult.Fail($"Syntax error: {ex.Message}");
-                }
-
-                var (cmd, cmdError) = FindCommand(parsed.Name, parsed.Args.Length, parsed.Namespace);
-                if (cmdError != null) return cmdError;
-
-                // 3. Extensions
-                if (!string.IsNullOrEmpty(parsed.Extension))
-                {
-                    var (ext, error) = FindExtension(cmd!, parsed.Extension, parsed.ExtensionArgs.Length);
-                    if (error != null) return error;
-
-                    if (ext != null)
-                    {
-                        var result = ext.Invoke(cmd!, parsed.ExtensionArgs, cmd!.Execute, parsed.Args);
-                        return HandleFeedback(result, cmd!);
-                    }
-
-                    return CommandResult.Fail($"Unknown extension '{parsed.Extension}' for command '{cmd!.Name}'.");
-                }
-
-                // 4. Execution
-                var execResult = cmd!.Execute(parsed.Args);
-                return HandleFeedback(execResult, cmd);
+            // 2. Parse (Thread-safe, no lock required)
+            ParsedCommand parsed;
+            try
+            {
+                parsed = SimpleCommandParser.Parse(raw);
             }
+            catch (Exception ex)
+            {
+                return CommandResult.Fail($"Syntax error: {ex.Message}");
+            }
+
+            // 3. Lookups (Thread-safe via ConcurrentDictionary)
+            var (cmd, cmdError) = FindCommand(parsed.Name, parsed.Args.Length, parsed.Namespace);
+            if (cmdError != null) return cmdError;
+
+            ICommandExtension? ext = null;
+            if (!string.IsNullOrEmpty(parsed.Extension))
+            {
+                var (foundExt, error) = FindExtension(cmd!, parsed.Extension, parsed.ExtensionArgs.Length);
+                if (error != null) return error;
+                if (foundExt == null)
+                    return CommandResult.Fail($"Unknown extension '{parsed.Extension}' for command '{cmd!.Name}'.");
+
+                ext = foundExt;
+            }
+
+            // 4. Execution (NO LOCKS HELD! Fully concurrent)
+            var execResult = ext != null
+                ? ext.Invoke(cmd!, parsed.ExtensionArgs, cmd!.Execute, parsed.Args)
+                : cmd!.Execute(parsed.Args);
+
+            // 5. Register new feedback if necessary
+            return HandleFeedback(execResult, cmd!);
         }
 
         /// <summary>
@@ -427,7 +417,9 @@ namespace Weaver
         /// </summary>
         private CommandResult HandleFeedback(CommandResult result, ICommand cmd)
         {
-            if (result.RequiresConfirmation && result.Feedback != null)
+            if (!result.RequiresConfirmation || result.Feedback == null) return result;
+
+            lock (_syncRoot) // Re-acquire briefly to protect state mutation
             {
                 _pendingFeedback = result.Feedback;
                 Mediator.Register(cmd, _pendingFeedback);

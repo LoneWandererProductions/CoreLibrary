@@ -70,7 +70,7 @@ namespace Core.Apps.FileManager
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args == null || args.Length == 0)
                 return CommandResult.Fail("No file path provided.");
@@ -121,7 +121,7 @@ namespace Core.Apps.FileManager
         /// Reads the new content.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        private void ReadNewContent(string filePath)
+        private void ReadNewContent(string? filePath)
         {
             // Lock ensures multiple Rapid FileSystemWatcher events don't step on each other
             lock (_syncRoot)

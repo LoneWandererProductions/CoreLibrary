@@ -24,7 +24,7 @@ namespace Weaver.Messages
         /// <value>
         /// The message.
         /// </value>
-        public string Message { get; init; } = "";
+        public string? Message { get; init; } = "";
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="CommandResult"/> is success.
@@ -64,7 +64,7 @@ namespace Weaver.Messages
         /// </summary>
         /// <param name="msg">The MSG.</param>
         /// <returns>Drop in ready Command.</returns>
-        public static CommandResult Ok(string msg) => new() { Success = true, Message = msg };
+        public static CommandResult Ok(string? msg) => new() { Success = true, Message = msg };
 
         /// <summary>
         /// Oks the specified MSG.

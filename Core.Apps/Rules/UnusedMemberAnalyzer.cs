@@ -46,7 +46,7 @@ namespace Core.Apps.Rules
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             if (CoreHelper.ShouldIgnoreFile(filePath)) yield break;
 
@@ -93,7 +93,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             try
             {

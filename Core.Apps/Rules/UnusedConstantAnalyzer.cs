@@ -51,7 +51,7 @@ namespace Core.Apps.Rules
         /// <summary>
         /// Runs a per-file analysis (not used in this analyzer).
         /// </summary>
-        public IEnumerable<Diagnostic> Analyze(string filePath, string content)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string content)
         {
             // This analyzer does not work per file;
             // it only makes sense project-wide.
@@ -69,7 +69,7 @@ namespace Core.Apps.Rules
                 RegexOptions.Compiled);
 
             // Collect all declarations
-            var declarations = new List<(string FilePath, int Line, string Name)>();
+            var declarations = new List<(string? FilePath, int Line, string Name)>();
 
             foreach (var kvp in allFiles)
             {
@@ -120,7 +120,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> results;
             try

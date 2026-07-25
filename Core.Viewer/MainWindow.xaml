@@ -35,11 +35,11 @@
             <Button Content="Select Folder" Margin="5,0" Command="{Binding SelectFolderCommand}" />
 
             <!-- Folder Path Display -->
-            <Border Background="#F0F0F0" 
-                    BorderBrush="#CCCCCC" 
-                    BorderThickness="1" 
-                    CornerRadius="3" 
-                    Padding="6,2" 
+            <Border Background="#F0F0F0"
+                    BorderBrush="#CCCCCC"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Padding="6,2"
                     Margin="5,0"
                     VerticalAlignment="Center">
                 <TextBlock Text="{Binding TargetDirectory, TargetNullValue='No folder selected'}"
@@ -57,9 +57,9 @@
         </StackPanel>
 
         <!-- Diagnostics display -->
-        <ListView x:Name="DiagnosticsListView" 
-                  Grid.Row="1" 
-                  ItemsSource="{Binding DiagnosticsView}" 
+        <ListView x:Name="DiagnosticsListView"
+                  Grid.Row="1"
+                  ItemsSource="{Binding DiagnosticsView}"
                   Grid.ColumnSpan="2"
                   GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
             <ListView.View>
@@ -80,7 +80,8 @@
                     <GridViewColumn Header="File" DisplayMemberBinding="{Binding Diagnostic.FileName}" />
                     <GridViewColumn Header="File" DisplayMemberBinding="{Binding Diagnostic.FilePath}" />
                     <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Diagnostic.Message}" />
-                    <GridViewColumn Header="LineNumber" DisplayMemberBinding="{Binding Diagnostic.LineNumber}" Width="50" />
+                    <GridViewColumn Header="LineNumber" DisplayMemberBinding="{Binding Diagnostic.LineNumber}"
+                                    Width="50" />
                     <GridViewColumn Header="Actions" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

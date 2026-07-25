@@ -44,7 +44,7 @@ namespace Weaver.Core.Commands
         public IReadOnlyDictionary<string, int>? Extensions => null;
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             // 1️⃣ No arguments → fail
             if (args.Length == 0)

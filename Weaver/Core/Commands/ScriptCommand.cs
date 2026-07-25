@@ -49,7 +49,7 @@ namespace Weaver.Core.Commands
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(string[] args)
+        public CommandResult Execute(string?[] args)
         {
             if (args.Length == 0 || string.IsNullOrWhiteSpace(args[0]))
             {

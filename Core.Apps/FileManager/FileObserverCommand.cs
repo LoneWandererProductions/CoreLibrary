@@ -75,7 +75,7 @@ namespace Core.Apps.FileManager
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             // 1. Fix Instant Crash
             if (args.Length < 1 || string.IsNullOrWhiteSpace(args[0]))
@@ -136,7 +136,7 @@ namespace Core.Apps.FileManager
         /// Reads the new content.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        private void ReadNewContent(string filePath)
+        private void ReadNewContent(string? filePath)
         {
             // 4. Fix Thread Race Conditions
             lock (_readLock)

@@ -41,7 +41,7 @@ namespace Core.Apps
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length < 1)
                 return CommandResult.Fail("Usage: SmartPingPro [host] [options]");

@@ -31,7 +31,7 @@ namespace Core.Apps.FileManager
     public sealed class DirectorySizeAnalyzer : ICommand, IRegistryProducer
     {
         /// <inheritdoc />
-        public string CurrentRegistryKey => StoreKey;
+        public string? CurrentRegistryKey => StoreKey;
 
         /// <inheritdoc />
         public EnumTypes DataType =>
@@ -48,7 +48,7 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// The store key
         /// </summary>
-        private string StoreKey = "directorysize";
+        private string? StoreKey = "directorysize";
 
         /// <inheritdoc />
         public string Name => "DirectorySize";
@@ -183,7 +183,7 @@ namespace Core.Apps.FileManager
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length < 1)
                 return CommandResult.Fail("Usage: DirectorySize([path] [, includeSubDirs])");

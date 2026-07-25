@@ -32,7 +32,7 @@ namespace Weaver.Messages
         /// <summary>
         /// The arguments for the main command.
         /// </summary>
-        public string[] Args { get; init; } = Array.Empty<string>();
+        public string?[] Args { get; init; } = Array.Empty<string>();
 
         /// <summary>
         /// The optional extension name (e.g. "help").
@@ -42,7 +42,7 @@ namespace Weaver.Messages
         /// <summary>
         /// The arguments for the extension, if any.
         /// </summary>
-        public string[] ExtensionArgs { get; init; } = Array.Empty<string>();
+        public string?[] ExtensionArgs { get; init; } = Array.Empty<string>();
 
         /// <summary>
         /// Returns a human-readable string representation of the parsed command,

@@ -47,7 +47,7 @@ namespace Core.Apps.Rules
         /// <summary>
         /// The aggregate stats
         /// </summary>
-        private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string> Files)> _aggregateStats = new();
+        private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string?> Files)> _aggregateStats = new();
 
         /// <summary>
         /// The constant loop weight
@@ -65,7 +65,7 @@ namespace Core.Apps.Rules
         private const int NestedLoopWeight = 50;
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             var tree = CSharpSyntaxTree.ParseText(fileContent);
             var root = tree.GetRoot();
@@ -109,7 +109,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             if (args.Length == 0)
                 return CommandResult.Fail("Usage: Allocation <fileOrDirectoryPath>");

@@ -23,7 +23,7 @@ namespace Weaver.Interfaces
         /// <value>
         /// The current registry key.
         /// </value>
-        string CurrentRegistryKey { get; }
+        string? CurrentRegistryKey { get; }
 
         /// <summary>
         /// The expected type of the data being stored.

@@ -47,7 +47,7 @@ namespace Core.Apps.Rules
         /// <summary>
         /// Project-wide aggregation: method FQN -> (call count, total risk, files seen)
         /// </summary>
-        private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string> Files)> _aggregateStats = new();
+        private readonly Dictionary<string, (int Count, int TotalRisk, HashSet<string?> Files)> _aggregateStats = new();
 
         // Thresholds / weights
 
@@ -67,7 +67,7 @@ namespace Core.Apps.Rules
         private const int NestedLoopWeight = 50;
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             // 🔹 Ignore generated code and compiler artifacts
             if (CoreHelper.ShouldIgnoreFile(filePath))
@@ -144,7 +144,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> results;
             try
@@ -189,8 +189,10 @@ namespace Core.Apps.Rules
         private static string BuildMessage(string method, LoopContext ctx, string enclosingMethod) =>
             ctx switch
             {
-                LoopContext.ConstantBounded => $"Method '{method}' inside constant-bounded loop in '{enclosingMethod}'.",
-                LoopContext.VariableBounded => $"Method '{method}' inside variable-bounded loop in '{enclosingMethod}'.",
+                LoopContext.ConstantBounded =>
+                    $"Method '{method}' inside constant-bounded loop in '{enclosingMethod}'.",
+                LoopContext.VariableBounded =>
+                    $"Method '{method}' inside variable-bounded loop in '{enclosingMethod}'.",
                 LoopContext.Nested => $"Method '{method}' inside nested loops in '{enclosingMethod}'.",
                 _ => $"Method '{method}' inside loop in '{enclosingMethod}'."
             };

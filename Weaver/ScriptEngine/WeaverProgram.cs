@@ -45,7 +45,7 @@ namespace Weaver.ScriptEngine
         /// </returns>
         /// <exception cref="ArgumentException">Script cannot be null or empty., nameof(script)</exception>
         /// <exception cref="System.ArgumentException">Script cannot be null or empty. - script</exception>
-        public static WeaverProgram Compile(string script, IVariableRegistry registry)
+        public static WeaverProgram Compile(string? script, IVariableRegistry registry)
         {
             if (string.IsNullOrWhiteSpace(script))
                 throw new ArgumentException("Script cannot be null or empty.", nameof(script));

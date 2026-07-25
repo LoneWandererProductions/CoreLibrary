@@ -179,7 +179,7 @@ namespace Weaver.Registry
         /// </summary>
         /// <param name="newAttribute">The new attribute.</param>
         /// <returns>Value Type corresponding with the selected type.</returns>
-        public VmValue WithAttribute(string newAttribute) =>
+        public VmValue WithAttribute(string? newAttribute) =>
             new VmValue(Type, Int64, Double, Bool, String, newAttribute);
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace Weaver.Registry
                 EnumTypes.Wstring => String ?? "<null>",
                 EnumTypes.Wpointer => String ?? "<null>",
                 EnumTypes.Wobject => "<object>",
-                EnumTypes.Wlist => "<list>", // <-- ADD THIS LINE
+                EnumTypes.Wlist => "<list>",
                 _ => "<unknown>"
             };
 

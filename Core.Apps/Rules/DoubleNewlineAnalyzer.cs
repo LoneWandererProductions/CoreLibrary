@@ -45,7 +45,7 @@ namespace Core.Apps.Rules
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             // Skip ignored files
             if (CoreHelper.ShouldIgnoreFile(filePath))
@@ -66,7 +66,7 @@ namespace Core.Apps.Rules
 
         /// <inheritdoc />
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> diagnostics;
 

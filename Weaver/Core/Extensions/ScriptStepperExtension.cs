@@ -42,9 +42,9 @@ namespace Weaver.Core.Extensions
         /// <inheritdoc />
         public CommandResult Invoke(
             ICommand command,
-            string[] extensionArgs,
+            string?[] extensionArgs,
             Func<string[], CommandResult> executor,
-            string[] commandArgs)
+            string?[] commandArgs)
         {
             if (command is not ScriptCommand)
                 return CommandResult.Fail("Script.Step extension can only be used with Script() command.");

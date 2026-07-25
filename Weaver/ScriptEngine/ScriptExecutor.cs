@@ -6,8 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-//TODO the node exit for DoWhile is currently not implemented in the ScriptExecutor
-
 using System.Diagnostics;
 using Weaver.Evaluate;
 using Weaver.Interfaces;
@@ -35,12 +33,12 @@ namespace Weaver.ScriptEngine
         /// <summary>
         /// The statements
         /// </summary>
-        private readonly List<(string Category, string)> _statements;
+        private readonly List<(string Category, string?)> _statements;
 
         /// <summary>
         /// The label positions
         /// </summary>
-        private readonly Dictionary<string, int> _labelPositions;
+        private readonly Dictionary<string?, int> _labelPositions;
 
         /// <summary>
         /// The position
@@ -88,7 +86,7 @@ namespace Weaver.ScriptEngine
             _position = 0;
             _debug = debug;
 
-            _labelPositions = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            _labelPositions = new Dictionary<string?, int>(StringComparer.OrdinalIgnoreCase);
 
             for (var i = 0; i < _statements.Count; i++)
             {
@@ -207,9 +205,6 @@ namespace Weaver.ScriptEngine
                         var bodyStart = _doWhileStack.Peek();
 
                         var cond = _evaluator.Evaluate(stmt!);
-                        //Todo Error is here
-                        //Trace.WriteLine($"[Debug] EVAL: '{stmt}' → {cond}. counter={_weave.Runtime.Variables.Get("counter")}");
-
 
                         if (_debug)
                             Trace.WriteLine(
@@ -341,7 +336,7 @@ namespace Weaver.ScriptEngine
         /// <param name="step">The step.</param>
         /// <param name="extra">The extra.</param>
         /// <param name="info">The information.</param>
-        private void DebugLine(string category, string stmt, StepType step, string extra, string info)
+        private void DebugLine(string category, string? stmt, StepType step, string extra, string info)
         {
             switch (step)
             {

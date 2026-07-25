@@ -59,7 +59,7 @@ namespace Core.Apps.UI
 
                 var tcs = new System.Threading.Tasks.TaskCompletionSource<LogWindow>();
 
-                var thread = new System.Threading.Thread(() =>
+                var thread = new Thread(() =>
                 {
                     var w = new LogWindow();
 
@@ -81,7 +81,7 @@ namespace Core.Apps.UI
                     System.Windows.Threading.Dispatcher.Run();
                 });
 
-                thread.SetApartmentState(System.Threading.ApartmentState.STA);
+                thread.SetApartmentState(ApartmentState.STA);
                 thread.IsBackground = true;
                 thread.Start();
 

@@ -28,8 +28,8 @@ namespace Weaver.Core.Extensions
         public string Namespace => WeaverResources.GlobalNamespace;
 
         /// <inheritdoc />
-        public CommandResult Invoke(ICommand command, string[] extensionArgs, Func<string[], CommandResult> executor,
-            string[] commandArgs)
+        public CommandResult Invoke(ICommand command, string?[] extensionArgs, Func<string[], CommandResult> executor,
+            string?[] commandArgs)
         {
             // 1. Check if the command is a producer
             if (command is not IRegistryProducer producer)

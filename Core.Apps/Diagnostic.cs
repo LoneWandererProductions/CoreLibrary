@@ -27,7 +27,7 @@ namespace Core.Apps
         /// <param name="lineNumber">The line number.</param>
         /// <param name="message">The message.</param>
         /// <param name="impact">The impact.</param>
-        public Diagnostic(string name, DiagnosticSeverity severity, string filePath, int lineNumber, string message,
+        public Diagnostic(string name, DiagnosticSeverity severity, string? filePath, int lineNumber, string message,
             DiagnosticImpact? impact = null)
         {
             Name = name;
@@ -68,7 +68,7 @@ namespace Core.Apps
         /// <value>
         ///     The file path.
         /// </value>
-        public string FilePath { get; }
+        public string? FilePath { get; }
 
         /// <summary>
         /// Gets the file name only (extracted from FilePath).

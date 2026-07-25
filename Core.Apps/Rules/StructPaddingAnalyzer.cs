@@ -12,7 +12,6 @@ using System.Linq;
 using Core.Apps.Enums;
 using Core.Apps.Helper;
 using Core.Apps.Interface;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Weaver;
@@ -44,7 +43,7 @@ namespace Core.Apps.Rules
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             if (CoreHelper.ShouldIgnoreFile(filePath)) yield break;
 
@@ -79,7 +78,7 @@ namespace Core.Apps.Rules
 
                     yield return new Diagnostic(
                         Name,
-                        Enums.DiagnosticSeverity.Info,
+                        DiagnosticSeverity.Info,
                         filePath,
                         line,
                         $"Struct '{structDecl.Identifier.Text}' is not optimized. " +
@@ -105,7 +104,7 @@ namespace Core.Apps.Rules
         };
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             try
             {

@@ -24,7 +24,7 @@ namespace Core.Apps.Helper
         /// <param name="directory">The directory path to scan recursively.</param>
         /// <param name="analyzer">The analyzer instance implementing <see cref="ICodeAnalyzer"/>.</param>
         /// <returns>A collection of all diagnostics produced by the analyzer.</returns>
-        internal static IEnumerable<Diagnostic> RunAnalyzer(string directory, ICodeAnalyzer? analyzer)
+        internal static IEnumerable<Diagnostic> RunAnalyzer(string? directory, ICodeAnalyzer? analyzer)
         {
             // Validate input
             if (string.IsNullOrWhiteSpace(directory) || analyzer == null)
@@ -54,7 +54,7 @@ namespace Core.Apps.Helper
         /// <param name="filePath">The full path of the file to analyze.</param>
         /// <param name="analyzer">The analyzer instance implementing <see cref="ICodeAnalyzer"/>.</param>
         /// <returns>A collection of diagnostics for that file.</returns>
-        internal static IEnumerable<Diagnostic> RunAnalyzerForFile(string filePath, ICodeAnalyzer? analyzer)
+        internal static IEnumerable<Diagnostic> RunAnalyzerForFile(string? filePath, ICodeAnalyzer? analyzer)
         {
             if (string.IsNullOrWhiteSpace(filePath) || analyzer == null)
                 return Enumerable.Empty<Diagnostic>();

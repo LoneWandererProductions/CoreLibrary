@@ -64,7 +64,7 @@ namespace Weaver.Registry
         /// <returns>Checks if variable can be found in registry.</returns>
         public static bool TryEvaluateAsBool(
             this IVariableRegistry registry,
-            string name,
+            string? name,
             out bool value)
         {
             value = false;
@@ -91,7 +91,7 @@ namespace Weaver.Registry
         /// </returns>
         public static bool IsNumericType(
             this IVariableRegistry registry,
-            string variable)
+            string? variable)
         {
             if (registry == null)
                 return false;
@@ -129,7 +129,7 @@ namespace Weaver.Registry
         /// <returns>Get type and Key to Pointer.</returns>
         public static bool TryGetPointer(
             this IVariableRegistry? registry,
-            string name,
+            string? name,
             out EnumTypes type,
             out string? pointer)
         {

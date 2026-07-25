@@ -40,7 +40,7 @@ namespace Core.Apps.Interface
         /// <param name="filePath">The file path.</param>
         /// <param name="fileContent">Content of the file.</param>
         /// <returns>Code Analyzer results.</returns>
-        IEnumerable<Diagnostic> Analyze(string filePath, string fileContent) => Enumerable.Empty<Diagnostic>();
+        IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent) => Enumerable.Empty<Diagnostic>();
 
         /// <summary>
         /// Analyze all files together.

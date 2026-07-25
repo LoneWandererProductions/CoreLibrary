@@ -49,10 +49,10 @@ namespace Core.Apps.Rules
         /// <summary>
         /// The event stats
         /// </summary>
-        private readonly Dictionary<string, (int Count, HashSet<string> Files)> _eventStats = new();
+        private readonly Dictionary<string, (int Count, HashSet<string?> Files)> _eventStats = new();
 
         /// <inheritdoc />
-        public IEnumerable<Diagnostic> Analyze(string filePath, string fileContent)
+        public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
             // 🔹 Ignore generated code and compiler artifacts
             if (CoreHelper.ShouldIgnoreFile(filePath))
@@ -90,7 +90,7 @@ namespace Core.Apps.Rules
         }
 
         /// <inheritdoc />
-        public CommandResult Execute(params string[] args)
+        public CommandResult Execute(params string?[] args)
         {
             List<Diagnostic> results;
             try
