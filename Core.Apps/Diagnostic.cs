@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using Core.Apps.Enums;
+using System.IO;
 
 namespace Core.Apps
 {
@@ -68,6 +69,14 @@ namespace Core.Apps
         ///     The file path.
         /// </value>
         public string FilePath { get; }
+
+        /// <summary>
+        /// Gets the file name only (extracted from FilePath).
+        /// </summary>
+        /// <value>
+        /// The name of the file.
+        /// </value>
+        public string FileName => Path.GetFileName(FilePath);
 
         /// <summary>
         ///     Gets the line number.

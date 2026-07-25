@@ -88,7 +88,7 @@ namespace Core.Apps.Rules
                 var loopFlow = semanticModel.AnalyzeDataFlow(loopNode);
                 var invocationFlow = semanticModel.AnalyzeDataFlow(invocation);
 
-                if (!loopFlow.Succeeded || !invocationFlow.Succeeded)
+                if (invocationFlow == null || !loopFlow.Succeeded || !invocationFlow.Succeeded)
                     continue;
 
                 // Variables mutated anywhere inside the loop (includes 'i' in for-loops, 'item' in foreach, etc.)

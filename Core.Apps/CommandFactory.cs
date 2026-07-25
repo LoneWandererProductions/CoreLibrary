@@ -53,7 +53,7 @@ namespace Core.Apps
                 new UnusedPrivateFieldAnalyzer(), new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(),
                 new ApiExplorerCommand(), new LogTailCommand(), new SmartPingPro(), new Tree(),
                 new StructPaddingAnalyzer(), new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(),
-                new LoopAllocationAnalyzer(), new LoopCacheAnalyzer()
+                new LoopAllocationAnalyzer(), new LoopCacheAnalyzer(), new BatchAnalyzerCommand(),
             });
 
             // --- PRODUCERS (Require Registry) ---

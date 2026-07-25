@@ -270,7 +270,7 @@ namespace Core.Viewer
             foreach (var d in filtered)
             {
                 DiagnosticsView.Add(new DiagnosticItemViewModel(d,
-                    openFile: _ => HandleOpen(d.Name),
+                    openFile: _ => HandleOpen(d.FilePath), // Pass FilePath instead of d.Name
                     ignore: _ => HandleIgnore(d.Name),
                     fix: FixableAnalyzers.Contains(d.Name) ? _ => HandleFix(d.Name) : null));
             }
@@ -293,25 +293,20 @@ namespace Core.Viewer
         /// <summary>
         /// Handles the open.
         /// </summary>
-        /// <param name="name">The name.</param>
-        private void HandleOpen(string name)
+        /// <param name="filePath">The file path.</param>
+        private void HandleOpen(string filePath)
         {
-            // Find all diagnostics for this specific name
-            var diagnosticItems = DiagnosticsView.Where(d => d.Diagnostic.Name == name).ToList();
+            // Find the specific diagnostic matching this file path
+            var target = _currentDiagnostics.FirstOrDefault(d => d.FilePath == filePath);
 
-            if (!diagnosticItems.Any()) return;
-
-            // For simplicity, if there are multiple, let's open the first one.
-            // Or you could loop through them to open all.
-            var target = diagnosticItems.First().Diagnostic;
+            if (target == null) return;
 
             try
             {
-                // Many editors support: /file/path:line_number
-                // e.g., "code -g C:\path\file.cs:15" or just passing the path
                 var psi = new ProcessStartInfo
                 {
-                    FileName = target.FilePath, UseShellExecute = true // Opens with the default system application
+                    FileName = target.FilePath,
+                    UseShellExecute = true // Opens with the default system application (e.g., Visual Studio / VS Code)
                 };
 
                 Process.Start(psi);

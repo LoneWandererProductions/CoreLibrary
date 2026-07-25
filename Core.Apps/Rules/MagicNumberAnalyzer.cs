@@ -57,27 +57,27 @@ namespace Core.Apps.Rules
             if (CoreHelper.ShouldIgnoreFile(filePath)) yield break;
 
             var tree = CSharpSyntaxTree.ParseText(fileContent);
-            var compilation = CSharpCompilation.Create("Analysis")
-                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-                .AddSyntaxTrees(tree);
-
             var root = tree.GetCompilationUnitRoot();
 
-            // Find all methods
-            var methods = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
+            // Find all executable code blocks: Methods, Constructors, Destructors, Accessors (get/set), and Indexers
+            var codeBlocks = root.DescendantNodes().Where(n =>
+                n is MethodDeclarationSyntax ||
+                n is ConstructorDeclarationSyntax ||
+                n is AccessorDeclarationSyntax ||
+                n is IndexerDeclarationSyntax);
 
-            foreach (var method in methods)
+            foreach (var block in codeBlocks)
             {
-                // Find all numeric literals inside the method body
-                var literals = method.DescendantNodes().OfType<LiteralExpressionSyntax>()
+                // Find all numeric literals inside this code block
+                var literals = block.DescendantNodes().OfType<LiteralExpressionSyntax>()
                     .Where(l => l.IsKind(SyntaxKind.NumericLiteralExpression));
 
                 foreach (var literal in literals)
                 {
                     var value = literal.Token.ValueText;
 
-                    // Skip "safe" numbers and ignore if it's already part of a constant definition
-                    if (SafeNumbers.Contains(value) || IsInConstantDefinition(literal))
+                    // Skip safe numbers and any initialization contexts
+                    if (SafeNumbers.Contains(value) || IsInSafeContext(literal))
                         continue;
 
                     yield return new Diagnostic(
@@ -93,16 +93,23 @@ namespace Core.Apps.Rules
         }
 
         /// <summary>
-        /// Determines whether [is in constant definition] [the specified node].
+        /// Determines whether the literal is part of a constant definition, property initializer, or field initializer.
         /// </summary>
-        /// <param name="node">The node.</param>
-        /// <returns>
-        ///   <c>true</c> if [is in constant definition] [the specified node]; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool IsInConstantDefinition(SyntaxNode node)
+        private static bool IsInSafeContext(SyntaxNode node)
         {
-            // Don't flag if the literal is actually being assigned to a 'const' variable
-            return node.Ancestors().OfType<FieldDeclarationSyntax>().Any(f => f.Modifiers.Any(SyntaxKind.ConstKeyword));
+            // Ignore if it's part of a const field
+            if (node.Ancestors().OfType<FieldDeclarationSyntax>().Any(f => f.Modifiers.Any(SyntaxKind.ConstKeyword)))
+                return true;
+
+            // Ignore if it's an auto-property initializer (e.g. public int Value { get; set; } = 52;)
+            if (node.Ancestors().OfType<EqualsValueClauseSyntax>().Any(e => e.Parent is PropertyDeclarationSyntax))
+                return true;
+
+            // Ignore if it's a field initializer (e.g. private int _val = 52;)
+            if (node.Ancestors().OfType<EqualsValueClauseSyntax>().Any(e => e.Parent is VariableDeclaratorSyntax))
+                return true;
+
+            return false;
         }
 
         /// <inheritdoc />
