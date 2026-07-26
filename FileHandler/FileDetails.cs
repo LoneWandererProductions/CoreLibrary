@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileDetails.cs
  * PURPOSE:     Contains more Information about certain Files
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal, no it will be used externally

@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        InputBinaryWindow.xaml.cs
  * PURPOSE:     Show all Logs from the current Connection
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

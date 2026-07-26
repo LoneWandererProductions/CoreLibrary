@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrary.Tests
  * FILE:        ResourcesGeneral.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace CommonLibrary.Tests

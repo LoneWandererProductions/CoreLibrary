@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrary.Tests
  * FILE:        InterOps.cs
  * PURPOSE:     We try to test basic Interop functions
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using InterOp;

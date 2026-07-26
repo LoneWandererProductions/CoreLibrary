@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrarySqlLite.Tests
  * FILE:        SharedHelperClass.cs
  * PURPOSE:     Helper Class
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Diagnostics;

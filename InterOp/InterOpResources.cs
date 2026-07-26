@@ -3,7 +3,7 @@
  * PROJECT:     InterOp
  * FILE:        InterOp/InterOpResources.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace InterOp

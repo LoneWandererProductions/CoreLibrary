@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        DataHelper.cs
  * PURPOSE:     Basic stuff shared over all operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

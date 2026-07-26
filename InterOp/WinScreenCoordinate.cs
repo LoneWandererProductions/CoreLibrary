@@ -3,7 +3,7 @@
  * PROJECT:     CommonControls
  * FILE:        CommonControls/WinScreenCoordinate.cs
  * PURPOSE:     Get Window Position on Screen
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global, for fucks Sake it is a Dll

@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Cifs
  * FILE:        CifImageData.cs
  * PURPOSE:     The Parser Object that will hold the actual Image Data
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

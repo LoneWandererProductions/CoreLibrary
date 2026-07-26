@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrary.Tests
  * FILE:        MatrixTests.cs
  * PURPOSE:     Tests for the Math Tools
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Diagnostics;

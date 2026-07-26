@@ -3,7 +3,7 @@
  * PROJECT:     Communication.Tests
  * FILE:        Communication.cs
  * PURPOSE:     Test for our communication
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Net.Sockets;

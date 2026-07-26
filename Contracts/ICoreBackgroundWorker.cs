@@ -3,7 +3,7 @@
  * PROJECT:     Contracts
  * FILE:        CoreBackgroundWorker.cs
  * PURPOSE:     Interface of CoreBackgroundWorker
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Contracts

@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        SQLiteGuiProcessing.cs
  * PURPOSE:     Basic View Model
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

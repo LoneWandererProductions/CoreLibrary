@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Interfaces
  * FILE:        ICustomImageFormat.cs
  * PURPOSE:     Interface of our custom Image Format
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMemberInSuper.Global

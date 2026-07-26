@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibraryTests
  * FILE:        CommonLibraryTests/HelperMethods.cs
  * PURPOSE:     Helper Methods
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using Mathematics;

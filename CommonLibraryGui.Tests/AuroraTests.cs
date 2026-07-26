@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibraryGui.Tests
  * FILE:        AuroraTests.cs
  * PURPOSE:     Tests the Aurorae Display
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;

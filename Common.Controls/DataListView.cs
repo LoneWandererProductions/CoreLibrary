@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        DataListView.cs
  * PURPOSE:     Basic View for ListView
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

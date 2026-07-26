@@ -3,7 +3,7 @@
  * PROJECT:     LightVector.Interfaces
  * FILE:        IVectorRenderer.cs
  * PURPOSE:     Contract on how to display our vector image the implementation details are up to the user
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMemberInSuper.Global

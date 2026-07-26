@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        AddTableWindow.xaml.cs
  * PURPOSE:     Add new Tables
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.ObjectModel;

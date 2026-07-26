@@ -61,8 +61,8 @@ namespace Core.Apps.Rules
             var root = tree.GetRoot();
 
             foreach (var sub in root.DescendantNodes()
-                       .OfType<AssignmentExpressionSyntax>()
-                       .Where(a => a.IsKind(SyntaxKind.AddAssignmentExpression)))
+                         .OfType<AssignmentExpressionSyntax>()
+                         .Where(a => a.IsKind(SyntaxKind.AddAssignmentExpression)))
             {
                 string? key = null;
 

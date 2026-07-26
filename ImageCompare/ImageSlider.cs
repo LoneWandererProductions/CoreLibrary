@@ -3,7 +3,7 @@
  * PROJECT:     ImageCompare
  * FILE:        ImageCompare/ImageSlider.cs
  * PURPOSE:     Checks if an Image is contained in another image. Stuff like a cut out.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

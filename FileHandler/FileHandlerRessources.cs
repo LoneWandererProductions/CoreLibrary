@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandlerResources.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace FileHandler

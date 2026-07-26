@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibraryGui.Tests
  * FILE:        WpfVectorRendererTests.cs
  * PURPOSE:     Basic tests for the WpfVectorRenderer, especially to catch the "Double Offset" bug where the line's internal coordinates are incorrectly offset by the StartCoordinates.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 

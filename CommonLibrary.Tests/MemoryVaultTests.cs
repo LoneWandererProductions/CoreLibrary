@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrary.Tests
  * FILE:        MemoryVaultTests.cs
  * PURPOSE:     We try to test my MemoryVault class to ensure that it is properly tracking memory usage and that items are being added and removed correctly.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

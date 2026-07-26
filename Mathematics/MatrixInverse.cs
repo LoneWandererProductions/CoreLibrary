@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        MatrixInverse.cs
  * PURPOSE:     Helper class that does some basic Matrix operations, Determinant, Solve, Inverse
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix
  *              https://jamesmccaffrey.wordpress.com/2015/03/06/inverting-a-matrix-using-c/
  */

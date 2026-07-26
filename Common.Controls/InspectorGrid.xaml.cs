@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        InspectorGrid.cs
  * PURPOSE:     Reflection-based property editor control for WPF.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable UnusedType.Global

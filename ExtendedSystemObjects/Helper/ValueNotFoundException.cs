@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        ExtendedSystemObjects.Helper/ValueNotFoundException.cs
  * PURPOSE:     New Exceptions for ExtendedSystemObjects
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

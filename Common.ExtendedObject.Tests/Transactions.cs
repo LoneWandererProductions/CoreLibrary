@@ -3,7 +3,7 @@
  * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        Transactions.cs
  * PURPOSE:     Test the Transaction Log
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

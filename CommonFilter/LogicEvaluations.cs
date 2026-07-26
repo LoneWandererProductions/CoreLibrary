@@ -3,7 +3,7 @@
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/LogicEvaluations.cs
  * PURPOSE:     An Implementation for ILogicEvaluations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

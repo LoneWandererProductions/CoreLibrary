@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        ItemColors.xaml.cs
  * PURPOSE:     UserControl, that holds the ItemColor controls
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        FilterType.cs
  * PURPOSE:     Provide filters for certain areas
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

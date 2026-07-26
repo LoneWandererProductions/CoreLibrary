@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        SQLiteGuiWindow.xaml.cs
  * PURPOSE:     SqlLite graphical Front-end, not yet completely cleared out into a View
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows;

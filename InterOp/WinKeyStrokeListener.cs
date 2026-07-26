@@ -3,7 +3,7 @@
  * PROJECT:     CommonControls
  * FILE:        CommonControls/WinKeyStrokeListener.cs
  * PURPOSE:     General Listener for all Keystrokes.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * Source:      http://www.dylansweb.com/2014/10/low-level-global-keyboard-hook-sink-in-c-net/
  */
 

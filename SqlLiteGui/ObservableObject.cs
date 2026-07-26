@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        ObservableObject.cs
  * PURPOSE:     Reused for SQLiteGui Project only
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.ComponentModel;

@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImageStreamMedia.cs
  * PURPOSE:     Does all the leg work for the Image operations, in this case the newer Media.Imaging
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
  */
 

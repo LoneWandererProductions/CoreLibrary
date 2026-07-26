@@ -3,7 +3,7 @@
  * PROJECT:     ImageCompare
  * FILE:        ImageCompare/ImageAnalysis.cs
  * PURPOSE:     Some basic Tools to compare Images
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

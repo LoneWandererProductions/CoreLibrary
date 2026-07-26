@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Vector3D.cs
  * PURPOSE:     Basic 3D Vector implementation
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

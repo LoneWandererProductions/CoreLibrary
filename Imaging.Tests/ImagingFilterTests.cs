@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Tests
  * FILE:        ImagingFilterTests.cs
  * PURPOSE:     Tests for Image Tools, here mostly filters
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;

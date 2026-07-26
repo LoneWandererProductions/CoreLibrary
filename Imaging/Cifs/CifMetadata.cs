@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Cifs
  * FILE:        CifMetadata.cs
  * PURPOSE:     The Parser Object that will hold the actual meta Image Data
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

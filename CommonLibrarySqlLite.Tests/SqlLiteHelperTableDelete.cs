@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrarySqlLite.Tests
  * FILE:        SqlLiteHelperTableDelete.cs
  * PURPOSE:     Delete tests
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using SqliteHelper;

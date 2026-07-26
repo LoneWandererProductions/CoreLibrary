@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        VgProcessing.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace LightVector

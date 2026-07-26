@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Dispersion.cs
  * PURPOSE:     Helper class that handles a bit of Statistic, in this case Measures of dispersion
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:    https://welt-der-bwl.de/Streuungsma%C3%9Fe
  */
 

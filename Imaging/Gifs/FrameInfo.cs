@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Gifs
  * FILE:        FrameInfo.cs
  * PURPOSE:     Class Container that holds all informations about the frames of the gif in question.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 

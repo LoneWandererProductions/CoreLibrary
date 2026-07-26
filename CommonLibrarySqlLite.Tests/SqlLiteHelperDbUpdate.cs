@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrarySqlLite.Tests
  * FILE:        SqlLiteHelperDbUpdate.cs
  * PURPOSE:     Update tests
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using SqliteHelper;

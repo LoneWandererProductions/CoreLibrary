@@ -3,7 +3,7 @@
  * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        ExtendedSystemObjectsSetOperation.cs
  * PURPOSE:     Tests for ExtendedSystemObjects, Set Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

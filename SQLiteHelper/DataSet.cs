@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        DataSet.cs
  * PURPOSE:     Used in add Statement and Select
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

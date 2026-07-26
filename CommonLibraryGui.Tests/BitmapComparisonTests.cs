@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibraryGui.Tests
  * FILE:        BitmapRenderingTests.cs
  * PURPOSE:     Mostly Performance tests for our Wpf BitmapImage Viewer
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Diagnostics;

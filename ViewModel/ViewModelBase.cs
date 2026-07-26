@@ -3,7 +3,7 @@
  * PROJECT:     ViewModel
  * FILE:        ViewModel/ViewModelBase.cs
  * PURPOSE:     Basics for my View Model, can be reused as needed and extended
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

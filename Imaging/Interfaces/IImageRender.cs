@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Interfaces
  * FILE:        IImageRender.cs
  * PURPOSE:     Image Interface for most Image Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

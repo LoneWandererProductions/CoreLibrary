@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Permutations.cs
  * PURPOSE:     Some basic Permutations and Combinations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

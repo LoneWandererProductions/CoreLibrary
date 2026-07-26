@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        DataOverviewViewModel.cs
  * PURPOSE:     DataOverview View Model
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Data;

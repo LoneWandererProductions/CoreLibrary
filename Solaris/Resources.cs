@@ -3,7 +3,7 @@
  * PROJECT:     Solaris
  * FILE:        Resources.cs
  * PURPOSE:     Some basic string Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Solaris

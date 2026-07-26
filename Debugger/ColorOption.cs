@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        ColorOption.cs
  * PURPOSE:     Config Object that handles the colors of the Text of the Debugger
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Debugger

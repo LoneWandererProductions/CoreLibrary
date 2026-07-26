@@ -3,7 +3,7 @@
  * PROJECT:     ImageCompare
  * FILE:        ImageCompare/ImageCompareData.cs
  * PURPOSE:     Compare results of 2 images
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global

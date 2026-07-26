@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Interfaces
  * FILE:        IImageFrameProvider.cs
  * PURPOSE:     Interface wrapper for animated image formats
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable EventNeverSubscribedTo.Global

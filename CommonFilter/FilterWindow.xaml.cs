@@ -3,7 +3,7 @@
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/FilterWindow.xaml.cs
  * PURPOSE:     Filter Window, Container for all Search Parameters
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

@@ -3,7 +3,7 @@
  * PROJECT:     Serializer
  * FILE:        Serializer/Item.cs
  * PURPOSE:     Item, helper Object needed for Dictionaries
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // Disabled ReSharper Warnings, do not make the suggested Changes!

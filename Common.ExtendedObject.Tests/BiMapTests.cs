@@ -3,7 +3,7 @@
  * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        BiMapTestss.cs
  * PURPOSE:     Tests for ExtendedSystemObjects
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

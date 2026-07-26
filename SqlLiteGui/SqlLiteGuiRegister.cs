@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        SQLiteGuiRegister.cs
  * PURPOSE:     Some basic Objects we need for Data-binding and message stuff, here lie all Data-Binding Objects and Shared Objects
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global, they are used but as described as observable Object so no need to complain

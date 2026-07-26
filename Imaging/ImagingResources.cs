@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImagingResources.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        DialogHandler.cs
  * PURPOSE:     Extension for Dialogs, some smaller extras and Extensions like a Folder View
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

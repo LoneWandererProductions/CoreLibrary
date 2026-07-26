@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Transform.cs
  * PURPOSE:     Controller Class for all 3D Projections and Camera
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault

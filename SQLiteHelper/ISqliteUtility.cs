@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        ISqliteUtility.cs
  * PURPOSE:     Interface Tools for SqlLite
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMemberInSuper.Global

@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        TableObject.cs
  * PURPOSE:     Add new Tables
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using SqliteHelper;

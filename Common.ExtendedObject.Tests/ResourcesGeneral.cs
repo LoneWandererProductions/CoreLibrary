@@ -3,7 +3,7 @@
  * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        ResourcesGeneral.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Common.ExtendedObject.Tests

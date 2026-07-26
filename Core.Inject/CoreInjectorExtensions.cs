@@ -3,7 +3,7 @@
  * PROJECT:     Core.Inject
  * FILE:        CoreInjectorExtensions.cs
  * PURPOSE:     Possible useful Extension for our Injector.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

@@ -3,7 +3,7 @@
  * PROJECT:     ImageCompare
  * FILE:        ImageCompare/ImageDuplication.cs
  * PURPOSE:     Find Duplicate Images
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.codeproject.com/Articles/374386/Simple-image-comparison-in-NET
  */
 

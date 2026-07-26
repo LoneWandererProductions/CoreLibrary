@@ -2,9 +2,11 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        EntryGeneric.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Helper Struct for UnmanagedMap.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable MemberCanBeInternal
 
 using System.Runtime.InteropServices;
 

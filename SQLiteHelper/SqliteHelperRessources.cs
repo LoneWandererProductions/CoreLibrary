@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqliteHelperResources.cs
  * PURPOSE:     Basic String Resources and magic Numbers
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace SqliteHelper

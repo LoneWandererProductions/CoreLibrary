@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqliteHelper.cs
  * PURPOSE:     Helper Class for some Conversions
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

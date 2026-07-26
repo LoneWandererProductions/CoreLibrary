@@ -3,7 +3,7 @@
  * PROJECT:     ViewModel
  * FILE:        ViewModel/RelayCommand.cs
  * PURPOSE:     Part of the View Model, non-generic ICommand implementation.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

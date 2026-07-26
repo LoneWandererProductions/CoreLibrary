@@ -3,7 +3,7 @@
  * PROJECT:     ImageCompare
  * FILE:        ImageCompare/ImageDuplicate.cs
  * PURPOSE:     Struct to Compare if Images are Duplicates
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

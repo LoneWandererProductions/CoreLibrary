@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        SelectionFrame.cs
  * PURPOSE:     Selection Frame
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

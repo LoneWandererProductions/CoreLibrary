@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Enums
  * FILE:        TextureType.cs
  * PURPOSE:     Enum that shows all textures
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Local

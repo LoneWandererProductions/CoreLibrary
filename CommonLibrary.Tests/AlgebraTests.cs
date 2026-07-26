@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrary.Tests
  * FILE:        AlgebraTests.cs
  * PURPOSE:     Some simple Algebra Tes
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Diagnostics;

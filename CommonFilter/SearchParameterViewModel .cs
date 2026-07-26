@@ -3,7 +3,7 @@
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/SearchParameterViewModel.xaml.cs
  * PURPOSE:     View for SearchParameterControl
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBePrivate.Global

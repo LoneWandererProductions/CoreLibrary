@@ -3,7 +3,7 @@
  * PROJECT:     Solaris
  * FILE:        Aurora.cs
  * PURPOSE:     Game Control
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        CoordinatePacker.cs
  * PURPOSE:     A more clever way to handle some 3D coordinate Stuff
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        SqlConnect.cs
  * PURPOSE:     Generic Sql Dialog for a connection String
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

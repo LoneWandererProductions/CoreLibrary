@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        PathObject.cs
  * PURPOSE:     Helper Object for FileIoHandler
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBePrivate.Global, not yet used put still Useful

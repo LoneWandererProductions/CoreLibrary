@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        InputBinaryWindow.xaml.cs
  * PURPOSE:     Set custom Input, right now: where Clause,Copy Table
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows;

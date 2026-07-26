@@ -3,7 +3,7 @@
  * PROJECT:     Communication.Interfaces;
  * FILE:        INetCom.cs
  * PURPOSE:     Entry Point for File Downloads, defined as Interface
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedMethodReturnValue.Global

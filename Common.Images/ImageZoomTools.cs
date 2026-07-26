@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        ImageZoomTools.cs
  * PURPOSE:     Image View Control Tools, that are exposed to the Outside
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable EventNeverSubscribedTo.Global, only used outside of the dll

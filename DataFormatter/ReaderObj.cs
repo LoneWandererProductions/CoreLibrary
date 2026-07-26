@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        ReaderObj.cs
  * PURPOSE:     A really basic obj File reader, does the basic stuff nothing more!
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

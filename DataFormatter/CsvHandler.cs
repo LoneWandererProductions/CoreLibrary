@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        CsvHandler.cs
  * PURPOSE:     Simple Csv reader/writer
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

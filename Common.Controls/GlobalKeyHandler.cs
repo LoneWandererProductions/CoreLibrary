@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        GlobalKeyHandler.cs
  * PURPOSE:     Attached Control to handle global Keystrokes
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        FilterConfiguration.cs
  * PURPOSE:     Object that will be used for fine tuning the filters
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

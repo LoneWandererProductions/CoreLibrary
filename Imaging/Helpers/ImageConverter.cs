@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        ImageConverter.cs
  * PURPOSE:     Image Converter
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

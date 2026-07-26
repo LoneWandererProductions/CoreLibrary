@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics.Constants
  * FILE:        ExtendedMath.cs
  * PURPOSE:     Helper class that extends some Math functions, mostly comparing double values
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://stackoverflow.com/questions/961038/how-do-i-properly-write-math-extension-methods-for-int-double-float-etc
  */
 

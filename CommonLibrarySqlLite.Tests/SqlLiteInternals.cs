@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrarySqlLite.Tests
  * FILE:        SqlLiteHelperTableStatusUnique.cs
  * PURPOSE:     Test Internals
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Diagnostics;

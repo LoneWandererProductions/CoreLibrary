@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Gifs
  * FILE:        ImageGifHandler.cs
  * PURPOSE:     Some processing stuff for Gif Images, not perfect, the files are slightly bigger though.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
  *              https://debugandrelease.blogspot.com/2018/12/creating-gifs-in-c.html
  *              http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp

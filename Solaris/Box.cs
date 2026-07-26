@@ -3,7 +3,7 @@
  * PROJECT:     Solaris
  * FILE:        Box.cs
  * PURPOSE:     Helper Object to handle the drawing and processing Process
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

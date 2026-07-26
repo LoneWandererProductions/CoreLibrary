@@ -3,7 +3,7 @@
  * PROJECT:     CommonControls
  * FILE:        CommonControls/Win32Structs.cs
  * PURPOSE:     General Purpose Structs Class
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.pinvoke.net/default.aspx
  *              https://docs.microsoft.com/de-de/dotnet/framework/interop/specifying-a-character-set
  *              http://maruf-dotnetdeveloper.blogspot.com/2012/08/c-refreshing-system-tray-icon.html

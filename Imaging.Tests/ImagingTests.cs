@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Tests
  * FILE:        ImagingTests.cs
  * PURPOSE:     Tests for Image Tools
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Diagnostics;

@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImageExtension.cs
  * PURPOSE:     Image Extensions, I think that are helpful and should be there from the beginning
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        Config.cs
  * PURPOSE:     Config Object of our Wrapper
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandlerRegister.cs
  * PURPOSE:     Register for basic configs and some Messages
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global

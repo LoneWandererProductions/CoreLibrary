@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Tests
  * FILE:        ImageExtensionTests.cs
  * PURPOSE:     Image Extension tests, I think that are helpful and should be there from the beginning
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;

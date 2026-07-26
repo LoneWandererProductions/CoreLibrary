@@ -5,7 +5,7 @@
  * PURPOSE:     Implementation and main entry of our custom Image Format
  *              Main use is a small save footprint and Image Color manipulation on a large scale
  *              Further uses are Image analysis, mostly color and color range.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

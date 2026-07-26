@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        Dialogs.cs
  * PURPOSE:     Reused for SQLiteGui Project only
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using Microsoft.Win32;

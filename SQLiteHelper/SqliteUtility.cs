@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqlLiteUtility.cs
  * PURPOSE:     Tools for SqlLite and Conversion of Objects into more appropriate for Tables
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

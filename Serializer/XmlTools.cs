@@ -4,7 +4,7 @@
  * FILE:        Serializer/XmlTools.cs
  * PURPOSE:     Some Xml Tools
  *              Logging Via Events
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable EventNeverSubscribedTo.Global

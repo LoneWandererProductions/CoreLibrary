@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Tests
  * FILE:        DirectBitmapImageTests.cs
  * PURPOSE:     Custom Image Class, some tests for validations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows.Media;

@@ -3,7 +3,7 @@
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/FilterResources.cs
  * PURPOSE:     String Resources for the whole CommonFilter
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace CommonFilter

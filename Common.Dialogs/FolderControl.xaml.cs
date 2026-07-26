@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        FolderControl.cs
  * PURPOSE:     FolderView Control, drop-in replacement for FolderBrowser, improved and thread-safe
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows;

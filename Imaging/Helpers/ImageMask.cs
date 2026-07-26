@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        ImageMask.cs
  * PURPOSE:     Helper class to handle some shape operations on an Image
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;

@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqLiteDataTypes.cs
  * PURPOSE:     Enums of Types Sqlite Supports
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace SqliteHelper

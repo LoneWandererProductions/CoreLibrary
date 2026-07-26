@@ -3,7 +3,7 @@
  * PROJECT:     Core.Apps.Rules
  * FILE:        UnusedConstantAnalyzer.cs
  * PURPOSE:     Analyzer to detect unused constants and static readonly fields across a project.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

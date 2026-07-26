@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrarySqlLite.Tests
  * FILE:        SqlLiteHelperDbCreate.cs
  * PURPOSE:     Database Create
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using SqliteHelper;

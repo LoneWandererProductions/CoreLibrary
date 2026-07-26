@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        ColorPickerRegister.cs
  * PURPOSE:     Central Register
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using Imaging;

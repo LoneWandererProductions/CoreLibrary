@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        CircleObject.cs
  * PURPOSE:     Generic circle Object
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Cifs
  * FILE:        PointId.cs
  * PURPOSE:     A more clever way to handle some 2D coordinate Stuff
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

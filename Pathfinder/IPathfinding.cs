@@ -3,7 +3,7 @@
  * PROJECT:     Pathfinder
  * FILE:        IPathfinding.cs
  * PURPOSE:     Interface for the Pathfinder
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

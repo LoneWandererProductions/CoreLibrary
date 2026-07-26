@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        TranslatedLine.cs
  * PURPOSE:     Hold the Graphic Objects
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.graphics.drawcurve?view=netframework-4.8
  */
 

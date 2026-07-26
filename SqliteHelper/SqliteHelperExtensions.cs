@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqliteHelperExtensions.cs
  * PURPOSE:     Extensions of SqliteHelper
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace SqliteHelper

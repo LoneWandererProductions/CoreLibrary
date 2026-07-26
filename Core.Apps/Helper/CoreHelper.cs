@@ -32,7 +32,8 @@ namespace Core.Apps.Helper
         /// <summary>
         /// The source file cache
         /// </summary>
-        private static readonly ConcurrentDictionary<string, string[]> SourceFileCache = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly ConcurrentDictionary<string, string[]> SourceFileCache =
+            new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Determines whether a given file should be ignored during analysis.

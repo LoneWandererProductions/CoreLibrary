@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqliteProcessing.cs
  * PURPOSE:     Processing of various Database Objects processing and Checks
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable PossibleNullReferenceException

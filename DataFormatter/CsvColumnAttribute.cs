@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        CsvColumnAttribute.cs
  * PURPOSE:     Helper for csv, Helps converter
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

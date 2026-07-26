@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibraryGui.Tests
  * FILE:        CommonDialogs.cs
  * PURPOSE:     Tests for CommonCtrl some Controls, not all yet
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedVariable

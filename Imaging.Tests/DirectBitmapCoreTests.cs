@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Tests.Tests
  * FILE:        DirectBitmapCoreTests.cs
  * PURPOSE:     Test for blending in DirectBitmapCore.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Imaging.Tests

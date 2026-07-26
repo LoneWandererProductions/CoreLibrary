@@ -3,7 +3,7 @@
  * PROJECT:     CommonFilter
  * FILE:        CommonFilter/LogicEvaluations.cs
  * PURPOSE:     Interface for LogicEvaluations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

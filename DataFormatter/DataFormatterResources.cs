@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        DataFormatterResources.cs
  * PURPOSE:     Basic string Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace DataFormatter

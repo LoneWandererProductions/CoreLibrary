@@ -6,7 +6,7 @@
  *              Should be run in a loop or with a profiler for best results, as small leaks might not be detected in a single run.
  *              More calls will amplify the leak if it exists, but be mindful of test execution time.
  *              Should be extended in the future to cover more methods and scenarios, especially those involving unmanaged resources.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;

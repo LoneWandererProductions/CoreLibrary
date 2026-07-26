@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine.Tests
  * FILE:        LayeredImageContainerTests.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Tests for LayeredImageContainer.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        WpfVectorRenderer.cs
  * PURPOSE:     On possible Contract to display our vector image
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

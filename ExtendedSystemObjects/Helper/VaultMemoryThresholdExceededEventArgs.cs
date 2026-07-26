@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        ExtendedSystemObjects.Helper/VaultMemoryThresholdExceededEventArgs.cs
  * PURPOSE:     Event when Memory exceeds a certain threshold.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBePrivate.Global

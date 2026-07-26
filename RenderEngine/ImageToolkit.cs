@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        ImageToolkit.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Frontend class for UnmanagedImageBuffer and LayeredImageContainer.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics.Constants
  * FILE:        MathConstants.cs
  * PURPOSE:     Some Basic Math Constants to increase the correct values.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

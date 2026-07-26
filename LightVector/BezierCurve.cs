@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        BezierCurve.cs
  * PURPOSE:     Hold the Curve Bezier Object
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/de-de/dotnet/api/system.drawing.graphics.drawcurve?view=netframework-4.8
  */
 

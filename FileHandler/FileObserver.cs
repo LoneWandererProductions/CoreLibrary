@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileObserver.cs
  * PURPOSE:     File Watcher, that observes changes to Folder.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

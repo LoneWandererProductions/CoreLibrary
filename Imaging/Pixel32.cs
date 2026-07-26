@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        Pixel32.cs
  * PURPOSE:     Custom Pixel Container for DirectBitmapImage and DirectBitmap to share the same underlying data structure.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Runtime.InteropServices;

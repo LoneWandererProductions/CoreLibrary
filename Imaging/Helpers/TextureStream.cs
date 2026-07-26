@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        TextureStream.cs
  * PURPOSE:     Basic stuff for generating textures
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using Imaging.Texture;

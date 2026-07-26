@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Enums
  * FILE:        FiltersType.cs
  * PURPOSE:     Enum that holds all possible Filter
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
  *              https://archive.ph/hzR2W
  *              https://www.codeproject.com/Articles/3772/ColorMatrix-Basics-Simple-Image-Color-Adjustment

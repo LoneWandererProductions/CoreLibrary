@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        Transform.cs
  * PURPOSE:     Basic Transform Class 
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

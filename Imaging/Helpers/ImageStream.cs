@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        ImageStream.cs
  * PURPOSE:     Does all the leg work for the Image operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
  *              https://www.csharphelper.com/howtos/howto_colorize2.html
  */

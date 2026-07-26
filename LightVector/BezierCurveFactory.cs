@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        BezierCurveFactory.cs
  * PURPOSE:     Generate specific Graphic Output Information
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

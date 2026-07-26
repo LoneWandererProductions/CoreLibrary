@@ -3,7 +3,7 @@
  * PROJECT:     Pathfinder
  * FILE:        NodeComparer.cs
  * PURPOSE:     Nodes Comparer for the open list
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

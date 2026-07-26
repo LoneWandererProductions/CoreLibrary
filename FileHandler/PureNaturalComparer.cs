@@ -4,7 +4,7 @@
  * FILE:        PathInformation.cs
  * PURPOSE:     File name comparer that implements pure natural sorting, comparing numeric parts of strings as numbers and non-numeric parts as text.
  *              This ensures that "file2" comes before "file10", and "file1a" comes before "file1b". It handles nulls and empty strings gracefully, treating null as less than any non-null string.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

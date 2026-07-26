@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        InputUpdateWindow.xaml.cs
  * PURPOSE:     Update Window
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

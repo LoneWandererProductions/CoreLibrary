@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        BaseMatrix.cs
  * PURPOSE:     Matrix Object with some basic Operators
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://bratched.com/en/?s=matrix
  */
 

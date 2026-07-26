@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        MessageItem.cs
  * PURPOSE:     Internal Message Item
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace SqliteHelper

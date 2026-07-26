@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        ImageHelper.cs
  * PURPOSE:     Here I try to minimize the footprint of my class and pool all shared methods
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
  */
 

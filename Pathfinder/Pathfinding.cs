@@ -3,7 +3,7 @@
  * PROJECT:     Pathfinder
  * FILE:        Pathfinder/Pathfinding.cs
  * PURPOSE:     The actual Pathfinder algorithm
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

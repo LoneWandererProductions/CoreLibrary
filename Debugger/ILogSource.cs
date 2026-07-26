@@ -3,7 +3,7 @@
  * PROJECT:     ILogSource
  * FILE:        ILogSource.xaml.cs
  * PURPOSE:     Interface to make my log sources interchangeable
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        TertiaryVector.cs
  * PURPOSE:     A really basic obj that holds three double values, needed for obj Files
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

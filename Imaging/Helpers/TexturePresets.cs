@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        TexturePresets.cs
  * PURPOSE:     Some prepared textures that can be used for textures.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using Imaging.Enums;

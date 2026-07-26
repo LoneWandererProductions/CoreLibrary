@@ -3,7 +3,7 @@
  * PROJECT:     Core.MemoryLog
  * FILE:        LogResources.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Core.MemoryLog

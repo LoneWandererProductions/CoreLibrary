@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        TableRow.cs
  * PURPOSE:     Describes a Table Header
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

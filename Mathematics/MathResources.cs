@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        MathResources.cs
  * PURPOSE:     Some basic string Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Mathematics

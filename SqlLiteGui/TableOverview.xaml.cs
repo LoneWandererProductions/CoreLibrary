@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        TableOverview.xaml.cs
  * PURPOSE:     SqlLite graphical Front-end, User-control for the Table Part
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal, can't be made internal since we need it public as User-control

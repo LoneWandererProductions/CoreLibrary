@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        SaveHelper.cs
  * PURPOSE:     Save our Images
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

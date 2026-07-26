@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        TextureConfiguration.cs
  * PURPOSE:     Basic stuff for generating textures, this class is used for finetuning
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

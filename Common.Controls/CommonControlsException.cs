@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        CommonControlsException.cs
  * PURPOSE:     CommonControls Exception Class
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

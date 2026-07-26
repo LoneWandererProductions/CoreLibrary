@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        DbInfoViewModel.cs
  * PURPOSE:     DbInfo View Model
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

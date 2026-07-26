@@ -3,7 +3,7 @@
  * PROJECT:     ViewModel
  * FILE:        ViewModel/DelegateCommand.cs
  * PURPOSE:     Part of the View Model, Generic Variation of the ICommand Implementation.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * Sources:     https://msdn.microsoft.com/de-de/library/system.windows.input.icommand%28v=vs.110%29.aspx
  *              https://stackoverflow.com/questions/12422945/how-to-bind-wpf-button-to-a-command-in-viewmodelbase
  *              https://stackoverflow.com/questions/48527651/full-implementation-of-relay-command-can-it-be-applied-to-all-cases

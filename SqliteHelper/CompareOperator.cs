@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        CompareOperator.cs
  * PURPOSE:     Compare Operators
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace SqliteHelper

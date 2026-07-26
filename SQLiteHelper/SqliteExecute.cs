@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqliteExecute.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

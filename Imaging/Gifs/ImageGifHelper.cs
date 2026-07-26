@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Gifs
  * FILE:        ImageGifHelper.cs
  * PURPOSE:     Some Helpers for ImageGif.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows;

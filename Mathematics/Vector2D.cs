@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Vector2D.cs
  * PURPOSE:     Basic 2D Vector implementation
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

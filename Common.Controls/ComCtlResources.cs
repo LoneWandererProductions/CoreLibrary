@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        ComCtlResources.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Common.Controls

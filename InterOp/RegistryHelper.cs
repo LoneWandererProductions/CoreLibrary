@@ -3,7 +3,7 @@
  * PROJECT:     InterOp
  * FILE:        InterOp/RegistryHelper.cs
  * PURPOSE:     The usual error Logging
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://edi.wang/post/2019/3/4/read-and-write-windows-registry-in-net-core
  */
 

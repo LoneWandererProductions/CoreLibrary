@@ -3,7 +3,7 @@
  * PROJECT:     CommonControls
  * FILE:        CommonControls/Win32Enums.cs
  * PURPOSE:     General Purpose Enums Class
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.pinvoke.net/default.aspx
  *              https://docs.microsoft.com/de-de/dotnet/framework/interop/specifying-a-character-set
  */

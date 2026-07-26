@@ -3,7 +3,7 @@
  * PROJECT:     Core.Tests
  * FILE:        UnusedConstantAnalyzerTests.cs
  * PURPOSE:     Unit tests for UnusedConstantAnalyzer.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using Core.Apps;

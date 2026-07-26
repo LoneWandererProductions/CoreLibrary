@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        DataItem.cs
  * PURPOSE:     Basic Object needed for DataList
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable ArrangeBraces_foreach

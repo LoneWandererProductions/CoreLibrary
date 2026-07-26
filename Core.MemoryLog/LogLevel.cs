@@ -3,7 +3,7 @@
  * PROJECT:     Core.MemoryLog
  * FILE:        LogLevel.cs
  * PURPOSE:     Debug Levels and Log levels.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Core.MemoryLog

@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        CsvHelper.cs
  * PURPOSE:     Shared Helper functions that will be inlined anyways
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

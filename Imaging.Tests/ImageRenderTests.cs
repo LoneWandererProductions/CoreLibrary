@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Tests
  * FILE:        ImageRenderTests.cs
  * PURPOSE:     Interface testing and dependency Injection, plus some functional tests
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 

@@ -3,7 +3,7 @@
  * PROJECT:     Core.Tests
  * FILE:        CoreBackgroundWorkerTests.cs
  * PURPOSE:     Test for our Background Worker
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using Contracts;

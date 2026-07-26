@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        TableOverviewViewModel.cs
  * PURPOSE:     View Model for TableOverview
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBePrivate.Global

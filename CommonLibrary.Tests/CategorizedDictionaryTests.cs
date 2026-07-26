@@ -3,7 +3,7 @@
  * PROJECT:     CommonLibrary.Tests
  * FILE:        CategorizedDictionaryTests.cs
  * PURPOSE:     Test for our Dictionary with Category
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

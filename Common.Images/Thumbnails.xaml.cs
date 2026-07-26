@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        Thumbnails.xaml.cs
  * PURPOSE:     Custom Thumbnail Control
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

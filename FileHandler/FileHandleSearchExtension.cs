@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileSearchExtension.cs
  * PURPOSE:     Extension for FileSearch
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

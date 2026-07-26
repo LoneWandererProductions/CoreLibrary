@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects.Interfaces
  * FILE:        ExtendedSystemObjects.Interfaces/IIdHandling.cs
  * PURPOSE:     Interface to smooth out my way of switching between Lists and Dictionaries
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace ExtendedSystemObjects.Interfaces

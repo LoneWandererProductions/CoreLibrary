@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        FormatterApiFacade.cs
  * PURPOSE:     Api Façade for the DataFormatter library
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

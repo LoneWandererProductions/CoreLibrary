@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        DbInfo.xaml.cs
  * PURPOSE:     Display Database Infos
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal, no not possible for User-control

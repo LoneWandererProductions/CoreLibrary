@@ -80,8 +80,8 @@
                     <GridViewColumn Header="File" DisplayMemberBinding="{Binding Diagnostic.FileName}" />
                     <GridViewColumn Header="FilePath" DisplayMemberBinding="{Binding Diagnostic.FilePath}" />
                     <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Diagnostic.Message}" />
-                    <GridViewColumn Header="LineNumber" DisplayMemberBinding="{Binding Diagnostic.LineNumber}"/>
-                    <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Diagnostic.Source}"/>
+                    <GridViewColumn Header="LineNumber" DisplayMemberBinding="{Binding Diagnostic.LineNumber}" />
+                    <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Diagnostic.Source}" />
                     <GridViewColumn Header="Actions" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

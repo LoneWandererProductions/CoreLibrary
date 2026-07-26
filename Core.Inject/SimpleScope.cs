@@ -3,7 +3,7 @@
  * PROJECT:     Core.Inject
  * FILE:        SimpleScope.cs
  * PURPOSE:     The Scope part of my Implementation, well mostly guess work.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

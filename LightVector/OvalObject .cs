@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        OvalObject.cs
  * PURPOSE:     Generic oval Object
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

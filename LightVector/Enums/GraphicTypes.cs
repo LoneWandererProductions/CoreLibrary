@@ -3,7 +3,7 @@
  * PROJECT:     LightVector.Enums
  * FILE:        GraphicTypes.cs
  * PURPOSE:     Types of graphic objects
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

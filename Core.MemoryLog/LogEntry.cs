@@ -3,7 +3,7 @@
  * PROJECT:     Core.MemoryLog
  * FILE:        LogEntry.cs
  * PURPOSE:     All possible log information
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

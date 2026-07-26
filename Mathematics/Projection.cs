@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        IProjection.cs
  * PURPOSE:     Implementation of thhe 3D Projection Interface
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

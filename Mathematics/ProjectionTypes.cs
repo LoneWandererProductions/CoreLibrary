@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        ProjectionTypes.cs
  * PURPOSE:     Config enums for the 3d Projection.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Mathematics

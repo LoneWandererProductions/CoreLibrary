@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        ProjectionRaster.cs
  * PURPOSE:     helper Class, that does all the heavy lifting.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

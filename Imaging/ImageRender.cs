@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImageRender.cs
  * PURPOSE:     Interface that handles all Image Interactions
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.csharphelper.com/howtos/howto_colorize2.html
  */
 

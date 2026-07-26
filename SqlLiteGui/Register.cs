@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        Register.cs
  * PURPOSE:     A basic Selection Object to clean up the Controls
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Data;

@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        ItemColor.xaml.cs
  * PURPOSE:     UserControl ItemColor, that holds the Info about Color and Text
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

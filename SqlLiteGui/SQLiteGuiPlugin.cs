@@ -3,7 +3,7 @@
  * PROJECT:     SQLiteGui
  * FILE:        SqLiteGuiPlugin.cs
  * PURPOSE:     SqLiteGui Plugin Implementation
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

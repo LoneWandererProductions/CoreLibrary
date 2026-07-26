@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqliteDatabase.cs
  * PURPOSE:     Various Read and Write Operations for SqlLite, packed into a light weight wrapper for easy to use SqlLite Integration
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

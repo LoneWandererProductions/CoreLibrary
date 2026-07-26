@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        TextureGenerator.cs
  * PURPOSE:     Generate some textures
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

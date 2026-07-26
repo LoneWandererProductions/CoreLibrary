@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        ColorPickerMenu.xaml.cs
  * PURPOSE:     Menu Item for the ColorPicker
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

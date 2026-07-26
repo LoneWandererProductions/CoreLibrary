@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        InMemoryLogSource.cs
  * PURPOSE:     Interface to InMemoryLogger to show logs in the Debugger.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

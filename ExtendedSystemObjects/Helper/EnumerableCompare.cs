@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        ExtendedSystemObjects.Helper/EnumerableCompare.cs
  * PURPOSE:     Compare operator, for now mostly Enumerable
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace ExtendedSystemObjects.Helper

@@ -4,7 +4,7 @@
  * FILE:        Bresenham.cs
  * PURPOSE:     Implementation of the Bresenham Algorithm, Helps drawing lines.
  *              Alternative Wu's Algorithm TODO
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * Source:      https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
  *              https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm
  */

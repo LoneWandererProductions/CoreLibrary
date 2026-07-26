@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     RenderEngine
  * FILE:        IImageToolkit.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Interface declaration for my Image Toolkit.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

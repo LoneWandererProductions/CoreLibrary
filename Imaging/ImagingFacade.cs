@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImagingFacade.cs
  * PURPOSE:     Official public entry point for the Imaging engine
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

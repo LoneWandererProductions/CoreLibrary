@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Gifs
  * FILE:        ImageGifInfo.cs
  * PURPOSE:     Class Container that holds all informations about the gif in question.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://stackoverflow.com/questions/18719302/net-creating-a-looping-gif-using-gifbitmapencoder
  *              https://debugandrelease.blogspot.com/2018/12/creating-gifs-in-c.html
  *              http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp

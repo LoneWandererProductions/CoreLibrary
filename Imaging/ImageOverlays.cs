@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImageFilterStream.cs
  * PURPOSE:     Generic Image Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://lodev.org/cgtutor/imagearithmetic.html
  */
 

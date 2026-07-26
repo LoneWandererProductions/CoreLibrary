@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        GraphicManager.cs
  * PURPOSE:     Implementation of our Contract for our Library
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

@@ -3,7 +3,7 @@
  * PROJECT:     Serializer
  * FILE:        Serializer/SerialResources.cs
  * PURPOSE:     String Resources
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Serializer

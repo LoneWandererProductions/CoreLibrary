@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        PolygonObject.cs
  * PURPOSE:     Generic Polygon Object
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

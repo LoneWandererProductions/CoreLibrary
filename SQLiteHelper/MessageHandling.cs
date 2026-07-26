@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        MessageHandling.cs
  * PURPOSE:     Collects all Errors and Status Messages
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

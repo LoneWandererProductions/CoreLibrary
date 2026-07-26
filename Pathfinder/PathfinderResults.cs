@@ -3,7 +3,7 @@
  * PROJECT:     Pathfinder
  * FILE:        PathfinderResults.cs
  * PURPOSE:     Abstraction of the Pathfinder result set. We can calculate more stuff and provide more informations without changing the core algorithm.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

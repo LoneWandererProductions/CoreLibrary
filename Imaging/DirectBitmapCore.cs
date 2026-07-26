@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        DireDirectBitmapCorectBitmap.cs
  * PURPOSE:     Shared logic for DirectBitmap and DirectBitmapImage to set and get pixels from the underlying Pixel32 array. 
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBePrivate.Global

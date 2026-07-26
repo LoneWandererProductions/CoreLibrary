@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        FilterGenerator.cs
  * PURPOSE:     Central filter generator
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Drawing;

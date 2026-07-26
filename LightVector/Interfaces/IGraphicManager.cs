@@ -3,7 +3,7 @@
  * PROJECT:     LightVector.Interfaces
  * FILE:        IGraphicManager.cs
  * PURPOSE:     Interface Contract for our Library
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

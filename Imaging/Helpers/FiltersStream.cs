@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Helpers
  * FILE:        FiltersStream.cs
  * PURPOSE:     Separate out all Filter Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

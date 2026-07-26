@@ -3,7 +3,7 @@
  * PROJECT:     SqliteHelper
  * FILE:        SqliteQueryConst.cs
  * PURPOSE:     Const Sql Parameters for basic SqLite Operations, mostly basic Data types no Objects for portability, one Exception though I need a plan for this
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable ConvertIfStatementToReturnStatement

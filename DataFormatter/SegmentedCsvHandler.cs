@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        SegmentedCsvHandler.cs
  * PURPOSE:     My custom format, it is a collection of csv files separated with an keyword.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

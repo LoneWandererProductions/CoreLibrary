@@ -4,7 +4,7 @@
  * FILE:        FileHelper.cs
  * PURPOSE:     Some minimal helper classes needed for file handling in our Imaging library.
  *              Not nice, but avoids dependencies on other projects.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

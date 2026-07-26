@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects
  * FILE:        ImmutableLookupMap.cs
  * PURPOSE:     A high-performance, immutable lookup map that uses an array-based internal structure for fast key-value lookups.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

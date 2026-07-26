@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Projection3D.cs
  * PURPOSE:     3D Matrix transformations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://learn.microsoft.com/en-us/windows/win32/direct3d9/transforms
  *              https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html
  */

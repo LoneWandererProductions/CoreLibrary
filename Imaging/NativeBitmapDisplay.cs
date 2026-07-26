@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        NativeBitmapDisplay.cs
  * PURPOSE:     Fast Bitmap Display in Wpf do not expect wonders though.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MissingSpace

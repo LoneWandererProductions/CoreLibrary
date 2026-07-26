@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Fraction.cs
  * PURPOSE:     Helper class that helps with some basic Fraction Operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://dotnet-snippets.de/snippet/klasse-bruchrechnung-class-fraction/12049
  */
 

@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        ColorPickerHelper.cs
  * PURPOSE:     Helper functions for  ColorPicker
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows.Media;

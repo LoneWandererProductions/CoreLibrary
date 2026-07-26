@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        SelectionAdorner.cs
  * PURPOSE:     Extensions for ImageZoom, handle all the selection Tools.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable BadBracesSpaces

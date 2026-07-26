@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        PathObject.cs
  * PURPOSE:     Extensions for TextBox and RichTextBox
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

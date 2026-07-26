@@ -3,7 +3,7 @@
  * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        MemoryVaultTests.cs
  * PURPOSE:     Tests for the MemoryVault
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

@@ -3,7 +3,7 @@
  * PROJECT:     Core.Tests
  * FILE:        CoreInjectorTests.cs
  * PURPOSE:     Some basic tests for our Injector
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Reflection;

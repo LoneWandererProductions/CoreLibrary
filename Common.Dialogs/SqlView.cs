@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        SqlConnect.cs
  * PURPOSE:     View for Sql Connection dialog
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

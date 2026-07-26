@@ -3,7 +3,7 @@
  * PROJECT:     InterOp
  * FILE:        InterOp/FileInfoFetcher.cs
  * PURPOSE:     Faster way to look for files compared to Directory.GetFiles() or FileInfo.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

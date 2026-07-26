@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Cifs
  * FILE:        Cif.cs
  * PURPOSE:     Custom Image Format object, that contains all attributes and basic information
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

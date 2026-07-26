@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        DataList.xaml.cs
  * PURPOSE:     Basic List View with some extended Features
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal, never else it won't even work as an control

@@ -3,7 +3,7 @@
  * PROJECT:     Plugin
  * FILE:        IPlugin.cs
  * PURPOSE:     Basic Plugin Support for some apps
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.microsoft.com/en-us/dotnet/core/tutorials/creating-app-with-plugin-support
  */
 

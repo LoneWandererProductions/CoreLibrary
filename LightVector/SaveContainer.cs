@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        SaveContainer.cs
  * PURPOSE:     Container that holds some basic Image Informations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Generic;

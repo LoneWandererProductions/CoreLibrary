@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        App.xaml.cs
  * PURPOSE:     Entry Point
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Debugger

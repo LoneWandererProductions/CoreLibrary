@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileNameConverter.cs
  * PURPOSE:     Helps to perform some generic renaming operations
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 //TODO Rollback for all Features

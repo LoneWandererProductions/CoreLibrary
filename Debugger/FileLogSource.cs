@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        FileLogSource.xaml.cs
  * PURPOSE:     Sample file-backed log source
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

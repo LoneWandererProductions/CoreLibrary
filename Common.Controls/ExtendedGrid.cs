@@ -3,7 +3,7 @@
  * PROJECT:     Common.Controls
  * FILE:        ExtendedGrid.cs
  * PURPOSE:     Extension for Grid Control, not elegant but does the job
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

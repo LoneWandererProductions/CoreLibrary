@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Interfaces
  * FILE:        IPixelSurface.cs
  * PURPOSE:     Simple interface for a pixel surface, which can be used for rendering and manipulation of pixel data.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

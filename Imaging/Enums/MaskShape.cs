@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Enums
  * FILE:        MaskShape.cs
  * PURPOSE:     Enum that shows all allowed shapes
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Local

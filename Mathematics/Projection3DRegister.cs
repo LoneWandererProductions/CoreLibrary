@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        Projection3DRegister.cs
  * PURPOSE:     Basic Config for the 3D Camera
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

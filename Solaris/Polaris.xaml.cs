@@ -3,7 +3,7 @@
  * PROJECT:     Solaris
  * FILE:        Polaris.cs
  * PURPOSE:     Editor Control
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

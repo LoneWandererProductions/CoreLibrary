@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        PixelData.cs
  * PURPOSE:     Custom Pixel Container for DirectBitmapImage
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Imaging

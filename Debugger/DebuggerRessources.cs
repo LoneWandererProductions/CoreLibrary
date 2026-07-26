@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        DebuggerResources.cs
  * PURPOSE:     Resource String
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections.Immutable;

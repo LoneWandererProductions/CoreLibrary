@@ -3,7 +3,7 @@
  * PROJECT:     LightVector
  * FILE:        ShearTransform.cs
  * PURPOSE:     Basic Transform Class, mostly for Bezier
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

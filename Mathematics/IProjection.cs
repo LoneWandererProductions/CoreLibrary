@@ -3,7 +3,7 @@
  * PROJECT:     Mathematics
  * FILE:        IProjection.cs
  * PURPOSE:     3D Projection Interface
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMethodReturnValue.Global

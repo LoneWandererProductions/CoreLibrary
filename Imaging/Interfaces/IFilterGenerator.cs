@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Interfaces
  * FILE:        IFilterGenerator.cs
  * PURPOSE:     Interface of TextureGenerator
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

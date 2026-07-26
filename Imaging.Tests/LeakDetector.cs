@@ -3,7 +3,7 @@
  * PROJECT:     Imaging.Tests
  * FILE:        LeakDetector.cs
  * PURPOSE:     Really basic memory leak detector for unit tests. It runs an action and checks if the memory usage increased significantly.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

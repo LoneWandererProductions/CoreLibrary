@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        PickResults.cs
  * PURPOSE:     Results of the Color Wheel Click
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Common.Images

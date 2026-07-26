@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects
  * FILE:        DictionaryExtensions.cs
  * PURPOSE:     Helper class that extends the already versatile Dictionary, most operations are not thread safe, so beware.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMethodReturnValue.Global

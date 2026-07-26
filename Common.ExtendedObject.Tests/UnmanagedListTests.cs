@@ -3,7 +3,7 @@
  * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        UnmanagedListTests.cs
  * PURPOSE:     Tests for our UnmanagedList class, ensuring correct behavior of all operations including edge cases.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using ExtendedSystemObjects;

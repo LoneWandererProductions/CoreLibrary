@@ -3,7 +3,7 @@
  * PROJECT:     ExtendedSystemObjects.Helper
  * FILE:        ExtendedSystemObjects.Helper/SharedResources.cs
  * PURPOSE:     Generic System Functions for ListsCollection of Strings and constants.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace ExtendedSystemObjects.Helper

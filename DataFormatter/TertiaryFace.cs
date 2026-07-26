@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        TertiaryFace.cs
  * PURPOSE:     Basic Object that holds three int values, used for obj File
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global

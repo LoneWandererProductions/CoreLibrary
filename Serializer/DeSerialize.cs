@@ -4,7 +4,7 @@
  * FILE:        Serializer/DeSerialize.cs
  * PURPOSE:     De Serialize Objects, Lists and Dictionaries
  *              Logging done Via Events.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global

@@ -3,7 +3,7 @@
  * PROJECT:     CommonControls
  * FILE:        SqlConnect.cs
  * PURPOSE:     Class that will build a sql Connection string in the future
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCE:      https://stackoverflow.com/questions/55590869/how-to-protect-strings-without-securestring
  * NOTE:        Based on security concerns we won't provide a login via password and id over .Net, for more information read provided Link
  */

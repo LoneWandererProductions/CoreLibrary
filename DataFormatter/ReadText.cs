@@ -3,7 +3,7 @@
  * PROJECT:     DataFormatter
  * FILE:        ReadTxtFile.cs
  * PURPOSE:     Read txt Files
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

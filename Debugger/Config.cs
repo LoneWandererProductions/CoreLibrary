@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        Config.cs
  * PURPOSE:     Config Object
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBePrivate.Global, Config Class

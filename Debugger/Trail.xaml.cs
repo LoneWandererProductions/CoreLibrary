@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        Trail.xaml.cs
  * PURPOSE:     Output Window (Log Viewer)
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

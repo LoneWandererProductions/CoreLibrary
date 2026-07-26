@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        ErrorDialog.cs
  * PURPOSE:     Viewer for our Error Dialog
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

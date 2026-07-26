@@ -3,7 +3,7 @@
  * PROJECT:     Solaris
  * FILE:        Aurora.cs
  * PURPOSE:     Texture object
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

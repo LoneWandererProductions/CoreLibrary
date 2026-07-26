@@ -3,7 +3,7 @@
  * PROJECT:     Solaris
  * FILE:        OverlayGlyph.cs
  * PURPOSE:     Handle the overlay glyphs, which are drawn on top of the tile and can be used to display additional information like health, damage, or other status effects.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Solaris

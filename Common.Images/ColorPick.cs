@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        ColorPick.cs
  * PURPOSE:     Color Palette Control, much like Color Picker but for a finer selection of Colors
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCE:      https://manufacture.tistory.com/33
  *              https://www.rapidtables.com/convert/color/rgb-to-hsv.html
  *              https://stackoverflow.com/questions/42531608/hsv-triangle-in-c-sharp

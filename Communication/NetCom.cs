@@ -3,7 +3,7 @@
  * PROJECT:     Communication
  * FILE:        Communication/NetCom.cs
  * PURPOSE:     Entry Point for File Downloads
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedType.Global

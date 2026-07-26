@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        ColorProcessing.cs
  * PURPOSE:     Some internal Processing for the clicked Point
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCE:      https://stackoverflow.com/questions/42531608/hsv-triangle-in-c-sharp
  */
 

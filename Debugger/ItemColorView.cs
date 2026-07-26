@@ -3,7 +3,7 @@
  * PROJECT:     Debugger
  * FILE:        ItemColorView.cs
  * PURPOSE:     View for ItemColor Control
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows.Input;

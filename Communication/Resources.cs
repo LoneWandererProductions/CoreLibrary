@@ -3,7 +3,7 @@
  * PROJECT:     Communication
  * FILE:        ComResource.cs
  * PURPOSE:     Some Resources for the Communication Library.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Communication

@@ -3,7 +3,7 @@
  * PROJECT:     Imaging
  * FILE:        ImageRegister.cs
  * PURPOSE:     Register for Image Operations, and some helpful extensions
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://docs.rainmeter.net/tips/colormatrix-guide/
  *              https://archive.ph/hzR2W
  *              https://www.codeproject.com/Articles/3772/ColorMatrix-Basics-Simple-Image-Color-Adjustment

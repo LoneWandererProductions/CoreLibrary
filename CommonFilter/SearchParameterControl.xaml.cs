@@ -3,7 +3,7 @@
  * PROJECT:     CommonControls
  * FILE:        CommonControls/Filters/SearchParameterControl.xaml.cs
  * PURPOSE:     Control for the Parameter, one Control, one Parameter
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Windows.Controls;

@@ -3,7 +3,7 @@
  * PROJECT:     Common.Dialogs
  * FILE:        ComDlgResources.cs
  * PURPOSE:     String Resources for Dialog Controls
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 namespace Common.Dialogs;

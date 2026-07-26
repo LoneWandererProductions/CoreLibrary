@@ -3,7 +3,7 @@
  * PROJECT:     Common.ExtendedObject.Tests
  * FILE:        ExtendedSystemObjects.cs
  * PURPOSE:     Tests for ExtendedSystemObjects
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local just here once for test purposes

@@ -3,7 +3,7 @@
  * PROJECT:     Common.Images
  * FILE:        ColorPicker.xaml.cs
  * PURPOSE:     ColorPicker control with a hue ring and saturation/value triangle, supporting RGB/Hex input and output.
- * PROGRAMER:   Peter Geinitz (Wayfarer)
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System;

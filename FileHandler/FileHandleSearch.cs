@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandleSearch.cs
  * PURPOSE:     Handles all types of file searches (refactored for clarity and safety)
- * PROGRAMER:   Peter Geinitz (Wayfarer) 
+ * PROGRAMMER:  Peter Geinitz (Wayfarer) 
  */
 
 // ReSharper disable MemberCanBeInternal
