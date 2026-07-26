@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -26,12 +27,12 @@ namespace Core.Apps.Helper
         /// <summary>
         /// The ignore cache
         /// </summary>
-        private static readonly Dictionary<string?, bool> IgnoreCache = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly ConcurrentDictionary<string?, bool> IgnoreCache = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The source file cache
         /// </summary>
-        private static readonly Dictionary<string, string[]> SourceFileCache = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly ConcurrentDictionary<string, string[]> SourceFileCache = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Determines whether a given file should be ignored during analysis.

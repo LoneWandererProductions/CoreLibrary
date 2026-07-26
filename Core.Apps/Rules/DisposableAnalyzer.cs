@@ -3,6 +3,7 @@
  * PROJECT:     Core.Apps.Rules
  * FILE:        DisposableAnalyzer.cs
  * PURPOSE:     Analyzer that detects undisposed IDisposable objects.
+ * NOTES:       To make it bulletproof we would have to move to Semantic Model, but that is out of scope for now.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -70,7 +71,7 @@ namespace Core.Apps.Rules
                     DiagnosticSeverity.Warning,
                     filePath,
                     line,
-                    $"'{v.Identifier.Text}' is a disposable type but is not safely disposed. Use a 'using' statement or call .Dispose().",
+                    $"'{v.Identifier.Text}' appears to be a disposable type but is not safely disposed. Use a 'using' statement or call .Dispose().",
                     DiagnosticImpact.IoBound
                 );
             }
@@ -85,29 +86,48 @@ namespace Core.Apps.Rules
             if (variable.Parent is VariableDeclarationSyntax decl)
             {
                 var typeName = decl.Type.ToString();
-                if (typeName != "var" && ImplementsIDisposable(typeName))
+                if (typeName != "var" && LooksLikeDisposable(typeName))
                     return true;
             }
 
-            // 2. Check implicit 'var' declarations by looking at the right side of the assignment (e.g., var reader = new StreamReader(...))
+            // 2. Check implicit 'var' right side object creation (e.g., var reader = new StreamReader(...))
             if (variable.Initializer?.Value is ObjectCreationExpressionSyntax objCreate)
             {
                 var typeName = objCreate.Type.ToString();
-                if (ImplementsIDisposable(typeName))
+                if (LooksLikeDisposable(typeName))
                     return true;
+            }
+
+            // 3. Check implicit 'var' right side method invocation (Fixes the test case: var stream = File.OpenRead(...))
+            if (variable.Initializer?.Value is InvocationExpressionSyntax invocation)
+            {
+                var methodName = invocation.Expression.ToString();
+                if (methodName.StartsWith("File.Open") ||
+                    methodName.StartsWith("File.Create") ||
+                    LooksLikeDisposable(methodName))
+                {
+                    return true;
+                }
+            }
+
+            // 4. Fallback Heuristic: Check the variable name itself
+            // If the user named it 'stream', it's highly likely an IDisposable.
+            if (LooksLikeDisposable(variable.Identifier.Text))
+            {
+                return true;
             }
 
             return false;
         }
 
         /// <summary>
-        /// Dummy check for demonstration; could be extended with a semantic model.
+        /// Syntax-level heuristic check. Returns true if the string contains common disposable keywords.
         /// </summary>
-        private static bool ImplementsIDisposable(string typeName)
+        private static bool LooksLikeDisposable(string name)
         {
-            return typeName.EndsWith("Stream") ||
-                   typeName.EndsWith("Reader") ||
-                   typeName.EndsWith("Writer");
+            return name.IndexOf("Stream", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   name.IndexOf("Reader", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   name.IndexOf("Writer", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         /// <summary>

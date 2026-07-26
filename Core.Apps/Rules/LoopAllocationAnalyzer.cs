@@ -226,8 +226,7 @@ namespace Core.Apps.Rules
         /// <returns>
         ///   <c>true</c> if [symbol escapes] [the specified loop]; otherwise, <c>false</c>.
         /// </returns>
-        private static bool DoesSymbolEscape(ILocalSymbol? localSymbol, SyntaxNode loopNode,
-            SemanticModel semanticModel)
+        private static bool DoesSymbolEscape(ILocalSymbol? localSymbol, SyntaxNode loopNode, SemanticModel semanticModel)
         {
             // Find all identifier nodes in the loop pointing to this exact symbol
             var references = loopNode.DescendantNodes()

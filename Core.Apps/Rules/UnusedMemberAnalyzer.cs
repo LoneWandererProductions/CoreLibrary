@@ -52,8 +52,6 @@ namespace Core.Apps.Rules
 
             var tree = CSharpSyntaxTree.ParseText(fileContent);
 
-            // 1. Setup Semantic Model
-            // We add the standard object reference so the compiler knows about basic types
             var compilation = CSharpCompilation.Create("Analysis")
                 .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
                 .AddSyntaxTrees(tree);
@@ -61,31 +59,59 @@ namespace Core.Apps.Rules
             var model = compilation.GetSemanticModel(tree);
             var root = tree.GetCompilationUnitRoot();
 
-            // 2. Identify all private members
-            var privateMembers = root.DescendantNodes()
+            // We will gather all symbols we care about into a single list to process uniformly.
+            // Storing the Symbol, the SyntaxNode for location, and the Name.
+            var symbolsToCheck = new List<(ISymbol Symbol, SyntaxNode Node, string Name)>();
+
+            // 1. Regular Members (Methods, Properties, Classes, etc.)
+            // We exclude FieldDeclarationSyntax here because a single field declaration can 
+            // declare multiple variables, which we handle in step 2.
+            var memberDecls = root.DescendantNodes()
                 .OfType<MemberDeclarationSyntax>()
-                .Where(m => m.Modifiers.Any(mod => mod.IsKind(SyntaxKind.PrivateKeyword)));
+                .Where(m => m is not FieldDeclarationSyntax);
 
-            foreach (var member in privateMembers)
+            foreach (var member in memberDecls)
             {
-                // 3. Get the symbol for the private member using the SemanticModel
                 var symbol = model.GetDeclaredSymbol(member);
+                if (symbol != null)
+                    symbolsToCheck.Add((symbol, member, CoreHelper.GetMemberName(member)));
+            }
 
-                // Skip members where we couldn't resolve a symbol (e.g., complex syntax)
-                if (symbol == null) continue;
+            // 2. Variables (Both Class-level Fields AND Method-level Local Variables)
+            var variableDecls = root.DescendantNodes().OfType<VariableDeclaratorSyntax>();
 
-                // 4. Use your CoreHelper to check if the symbol is used anywhere in the file
+            foreach (var variable in variableDecls)
+            {
+                var symbol = model.GetDeclaredSymbol(variable);
+                if (symbol != null)
+                    symbolsToCheck.Add((symbol, variable, variable.Identifier.Text));
+            }
+
+            // 3. Analyze all gathered symbols
+            foreach (var (symbol, node, name) in symbolsToCheck)
+            {
+                bool isLocalVariable = symbol is ILocalSymbol;
+                bool isPrivateMember = symbol.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Private;
+
+                // We only care about Private class members OR Local variables
+                if (!isPrivateMember && !isLocalVariable)
+                    continue;
+
+                // Skip discards (e.g., `_ = DoSomething()`) and compiler-generated locals
+                if (isLocalVariable && (name == "_" || symbol.IsImplicitlyDeclared))
+                    continue;
+
+                // 4. Check for usage
                 if (!CoreHelper.IsSymbolUsed(model, root, symbol))
                 {
-                    // We need a name for the diagnostic message
-                    var memberName = CoreHelper.GetMemberName(member);
+                    string symbolType = isLocalVariable ? "Local variable" : "Private member";
 
                     yield return new Diagnostic(
                         Name,
                         Enums.DiagnosticSeverity.Info,
                         filePath,
-                        member.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
-                        $"Private member '{memberName}' is never used within this file.",
+                        node.GetLocation().GetLineSpan().StartLinePosition.Line + 1,
+                        $"{symbolType} '{name}' is never used within this file.",
                         DiagnosticImpact.Readability
                     );
                 }

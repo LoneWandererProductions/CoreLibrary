@@ -59,29 +59,31 @@ namespace Core.Apps.Rules
             var model = compilation.GetSemanticModel(tree);
             var root = tree.GetRoot();
 
+            // Find all field declarations
             foreach (var fieldDecl in root.DescendantNodes().OfType<FieldDeclarationSyntax>())
             {
-                // Only look at private fields
-                if (!fieldDecl.Modifiers.Any(m => m.IsKind(SyntaxKind.PrivateKeyword)))
-                    continue;
-
+                // Process each variable declared in the field (e.g., private int _used, _unused;)
                 foreach (var variable in fieldDecl.Declaration.Variables)
                 {
                     var symbol = model.GetDeclaredSymbol(variable);
                     if (symbol is not IFieldSymbol fieldSymbol)
                         continue;
 
-                    var references = root.DescendantNodes()
-                        .OfType<IdentifierNameSyntax>()
-                        .Where(id => SymbolEqualityComparer.Default.Equals(
-                            model.GetSymbolInfo(id).Symbol, fieldSymbol));
-
-                    if (references.Any())
+                    // 1. Rely on Semantic Model for accessibility (catches implicit private)
+                    if (fieldSymbol.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Private)
                         continue;
 
-                    var line = variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-                    yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, line,
-                        $"Unused private field '{variable.Identifier.Text}'.");
+                    // 2. Use your robust CoreHelper check instead of a manual IdentifierNameSyntax search
+                    if (!CoreHelper.IsSymbolUsed(model, root, fieldSymbol))
+                    {
+                        var line = variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                        yield return new Diagnostic(
+                            Name,
+                            DiagnosticSeverity.Info,
+                            filePath,
+                            line,
+                            $"Unused private field '{variable.Identifier.Text}'.");
+                    }
                 }
             }
         }

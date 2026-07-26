@@ -53,6 +53,12 @@ namespace Core.Apps.Rules
         /// </summary>
         private static Dictionary<string, List<(string file, int line)>>? _cachedLiterals;
 
+        /// <summary>
+        /// Tracks the root directory of the currently cached project to ensure we 
+        /// rebuild the cache when moving to a new project.
+        /// </summary>
+        private static string? _cachedDirectory;
+
         /// <inheritdoc />
         /// <remarks>
         ///     This method intentionally yields no results per-file until project-wide analysis is performed.
@@ -63,11 +69,13 @@ namespace Core.Apps.Rules
             if (CoreHelper.ShouldIgnoreFile(filePath))
                 yield break;
 
-            // Lazy-load project-wide string literals once
-            if (_cachedLiterals == null)
+            var rootDir = CoreHelper.FindProjectRoot(filePath);
+
+            // Lazy-load or rebuild cache if we are looking at a new project
+            if (_cachedLiterals == null || _cachedDirectory != rootDir)
             {
-                var rootDir = CoreHelper.FindProjectRoot(filePath);
                 _cachedLiterals = BuildProjectLiterals(rootDir);
+                _cachedDirectory = rootDir;
             }
 
             // Only return diagnostics relevant to this file
@@ -77,7 +85,7 @@ namespace Core.Apps.Rules
                 {
                     if (file == filePath)
                         yield return new Diagnostic(Name, Enums.DiagnosticSeverity.Info, file, line,
-                            kvp.Key); // kvp.Key = the message with literal
+                            kvp.Key);
                 }
             }
         }
@@ -92,7 +100,12 @@ namespace Core.Apps.Rules
         /// </returns>
         public IEnumerable<Diagnostic> AnalyzeDirectory(string? directory)
         {
-            _cachedLiterals ??= BuildProjectLiterals(directory);
+            // Rebuild if it's a new directory
+            if (_cachedLiterals == null || _cachedDirectory != directory)
+            {
+                _cachedLiterals = BuildProjectLiterals(directory);
+                _cachedDirectory = directory;
+            }
 
             foreach (var kvp in _cachedLiterals)
             {
