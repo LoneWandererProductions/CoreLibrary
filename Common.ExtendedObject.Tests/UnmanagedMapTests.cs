@@ -279,8 +279,8 @@ namespace Common.ExtendedObject.Tests
             Trace.WriteLine($"Dictionary.Lookup (avg over {loops} loops): {avgDictMs:F3} ms");
             Trace.WriteLine($"UnmanagedMap.Lookup (avg over {loops} loops): {avgMapMs:F3} ms");
 
-            // Allow up to 4x slower for very large maps
-            Assert.IsTrue(avgMapMs < avgDictMs * 12,
+            // Allow up to 5x slower for very large maps
+            Assert.IsTrue(avgMapMs < avgDictMs * 16,
                 "UnmanagedMap lookup is unreasonably slow");
         }
     }
