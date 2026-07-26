@@ -3,7 +3,7 @@
 * PROJECT:     ImageCompare
 * FILE:        ImageCompare/ImageProcessing.cs
 * PURPOSE:     Basic Processing of Images, in this case mostly for Similar Images
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System;

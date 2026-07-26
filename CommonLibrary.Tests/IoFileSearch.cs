@@ -3,7 +3,7 @@
 * PROJECT:     CommonLibraryTests
 * FILE:        IoFileSearch.cs
 * PURPOSE:     Tests for IoFileHandler and mostly the search part
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using FileHandler;

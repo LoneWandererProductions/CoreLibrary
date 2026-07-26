@@ -3,7 +3,7 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleRename.cs
 * PURPOSE:     Utility to Rename Files and Folders
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable MemberCanBeInternal

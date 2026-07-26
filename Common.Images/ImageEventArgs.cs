@@ -3,7 +3,7 @@
 * PROJECT:     Common.Images
 * FILE:        ImageEventArgs.cs
 * PURPOSE:     Image Event Detail Information can be further extended in the future
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System;

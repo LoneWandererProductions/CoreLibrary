@@ -3,7 +3,7 @@
 * PROJECT:     Imaging.Gifs
 * FILE:        ImageGifMetadataExtractor.cs
 * PURPOSE:     Get all the info of a gif
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System;

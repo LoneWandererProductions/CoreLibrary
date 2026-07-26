@@ -3,7 +3,7 @@
  * PROJECT:      ExtendedSystemObjects
  * FILE:         BiMap.cs
  * PURPOSE:      Bi-directional map implementation that allows for efficient lookups in both directions.
- * PROGRAMER:    Peter Geinitz (Wayfarer)
+ * PROGRAMMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal

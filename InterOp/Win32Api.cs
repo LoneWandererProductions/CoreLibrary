@@ -3,7 +3,7 @@
 * PROJECT:     CommonControls
 * FILE:        CommonControls/Win32Api.cs
 * PURPOSE:     Direct Invocations to the Operating System
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 * SOURCES:     https://www.pinvoke.net/default.aspx
 *              https://docs.microsoft.com/de-de/dotnet/framework/interop/specifying-a-character-set
 *              http://maruf-dotnetdeveloper.blogspot.com/2012/08/c-refreshing-system-tray-icon.html

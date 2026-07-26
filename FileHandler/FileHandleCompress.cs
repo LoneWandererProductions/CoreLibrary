@@ -3,10 +3,13 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleCompress.cs
 * PURPOSE:     File Compression Utilities
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:   Peter Geinitz (Wayfarer)
 * Sources:     https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.zipfile?view=net-5.0
 *              https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.ziparchive.entries?view=net-5.0
 */
+
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -15,8 +18,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-
-// ReSharper disable UnusedMember.Global
 
 namespace FileHandler
 {

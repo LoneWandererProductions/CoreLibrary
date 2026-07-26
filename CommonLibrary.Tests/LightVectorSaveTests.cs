@@ -3,7 +3,7 @@
 * PROJECT:     CommonLibraryTests
 * FILE:        LightVectorSaveTests.cs
 * PURPOSE:     Tests for IoFileHandler and mostly the save part
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System.Numerics;

@@ -3,7 +3,7 @@
 * PROJECT:     CommonLibraryTests
 * FILE:        LightObjectTests.cs
 * PURPOSE:     Tests for my Light Vector Library
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System.Numerics;

@@ -3,7 +3,7 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleCopy.cs
 * PURPOSE:     Does all types of File Operations, Copy Files
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable MemberCanBePrivate.Global

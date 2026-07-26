@@ -3,7 +3,7 @@
 * PROJECT:     CommonLibraryTests
 * FILE:        IoFileHandlerInternal.cs
 * PURPOSE:     Tests for IoFileHandler, internal stuff
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using FileHandler;

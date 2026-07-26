@@ -3,11 +3,12 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleCut.cs
 * PURPOSE:     Does all types of File Operations, Copy Files and deletes them afterwards.
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:   Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;

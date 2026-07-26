@@ -3,7 +3,7 @@
 * PROJECT:     CommonLibraryTests
 * FILE:        IoFileHandler.cs
 * PURPOSE:     Tests for IoFileHandler
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System.Diagnostics;

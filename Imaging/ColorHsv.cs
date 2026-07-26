@@ -3,7 +3,7 @@
 * PROJECT:     Imaging
 * FILE:        ColorHsv.cs
 * PURPOSE:     General Conversions of all Types of Color Displays, Todo Sort out Degree and radian a bit more
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 * SOURCE:      https://manufacture.tistory.com/33
 *              https://www.rapidtables.com/convert/color/rgb-to-hsv.html
 *              https://en.wikipedia.org/wiki/HSL_and_HSV

@@ -3,7 +3,7 @@
 * PROJECT:     Common.Images
 * FILE:        ColorPicker.xaml.cs
 * PURPOSE:     Basic Color Picker Control
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System;

@@ -3,7 +3,7 @@
 * PROJECT:     Imaging.Helpers
 * FILE:        ColorHsv.cs
 * PURPOSE:     General Conversions for images via my Hsv class
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System;

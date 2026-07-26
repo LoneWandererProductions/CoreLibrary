@@ -3,7 +3,7 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleDelete.cs
 * PURPOSE:     Handles all types of file operations, including deletion
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System;

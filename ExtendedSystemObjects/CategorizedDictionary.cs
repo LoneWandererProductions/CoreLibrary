@@ -1,9 +1,9 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:      ExtendedSystemObjects
- * FILE:         CategorizedDictionary.cs
- * PURPOSE:      Extended Dictionary with a Category.
- * PROGRAMER:    Peter Geinitz (Wayfarer)
+ * PROJECT:     ExtendedSystemObjects
+ * FILE:        CategorizedDictionary.cs
+ * PURPOSE:     Extended Dictionary with a Category.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMethodReturnValue.Global

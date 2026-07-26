@@ -3,7 +3,7 @@
 * PROJECT:     ImageCompare
 * FILE:        ImageCompare/ImageSimilar.cs
 * PURPOSE:     Struct to Compare if Images are Similar
-* PROGRAMER:   Peter Geinitz (Wayfarer)
+* PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
 using System;
