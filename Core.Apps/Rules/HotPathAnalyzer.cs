@@ -66,6 +66,14 @@ namespace Core.Apps.Rules
         /// </summary>
         private const int NestedLoopWeight = 50;
 
+        /// <summary>
+        /// Resets the aggregate statistics.
+        /// </summary>
+        public void Reset()
+        {
+            _aggregateStats.Clear();
+        }
+
         /// <inheritdoc />
         public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
@@ -101,7 +109,7 @@ namespace Core.Apps.Rules
                 };
 
                 if (!_aggregateStats.TryGetValue(symbolName, out var stats))
-                    stats = (0, 0, new HashSet<string>());
+                    stats = (0, 0, new HashSet<string?>());
 
                 stats.Count++;
                 stats.TotalRisk += risk;
@@ -136,7 +144,6 @@ namespace Core.Apps.Rules
                     DiagnosticSeverity.Info,
                     filePath,
                     line,
-                    // Pass the enclosingName to BuildMessage
                     $"{BuildMessage(symbolName, loopContext, enclosingName)} Called {stats.Count} times so far, current risk {risk}, total risk {stats.TotalRisk}.",
                     impact
                 );
@@ -146,6 +153,9 @@ namespace Core.Apps.Rules
         /// <inheritdoc />
         public CommandResult Execute(params string?[] args)
         {
+            // Clear aggregate stats at the start of each command execution to prevent leakage across runs
+            _aggregateStats.Clear();
+
             List<Diagnostic> results;
             try
             {

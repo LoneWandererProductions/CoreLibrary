@@ -96,6 +96,7 @@ namespace Core.Apps.Rules
         /// <returns>The size of the type in bytes.</returns>
         private static int GetFieldSize(string typeName) => typeName switch
         {
+            "decimal" => 16,
             "long" or "double" => 8,
             "int" or "float" => 4,
             "short" or "char" => 2,

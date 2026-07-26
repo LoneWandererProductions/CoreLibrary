@@ -47,11 +47,11 @@ namespace Core.Apps.Rules
         /// <inheritdoc />
         public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
-            if (!filePath.EndsWith(CoreResources.ResourceCsProjectExtension, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(filePath) || !Path.GetExtension(filePath).Equals(".csproj", StringComparison.OrdinalIgnoreCase))
                 yield break;
 
-            // FileContent is empty for .csproj execution → load file
-            var xml = File.ReadAllText(filePath);
+            // FileContent is empty for .csproj execution → load file if needed
+            var xml = !string.IsNullOrEmpty(fileContent) ? fileContent : File.ReadAllText(filePath);
             var project = new ProjectReferenceInfo(xml);
 
             var unused = project.GetUnusedReferences();
@@ -82,7 +82,7 @@ namespace Core.Apps.Rules
             }
 
             var output = string.Join("\n", results.Select(d => $"{Path.GetFileName(d.FilePath)} -> {d.Message}"));
-            return CommandResult.Ok($"Unused references detected:\n{output}", EnumTypes.Wstring);
+            return CommandResult.Ok(output.Length > 0 ? $"Unused references detected:\n{output}" : "No unused references detected.", EnumTypes.Wstring);
         }
     }
 }

@@ -64,17 +64,31 @@ namespace Core.Apps.Rules
         /// </summary>
         private const int NestedLoopWeight = 50;
 
+        /// <summary>
+        /// Resets the aggregate statistics.
+        /// </summary>
+        public void Reset()
+        {
+            _aggregateStats.Clear();
+        }
+
         /// <inheritdoc />
         public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
+            // Respect global ignore rules (consistent with other rule analyzers)
+            if (CoreHelper.ShouldIgnoreFile(filePath))
+                yield break;
+
             var tree = CSharpSyntaxTree.ParseText(fileContent);
             var root = tree.GetRoot();
 
             foreach (var alloc in root.DescendantNodes().OfType<ObjectCreationExpressionSyntax>())
             {
-                // Ignore trivial .NET classes like string
                 var typeName = alloc.Type.ToString();
-                if (typeName == "string") continue;
+
+                // Ignore trivial string allocations across all casing/namespace variants
+                if (typeName == "string" || typeName == "String" || typeName == "System.String")
+                    continue;
 
                 var loopContext = CoreHelper.GetLoopContext(alloc);
                 if (loopContext == LoopContext.None) continue;
@@ -88,7 +102,7 @@ namespace Core.Apps.Rules
                 };
 
                 if (!_aggregateStats.TryGetValue(typeName, out var stats))
-                    stats = (0, 0, new HashSet<string>());
+                    stats = (0, 0, new HashSet<string?>());
 
                 stats.Count++;
                 stats.TotalRisk += risk;
@@ -114,6 +128,9 @@ namespace Core.Apps.Rules
             if (args.Length == 0)
                 return CommandResult.Fail("Usage: Allocation <fileOrDirectoryPath>");
 
+            // Clear aggregate stats at the start of each command execution to prevent leakage across runs
+            _aggregateStats.Clear();
+
             var path = args[0];
 
             // If a single file was passed, analyze that file only
@@ -133,7 +150,6 @@ namespace Core.Apps.Rules
             }
 
             var diagnostics = diagnosticsEnumerable.ToList();
-
 
             if (diagnostics.Count == 0)
                 return CommandResult.Ok("No Allocations found.");

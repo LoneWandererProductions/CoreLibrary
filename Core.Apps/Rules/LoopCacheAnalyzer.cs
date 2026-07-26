@@ -81,7 +81,7 @@ namespace Core.Apps.Rules
 
                 // Ignore basic framework utilities where caching overhead > computation cost
                 var fqn = methodSymbol.ContainingType.ToDisplayString();
-                if (fqn.StartsWith("System.") || fqn.StartsWith("Math"))
+                if (fqn.StartsWith("System."))
                     continue;
 
                 // 3. Perform Data Flow Analysis

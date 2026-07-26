@@ -54,6 +54,7 @@ namespace Core.Apps
                 new ApiExplorerCommand(), new LogTailCommand(), new SmartPingPro(), new Tree(),
                 new StructPaddingAnalyzer(), new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(),
                 new LoopAllocationAnalyzer(), new LoopCacheAnalyzer(), new BatchAnalyzerCommand(),
+                new RoslynCompilerAnalyzer()
             });
 
             // --- PRODUCERS (Require Registry) ---
@@ -113,7 +114,7 @@ namespace Core.Apps
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new StructPaddingAnalyzer(),
                 new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(), new LoopAllocationAnalyzer(),
-                new LoopCacheAnalyzer()
+                new LoopCacheAnalyzer(), new RoslynCompilerAnalyzer()
             };
 
             return modules;

@@ -54,7 +54,6 @@ namespace Core.Apps.Rules
         /// <inheritdoc />
         public IEnumerable<Diagnostic> Analyze(string? filePath, string fileContent)
         {
-            // 🔹 Ignore generated code and compiler artifacts
             if (CoreHelper.ShouldIgnoreFile(filePath))
                 yield break;
 
@@ -62,13 +61,23 @@ namespace Core.Apps.Rules
             var root = tree.GetRoot();
 
             foreach (var sub in root.DescendantNodes()
-                         .OfType<AssignmentExpressionSyntax>()
-                         .Where(a => a.IsKind(SyntaxKind.AddAssignmentExpression)))
+                       .OfType<AssignmentExpressionSyntax>()
+                       .Where(a => a.IsKind(SyntaxKind.AddAssignmentExpression)))
             {
-                if (sub.Left is not IdentifierNameSyntax eventName)
+                string? key = null;
+
+                if (sub.Left is IdentifierNameSyntax identifierName)
+                {
+                    key = identifierName.Identifier.Text;
+                }
+                else if (sub.Left is MemberAccessExpressionSyntax memberAccess)
+                {
+                    key = memberAccess.Name.Identifier.Text;
+                }
+
+                if (string.IsNullOrEmpty(key))
                     continue;
 
-                var key = eventName.Identifier.Text;
                 if (!_eventStats.TryGetValue(key, out var stats))
                     stats = (0, new HashSet<string>());
 

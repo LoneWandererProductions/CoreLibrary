@@ -14,7 +14,7 @@ using System.IO;
 namespace Core.Apps
 {
     /// <summary>
-    ///     Diagnostic Result
+    /// Diagnostic Result
     /// </summary>
     public sealed class Diagnostic
     {
@@ -27,8 +27,9 @@ namespace Core.Apps
         /// <param name="lineNumber">The line number.</param>
         /// <param name="message">The message.</param>
         /// <param name="impact">The impact.</param>
+        /// <param name="source">The source.</param>
         public Diagnostic(string name, DiagnosticSeverity severity, string? filePath, int lineNumber, string message,
-            DiagnosticImpact? impact = null)
+            DiagnosticImpact? impact = null, string? source = "core.rules")
         {
             Name = name;
             Severity = severity;
@@ -36,70 +37,57 @@ namespace Core.Apps
             LineNumber = lineNumber;
             Message = message;
             Impact = impact;
+            Source = source ?? "core.rules";
         }
 
         /// <summary>
         /// Gets the name.
         /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
         public string Name { get; }
 
         /// <summary>
         /// Gets the severity.
         /// </summary>
-        /// <value>
-        /// The severity.
-        /// </value>
         public DiagnosticSeverity Severity { get; }
+
+        /// <summary>
+        /// Gets the level string representation.
+        /// </summary>
+        public string Level => Severity.ToString();
 
         /// <summary>
         /// Gets the impact.
         /// </summary>
-        /// <value>
-        /// The impact.
-        /// </value>
-        public DiagnosticImpact? Impact { get; } // nullable
+        public DiagnosticImpact? Impact { get; }
 
         /// <summary>
-        ///     Gets the file path.
+        /// Gets the file path.
         /// </summary>
-        /// <value>
-        ///     The file path.
-        /// </value>
         public string? FilePath { get; }
 
         /// <summary>
         /// Gets the file name only (extracted from FilePath).
         /// </summary>
-        /// <value>
-        /// The name of the file.
-        /// </value>
-        public string FileName => Path.GetFileName(FilePath);
+        public string FileName => string.IsNullOrEmpty(FilePath) ? string.Empty : Path.GetFileName(FilePath);
 
         /// <summary>
-        ///     Gets the line number.
+        /// Gets the line number.
         /// </summary>
-        /// <value>
-        ///     The line number.
-        /// </value>
         public int LineNumber { get; }
 
         /// <summary>
-        ///     Gets the message.
+        /// Gets the message.
         /// </summary>
-        /// <value>
-        ///     The message.
-        /// </value>
         public string Message { get; }
 
         /// <summary>
-        /// Gets the severity symbol.
+        /// Gets the source.
         /// </summary>
-        /// <value>
-        /// The severity symbol.
-        /// </value>
+        public string Source { get; }
+
+        /// <summary>
+        /// Gets the severity symbol (Emoji).
+        /// </summary>
         public string SeveritySymbol => Severity switch
         {
             DiagnosticSeverity.Error => "\U0001F534", // 🔴
@@ -109,11 +97,8 @@ namespace Core.Apps
         };
 
         /// <summary>
-        ///     Converts to string.
+        /// Converts to string.
         /// </summary>
-        /// <returns>
-        ///     A <see cref="string" /> that represents this instance.
-        /// </returns>
         public override string ToString()
         {
             return Impact.HasValue
