@@ -220,16 +220,6 @@ namespace Imaging
         internal const string Color = "Color: ";
 
         /// <summary>
-        ///     The flag that indicates that image is not compressed (const). Value:  "0".
-        /// </summary>
-        internal const string CifUnCompressed = "0";
-
-        /// <summary>
-        ///     The flag that indicates if image is compressed (const). Value:  "1".
-        /// </summary>
-        internal const string CifCompressed = "1";
-
-        /// <summary>
         ///     The jpg Extension (const). Value: ".jpg"
         /// </summary>
         public const string JpgExt = ".jpg";
