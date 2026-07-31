@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging
- * FILE:        ImagingResources.cs
+ * PROJECT:     Imaging.Cifs
+ * FILE:        CifResources.cs
  * PURPOSE:     String Resources
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -10,14 +10,12 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
-using System.Collections.Generic;
-
-namespace Imaging
+namespace Imaging.Cifs
 {
     /// <summary>
     ///     The com Control resources class.
     /// </summary>
-    public static class ImagingResources
+    public static class CifResources
     {
         // General Messages
 
@@ -27,21 +25,10 @@ namespace Imaging
         internal const string FileNotFoundMessage = "File not found.";
 
         /// <summary>
-        ///     The error message displayed when the file is not a valid GIF. Value: "Not a valid GIF file."
-        /// </summary>
-        internal const string InvalidGifMessage = "Not a valid GIF file.";
-
-        /// <summary>
         ///     The message displayed when skipping padding or a sub-block terminator. Value: "Skipping padding or sub-block
         ///     terminator (0x00)"
         /// </summary>
         internal const string SkipPaddingMessage = "Skipping padding or sub-block terminator (0x00)";
-
-        /// <summary>
-        ///     The message displayed when the GIF trailer is found, signaling the parsing is complete. Value: "GIF Trailer found,
-        ///     parsing complete."
-        /// </summary>
-        internal const string GifTrailerMessage = "GIF Trailer found, parsing complete.";
 
         /// <summary>
         ///     The description for image frames. Value: "Image Frame"
@@ -70,119 +57,6 @@ namespace Imaging
         ///     The message format for skipping an extension block. Example: "Skipping extension block of size: {0}"
         /// </summary>
         internal const string SkipExtensionBlockMessage = "Skipping extension block of size: {0}";
-
-        // GIF Format
-
-        /// <summary>
-        ///     The length of the GIF header in bytes. Value: 6
-        /// </summary>
-        internal const int GifHeaderLength = 6;
-
-        /// <summary>
-        ///     The expected start string for a valid GIF header. Value: "GIF"
-        /// </summary>
-        internal const string GifHeaderStart = "GIF";
-
-        /// <summary>
-        ///     The meta data needed for a valid GIF header. Value: "gif"
-        /// </summary>
-        internal const string GifMetadata = "gif";
-
-        /// <summary>
-        ///     The GIF metadata query delay (const). Value: "/grctlext/Delay"
-        /// </summary>
-        internal const string GifMetadataQueryDelay = "/grctlext/Delay";
-
-        /// <summary>
-        /// The GIF metadata query disposal (const). Value: "/grctlext/Disposal"
-        /// </summary>
-        internal const string GifMetadataQueryDisposal = "/grctlext/Disposal";
-
-        /// <summary>
-        ///     The flag indicating the presence of a global color table in the GIF file. Value: 0x80
-        /// </summary>
-        internal const int GlobalColorTableFlag = 0x80;
-
-        /// <summary>
-        ///     The bitmask for extracting the color resolution field from the packed fields in the GIF file. Value: 0x70
-        /// </summary>
-        internal const int ColorResolutionMask = 0x70;
-
-        /// <summary>
-        ///     The bitmask for extracting the size of the color table from the packed fields in the GIF file. Value: 0x07
-        /// </summary>
-        internal const int TableSizeMask = 0x07;
-
-        // Blocks and IDs
-
-        /// <summary>
-        ///     The ID for padding or sub-block terminator in GIF files. Value: 0x00
-        /// </summary>
-        internal const byte PaddingBlockId = 0x00;
-
-        /// <summary>
-        ///     The ID indicating an extension introducer in the GIF file. Value: 0x21
-        /// </summary>
-        internal const byte ExtensionIntroducer = 0x21;
-
-        /// <summary>
-        ///     The label for application extensions in the GIF file. Value: 0xFF
-        /// </summary>
-        internal const byte ApplicationExtensionLabel = 0xFF;
-
-        /// <summary>
-        ///     The label for graphics control extensions in the GIF file. Value: 0xF9
-        /// </summary>
-        internal const byte GraphicsControlExtensionLabel = 0xF9;
-
-        /// <summary>
-        ///     The ID for image descriptors in the GIF file. Value: 0x2C
-        /// </summary>
-        internal const byte ImageDescriptorId = 0x2C;
-
-        /// <summary>
-        ///     The ID for the trailer block in the GIF file, signaling the end of the file. Value: 0x3B
-        /// </summary>
-        internal const byte TrailerBlockId = 0x3B;
-
-        /// <summary>
-        ///     The length of the image descriptor block in the GIF file, in bytes. Value: 9
-        /// </summary>
-        internal const int ImageDescriptorLength = 9;
-
-        /// <summary>
-        ///     The flag indicating the presence of a local color table in the GIF file. Value: 0x80
-        /// </summary>
-        internal const byte LocalColorTableFlag = 0x80;
-
-        // Application Extension
-
-        /// <summary>
-        ///     The identifier string for the NETSCAPE application extension. Value: "NETSCAPE"
-        /// </summary>
-        internal const string NetScapeIdentifier = "NETSCAPE";
-
-        /// <summary>
-        ///     The length of the application identifier in the application extension block. Value: 8
-        /// </summary>
-        internal const int AppIdentifierLength = 8;
-
-        /// <summary>
-        ///     The length of the application authentication code in the application extension block. Value: 3
-        /// </summary>
-        internal const int AppAuthCodeLength = 3;
-
-        // Miscellaneous
-
-        /// <summary>
-        ///     The divisor used for converting delay times in the GIF file from hundredths of a second to seconds. Value: 100.0
-        /// </summary>
-        internal const double DelayDivisor = 100.0;
-
-        /// <summary>
-        ///     The ID for the block terminator in the GIF file. Value: 0x00
-        /// </summary>
-        internal const byte TerminatorBlockId = 0x00;
 
         /// <summary>
         ///     The error missing file (const). Value: "File not Found: ".
@@ -230,34 +104,9 @@ namespace Imaging
         internal const string CifCompressed = "1";
 
         /// <summary>
-        ///     The jpg Extension (const). Value: ".jpg"
+        ///     The cif Separator used for compression (const). Value:  "-".
         /// </summary>
-        public const string JpgExt = ".jpg";
-
-        /// <summary>
-        ///     The jpeg Extension (const). Value: ".jpeg"
-        /// </summary>
-        public const string JpegExt = ".jpeg";
-
-        /// <summary>
-        ///     The png Extension (const). Value: ".png"
-        /// </summary>
-        public const string PngExt = ".png";
-
-        /// <summary>
-        ///     The Bmp Extension (const). Value: ".Bmp"
-        /// </summary>
-        public const string BmpExt = ".Bmp";
-
-        /// <summary>
-        ///     The Gif Extension (const). Value: ".gif"
-        /// </summary>
-        public const string GifExt = ".gif";
-
-        /// <summary>
-        ///     The Tif Extension (const). Value: ".tif"
-        /// </summary>
-        public const string TifExt = ".tif";
+        internal const string CifSeparator = "-";
 
         /// <summary>
         ///     The error, interface is null (const). Value: "Error: Interface is Null."
@@ -365,19 +214,5 @@ namespace Imaging
         ///     The general processing error (const). Value: "An error occurred while processing the image."
         /// </summary>
         public const string GeneralProcessingError = "An error occurred while processing the image.";
-
-        /// <summary>
-        ///     The File Appendix
-        /// </summary>
-        public static readonly List<string> Appendix = 
-
-        [
-            JpgExt,
-            JpegExt,
-            PngExt,
-            BmpExt,
-            GifExt,
-            TifExt
-        ];
     }
 }

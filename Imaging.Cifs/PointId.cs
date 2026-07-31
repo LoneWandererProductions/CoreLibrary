@@ -12,7 +12,6 @@
 // ReSharper disable ArrangeObjectCreationWhenTypeEvident
 // ReSharper disable UnusedMember.Global
 
-using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 

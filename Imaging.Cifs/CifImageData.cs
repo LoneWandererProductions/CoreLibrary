@@ -6,10 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace Imaging.Cifs
 {
@@ -36,9 +33,9 @@ namespace Imaging.Cifs
 
             for (var i = 2; i < parts.Count; i++)
             {
-                if (parts[i].Contains(ImagingResources.IntervalSplitter))
+                if (parts[i].Contains(CifResources.IntervalSplitter))
                 {
-                    var lst = parts[i].Split(ImagingResources.CifSeparator).ToList();
+                    var lst = parts[i].Split(CifResources.CifSeparator).ToList();
                     var sequence = GetStartEndPoint(lst);
 
                     if (sequence == null)

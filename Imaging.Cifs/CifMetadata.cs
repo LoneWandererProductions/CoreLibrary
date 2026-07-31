@@ -6,9 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
-
 namespace Imaging.Cifs
 {
     /// <summary>
@@ -29,7 +26,7 @@ namespace Imaging.Cifs
                 {
                     Height = height,
                     Width = width,
-                    Compressed = parts[2] == ImagingResources.CifCompressed,
+                    Compressed = parts[2] == CifResources.CifCompressed,
                     CheckSum = checkSum
                 };
             }

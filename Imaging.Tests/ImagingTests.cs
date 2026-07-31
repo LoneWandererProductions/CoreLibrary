@@ -499,7 +499,7 @@ namespace Imaging.Tests
 
             //var clean slate
             image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
-            btm = image.ToBitmap();
+            btm = image!.ToBitmap();
 
             //check if our system can also handle non compressed files!
             data = CifProcessing.ConvertToCifFromBitmap(btm);

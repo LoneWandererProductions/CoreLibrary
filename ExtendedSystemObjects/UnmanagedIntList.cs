@@ -392,7 +392,7 @@ namespace ExtendedSystemObjects
         public Span<int> AsSpan()
         {
             EnsureNotDisposed();
-            // Fix: Use 'Length' instead of 'Capacity'
+            // Use 'Length' instead of 'Capacity'
             // to prevent access to uninitialized memory.
             return new Span<int>(_ptr, Length);
         }

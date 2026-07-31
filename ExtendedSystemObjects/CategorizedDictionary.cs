@@ -277,7 +277,7 @@ namespace ExtendedSystemObjects
         /// <returns>True if success.</returns>
         public bool SetCategory(TK key, string newCategory)
         {
-            // Fix: Normalize input category to ensure consistency with Add()
+            // Normalize input category to ensure consistency with Add()
             newCategory = NormalizeCategory(newCategory);
 
             _lock.EnterWriteLock();
@@ -321,7 +321,7 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                // Fix: Must snapshot keys inside the lock to allow safe iteration outside
+                // Must snapshot keys inside the lock to allow safe iteration outside
                 return new List<string>(_categories.Keys);
             }
             finally { _lock.ExitReadLock(); }
@@ -340,7 +340,7 @@ namespace ExtendedSystemObjects
             {
                 if (_categories.TryGetValue(category, out var set))
                 {
-                    // Fix: Must snapshot the HashSet to allow safe iteration outside
+                    // Must snapshot the HashSet to allow safe iteration outside
                     return new List<TK>(set);
                 }
 
@@ -360,7 +360,7 @@ namespace ExtendedSystemObjects
             _lock.EnterReadLock();
             try
             {
-                // Fix: Must snapshot keys inside the lock
+                // Must snapshot keys inside the lock
                 return new List<TK>(_data.Keys);
             }
             finally { _lock.ExitReadLock(); }

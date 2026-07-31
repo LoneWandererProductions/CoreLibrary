@@ -11,6 +11,9 @@ using System.Windows.Media.Imaging;
 
 namespace Imaging.Gifs
 {
+    /// <summary>
+    /// Shared methods for gif handling.
+    /// </summary>
     internal static class ImageGifHelper
     {
         /// <summary>

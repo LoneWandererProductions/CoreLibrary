@@ -6,10 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using DataFormatter;
 using ExtendedSystemObjects;
 
@@ -98,7 +95,7 @@ namespace Imaging.Cifs
 
             foreach (var (converter, startLine, endLine) in ranges)
             {
-                csvData.AddRange(CsvHandler.ReadCsvRange(path, ImagingResources.Separator, converter, startLine,
+                csvData.AddRange(CsvHandler.ReadCsvRange(path, CifResources.Separator, converter, startLine,
                     endLine));
             }
 
@@ -149,7 +146,7 @@ namespace Imaging.Cifs
             {
                 imageHeight.ToString(),
                 imageWidth.ToString(),
-                ImagingResources.CifUnCompressed,
+                CifResources.CifUnCompressed,
                 (imageHeight * imageWidth).ToString()
             };
 
@@ -190,7 +187,7 @@ namespace Imaging.Cifs
             {
                 imageHeight.ToString(),
                 imageWidth.ToString(),
-                ImagingResources.CifCompressed,
+                CifResources.CifCompressed,
                 (imageHeight * imageWidth).ToString()
             };
 
@@ -218,7 +215,7 @@ namespace Imaging.Cifs
                 {
                     var start = sortedList[startS];
                     var end = sortedList[endS];
-                    var cache = string.Concat(start, ImagingResources.CifSeparator, end);
+                    var cache = string.Concat(start, CifResources.CifSeparator, end);
                     subChild.Add(cache);
 
                     var range = new List<int>(sortedList.GetRange(startS, endS - startS));

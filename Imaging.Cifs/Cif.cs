@@ -11,11 +11,8 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using Imaging.Interfaces;
+using Imaging.Cifs.Interfaces;
 
 namespace Imaging.Cifs
 {
@@ -50,12 +47,12 @@ namespace Imaging.Cifs
         {
             if (imageFormat == null)
             {
-                throw new ArgumentNullException(nameof(imageFormat), ImagingResources.ErrorInterface);
+                throw new ArgumentNullException(nameof(imageFormat), CifResources.ErrorInterface);
             }
 
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException(ImagingResources.ErrorPath, nameof(path));
+                throw new ArgumentException(CifResources.ErrorPath, nameof(path));
             }
 
             var cif = imageFormat.GetCif(path);
@@ -78,7 +75,7 @@ namespace Imaging.Cifs
         {
             if (image == null)
             {
-                throw new ArgumentNullException(nameof(image), ImagingResources.ErrorImage);
+                throw new ArgumentNullException(nameof(image), CifResources.ErrorImage);
             }
 
             if (imageFormat != null)
@@ -291,7 +288,7 @@ namespace Imaging.Cifs
         {
             if (id < 0 || id > Height * Width)
             {
-                throw new ArgumentOutOfRangeException(nameof(id), ImagingResources.ErrorInterface);
+                throw new ArgumentOutOfRangeException(nameof(id), CifResources.ErrorInterface);
             }
 
             // Check if sorting is required and perform lazy loading
@@ -347,13 +344,13 @@ namespace Imaging.Cifs
 
             foreach (var (color, value) in CifImage)
             {
-                info = string.Concat(info, ImagingResources.Color, color, ImagingResources.Spacing);
+                info = string.Concat(info, CifResources.Color, color, CifResources.Spacing);
 
                 var sortedList = new List<int>(value);
 
                 for (var i = 0; i < value.Count - 1; i++)
                 {
-                    info = string.Concat(info, sortedList[i], ImagingResources.Indexer);
+                    info = string.Concat(info, sortedList[i], CifResources.Indexer);
                 }
 
                 info = string.Concat(info, sortedList[^1], Environment.NewLine);

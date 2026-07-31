@@ -12,7 +12,7 @@
 
 using System.Drawing;
 using DataFormatter;
-using Imaging.Interfaces;
+using Imaging.Cifs.Interfaces;
 
 //TODO Checksum in line 1. Max Numbers, custom exception class
 // check sum for repairs perhaps?

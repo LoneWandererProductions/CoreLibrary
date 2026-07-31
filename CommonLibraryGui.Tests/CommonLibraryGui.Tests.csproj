@@ -56,6 +56,7 @@
     <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\ImageCompare\ImageCompare.csproj" />
+    <ProjectReference Include="..\Imaging.Cifs\Imaging.Cifs.csproj" />
     <ProjectReference Include="..\InterOp\InterOp.csproj" />
     <ProjectReference Include="..\LightVector\LightVector.csproj" />
     <ProjectReference Include="..\Solaris\Solaris.csproj" />

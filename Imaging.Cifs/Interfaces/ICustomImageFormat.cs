@@ -9,10 +9,9 @@
 // ReSharper disable UnusedMemberInSuper.Global
 // ReSharper disable UnusedMember.Global
 
-using Imaging.Cifs;
 using System.Drawing;
 
-namespace Imaging.Interfaces
+namespace Imaging.Cifs.Interfaces
 {
     /// <summary>
     ///     Interface for Custom Image Format

@@ -96,7 +96,7 @@ namespace SqliteHelper
         /// <returns>Condition fulfilled</returns>
         private bool CheckNullability(string value, TableColumns convert)
         {
-            // Logic Fix: Valid if value exists OR if the column allows nulls (NOT NotNull).
+            // Logic Valid if value exists OR if the column allows nulls (NOT NotNull).
             if (!string.IsNullOrEmpty(value) || !convert.NotNull)
             {
                 return true;
