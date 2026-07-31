@@ -12,7 +12,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using ExtendedSystemObjects;
 using Imaging.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -239,7 +238,7 @@ namespace Imaging.Gifs
             //collect and convert all images
             var btm = lst.ConvertAll(ImageStream.GetOriginalBitmap);
 
-            if (btm.IsNullOrEmpty())
+            if (btm == null || btm.Count == 0)
             {
                 return;
             }
@@ -258,7 +257,7 @@ namespace Imaging.Gifs
             //collect and convert all images
             var btm = path.ConvertAll(ImageStream.GetOriginalBitmap);
 
-            if (btm.IsNullOrEmpty())
+            if (btm == null || btm.Count == 0)
             {
                 return;
             }

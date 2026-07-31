@@ -16,8 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataFormatter\DataFormatter.csproj" />
-    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\Imaging.Texture\Imaging.Texture.csproj" />
     <ProjectReference Include="..\Mathematics.Constants\Mathematics.Constants.csproj" />
     <ProjectReference Include="..\RenderEngine\RenderEngine.csproj" />
