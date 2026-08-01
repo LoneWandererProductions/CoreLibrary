@@ -200,16 +200,6 @@ namespace Imaging
         internal const string Spacing = " : ";
 
         /// <summary>
-        ///     The Separator (const). Value:  ','.
-        /// </summary>
-        internal const char Separator = ',';
-
-        /// <summary>
-        ///     The Interval Splitter (const). Value: "-".
-        /// </summary>
-        internal const string IntervalSplitter = "-";
-
-        /// <summary>
         ///     Separator (const). Value: " , ".
         /// </summary>
         internal const string Indexer = " , ";
