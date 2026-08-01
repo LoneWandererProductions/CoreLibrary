@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects.Helper
+ * PROJECT:     Extended.Unmanaged.Helper
  * FILE:        EntryGeneric.cs
  * PURPOSE:     Helper Struct for UnmanagedMap.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,7 +10,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace ExtendedSystemObjects.Helper
+namespace Extended.Unmanaged.Helper
 {
     /// <summary>
     ///     Generic entry structure for a key-value pair.

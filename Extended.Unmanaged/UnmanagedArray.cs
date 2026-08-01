@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Unmanaged
  * FILE:        IUnmanagedArray.cs
  * PURPOSE:     A high-performance array implementation with reduced features. Limited to unmanaged Types, very similar to IntArray.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,14 +10,12 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using ExtendedSystemObjects.Helper;
-using ExtendedSystemObjects.Interfaces;
+using Extended.Unmanaged.Helper;
+using Extended.Unmanaged.Interfaces;
 
-namespace ExtendedSystemObjects
+namespace Extended.Unmanaged
 {
     /// <inheritdoc cref="IDisposable" />
     /// <summary>

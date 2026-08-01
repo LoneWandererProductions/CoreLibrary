@@ -7,6 +7,8 @@
  */
 
 using System.Diagnostics;
+using Extended.Unmanaged;
+using Extended.Unmanaged.Interfaces;
 using ExtendedSystemObjects;
 using ExtendedSystemObjects.Interfaces;
 

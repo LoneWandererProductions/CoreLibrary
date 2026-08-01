@@ -1,33 +1,33 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects.Helper
- * FILE:        EntryGenericEnumerator.cs
- * PURPOSE:     Custom enumerator for my unsage ManagedMap
+ * PROJECT:     Extended.Unmanaged.Helper
+ * FILE:        ExtendedSystemObjects.Helper/Enumerator.cs
+ * PURPOSE:     Since I use an older .net Version I need to use this helper for my arrays and lists. All unmanaged.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 using System.Collections;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
-namespace ExtendedSystemObjects.Helper
+namespace Extended.Unmanaged.Helper
 {
     /// <inheritdoc />
     /// <summary>
-    /// Generic enumerator for iterating over entries in a collection of type <see cref="T:ExtendedSystemObjects.Helper.EntryGeneric`1" />.
+    ///     Enumerator Helper
     /// </summary>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
-    /// <seealso cref="!:System.Collections.Generic.IEnumerator&lt;(System.Int32, TValue)&gt;" />
-    public unsafe struct EntryGenericEnumerator<TValue> : IEnumerator<(int, TValue)> where TValue : unmanaged
+    /// <typeparam name="T">Generic Type, must be unmanaged</typeparam>
+    /// <seealso cref="T:System.Collections.Generic.IEnumerator`1" />
+    public unsafe struct Enumerator<T> : IEnumerator<T> where T : unmanaged
     {
         /// <summary>
-        ///     The entries
+        ///     The data
         /// </summary>
-        private readonly EntryGeneric<TValue>* _entries;
+        private readonly T* _data;
 
         /// <summary>
-        ///     The capacity
+        ///     The length
         /// </summary>
-        private readonly int _capacity;
+        private readonly int _length;
 
         /// <summary>
         ///     The index
@@ -35,26 +35,31 @@ namespace ExtendedSystemObjects.Helper
         private int _index;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EntryGenericEnumerator{TValue}" /> struct.
+        ///     Initializes a new instance of the <see cref="Enumerator{T}" /> struct.
         /// </summary>
-        /// <param name="entries">The entries.</param>
-        /// <param name="capacity">The capacity.</param>
-        public EntryGenericEnumerator(EntryGeneric<TValue>* entries, int capacity)
+        /// <param name="data">The data.</param>
+        /// <param name="length">The length.</param>
+        public Enumerator(T* data, int length)
         {
-            _entries = entries;
-            _capacity = capacity;
+            _data = data;
+            _length = length;
             _index = -1;
-            Current = default;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets the current.
         /// </summary>
         /// <value>
         ///     The current.
         /// </value>
-        public (int, TValue) Current { get; private set; }
+        public readonly T Current
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _data[_index];
+        }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Gets the current.
         /// </summary>
@@ -63,6 +68,7 @@ namespace ExtendedSystemObjects.Helper
         /// </value>
         readonly object IEnumerator.Current => Current;
 
+        /// <inheritdoc />
         /// <summary>
         ///     Advances the enumerator to the next element of the collection.
         /// </summary>
@@ -70,34 +76,29 @@ namespace ExtendedSystemObjects.Helper
         ///     <see langword="true" /> if the enumerator was successfully advanced to the next element; <see langword="false" />
         ///     if the enumerator has passed the end of the collection.
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            while (++_index < _capacity)
-            {
-                var entry = _entries[_index];
-                if (entry.used != SharedResources.Occupied)
-                {
-                    continue;
-                }
-
-                Current = (entry.key, entry.value);
-                return true;
-            }
-
-            return false;
+            return ++_index < _length;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Sets the enumerator to its initial position, which is before the first element in the collection.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reset()
         {
             _index = -1;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public readonly void Dispose() { }
+        public readonly void Dispose()
+        {
+            /* no resources to clean */
+        }
     }
 }

@@ -7,6 +7,7 @@
  */
 
 using System.Runtime.InteropServices;
+using Extended.Unmanaged.Helper;
 using ExtendedSystemObjects.Helper;
 
 namespace Common.ExtendedObject.Tests

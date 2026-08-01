@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Unmanaged
  * FILE:        UnmanagedList.cs
  * PURPOSE:     A dynamic array implementation that manages its own unmanaged memory, allowing for high-performance operations on large datasets without the overhead of garbage collection.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,14 +10,12 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using ExtendedSystemObjects.Helper;
-using ExtendedSystemObjects.Interfaces;
+using Extended.Unmanaged.Helper;
+using Extended.Unmanaged.Interfaces;
 
-namespace ExtendedSystemObjects
+namespace Extended.Unmanaged
 {
     /// <inheritdoc cref="IDisposable" />
     /// <summary>

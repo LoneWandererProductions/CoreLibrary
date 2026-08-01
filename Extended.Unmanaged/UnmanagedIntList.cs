@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Unmanaged
  * FILE:        UnmanagedIntList.cs
  * PURPOSE:     Provides a high-performance list implementation for integer values using unmanaged memory.
  *              Designed for scenarios requiring manual memory control.
@@ -13,17 +13,15 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable MemberCanBeInternal
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using ExtendedSystemObjects.Helper;
-using ExtendedSystemObjects.Interfaces;
+using Extended.Unmanaged.Helper;
+using Extended.Unmanaged.Interfaces;
 
-namespace ExtendedSystemObjects
+namespace Extended.Unmanaged
 {
     /// <inheritdoc cref="IUnmanagedArray" />
     /// <summary>

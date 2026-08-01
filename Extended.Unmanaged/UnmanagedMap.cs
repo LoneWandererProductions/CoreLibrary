@@ -1,17 +1,11 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Unmanaged
  * FILE:        UnmanagedMap.cs
  * PURPOSE:     A high-performance unmanaged key-value store similar to a Dictionary.
  *              Unlike typical dictionaries, entries are marked as deleted (tombstoned)
  *              and only physically removed during explicit compaction, improving
  *              insertion and deletion performance by avoiding frequent reallocations.
-<<<<<<< HEAD
- *              Optimized for integer keys and unmanaged value types, with open addressing and linear probing.
- *              Not thread-safe.
- *              Second it is not good with bigger datatypes since it has no separate container for values and uses open addressing, so it is best used with small structs or primitive types as values.
-=======
->>>>>>> f0801e635c3ba81f09f1576542ea953bd75ade08
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -20,15 +14,13 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable OutParameterValueIsAlwaysDiscarded.Global
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using ExtendedSystemObjects.Helper;
+using Extended.Unmanaged.Helper;
 
-namespace ExtendedSystemObjects
+namespace Extended.Unmanaged
 {
     /// <inheritdoc cref="IEnumerable" />
     /// <summary>

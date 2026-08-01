@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects.Helper
+ * PROJECT:     Extended.Unmanaged.Helper
  * FILE:        ExtendedSystemObjects.Helper/UnmanagedMemoryHelper.cs
  * PURPOSE:     Provides helper methods for low-level unmanaged memory operations.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -8,11 +8,10 @@
 
 // ReSharper disable UnusedMember.Global
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ExtendedSystemObjects.Helper
+namespace Extended.Unmanaged.Helper
 {
     /// <summary>
     ///     Provides helper methods for allocating, reallocating, and clearing unmanaged memory blocks.

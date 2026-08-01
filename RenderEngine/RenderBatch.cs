@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Extended.Unmanaged;
 using ExtendedSystemObjects;
 
 namespace RenderEngine

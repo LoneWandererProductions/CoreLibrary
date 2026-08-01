@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects.Interfaces
+ * PROJECT:     Extended.Unmanaged.Interfaces
  * FILE:        ExtendedSystemObjects.Interfaces/IUnmanagedArray.cs
  * PURPOSE:     An Abstraction for UnmanagedArray and IntArray to make both exchangeable.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,9 +9,7 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMemberInSuper.Global
 
-using System;
-
-namespace ExtendedSystemObjects.Interfaces
+namespace Extended.Unmanaged.Interfaces
 {
     /// <inheritdoc />
     /// <summary>

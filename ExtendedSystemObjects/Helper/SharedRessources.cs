@@ -47,20 +47,5 @@ namespace ExtendedSystemObjects.Helper
         ///     Separator(const). Value: " , ".
         /// </summary>
         internal const string Separator = " , ";
-
-        /// <summary>
-        ///     The empty flag.
-        /// </summary>
-        internal const byte Empty = 0;
-
-        /// <summary>
-        ///     The occupied flag.
-        /// </summary>
-        internal const byte Occupied = 1;
-
-        /// <summary>
-        ///     The tombstone flag.
-        /// </summary>
-        internal const byte Tombstone = 2;
     }
 }
