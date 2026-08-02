@@ -63,19 +63,17 @@ namespace Core.Apps.Rules
         {
             var results = new List<Diagnostic>();
 
-            // Regex to find constant or static readonly declarations
-            // Matches e.g.: public const int Foo = 1; or private static readonly string Bar = "X";
-            var declRegex = new Regex(@"\b(?:const|static\s+readonly)\s+\w[\w<>,\s]*\s+(?<name>\w+)\s*=",
+            // Added \[\] for arrays, \? for nullables, and \. for fully qualified namespaces
+            var declRegex = new Regex(@"\b(?:const|static\s+readonly)\s+[\w<>\[\]\?\.\s]+\s+(?<name>\w+)\s*=",
                 RegexOptions.Compiled);
 
-            // Collect all declarations
-            var declarations = new List<(string? FilePath, int Line, string Name)>();
+            var declarations = new List<(string FilePath, int Line, string Name)>();
 
+            // Collect all declarations
             foreach (var kvp in allFiles)
             {
                 var filePath = kvp.Key;
-                var content = kvp.Value;
-                var lines = content.Split('\n');
+                var lines = kvp.Value.Split('\n');
 
                 for (var i = 0; i < lines.Length; i++)
                 {
@@ -97,9 +95,11 @@ namespace Core.Apps.Rules
                     var lines = kvp.Value.Split('\n');
                     for (var i = 0; i < lines.Length; i++)
                     {
-                        // Skip the declaration line itself
+                        // Skip the exact line where the constant is declared
                         if (kvp.Key == decl.FilePath && i == decl.Line - 1) continue;
 
+                        // If the constant is in a static class, it's often called via ClassName.ConstantName.
+                        // We use \b to ensure we match whole words, but we must be careful of name collisions.
                         usageCount += Regex.Matches(lines[i], $@"\b{Regex.Escape(decl.Name)}\b").Count;
                     }
                 }
