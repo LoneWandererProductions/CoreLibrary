@@ -7,7 +7,7 @@
 */
 
 using System.Diagnostics;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 using FileHandler;
 
 namespace CommonLibrary.Tests

@@ -9,15 +9,12 @@
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable MemberCanBeInternal
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using ExtendedSystemObjects.Helper;
-using ExtendedSystemObjects.Interfaces;
+using Extended.Extensions.Helper;
+using Extended.Extensions.Interfaces;
 
-namespace ExtendedSystemObjects
+namespace Extended.Extensions
 {
     /// <summary>
     ///     The dictionary extensions class.

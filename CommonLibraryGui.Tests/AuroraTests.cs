@@ -9,8 +9,8 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using ExtendedSystemObjects;
-using ExtendedSystemObjects.Helper;
+using Extended.Extensions;
+using Extended.Extensions.Helper;
 using ImageCompare;
 using NUnit.Framework;
 using Solaris;

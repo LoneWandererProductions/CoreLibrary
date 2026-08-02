@@ -9,11 +9,9 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
 
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace ExtendedSystemObjects
+namespace Extended.Extensions
 {
     /// <summary>
     /// Provides allocation-free, high-performance LINQ-like extension methods for <see cref="Span{T}"/> and <see cref="ReadOnlySpan{T}"/>.

@@ -11,12 +11,11 @@
  *     and conversions between jagged and rectangular arrays using unsafe code for maximum performance.
  */
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using ExtendedSystemObjects.Helper;
+using Extended.Extensions.Helper;
 
-namespace ExtendedSystemObjects
+namespace Extended.Extensions
 {
     /// <summary>
     ///     Provides utility extensions for 2D arrays (`[,]`) and jagged arrays (`[][]`),

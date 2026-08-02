@@ -7,7 +7,7 @@
  */
 
 using System;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 
 namespace ImageCompare
 {

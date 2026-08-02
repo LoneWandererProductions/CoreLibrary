@@ -13,7 +13,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 using Imaging;
 using Imaging.Cifs;
 using Imaging.Enums;

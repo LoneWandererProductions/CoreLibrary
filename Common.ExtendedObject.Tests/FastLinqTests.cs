@@ -8,7 +8,7 @@
  */
 
 using System.Diagnostics;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 
 namespace Common.ExtendedObject.Tests
 {

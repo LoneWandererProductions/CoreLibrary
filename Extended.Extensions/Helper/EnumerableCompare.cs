@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects.Helper
- * FILE:        ExtendedSystemObjects.Helper/EnumerableCompare.cs
+ * PROJECT:     Extended.Extensions.Helper
+ * FILE:        Helper/EnumerableCompare.cs
  * PURPOSE:     Compare operator, for now mostly Enumerable
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace ExtendedSystemObjects.Helper
+namespace Extended.Extensions.Helper
 {
     /// <summary>
     ///     Compare conditions for lists

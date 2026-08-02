@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
+    <ProjectReference Include="..\Extended.Extensions\Extended.Extensions.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\Imaging.Cifs\Imaging.Cifs.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />

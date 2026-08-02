@@ -7,7 +7,7 @@
  */
 
 using System.Diagnostics;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 using Mathematics;
 
 namespace CommonLibrary.Tests

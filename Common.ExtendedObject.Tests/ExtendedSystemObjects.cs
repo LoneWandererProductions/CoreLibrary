@@ -11,9 +11,9 @@
 #pragma warning disable 649
 
 using System.Diagnostics;
-using ExtendedSystemObjects;
-using ExtendedSystemObjects.Helper;
-using ExtendedSystemObjects.Interfaces;
+using Extended.Extensions;
+using Extended.Extensions.Helper;
+using Extended.Extensions.Interfaces;
 using Mathematics;
 
 namespace Common.ExtendedObject.Tests

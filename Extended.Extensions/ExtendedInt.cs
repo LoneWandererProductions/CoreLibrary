@@ -8,9 +8,7 @@
 
 // ReSharper disable UnusedMember.Global
 
-using System;
-
-namespace ExtendedSystemObjects
+namespace Extended.Extensions
 {
     /// <summary>
     ///     Some extensions for int

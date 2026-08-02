@@ -17,7 +17,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 using FileHandler;
 using Imaging;
 using Imaging.Enums;

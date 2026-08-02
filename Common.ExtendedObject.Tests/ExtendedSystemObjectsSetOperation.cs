@@ -6,7 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using ExtendedSystemObjects;
+using Extended.Extensions;
 
 namespace Common.ExtendedObject.Tests
 {

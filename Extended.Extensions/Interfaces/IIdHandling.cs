@@ -6,7 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace ExtendedSystemObjects.Interfaces
+namespace Extended.Extensions.Interfaces
 {
     /// <summary>
     ///     Interface Id handling, for better handling of Dictionaries and list elements

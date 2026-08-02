@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Extended.Unmanaged\Extended.Unmanaged.csproj" />
     <ProjectReference Include="..\Imaging.Texture\Imaging.Texture.csproj" />
     <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
   </ItemGroup>

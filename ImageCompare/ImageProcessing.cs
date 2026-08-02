@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 using Imaging;
 
 namespace ImageCompare

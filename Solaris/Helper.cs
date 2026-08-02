@@ -13,7 +13,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 using Imaging;
 using Solaris.Solaris;
 using Brushes = System.Drawing.Brushes;

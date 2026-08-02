@@ -8,7 +8,7 @@
  */
 
 using Core.StateExecutive.Interfaces;
-using ExtendedSystemObjects;
+using Extended.Extensions;
 
 namespace Core.StateExecutive.Builder
 {

@@ -8,7 +8,6 @@
 
 using System.Diagnostics;
 using Extended.Unmanaged;
-using ExtendedSystemObjects;
 
 namespace Common.ExtendedObject.Tests
 {
