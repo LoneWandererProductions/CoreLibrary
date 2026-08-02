@@ -37,6 +37,5 @@ namespace Extended.Extensions.Helper
         ///     Error no value found (const). Value: "Values not found in the dictionary".
         /// </summary>
         internal const string ErrorNoValueFound = "Values not found in the dictionary";
-
     }
 }
