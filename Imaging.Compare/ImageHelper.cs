@@ -1,16 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageHelper.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageHelper.cs
  * PURPOSE:     Some basic helper methods to wire in some other stuff
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Drawing;
-using System.IO;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Image Helper methods
@@ -68,6 +66,41 @@ namespace ImageCompare
                 ImageOne = AnalysisProcessing.GetImageDetails(first).GetDetails(),
                 ImageTwo = AnalysisProcessing.GetImageDetails(second).GetDetails()
             };
+        }
+
+        /// <summary>
+        /// Gets the color count.
+        /// </summary>
+        /// <param name="image">The image.</param>
+        /// <returns>
+        /// Color and Counts sorted by most first
+        /// </returns>
+        internal static Dictionary<Color, int> GetColorCount(Bitmap? image)
+        {
+            var colorCount = new Dictionary<Color, int>();
+
+            // 1. Guard against null image input
+            if (image == null)
+            {
+                return colorCount;
+            }
+
+            // 2. Iterate through every pixel in the bitmap
+            for (var x = 0; x < image.Width; x++)
+            {
+                for (var y = 0; y < image.Height; y++)
+                {
+                    var color = image.GetPixel(x, y);
+
+                    // Increment the count for this color
+                    colorCount[color] = colorCount.GetValueOrDefault(color) + 1;
+                }
+            }
+
+            // 3. Sort the dictionary by pixel frequency in descending order
+            return colorCount
+                .OrderByDescending(kv => kv.Value)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
         }
     }
 }

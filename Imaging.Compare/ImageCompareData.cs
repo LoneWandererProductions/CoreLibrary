@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageCompareData.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageCompareData.cs
  * PURPOSE:     Compare results of 2 images
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -9,7 +9,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBeInternal
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Compare results between two images

@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/IImageComparer.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        IImageComparer.cs
  * PURPOSE:     Interface for Similar Image and duplicate Images search
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.codeproject.com/Articles/374386/Simple-image-comparison-in-NET
@@ -9,9 +9,7 @@
 
 // ReSharper disable UnusedMemberInSuper.Global
 
-using System.Collections.Generic;
-
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Image Compare Interface

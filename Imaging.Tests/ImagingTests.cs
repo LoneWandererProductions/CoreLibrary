@@ -10,8 +10,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using FileHandler;
-using ImageCompare;
 using Imaging.Cifs;
+using Imaging.Compare;
 using Imaging.Helpers;
 using Mathematics;
 

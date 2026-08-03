@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageDuplication.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageDuplication.cs
  * PURPOSE:     Find Duplicate Images
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.codeproject.com/Articles/374386/Simple-image-comparison-in-NET
@@ -10,19 +10,14 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using Extended.Extensions;
 using FileHandler;
-using Imaging;
 using Imaging.Enums;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Duplicate Images

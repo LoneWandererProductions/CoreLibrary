@@ -1,15 +1,13 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageComparer.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageComparer.cs
  * PURPOSE:     ImageCompare Implementation
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.codeproject.com/Articles/374386/Simple-image-comparison-in-NET
  */
 
-using System.Collections.Generic;
-
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <inheritdoc />
     /// <summary>

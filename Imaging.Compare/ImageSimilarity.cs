@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageSimilarity.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageSimilarity.cs
  * PURPOSE:     Find Similar Images
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * SOURCES:     https://www.codeproject.com/Articles/374386/Simple-image-comparison-in-NET
@@ -10,17 +10,13 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using Extended.Extensions;
 using FileHandler;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     internal static class ImageSimilarity
     {

@@ -1,25 +1,18 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/AnalysisProcessing.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        AnalysisProcessing.cs
  * PURPOSE:     Basic Processing of Images, in this case mostly for specific Image Analysis
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Extended.Extensions;
-using Imaging;
-using Imaging.Cifs;
 using Imaging.Enums;
 using Imaging.Interfaces;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Image Analysis
@@ -169,8 +162,7 @@ namespace ImageCompare
         /// <param name="image">The color Dictionary.</param>
         internal static Dictionary<Color, int> GetColors(Bitmap? image)
         {
-            var cif = new Cif(image);
-            return cif.ColorCount;
+            return ImageHelper.GetColorCount(image);
         }
 
         /// <summary>

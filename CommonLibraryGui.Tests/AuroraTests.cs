@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using Extended.Extensions;
 using Extended.Extensions.Helper;
-using ImageCompare;
+using Imaging.Compare;
 using NUnit.Framework;
 using Solaris;
 

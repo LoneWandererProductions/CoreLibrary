@@ -1,25 +1,21 @@
 ﻿/*
-* COPYRIGHT:   See COPYING in the top level directory
-* PROJECT:     ImageCompare
-* FILE:        ImageCompare/ImageSimilar.cs
-* PURPOSE:     Struct to Compare if Images are Similar
-* PROGRAMMER:  Peter Geinitz (Wayfarer)
-*/
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageColor.cs
+ * PURPOSE:     Struct to Search for similar Colors
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
 
-using System;
-using System.Diagnostics;
 using Extended.Extensions;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IComparable" />
     /// <summary>
-    ///     Struct for checking duplicate Images
+    ///     Helper Struct for the Color and Image Analysis
     /// </summary>
     /// <seealso cref="T:System.IComparable`1" />
-    [DebuggerDisplay(
-        "R = {R}, G = {G}, B = {B}, Id = {Id}")]
-    internal readonly struct ImageSimilar : IComparable<ImageSimilar>
+    internal readonly struct ImageColor : IComparable<ImageColor>, IEquatable<ImageColor>
     {
         /// <summary>
         ///     Determines whether the specified <see cref="object" />, is equal to this instance.
@@ -30,7 +26,7 @@ namespace ImageCompare
         /// </returns>
         public override bool Equals(object obj)
         {
-            return obj is ImageSimilar other && Equals(other);
+            return obj is ImageColor other && Equals(other);
         }
 
         /// <summary>
@@ -41,16 +37,19 @@ namespace ImageCompare
         /// </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Image);
+            return HashCode.Combine(R, B, G);
         }
 
         /// <summary>
-        ///     Gets the image Color Values.
+        ///     Converts to string.
         /// </summary>
-        /// <value>
-        ///     The image.
-        /// </value>
-        internal byte[,] Image { get; init; }
+        /// <returns>
+        ///     A <see cref="string" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Concat(R, ImageResources.Separator, G, ImageResources.Separator, G);
+        }
 
         /// <summary>
         ///     Gets the average Red Values.
@@ -77,42 +76,22 @@ namespace ImageCompare
         internal int G { get; init; }
 
         /// <summary>
-        ///     Gets or sets the identifier.
+        ///     Gets or sets the threshold.
         /// </summary>
         /// <value>
-        ///     The identifier.
+        ///     The threshold.
         /// </value>
-        internal int Id { get; init; }
+        internal int Threshold { get; init; }
 
         /// <summary>
-        ///     Gets the hash.
+        ///     Gets or sets the path.
         /// </summary>
         /// <value>
-        ///     The hash.
+        ///     The path.
         /// </value>
-        public byte[] Hash { get; init; }
+        internal string Path { get; init; }
 
-        /// <summary>
-        ///     Checks if Image is equal to another
-        ///     Here we only check the Color values
-        /// </summary>
-        /// <param name="other">Compares it to another SimImage Object</param>
-        /// <returns>
-        ///     True if this Object is equal to <paramref name="other" /> else false"/>.
-        /// </returns>
-        public bool Equals(ImageSimilar other)
-        {
-            //if (Hash == null || other.Hash == null)
-            //{
-            //    return false;
-            //}
-
-            return other.R.Interval(R, ImageResources.ColorThreshold) &&
-                   other.G.Interval(G, ImageResources.ColorThreshold) &&
-                   other.B.Interval(B, ImageResources.ColorThreshold);
-        }
-
-        /// <inheritdoc />
+        /// <inheritdoc cref="IComparable" />
         /// <summary>
         ///     Compares the specified arrays.
         /// </summary>
@@ -120,29 +99,53 @@ namespace ImageCompare
         /// <returns>
         ///     Compare result to <paramref name="other" />.
         /// </returns>
-        public int CompareTo(ImageSimilar other)
+        public int CompareTo(ImageColor other)
         {
-            if (Image == null)
+            if (!other.R.Interval(R, Threshold))
             {
                 return 0;
             }
 
-            if (!other.R.Interval(R, ImageResources.ColorThreshold))
+            if (!other.G.Interval(G, Threshold))
             {
                 return 0;
             }
 
-            if (!other.G.Interval(G, ImageResources.ColorThreshold))
-            {
-                return 0;
-            }
-
-            if (!other.B.Interval(B, ImageResources.ColorThreshold))
+            if (!other.B.Interval(B, Threshold))
             {
                 return 0;
             }
 
             return 1;
+        }
+
+        /// <inheritdoc cref="IComparable" />
+        /// <summary>
+        ///     Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        ///     <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise,
+        ///     <see langword="false" />.
+        /// </returns>
+        public bool Equals(ImageColor other)
+        {
+            if (!other.R.Interval(R, Threshold))
+            {
+                return false;
+            }
+
+            if (!other.G.Interval(G, Threshold))
+            {
+                return false;
+            }
+
+            if (!other.B.Interval(B, Threshold))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -153,7 +156,7 @@ namespace ImageCompare
         /// <returns>
         ///     The result of the operator.
         /// </returns>
-        public static bool operator ==(ImageSimilar left, ImageSimilar right)
+        public static bool operator ==(ImageColor left, ImageColor right)
         {
             return left.Equals(right);
         }
@@ -166,7 +169,7 @@ namespace ImageCompare
         /// <returns>
         ///     The result of the operator.
         /// </returns>
-        public static bool operator !=(ImageSimilar left, ImageSimilar right)
+        public static bool operator !=(ImageColor left, ImageColor right)
         {
             return !(left == right);
         }

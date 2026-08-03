@@ -1,16 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageDuplicate.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageDuplicate.cs
  * PURPOSE:     Struct to Compare if Images are Duplicates
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Diagnostics;
 using Extended.Extensions;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <inheritdoc />
     /// <summary>

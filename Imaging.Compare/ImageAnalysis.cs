@@ -1,21 +1,17 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageAnalysis.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageAnalysis.cs
  * PURPOSE:     Some basic Tools to compare Images
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using Mathematics;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <inheritdoc />
     /// <summary>

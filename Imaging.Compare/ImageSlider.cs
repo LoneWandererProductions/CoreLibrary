@@ -1,17 +1,15 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageSlider.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageSlider.cs
  * PURPOSE:     Checks if an Image is contained in another image. Stuff like a cut out.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Drawing;
-using Imaging;
 using Mathematics;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Image Slider to check if Image is part of a smaller one

@@ -8,7 +8,7 @@
 
 using System.Diagnostics;
 using System.Drawing;
-using ImageCompare;
+using Imaging.Compare;
 
 namespace Imaging.Tests
 {

@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageResources.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageResources.cs
  * PURPOSE:     String Resources
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Basic Strings and Numbers

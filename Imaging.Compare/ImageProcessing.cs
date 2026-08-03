@@ -1,19 +1,15 @@
 ﻿/*
 * COPYRIGHT:   See COPYING in the top level directory
 * PROJECT:     ImageCompare
-* FILE:        ImageCompare/ImageProcessing.cs
+* FILE:        ImageProcessing.cs
 * PURPOSE:     Basic Processing of Images, in this case mostly for Similar Images
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Threading.Tasks;
 using Extended.Extensions;
-using Imaging;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Helper Class that handles the specific way to get the similarity of two Images
@@ -90,9 +86,9 @@ namespace ImageCompare
                 var pixel = dbm.GetPixel(x, y);
 
                 // Calculate grayscale value
-                var grayValue = (byte)((pixel.R * 0.299) + (pixel.G * 0.587) + (pixel.B * 0.114));
+                var grayValue = (byte)(pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114);
                 image[x, y] = grayValue; // Store grayscale value
-                hash[(y * ImageResources.DuplicateSize) + x] = grayValue; // Store grayscale value for hash
+                hash[y * ImageResources.DuplicateSize + x] = grayValue; // Store grayscale value for hash
 
                 // Accumulate RGB values based on grayscale contribution
                 r += pixel.R * 0.299;
@@ -143,10 +139,10 @@ namespace ImageCompare
             var pixel = (float)diff / ImageResources.MaxPixel * 100;
 
             var color = (float)
-                (((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor) +
-                 ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor) +
-                 ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
-                  ImageResources.MaxColor)) / 3 * 100;
+                ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor +
+                 (ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor +
+                 (ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
+                  ImageResources.MaxColor) / 3 * 100;
 
             return (pixel + color) / 2;
         }

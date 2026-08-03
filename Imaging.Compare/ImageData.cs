@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/ImageData.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        ImageData.cs
  * PURPOSE:     Simple Information Container for the Images
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -12,7 +12,7 @@
 
 using System.Diagnostics;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Container that holds all image Information

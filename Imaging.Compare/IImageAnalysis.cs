@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ImageCompare
- * FILE:        ImageCompare/IImageAnalysis.cs
+ * PROJECT:     ImageCompare.Compare
+ * FILE:        IImageAnalysis.cs
  * PURPOSE:     Interface for the Image Analysis Tools
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -9,12 +9,10 @@
 // ReSharper disable UnusedMemberInSuper.Global
 // ReSharper disable UnusedMember.Global
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using Mathematics;
 
-namespace ImageCompare
+namespace Imaging.Compare
 {
     /// <summary>
     ///     Interface Definitions
