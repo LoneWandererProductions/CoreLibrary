@@ -25,12 +25,10 @@ namespace Solaris
     /// </summary>
     internal static class Helper
     {
-        private static readonly ImageRender Render = new();
-
         /// <summary>
-        ///     Cache for thread-safe bitmap loading
+        /// The render
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Bitmap?> ImageCache = new();
+        private static readonly ImageRender Render = new();
 
         /// <summary>
         /// Generates the final image based on map and textures.
@@ -48,31 +46,14 @@ namespace Solaris
         {
             var background = new Bitmap(width * textureSize, height * textureSize);
 
-            if (map == null || textures == null)
-            {
-                return background;
-            }
+            if (map == null) return background; // Textures can be null now if we rely purely on globals
 
-            // 1. Safe Sequential Cache Hydration Pass (File I/O)
-            foreach (var texture in textures.Values)
+            // 1. Pre-warm local map textures into the high-speed integer cache
+            if (textures != null)
             {
-                if (string.IsNullOrWhiteSpace(texture.Path)) continue;
-
-                if (!ImageCache.ContainsKey(texture.Path))
+                foreach (var tex in textures.Values)
                 {
-                    try
-                    {
-                        var loadedBmp = Render.GetBitmapFile(texture.Path);
-                        if (loadedBmp != null)
-                        {
-                            ImageCache[texture.Path] = loadedBmp;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Trace.WriteLine(
-                            $"[CRITICAL] Failed to decode asset {texture.Path}: {ex.Message}");
-                    }
+                    TextureManager.RegisterTexture(tex);
                 }
             }
 
@@ -88,9 +69,11 @@ namespace Solaris
 
                 foreach (var textureId in tile.Value)
                 {
-                    if (!textures.TryGetValue(textureId, out var texture)) continue;
+                    // --> THE MAGIC HAPPENS HERE <--
+                    // Lightning fast integer lookup! No string hashing in the hot loop.
+                    var cachedImage = TextureManager.GetBitmapById(textureId);
 
-                    if (ImageCache.TryGetValue(texture.Path, out var cachedImage))
+                    if (cachedImage != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
                         tiles.Add(new Box { X = x, Y = y, Layer = texture.Layer, Image = cachedImage });
                     }
@@ -100,12 +83,10 @@ namespace Solaris
             var sortedTiles = tiles.ToList();
             sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-            // 3. THE GRAPHICS FIX: Open the graphics envelope ONCE for the whole map sheet
+            // 3. THE GRAPHICS FIX
             using var graph = Graphics.FromImage(background);
-            // Optional: Ensure a clean alpha base line across the canvas space
             graph.Clear(System.Drawing.Color.Transparent);
 
-            // Blit all 100 tiles rapidly into the open graphics pipeline context
             foreach (var slice in sortedTiles)
             {
                 if (slice.Image != null)
@@ -131,10 +112,10 @@ namespace Solaris
             using var graphics = Graphics.FromImage(bitmap);
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-            }
+                for (var x = 0; x < width; x++)
+                {
+                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+                }
 
             return bitmap.ToBitmapImage();
         }
@@ -157,16 +138,16 @@ namespace Solaris
             var count = 0;
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++, count++)
-            {
-                var rect = new RectangleF(
-                    (x * textureSize) + padding,
-                    (y * textureSize) + padding,
-                    textureSize - padding,
-                    textureSize - padding);
+                for (var x = 0; x < width; x++, count++)
+                {
+                    var rect = new RectangleF(
+                        (x * textureSize) + padding,
+                        (y * textureSize) + padding,
+                        textureSize - padding,
+                        textureSize - padding);
 
-                graphics.DrawString(count.ToString(), font, brush, rect);
-            }
+                    graphics.DrawString(count.ToString(), font, brush, rect);
+                }
 
             return bitmap.ToBitmapImage();
         }
@@ -290,7 +271,16 @@ namespace Solaris
             var x = position % width * textureSize;
             var y = position / width * textureSize;
 
-            var image = ImageCache.GetOrAdd(textures[tileId].Path, path => Render.GetBitmapFile(path));
+            // Attempt fast ID lookup first
+            var image = TextureManager.GetBitmapById(tileId);
+
+            // If it's not cached yet, register it and grab it
+            if (image == null && TextureManager.TryGetTexture(tileId, textures, out var texture))
+            {
+                TextureManager.RegisterTexture(texture);
+                image = TextureManager.GetBitmapById(tileId);
+            }
+
             return Render.CombineBitmap(layer, image, x, y);
         }
 

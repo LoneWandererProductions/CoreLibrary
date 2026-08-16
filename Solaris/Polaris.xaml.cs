@@ -316,6 +316,11 @@ namespace Solaris
             control.LayerThree.Source = newBmp?.ToBitmapImage();
         }
 
+        /// <summary>
+        /// Called when [remove display changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void OnRemoveDisplayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (Polaris)d;
