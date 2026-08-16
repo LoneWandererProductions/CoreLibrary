@@ -75,7 +75,8 @@ namespace CommonLibraryGui.Tests
                     },
                     {
                         2,
-                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
+                        // FIX: Changed Id = 1 to Id = 2
+                        new Texture { Layer = 1, Id = 2, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
                     }
                 },
                 AuroraTextureSize = 100,
@@ -149,7 +150,8 @@ namespace CommonLibraryGui.Tests
                     },
                     {
                         2,
-                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
+                        // FIX: Changed Id = 1 to Id = 2
+                        new Texture { Layer = 1, Id = 2, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
                     }
                 },
                 PolarisTextureSize = 100,
@@ -159,7 +161,7 @@ namespace CommonLibraryGui.Tests
 
             polaris.Initiate();
 
-            // Note: If BitmapLayerThree is managed by Polaris and needs disposal, 
+            // Note: If BitmapLayerThree is managed by Polaris and needs disposal,
             // do not dispose it here while it is in use.
             var blank = polaris.BitmapLayerThree;
 

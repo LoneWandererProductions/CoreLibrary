@@ -695,7 +695,7 @@ namespace Imaging.Texture
         /// <param name="edgeRgb">The edge RGB.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateAdvancedCellular(int width,
+        internal static RawTextureBuffer GenerateAdvancedCellular(int width,
             int height,
             int cellSize,
             int alpha,
@@ -794,7 +794,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateWarpedMapped(int width,
+        internal static RawTextureBuffer GenerateWarpedMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb,
@@ -860,7 +860,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateRidgedMapped(int width,
+        internal static RawTextureBuffer GenerateRidgedMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb,
@@ -893,7 +893,7 @@ namespace Imaging.Texture
                     for (var i = 0; i < octaves; i++)
                     {
                         // FSwap out GetNoise for SmoothNoise(double, double).
-                        // This fixes the RuntimeBinderException by passing doubles natively, and provides 
+                        // This fixes the RuntimeBinderException by passing doubles natively, and provides
                         // the bilinear interpolation required to form coherent plasma contours.
                         var rawNoise = (double)noiseGen.SmoothNoise(freqX, freqY);
 
@@ -959,7 +959,7 @@ namespace Imaging.Texture
         /// <param name="shadowB">The shadow b.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateFoliage(int width,
+        internal static RawTextureBuffer GenerateFoliage(int width,
             int height,
             int leafSize = 40,
             int alpha = 255,
@@ -1069,7 +1069,7 @@ namespace Imaging.Texture
         /// <param name="woodB">The wood b.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateTreeBark(int width,
+        internal static RawTextureBuffer GenerateTreeBark(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -1134,7 +1134,7 @@ namespace Imaging.Texture
         /// <param name="grainB">The grain b.</param>
         /// <returns>The generated raw texture buffer containing the wooden plank texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateWoodPlank(int width,
+        internal static RawTextureBuffer GenerateWoodPlank(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,

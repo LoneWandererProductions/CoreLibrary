@@ -335,7 +335,7 @@ namespace Common.ExtendedObject.Tests
 
             unmanaged.Dispose();
 
-            // 5. RELAX TOLERANCE: Native heap allocation variance can easily be 20x slower than the CLR 
+            // 5. RELAX TOLERANCE: Native heap allocation variance can easily be 20x slower than the CLR
             var maxAllowedTime = swList.ElapsedMilliseconds * 30;
             Assert.IsTrue(swUnmanaged.ElapsedMilliseconds <= maxAllowedTime,
                 $"UnmanagedIntList.Add is too slow. Actual: {swUnmanaged.ElapsedMilliseconds} ms, Allowed Max: {maxAllowedTime} ms.");

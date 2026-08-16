@@ -601,7 +601,7 @@ namespace Common.Images
                 var semaphore = new SemaphoreSlim(4);
                 var tasks = pics.Select(async kv =>
                 {
-                    await semaphore.WaitAsync();
+                    await semaphore.WaitAsync(token);
                     if (token.IsCancellationRequested)
                     {
                         semaphore.Release();

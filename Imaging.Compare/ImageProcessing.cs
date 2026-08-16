@@ -142,7 +142,7 @@ namespace Imaging.Compare
                 ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor +
                  (ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor +
                  (ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
-                  ImageResources.MaxColor) / 3 * 100;
+                 ImageResources.MaxColor) / 3 * 100;
 
             return (pixel + color) / 2;
         }

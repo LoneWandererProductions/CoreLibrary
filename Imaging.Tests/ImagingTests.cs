@@ -375,7 +375,7 @@ namespace Imaging.Tests
             Assert.AreEqual(3, dataList.Count, "The image details list did not return all expected files.");
 
             // 3. TEST SIMILARITY METRIC SAFE FROM MEMORY MUTATION
-            // Since the library scrambles/overwrites color profiles in batches, we locate the element 
+            // Since the library scrambles/overwrites color profiles in batches, we locate the element
             // that received the batch calculation similarity metric (typically the last or processed index)
             var similaritySample = dataList.FirstOrDefault(d => d.Similarity > 0);
             if (similaritySample != null)

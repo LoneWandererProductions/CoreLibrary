@@ -116,7 +116,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Optional: Clear map-specific caches if memory gets too high, 
+        /// Optional: Clear map-specific caches if memory gets too high,
         /// but keep global ones alive.
         /// </summary>
         public static void FlushNonGlobalCaches()

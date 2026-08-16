@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Texture
  * FILE:        TextureFactory.cs
- * PURPOSE:     Some predifined texture generation recipes and their associated configuration objects.
+ * PURPOSE:     Some predefined texture generation recipes and their associated configuration objects.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

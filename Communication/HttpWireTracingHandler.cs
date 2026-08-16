@@ -85,7 +85,7 @@ namespace Communication
 
                 // Buffer content safely so we don't disrupt the stream
                 await request.Content.LoadIntoBufferAsync(cancellationToken);
-                var reqBody = await request.Content.ReadAsStringAsync();
+                var reqBody = await request.Content.ReadAsStringAsync(cancellationToken);
                 if (!string.IsNullOrEmpty(reqBody))
                 {
                     sb.AppendLine("> ");
@@ -113,7 +113,7 @@ namespace Communication
                     sb.AppendLine($"< {header.Key}: {string.Join(", ", header.Value)}");
                 }
 
-                var resBody = await response.Content.ReadAsStringAsync();
+                var resBody = await response.Content.ReadAsStringAsync(cancellationToken);
                 if (!string.IsNullOrEmpty(resBody))
                 {
                     sb.AppendLine("< ");
