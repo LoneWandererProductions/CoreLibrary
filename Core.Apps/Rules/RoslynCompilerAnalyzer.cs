@@ -24,7 +24,7 @@ namespace Core.Apps.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
     /// <summary>
-    /// Analyzer that invokes the Roslyn compiler on a file or directory 
+    /// Analyzer that invokes the Roslyn compiler on a file or directory
     /// and captures all compiler errors and warnings in the application's native format.
     /// </summary>
     public sealed class RoslynCompilerAnalyzer : ICodeAnalyzer, ICommand

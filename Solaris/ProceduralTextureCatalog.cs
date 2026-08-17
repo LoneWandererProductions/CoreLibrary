@@ -6,22 +6,21 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 using Imaging.Texture;
 using RenderEngine;
 
 namespace Solaris
 {
     /// <summary>
-    /// Static class ProceduralTextureCatalog provides a catalog of built-in procedural textures with unique identifiers starting at 10000. 
+    /// Static class ProceduralTextureCatalog provides a catalog of built-in procedural textures with unique identifiers starting at 10000.
     /// It allows for the initialization and registration of these textures into high-speed memory for efficient rendering.
     /// </summary>
     public static class ProceduralTextureCatalog
     {
-        /// <summary>
-        /// The start identifier
-        /// </summary>
-        public const int StartId = 10000;
-
         /// <summary>
         /// ProceduralTile enum defines the IDs for built-in procedural textures starting at 10000.
         /// </summary>
@@ -48,9 +47,11 @@ namespace Solaris
 
             Register(ProceduralTile.LavaPool, TextureFactory.GenerateLavaPool(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.Cobblestone, TextureFactory.GenerateCobblestone(textureSize, textureSize), 0);
-            Register(ProceduralTile.MagicalEther, TextureFactory.GenerateMagicalEther(textureSize, textureSize, noise), 0);
+            Register(ProceduralTile.MagicalEther, TextureFactory.GenerateMagicalEther(textureSize, textureSize, noise),
+                0);
             Register(ProceduralTile.CrackedIce, TextureFactory.GenerateCrackedIce(textureSize, textureSize), 0);
-            Register(ProceduralTile.MagicPortal, TextureFactory.GenerateMagicPortal(textureSize, textureSize, noise), 0);
+            Register(ProceduralTile.MagicPortal, TextureFactory.GenerateMagicPortal(textureSize, textureSize, noise),
+                0);
             Register(ProceduralTile.PlasmaArc, TextureFactory.GeneratePlasmaArc(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.TreeBark, TextureFactory.GenerateTreeBark(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.Foliage, TextureFactory.GenerateFoliage(textureSize, textureSize), 0);

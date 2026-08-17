@@ -298,8 +298,8 @@ namespace RenderEngine
         /// <returns>Id of Texture, fallback, checkerboard</returns>
         public int GetFallbackTexture()
         {
-            // If GL.GenTexture() runs early or on a background thread without a current context, 
-            // it returns 0. Checking >= 0 erroneously caches 0, causing the 3D engine to unbind 
+            // If GL.GenTexture() runs early or on a background thread without a current context,
+            // it returns 0. Checking >= 0 erroneously caches 0, causing the 3D engine to unbind
             // textures and bleed your last active asset (the font atlas) into the scene.
             if (_fallbackTextureId > 0) return _fallbackTextureId;
 

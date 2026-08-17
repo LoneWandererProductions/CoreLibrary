@@ -72,13 +72,8 @@ namespace CommonLibraryGui.Tests
             {
                 AuroraTextures = new Dictionary<int, Texture>
                 {
-                    {
-                        0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") }
-                    },
-                    {
-                        1,
-                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") }
-                    },
+                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") } },
+                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") } },
                     {
                         2,
                         // Changed Id = 1 to Id = 2
@@ -154,13 +149,8 @@ namespace CommonLibraryGui.Tests
             {
                 PolarisTextures = new Dictionary<int, Texture>
                 {
-                    {
-                        0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") }
-                    },
-                    {
-                        1,
-                        new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") }
-                    },
+                    { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") } },
+                    { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") } },
                     {
                         2,
                         // Changed Id = 1 to Id = 2

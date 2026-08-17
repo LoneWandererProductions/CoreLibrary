@@ -64,7 +64,7 @@ namespace Core.Apps.Rules
             var symbolsToCheck = new List<(ISymbol Symbol, SyntaxNode Node, string Name)>();
 
             // 1. Regular Members (Methods, Properties, Classes, etc.)
-            // We exclude FieldDeclarationSyntax here because a single field declaration can 
+            // We exclude FieldDeclarationSyntax here because a single field declaration can
             // declare multiple variables, which we handle in step 2.
             var memberDecls = root.DescendantNodes()
                 .OfType<MemberDeclarationSyntax>()

@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +17,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Imaging;
 using Mathematics;
 using RenderEngine;
 
@@ -127,8 +129,9 @@ namespace Solaris
         /// </summary>
         private UnmanagedImageBuffer? _thirdLayer;
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="Aurora"/> class.
+        /// Initializes a new instance of the <see cref="T:Solaris.Aurora" /> class.
         /// </summary>
         public Aurora()
         {

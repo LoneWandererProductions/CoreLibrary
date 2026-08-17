@@ -6,15 +6,15 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Imaging;
 using Mathematics;
 using RenderEngine;
 
@@ -255,84 +255,6 @@ namespace Solaris
             control.LayerThree.Source = isNumberEnabled
                 ? Helper.GenerateNumbers(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize)
                 : null;
-        }
-
-        /// <summary>
-        /// Called when [add changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnAddChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = (Polaris)d;
-            var value = (KeyValuePair<int, int>)e.NewValue;
-
-            var (check, dictionary) = Helper.AddTile(control.PolarisMap, value);
-            if (!check) return;
-
-            control.PolarisMap = dictionary;
-
-            lock (control._lock)
-            {
-                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight,
-                    control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
-                control.ReplaceBitmapLayerOne(newBitmap);
-            }
-        }
-
-        /// <summary>
-        /// Called when [remove changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnRemoveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = (Polaris)d;
-            var value = (KeyValuePair<int, int>)e.NewValue;
-
-            var (check, dictionary) = Helper.RemoveTile(control.PolarisMap, control.PolarisTextures, value);
-            if (!check) return;
-
-            control.PolarisMap = dictionary;
-
-            lock (control._lock)
-            {
-                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight,
-                    control.PolarisTextureSize, control.PolarisTextures, control.PolarisMap);
-                control.ReplaceBitmapLayerOne(newBitmap);
-            }
-        }
-
-        /// <summary>
-        /// Called when [add display changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnAddDisplayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = (Polaris)d;
-            var value = (KeyValuePair<int, int>)e.NewValue;
-
-            var newBmp = Helper.AddDisplay(control.PolarisWidth, control.PolarisTextureSize, control.PolarisTextures,
-                control.BitmapLayerThree, value);
-            control.BitmapLayerThree = newBmp;
-            control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
-        }
-
-        /// <summary>
-        /// Called when [remove display changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnRemoveDisplayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = (Polaris)d;
-            var value = (int)e.NewValue;
-
-            var newBmp = Helper.RemoveDisplay(control.PolarisWidth, control.PolarisTextureSize,
-                control.BitmapLayerThree, value);
-            control.BitmapLayerThree = newBmp;
-            control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
         }
 
         #endregion

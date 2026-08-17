@@ -22,7 +22,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Extended.Extensions;
-using Imaging;
 using RenderEngine;
 using Brushes = System.Drawing.Brushes;
 
@@ -82,13 +81,7 @@ namespace Solaris
 
                     if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
-                        tiles.Add(new UnmanagedTileBox
-                        {
-                            X = x,
-                            Y = y,
-                            Layer = texture.Layer,
-                            Buffer = cachedBuffer
-                        });
+                        tiles.Add(new UnmanagedTileBox { X = x, Y = y, Layer = texture.Layer, Buffer = cachedBuffer });
                     }
                 }
             });
@@ -125,10 +118,10 @@ namespace Solaris
             using var graphics = Graphics.FromImage(bitmap);
 
             for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++)
-                {
-                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-                }
+            for (var x = 0; x < width; x++)
+            {
+                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+            }
 
             return bitmap.ToBitmapImage();
         }
@@ -151,16 +144,16 @@ namespace Solaris
             var count = 0;
 
             for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++, count++)
-                {
-                    var rect = new RectangleF(
-                        (x * textureSize) + padding,
-                        (y * textureSize) + padding,
-                        textureSize - padding,
-                        textureSize - padding);
+            for (var x = 0; x < width; x++, count++)
+            {
+                var rect = new RectangleF(
+                    (x * textureSize) + padding,
+                    (y * textureSize) + padding,
+                    textureSize - padding,
+                    textureSize - padding);
 
-                    graphics.DrawString(count.ToString(), font, brush, rect);
-                }
+                graphics.DrawString(count.ToString(), font, brush, rect);
+            }
 
             return bitmap.ToBitmapImage();
         }
@@ -206,9 +199,9 @@ namespace Solaris
                 var targetRect = new RectangleF(cellX, cellY, textureSize, textureSize);
 
                 // Build font family profile dynamically
-                var fontStyle = glyph.IsBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
+                var fontStyle = glyph.IsBold ? FontStyle.Bold : FontStyle.Regular;
                 using var font = new Font(glyph.FontName, glyph.FontSize, fontStyle);
-                using var brush = new System.Drawing.SolidBrush(glyph.Color);
+                using var brush = new SolidBrush(glyph.Color);
                 // Draw the crisp vector character straight onto the bitmap buffer plane
                 g.DrawString(glyph.Symbol, font, brush, targetRect, sf);
             }
@@ -315,7 +308,8 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="position">The position.</param>
         /// <returns>Cleaned Image.</returns>
-        public static UnmanagedImageBuffer? RemoveDisplay(int width, int textureSize, UnmanagedImageBuffer? layer, int position)
+        public static UnmanagedImageBuffer? RemoveDisplay(int width, int textureSize, UnmanagedImageBuffer? layer,
+            int position)
         {
             if (layer == null) return null;
 
@@ -405,8 +399,10 @@ namespace Solaris
             var srcStride = src.Width * UnmanagedImageBuffer.BytesPerPixel;
             var destStride = dest.Width * UnmanagedImageBuffer.BytesPerPixel;
 
-            var pSrcBase = (byte*)src.Buffer.ToPointer() + (srcY * srcStride) + (srcX * UnmanagedImageBuffer.BytesPerPixel);
-            var pDestBase = (byte*)dest.Buffer.ToPointer() + (destY * destStride) + (destX * UnmanagedImageBuffer.BytesPerPixel);
+            var pSrcBase = (byte*)src.Buffer.ToPointer() + (srcY * srcStride) +
+                           (srcX * UnmanagedImageBuffer.BytesPerPixel);
+            var pDestBase = (byte*)dest.Buffer.ToPointer() + (destY * destStride) +
+                            (destX * UnmanagedImageBuffer.BytesPerPixel);
 
             for (var y = 0; y < height; y++)
             {

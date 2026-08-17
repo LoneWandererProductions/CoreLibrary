@@ -9,7 +9,7 @@
 namespace Solaris
 {
     /// <summary>
-    /// Do some basic overlay glyphs for the tiles. 
+    /// Do some basic overlay glyphs for the tiles.
     /// These are drawn on top of the tile and can be used to display additional information like health, damage, or other status effects.
     /// </summary>
     public sealed class OverlayGlyph

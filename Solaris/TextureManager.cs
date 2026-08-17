@@ -6,12 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using Imaging;
 using RenderEngine;
+
 
 namespace Solaris
 {
@@ -24,7 +26,7 @@ namespace Solaris
         /// The file cache
         ///  Tier 1: Deduplicates hard drive reads (Path -> Bitmap)
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Bitmap> FileCache = new();
+        private static readonly ConcurrentDictionary<string?, Bitmap> FileCache = new();
 
         // 
         /// <summary>
@@ -118,12 +120,14 @@ namespace Solaris
             {
                 buffer.Dispose();
             }
+
             FastRenderBufferCache.Clear();
 
             foreach (var bmp in FileCache.Values)
             {
                 bmp.Dispose();
             }
+
             FileCache.Clear();
         }
 
@@ -134,7 +138,7 @@ namespace Solaris
         /// <returns>
         /// A new Bitmap instance or null if the file does not exist.
         /// </returns>
-        private static Bitmap? LoadBitmapFromFile(string path)
+        private static Bitmap? LoadBitmapFromFile(string? path)
         {
             if (!File.Exists(path)) return null;
 

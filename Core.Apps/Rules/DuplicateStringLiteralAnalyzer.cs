@@ -54,7 +54,7 @@ namespace Core.Apps.Rules
         private static Dictionary<string, List<(string file, int line)>>? _cachedLiterals;
 
         /// <summary>
-        /// Tracks the root directory of the currently cached project to ensure we 
+        /// Tracks the root directory of the currently cached project to ensure we
         /// rebuild the cache when moving to a new project.
         /// </summary>
         private static string? _cachedDirectory;
