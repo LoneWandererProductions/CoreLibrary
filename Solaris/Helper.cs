@@ -4,6 +4,15 @@
  * FILE:        Helper.cs
  * PURPOSE:     Helper class for image processing and map rendering.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ *
+ * TODO / PERFORMANCE ROADMAP:
+ * 1. Dirty Rectangle Repainting:
+ *    - Avoid full canvas rebuilds during AddTile / RemoveTile operations.
+ *    - Re-blit only modified tile bounding boxes into existing UnmanagedImageBuffer layers.
+ *
+ * 2. Viewport Frustum Culling & Scrolling Engine:
+ *    - Implement camera clipping bounds for large maps.
+ *    - Process only visible tile coordinates during parallel spatial mapping passes.
  */
 
 using System.Collections.Concurrent;
@@ -24,11 +33,6 @@ namespace Solaris
     /// </summary>
     internal static class Helper
     {
-        /// <summary>
-        /// The render
-        /// </summary>
-        private static readonly ImageRender Render = new();
-
         /// <summary>
         /// Generates the final image based on map and textures.
         /// </summary>
@@ -290,10 +294,15 @@ namespace Solaris
                 tileBuffer = TextureManager.GetBufferById(tileId);
             }
 
-            if (tileBuffer == null) return layer ?? new UnmanagedImageBuffer(width * textureSize, textureSize);
+            if (layer == null)
+            {
+                layer = new UnmanagedImageBuffer(width * textureSize, textureSize);
+                layer.Clear(0, 0, 0, 0);
+            }
 
-            layer ??= new UnmanagedImageBuffer(width * textureSize, textureSize);
-            layer.BlitRegion(tileBuffer, 0, 0, tileBuffer.Width, tileBuffer.Height, x, y);
+            if (tileBuffer == null) return layer;
+
+            layer.BlitRegionBlend(tileBuffer, 0, 0, tileBuffer.Width, tileBuffer.Height, x, y);
 
             return layer;
         }
@@ -337,7 +346,15 @@ namespace Solaris
         internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap? avatar,
             int width, int height, int textureSize)
         {
+            if (avatar == null) return;
+
             aurora.IsEnabled = false;
+
+            // Pre-convert avatar once to avoid per-frame conversion overhead
+            using var avatarBuffer = UnmanagedImageBuffer.FromBitmap(avatar);
+
+            var frameWidth = width * textureSize;
+            var frameHeight = height * textureSize;
 
             foreach (var step in steps)
             {
@@ -345,13 +362,15 @@ namespace Solaris
                 var y = (step / width) * textureSize;
 
                 // 1. Create a fresh, transparent frame for this specific step to prevent "ghost trails"
-                using var frame = new Bitmap(width * textureSize, height * textureSize);
+                using var frame = new UnmanagedImageBuffer(frameWidth, frameHeight);
+                frame.Clear(0, 0, 0, 0);
 
-                // 2. Draw the avatar at the current step
-                Render.CombineBitmap(frame, avatar, x, y);
+                // 2. Draw the avatar at the current step using unmanaged alpha blending
+                frame.BlitRegionBlend(avatarBuffer, 0, 0, avatarBuffer.Width, avatarBuffer.Height, x, y);
 
                 // 3. Push this frame immediately to the UI so we actually see the animation
-                aurora.LayerThree.Source = frame.ToBitmapImage();
+                using var tempBmp = frame.ToBitmap();
+                aurora.LayerThree.Source = tempBmp.ToBitmapImage();
 
                 // 4. Wait before drawing the next frame
                 await Task.Delay(100);
@@ -374,13 +393,12 @@ namespace Solaris
         /// <param name="height">The height.</param>
         /// <param name="destX">The dest x.</param>
         /// <param name="destY">The dest y.</param>
-        /// <returns>Task representing the asynchronous operation.</returns>
         private static unsafe void BlitRegionBlend(
-                    this UnmanagedImageBuffer dest,
-                    UnmanagedImageBuffer src,
-                    int srcX, int srcY,
-                    int width, int height,
-                    int destX, int destY)
+            this UnmanagedImageBuffer dest,
+            UnmanagedImageBuffer src,
+            int srcX, int srcY,
+            int width, int height,
+            int destX, int destY)
         {
             if (width <= 0 || height <= 0) return;
 

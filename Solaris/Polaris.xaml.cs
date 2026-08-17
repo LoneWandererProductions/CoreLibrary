@@ -8,10 +8,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Imaging;
 using Mathematics;
 using RenderEngine;
@@ -314,15 +316,7 @@ namespace Solaris
             var newBmp = Helper.AddDisplay(control.PolarisWidth, control.PolarisTextureSize, control.PolarisTextures,
                 control.BitmapLayerThree, value);
             control.BitmapLayerThree = newBmp;
-            if (newBmp != null)
-            {
-                using var tempBmp = newBmp.ToBitmap();
-                control.LayerThree.Source = tempBmp.ToBitmapImage();
-            }
-            else
-            {
-                control.LayerThree.Source = null;
-            }
+            control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
         }
 
         /// <summary>
@@ -338,15 +332,7 @@ namespace Solaris
             var newBmp = Helper.RemoveDisplay(control.PolarisWidth, control.PolarisTextureSize,
                 control.BitmapLayerThree, value);
             control.BitmapLayerThree = newBmp;
-            if (newBmp != null)
-            {
-                using var tempBmp = newBmp.ToBitmap();
-                control.LayerThree.Source = tempBmp.ToBitmapImage();
-            }
-            else
-            {
-                control.LayerThree.Source = null;
-            }
+            control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
         }
 
         #endregion
@@ -384,14 +370,7 @@ namespace Solaris
         {
             BitmapLayerOne?.Dispose();
             BitmapLayerOne = newBitmap;
-            if (BitmapLayerOne != null)
-            {
-                LayerOne.Source = newBitmap?.ToBitmapSource();
-            }
-            else
-            {
-                LayerOne.Source = null;
-            }
+            LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
         }
 
         /// <summary>
@@ -449,15 +428,7 @@ namespace Solaris
             var newBmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize, PolarisTextures, BitmapLayerThree,
                 tileData);
             BitmapLayerThree = newBmp;
-            if (newBmp != null)
-            {
-                using var tempBmp = newBmp.ToBitmap();
-                LayerThree.Source = tempBmp.ToBitmapImage();
-            }
-            else
-            {
-                LayerThree.Source = null;
-            }
+            LayerThree.Source = newBmp.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
         }
 
         /// <summary>
@@ -468,15 +439,7 @@ namespace Solaris
         {
             var newBmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, position);
             BitmapLayerThree = newBmp;
-            if (newBmp != null)
-            {
-                using var tempBmp = newBmp.ToBitmap();
-                LayerThree.Source = tempBmp.ToBitmapImage();
-            }
-            else
-            {
-                LayerThree.Source = null;
-            }
+            LayerThree.Source = newBmp.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
         }
 
         /// <summary>

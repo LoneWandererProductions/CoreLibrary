@@ -9,6 +9,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using Imaging;
 using RenderEngine;
 
@@ -38,11 +39,6 @@ namespace Solaris
         private static readonly ConcurrentDictionary<int, Texture> GlobalTextures = new();
 
         /// <summary>
-        /// The render
-        /// </summary>
-        private static readonly ImageRender Render = new();
-
-        /// <summary>
         /// Registers a texture from disk into the fast unmanaged memory cache.
         /// </summary>
         /// <param name="texture">The texture.</param>
@@ -51,7 +47,7 @@ namespace Solaris
             if (string.IsNullOrWhiteSpace(texture.Path)) return;
 
             // 1. Load from disk only once
-            var bmp = FileCache.GetOrAdd(texture.Path, p => Render.GetBitmapFile(p));
+            var bmp = FileCache.GetOrAdd(texture.Path, LoadBitmapFromFile);
 
             // 2. Convert to UnmanagedImageBuffer for O(1) unmanaged blitting
             if (bmp != null && !FastRenderBufferCache.ContainsKey(texture.Id))
@@ -129,6 +125,22 @@ namespace Solaris
                 bmp.Dispose();
             }
             FileCache.Clear();
+        }
+
+        /// <summary>
+        /// Safely loads a bitmap from disk using FileShare.ReadWrite to avoid locking files on disk.
+        /// </summary>
+        /// <param name="path">The image file path.</param>
+        /// <returns>
+        /// A new Bitmap instance or null if the file does not exist.
+        /// </returns>
+        private static Bitmap? LoadBitmapFromFile(string path)
+        {
+            if (!File.Exists(path)) return null;
+
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var temp = new Bitmap(stream);
+            return new Bitmap(temp);
         }
     }
 }

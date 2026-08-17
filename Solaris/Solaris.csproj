@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
-    <ProjectReference Include="..\Imaging\Imaging.csproj" />
-    <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Polaris.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -33,6 +27,10 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>CommonLibraryGui.Tests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RenderEngine\RenderEngine.csproj" />
   </ItemGroup>
 
 </Project>
