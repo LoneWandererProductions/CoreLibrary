@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Imaging;
 using Mathematics;
+using RenderEngine;
 
 namespace Solaris
 {
@@ -102,7 +103,7 @@ namespace Solaris
         /// <value>
         /// The bitmap layer one.
         /// </value>
-        internal Bitmap? BitmapLayerOne { get; private set; }
+        internal UnmanagedImageBuffer? BitmapLayerOne { get; private set; }
 
         /// <summary>
         /// Gets the bitmap layer three.
@@ -110,7 +111,7 @@ namespace Solaris
         /// <value>
         /// The bitmap layer three.
         /// </value>
-        internal Bitmap? BitmapLayerThree { get; private set; }
+        internal UnmanagedImageBuffer? BitmapLayerThree { get; private set; }
 
         /// <summary>
         /// Occurs when [clicked].
@@ -313,7 +314,16 @@ namespace Solaris
 
             var newBmp = Helper.AddDisplay(control.PolarisWidth, control.PolarisTextureSize, control.PolarisTextures,
                 control.BitmapLayerThree, value);
-            control.LayerThree.Source = newBmp?.ToBitmapImage();
+            control.BitmapLayerThree = newBmp;
+            if (newBmp != null)
+            {
+                using var tempBmp = newBmp.ToBitmap();
+                control.LayerThree.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                control.LayerThree.Source = null;
+            }
         }
 
         /// <summary>
@@ -328,7 +338,16 @@ namespace Solaris
 
             var newBmp = Helper.RemoveDisplay(control.PolarisWidth, control.PolarisTextureSize,
                 control.BitmapLayerThree, value);
-            control.LayerThree.Source = newBmp?.ToBitmapImage();
+            control.BitmapLayerThree = newBmp;
+            if (newBmp != null)
+            {
+                using var tempBmp = newBmp.ToBitmap();
+                control.LayerThree.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                control.LayerThree.Source = null;
+            }
         }
 
         #endregion
@@ -352,24 +371,35 @@ namespace Solaris
             if (PolarisNumber)
                 LayerThree.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
 
-            ReplaceBitmapLayerThree(new Bitmap(Touch.Width > 0 ? (int)Touch.Width : 1,
-                Touch.Height > 0 ? (int)Touch.Height : 1));
+            var initialLayer = new UnmanagedImageBuffer(Touch.Width > 0 ? (int)Touch.Width : 1,
+                Touch.Height > 0 ? (int)Touch.Height : 1);
+            initialLayer.Clear(0, 0, 0, 0);
+
+            ReplaceBitmapLayerThree(initialLayer);
         }
 
         /// <summary>
         /// Safely swaps the unmanaged LayerOne Bitmap and immediately frees the old memory.
         /// </summary>
-        private void ReplaceBitmapLayerOne(Bitmap? newBitmap)
+        private void ReplaceBitmapLayerOne(UnmanagedImageBuffer? newBitmap)
         {
             BitmapLayerOne?.Dispose();
             BitmapLayerOne = newBitmap;
-            LayerOne.Source = BitmapLayerOne?.ToBitmapImage();
+            if (BitmapLayerOne != null)
+            {
+                using var tempBmp = BitmapLayerOne.ToBitmap();
+                LayerOne.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                LayerOne.Source = null;
+            }
         }
 
         /// <summary>
         /// Safely swaps the unmanaged LayerThree Bitmap and immediately frees the old memory.
         /// </summary>
-        private void ReplaceBitmapLayerThree(Bitmap? newBitmap)
+        private void ReplaceBitmapLayerThree(UnmanagedImageBuffer? newBitmap)
         {
             BitmapLayerThree?.Dispose();
             BitmapLayerThree = newBitmap;
@@ -420,7 +450,16 @@ namespace Solaris
         {
             var newBmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize, PolarisTextures, BitmapLayerThree,
                 tileData);
-            LayerThree.Source = newBmp?.ToBitmapImage();
+            BitmapLayerThree = newBmp;
+            if (newBmp != null)
+            {
+                using var tempBmp = newBmp.ToBitmap();
+                LayerThree.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                LayerThree.Source = null;
+            }
         }
 
         /// <summary>
@@ -430,7 +469,16 @@ namespace Solaris
         public void RemoveDisplay(int position)
         {
             var newBmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, position);
-            LayerThree.Source = newBmp?.ToBitmapImage();
+            BitmapLayerThree = newBmp;
+            if (newBmp != null)
+            {
+                using var tempBmp = newBmp.ToBitmap();
+                LayerThree.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                LayerThree.Source = null;
+            }
         }
 
         /// <summary>

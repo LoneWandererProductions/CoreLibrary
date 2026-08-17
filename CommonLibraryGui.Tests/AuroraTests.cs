@@ -24,8 +24,14 @@ namespace CommonLibraryGui.Tests
     [Apartment(ApartmentState.STA)]
     public sealed class AuroraTests
     {
+        /// <summary>
+        /// The sample images folder
+        /// </summary>
         private string _sampleImagesFolder;
 
+        /// <summary>
+        /// Setups this instance.
+        /// </summary>
         [SetUp]
         public void Setup()
         {
@@ -75,7 +81,7 @@ namespace CommonLibraryGui.Tests
                     },
                     {
                         2,
-                        // FIX: Changed Id = 1 to Id = 2
+                        // Changed Id = 1 to Id = 2
                         new Texture { Layer = 1, Id = 2, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
                     }
                 },
@@ -87,9 +93,11 @@ namespace CommonLibraryGui.Tests
 
             aurora.Initiate();
 
-            var data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
-
-            Assert.That(data.Similarity, Is.EqualTo(100), $"Map was not correct: {data.Similarity}");
+            using (var bmpBase = aurora.BitmapLayerOne?.ToBitmap())
+            {
+                var data = compare.CompareImages(bmResultBase, bmpBase);
+                Assert.That(data.Similarity, Is.EqualTo(100), $"Map was not correct: {data.Similarity}");
+            }
 
             map = new Dictionary<int, List<int>>
             {
@@ -104,11 +112,13 @@ namespace CommonLibraryGui.Tests
             aurora.AuroraMap = map;
             aurora.Initiate();
 
-            aurora.BitmapLayerOne.Save(Path.Combine(_sampleImagesFolder, "example.png"), ImageFormat.Png);
+            using (var bmpLayerOther = aurora.BitmapLayerOne?.ToBitmap())
+            {
+                bmpLayerOther?.Save(Path.Combine(_sampleImagesFolder, "example.png"), ImageFormat.Png);
 
-            data = compare.CompareImages(bmResultLayerOther, aurora.BitmapLayerOne);
-
-            Assert.That(data.Similarity, Is.EqualTo(100), $"Aurora Map was not correct: {data.Similarity}");
+                var data = compare.CompareImages(bmResultLayerOther, bmpLayerOther);
+                Assert.That(data.Similarity, Is.EqualTo(100), $"Aurora Map was not correct: {data.Similarity}");
+            }
 
             // Test remove
             aurora.AuroraRemove = new KeyValuePair<int, int>(0, 2);
@@ -119,11 +129,14 @@ namespace CommonLibraryGui.Tests
             aurora.AuroraRemove = new KeyValuePair<int, int>(4, 1);
             aurora.AuroraRemove = new KeyValuePair<int, int>(5, 1);
 
-            data = compare.CompareImages(bmResultBase, aurora.BitmapLayerOne);
+            using (var bmpRemoved = aurora.BitmapLayerOne?.ToBitmap())
+            {
+                var data = compare.CompareImages(bmResultBase, bmpRemoved);
 
-            aurora.BitmapLayerOne.Save(Path.Combine(_sampleImagesFolder, "example.png"), ImageFormat.Png);
+                bmpRemoved?.Save(Path.Combine(_sampleImagesFolder, "example.png"), ImageFormat.Png);
 
-            Assert.That(data.Similarity, Is.EqualTo(100), $"Aurora Map remove was not correct: {data.Similarity}");
+                Assert.That(data.Similarity, Is.EqualTo(100), $"Aurora Map remove was not correct: {data.Similarity}");
+            }
         }
 
         /// <summary>
@@ -150,7 +163,7 @@ namespace CommonLibraryGui.Tests
                     },
                     {
                         2,
-                        // FIX: Changed Id = 1 to Id = 2
+                        // Changed Id = 1 to Id = 2
                         new Texture { Layer = 1, Id = 2, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") }
                     }
                 },
@@ -163,7 +176,7 @@ namespace CommonLibraryGui.Tests
 
             // Note: If BitmapLayerThree is managed by Polaris and needs disposal,
             // do not dispose it here while it is in use.
-            var blank = polaris.BitmapLayerThree;
+            using var blank = polaris.BitmapLayerThree?.ToBitmap();
 
             // 0
             polaris.AddTile(new KeyValuePair<int, int>(0, 0));
@@ -184,10 +197,13 @@ namespace CommonLibraryGui.Tests
             // 5
             polaris.AddTile(new KeyValuePair<int, int>(5, 0));
 
-            polaris.BitmapLayerOne.Save(Path.Combine(_sampleImagesFolder, "example Polaris.png"), ImageFormat.Png);
+            using (var bmpPolarisOne = polaris.BitmapLayerOne?.ToBitmap())
+            {
+                bmpPolarisOne?.Save(Path.Combine(_sampleImagesFolder, "example Polaris.png"), ImageFormat.Png);
 
-            var data = compare.CompareImages(bmResultLayerOther, polaris.BitmapLayerOne);
-            Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
+                var data = compare.CompareImages(bmResultLayerOther, bmpPolarisOne);
+                Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
+            }
 
             polaris.AddDisplay(new KeyValuePair<int, int>(0, 0));
             polaris.AddDisplay(new KeyValuePair<int, int>(1, 0));
@@ -196,11 +212,53 @@ namespace CommonLibraryGui.Tests
             polaris.AddDisplay(new KeyValuePair<int, int>(4, 0));
             polaris.AddDisplay(new KeyValuePair<int, int>(5, 0));
 
-            data = compare.CompareImages(bmResultBase, polaris.BitmapLayerThree);
+            using (var bmpPolarisThreeAdd = polaris.BitmapLayerThree?.ToBitmap())
+            {
+                var data = compare.CompareImages(bmResultBase, bmpPolarisThreeAdd);
 
-            var polarisMap = polaris.PolarisMap;
+                var polarisMap = polaris.PolarisMap;
 
-            var map = new Dictionary<int, List<int>>
+                var map = new Dictionary<int, List<int>>
+                {
+                    { 0, new List<int> { 0, 1, 2 } },
+                    { 1, new List<int> { 0, 1 } },
+                    { 2, new List<int> { 0, 1 } },
+                    { 3, new List<int> { 0, 1 } },
+                    { 4, new List<int> { 0, 1 } },
+                    { 5, new List<int> { 0 } }
+                };
+
+                for (var i = 0; i <= 5; i++)
+                {
+                    var lst = polarisMap[i];
+                    var check = lst.Equal(map[i], EnumerableCompare.IgnoreOrder);
+                    if (!check)
+                    {
+                        Assert.Fail("wrong map");
+                    }
+                }
+
+                Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
+            }
+
+            polaris.RemoveDisplay(0);
+            polaris.RemoveDisplay(1);
+            polaris.RemoveDisplay(2);
+            polaris.RemoveDisplay(3);
+            polaris.RemoveDisplay(4);
+            polaris.RemoveDisplay(5);
+
+            using (var bmpPolarisThreeRemove = polaris.BitmapLayerThree?.ToBitmap())
+            {
+                var data = compare.CompareImages(blank, bmpPolarisThreeRemove);
+                Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
+            }
+
+            // This is a duplicate so this should not be added
+            polaris.AddDisplay(new KeyValuePair<int, int>(0, 0));
+
+            var finalPolarisMap = polaris.PolarisMap;
+            var expectedMap = new Dictionary<int, List<int>>
             {
                 { 0, new List<int> { 0, 1, 2 } },
                 { 1, new List<int> { 0, 1 } },
@@ -212,33 +270,8 @@ namespace CommonLibraryGui.Tests
 
             for (var i = 0; i <= 5; i++)
             {
-                var lst = polarisMap[i];
-                var check = lst.Equal(map[i], EnumerableCompare.IgnoreOrder);
-                if (!check)
-                {
-                    Assert.Fail("wrong map");
-                }
-            }
-
-            Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
-
-            polaris.RemoveDisplay(0);
-            polaris.RemoveDisplay(1);
-            polaris.RemoveDisplay(2);
-            polaris.RemoveDisplay(3);
-            polaris.RemoveDisplay(4);
-            polaris.RemoveDisplay(5);
-
-            data = compare.CompareImages(blank, polaris.BitmapLayerThree);
-            Assert.That(data.Similarity, Is.EqualTo(100), $"Map Polaris was not correct: {data.Similarity}");
-
-            // This is a duplicate so this should not be added
-            polaris.AddDisplay(new KeyValuePair<int, int>(0, 0));
-
-            for (var i = 0; i <= 5; i++)
-            {
-                var lst = polarisMap[i];
-                var check = lst.Equal(map[i], EnumerableCompare.IgnoreOrder);
+                var lst = finalPolarisMap[i];
+                var check = lst.Equal(expectedMap[i], EnumerableCompare.IgnoreOrder);
                 if (!check)
                 {
                     Assert.Fail("wrong map");

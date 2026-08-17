@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
  * FILE:        TextureManager.cs
- * PURPOSE:     Helper class for managing textures and image caching.
+ * PURPOSE:     Helper class for managing textures and unmanaged image caching.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -10,31 +10,30 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using Imaging;
+using RenderEngine;
 
 namespace Solaris
 {
     /// <summary>
-    /// Texture Manager.
+    /// Texture Manager using unmanaged memory buffers.
     /// </summary>
     public static class TextureManager
     {
-        // Tier 1: Deduplicates hard drive reads (Path -> Bitmap)
         /// <summary>
-        /// The file cache.
-        /// Maps a file path to the actual Bitmap in memory, preventing duplicate I/O.
+        /// The file cache
+        ///  Tier 1: Deduplicates hard drive reads (Path -> Bitmap)
         /// </summary>
         private static readonly ConcurrentDictionary<string, Bitmap> FileCache = new();
 
-        // Tier 2: Lightning fast rendering lookups (Id -> Bitmap)
+        // 
         /// <summary>
-        /// The fast render cache.
-        /// Maps a Texture ID directly to the memory reference for O(1) rendering lookups.
+        /// The fast render buffer cache
+        /// Tier 2: Unmanaged render cache for O(1) row blitting lookups (Id -> UnmanagedImageBuffer)
         /// </summary>
-        private static readonly ConcurrentDictionary<int, Bitmap> FastRenderCache = new();
+        private static readonly ConcurrentDictionary<int, UnmanagedImageBuffer> FastRenderBufferCache = new();
 
         /// <summary>
-        /// The global textures
-        /// Maps our "High IDs" to their Texture definitions
+        /// The global textures mapping IDs to Texture definitions.
         /// </summary>
         private static readonly ConcurrentDictionary<int, Texture> GlobalTextures = new();
 
@@ -44,7 +43,7 @@ namespace Solaris
         private static readonly ImageRender Render = new();
 
         /// <summary>
-        /// Registers a texture (Global or Map-specific) into the high-speed caches.
+        /// Registers a texture from disk into the fast unmanaged memory cache.
         /// </summary>
         /// <param name="texture">The texture.</param>
         public static void RegisterTexture(Texture texture)
@@ -54,15 +53,28 @@ namespace Solaris
             // 1. Load from disk only once
             var bmp = FileCache.GetOrAdd(texture.Path, p => Render.GetBitmapFile(p));
 
-            // 2. Map the ID directly to the memory reference for O(1) int lookups
-            if (bmp != null)
+            // 2. Convert to UnmanagedImageBuffer for O(1) unmanaged blitting
+            if (bmp != null && !FastRenderBufferCache.ContainsKey(texture.Id))
             {
-                FastRenderCache[texture.Id] = bmp;
+                FastRenderBufferCache[texture.Id] = UnmanagedImageBuffer.FromBitmap(bmp);
             }
         }
 
         /// <summary>
-        /// Call this during application startup/loading screens to preload global assets.
+        /// Registers a procedurally generated UnmanagedImageBuffer directly into the cache.
+        /// </summary>
+        /// <param name="id">The texture ID (e.g., 10000+).</param>
+        /// <param name="buffer">The unmanaged buffer.</param>
+        /// <param name="layer">The layer index.</param>
+        public static void RegisterGeneratedTexture(int id, UnmanagedImageBuffer buffer, int layer = 0)
+        {
+            var tex = new Texture { Id = id, Path = $"[Procedural:{id}]", Layer = layer };
+            GlobalTextures[id] = tex;
+            FastRenderBufferCache[id] = buffer;
+        }
+
+        /// <summary>
+        /// Call this during application startup/loading screens to preload global disk assets.
         /// </summary>
         /// <param name="globalId">The global identifier.</param>
         /// <param name="path">The path.</param>
@@ -72,9 +84,18 @@ namespace Solaris
             if (string.IsNullOrWhiteSpace(path)) return;
 
             var tex = new Texture { Id = globalId, Path = path, Layer = layer };
-
             GlobalTextures[globalId] = tex;
             RegisterTexture(tex);
+        }
+
+        /// <summary>
+        /// Safely gets an UnmanagedImageBuffer by ID for ultra-fast rendering loop lookups.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>The unmanaged buffer if found; otherwise, null.</returns>
+        public static UnmanagedImageBuffer? GetBufferById(int id)
+        {
+            return FastRenderBufferCache.TryGetValue(id, out var buffer) ? buffer : null;
         }
 
         /// <summary>
@@ -86,42 +107,28 @@ namespace Solaris
         /// <returns>True if the texture was found; otherwise, false.</returns>
         public static bool TryGetTexture(int id, Dictionary<int, Texture> mapTextures, out Texture texture)
         {
-            // Check map-specific textures first
             if (mapTextures != null && mapTextures.TryGetValue(id, out texture))
                 return true;
 
-            // Fallback to preloaded global textures (your negative/high IDs)
             return GlobalTextures.TryGetValue(id, out texture);
         }
 
         /// <summary>
-        /// Safely gets a bitmap by ID for ultra-fast rendering loop lookups.
+        /// Flushes unmanaged texture buffers to prevent memory leaks.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>The bitmap if found; otherwise, null.</returns>
-        public static Bitmap? GetBitmapById(int id)
+        public static void FlushCaches()
         {
-            return FastRenderCache.TryGetValue(id, out var bmp) ? bmp : null;
-        }
+            foreach (var buffer in FastRenderBufferCache.Values)
+            {
+                buffer.Dispose();
+            }
+            FastRenderBufferCache.Clear();
 
-        /// <summary>
-        /// Safely gets or loads a bitmap by path.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns>The bitmap if found or loaded; otherwise, null.</returns>
-        public static Bitmap? GetBitmapByPath(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path)) return null;
-            return FileCache.GetOrAdd(path, p => Render.GetBitmapFile(p));
-        }
-
-        /// <summary>
-        /// Optional: Clear map-specific caches if memory gets too high,
-        /// but keep global ones alive.
-        /// </summary>
-        public static void FlushNonGlobalCaches()
-        {
-            // Logic to remove anything from caches that isn't referenced by GlobalTextures
+            foreach (var bmp in FileCache.Values)
+            {
+                bmp.Dispose();
+            }
+            FileCache.Clear();
         }
     }
 }

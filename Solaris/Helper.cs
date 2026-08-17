@@ -6,7 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Extended.Extensions;
 using Imaging;
+using RenderEngine;
 using Solaris.Solaris;
 using Brushes = System.Drawing.Brushes;
 
@@ -39,14 +39,18 @@ namespace Solaris
         /// <param name="textures">The textures.</param>
         /// <param name="map">The map.</param>
         /// <returns>Full Image.</returns>
-        internal static Bitmap GenerateImage(
+        internal static UnmanagedImageBuffer GenerateImage(
             int width, int height, int textureSize,
             Dictionary<int, Texture> textures,
             Dictionary<int, List<int>>? map)
         {
-            var background = new Bitmap(width * textureSize, height * textureSize);
+            var totalWidth = width * textureSize;
+            var totalHeight = height * textureSize;
 
-            if (map == null) return background; // Textures can be null now if we rely purely on globals
+            var canvas = new UnmanagedImageBuffer(totalWidth, totalHeight);
+            canvas.Clear(0, 0, 0, 0);
+
+            if (map == null) return canvas;
 
             // 1. Pre-warm local map textures into the high-speed integer cache
             if (textures != null)
@@ -58,7 +62,7 @@ namespace Solaris
             }
 
             // 2. High-Speed Memory Map Translation Pass
-            var tiles = new ConcurrentBag<Box>();
+            var tiles = new ConcurrentBag<UnmanagedTileBox>();
 
             Parallel.ForEach(map, tile =>
             {
@@ -71,11 +75,17 @@ namespace Solaris
                 {
                     // --> THE MAGIC HAPPENS HERE <--
                     // Lightning fast integer lookup! No string hashing in the hot loop.
-                    var cachedImage = TextureManager.GetBitmapById(textureId);
+                    var cachedBuffer = TextureManager.GetBufferById(textureId);
 
-                    if (cachedImage != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
+                    if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
-                        tiles.Add(new Box { X = x, Y = y, Layer = texture.Layer, Image = cachedImage });
+                        tiles.Add(new UnmanagedTileBox
+                        {
+                            X = x,
+                            Y = y,
+                            Layer = texture.Layer,
+                            Buffer = cachedBuffer
+                        });
                     }
                 }
             });
@@ -83,20 +93,20 @@ namespace Solaris
             var sortedTiles = tiles.ToList();
             sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-            // 3. THE GRAPHICS FIX
-            using var graph = Graphics.FromImage(background);
-            graph.Clear(System.Drawing.Color.Transparent);
-
+            // 3. High-performance memory alpha-blitting pass
             foreach (var slice in sortedTiles)
             {
-                if (slice.Image != null)
-                {
-                    graph.DrawImage(slice.Image,
-                        new Rectangle(slice.X, slice.Y, slice.Image.Width, slice.Image.Height));
-                }
+                canvas.BlitRegionBlend(
+                    slice.Buffer,
+                    srcX: 0,
+                    srcY: 0,
+                    width: slice.Buffer.Width,
+                    height: slice.Buffer.Height,
+                    destX: slice.X,
+                    destY: slice.Y);
             }
 
-            return background;
+            return canvas;
         }
 
         /// <summary>
@@ -112,10 +122,10 @@ namespace Solaris
             using var graphics = Graphics.FromImage(bitmap);
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-            }
+                for (var x = 0; x < width; x++)
+                {
+                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+                }
 
             return bitmap.ToBitmapImage();
         }
@@ -138,16 +148,16 @@ namespace Solaris
             var count = 0;
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++, count++)
-            {
-                var rect = new RectangleF(
-                    (x * textureSize) + padding,
-                    (y * textureSize) + padding,
-                    textureSize - padding,
-                    textureSize - padding);
+                for (var x = 0; x < width; x++, count++)
+                {
+                    var rect = new RectangleF(
+                        (x * textureSize) + padding,
+                        (y * textureSize) + padding,
+                        textureSize - padding,
+                        textureSize - padding);
 
-                graphics.DrawString(count.ToString(), font, brush, rect);
-            }
+                    graphics.DrawString(count.ToString(), font, brush, rect);
+                }
 
             return bitmap.ToBitmapImage();
         }
@@ -263,25 +273,30 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The identifier tile.</param>
         /// <returns>Image on screen</returns>
-        public static Bitmap? AddDisplay(
-            int width, int textureSize, Dictionary<int, Texture> textures, Bitmap? layer,
+        public static UnmanagedImageBuffer AddDisplay(
+            int width, int textureSize, Dictionary<int, Texture> textures, UnmanagedImageBuffer? layer,
             KeyValuePair<int, int> idTile)
         {
             var (position, tileId) = idTile;
-            var x = position % width * textureSize;
-            var y = position / width * textureSize;
+            var x = (position % width) * textureSize;
+            var y = (position / width) * textureSize;
 
             // Attempt fast ID lookup first
-            var image = TextureManager.GetBitmapById(tileId);
+            var tileBuffer = TextureManager.GetBufferById(tileId);
 
             // If it's not cached yet, register it and grab it
-            if (image == null && TextureManager.TryGetTexture(tileId, textures, out var texture))
+            if (tileBuffer == null && TextureManager.TryGetTexture(tileId, textures, out var texture))
             {
                 TextureManager.RegisterTexture(texture);
-                image = TextureManager.GetBitmapById(tileId);
+                tileBuffer = TextureManager.GetBufferById(tileId);
             }
 
-            return Render.CombineBitmap(layer, image, x, y);
+            if (tileBuffer == null) return layer ?? new UnmanagedImageBuffer(width * textureSize, textureSize);
+
+            layer ??= new UnmanagedImageBuffer(width * textureSize, textureSize);
+            layer.BlitRegion(tileBuffer, 0, 0, tileBuffer.Width, tileBuffer.Height, x, y);
+
+            return layer;
         }
 
         /// <summary>
@@ -292,12 +307,22 @@ namespace Solaris
         /// <param name="layer">The layer.</param>
         /// <param name="position">The position.</param>
         /// <returns>Cleaned Image.</returns>
-        public static Bitmap? RemoveDisplay(int width, int textureSize, Bitmap? layer, int position)
+        public static UnmanagedImageBuffer? RemoveDisplay(int width, int textureSize, UnmanagedImageBuffer? layer, int position)
         {
-            var x = position % width * textureSize;
-            var y = position / width * textureSize;
+            if (layer == null) return null;
 
-            return Render.EraseRectangle(layer, x, y, textureSize, textureSize);
+            var x = (position % width) * textureSize;
+            var y = (position / width) * textureSize;
+
+            for (var row = y; row < y + textureSize; row++)
+            {
+                for (var col = x; col < x + textureSize; col++)
+                {
+                    layer.SetPixelUnsafe(col, row, 0, 0, 0, 0);
+                }
+            }
+
+            return layer;
         }
 
         /// <summary>
@@ -317,8 +342,8 @@ namespace Solaris
 
             foreach (var step in steps)
             {
-                var x = step % width * textureSize;
-                var y = step / width * textureSize;
+                var x = (step % width) * textureSize;
+                var y = (step / width) * textureSize;
 
                 // 1. Create a fresh, transparent frame for this specific step to prevent "ghost trails"
                 using var frame = new Bitmap(width * textureSize, height * textureSize);
@@ -337,6 +362,75 @@ namespace Solaris
             // aurora.LayerThree.Source = null;
 
             aurora.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Blits a region from source to destination using fast unsafe alpha blending.
+        /// </summary>
+        /// <param name="dest">The dest.</param>
+        /// <param name="src">The source.</param>
+        /// <param name="srcX">The source x.</param>
+        /// <param name="srcY">The source y.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="destX">The dest x.</param>
+        /// <param name="destY">The dest y.</param>
+        /// <returns>Task representing the asynchronous operation.</returns>
+        private static unsafe void BlitRegionBlend(
+                    this UnmanagedImageBuffer dest,
+                    UnmanagedImageBuffer src,
+                    int srcX, int srcY,
+                    int width, int height,
+                    int destX, int destY)
+        {
+            if (width <= 0 || height <= 0) return;
+
+            var srcStride = src.Width * UnmanagedImageBuffer.BytesPerPixel;
+            var destStride = dest.Width * UnmanagedImageBuffer.BytesPerPixel;
+
+            var pSrcBase = (byte*)src.Buffer.ToPointer() + (srcY * srcStride) + (srcX * UnmanagedImageBuffer.BytesPerPixel);
+            var pDestBase = (byte*)dest.Buffer.ToPointer() + (destY * destStride) + (destX * UnmanagedImageBuffer.BytesPerPixel);
+
+            for (var y = 0; y < height; y++)
+            {
+                var pSrc = (uint*)(pSrcBase + y * srcStride);
+                var pDest = (uint*)(pDestBase + y * destStride);
+
+                for (var x = 0; x < width; x++)
+                {
+                    var srcPixel = pSrc[x];
+                    var alpha = (byte)(srcPixel >> 24);
+
+                    if (alpha == 0) continue; // Skip transparent pixels completely
+
+                    if (alpha == 255)
+                    {
+                        pDest[x] = srcPixel; // Direct copy for fully opaque pixels
+                        continue;
+                    }
+
+                    // Perform alpha blending for semi-transparent pixels
+                    var dstPixel = pDest[x];
+
+                    var srcB = (byte)(srcPixel & 0xFF);
+                    var srcG = (byte)((srcPixel >> 8) & 0xFF);
+                    var srcR = (byte)((srcPixel >> 16) & 0xFF);
+
+                    var dstB = (byte)(dstPixel & 0xFF);
+                    var dstG = (byte)((dstPixel >> 8) & 0xFF);
+                    var dstR = (byte)((dstPixel >> 16) & 0xFF);
+                    var dstA = (byte)((dstPixel >> 24) & 0xFF);
+
+                    var invAlpha = 255 - alpha;
+
+                    var outB = (byte)((srcB * alpha + dstB * invAlpha) / 255);
+                    var outG = (byte)((srcG * alpha + dstG * invAlpha) / 255);
+                    var outR = (byte)((srcR * alpha + dstR * invAlpha) / 255);
+                    var outA = (byte)(alpha + (dstA * invAlpha) / 255);
+
+                    pDest[x] = ((uint)outA << 24) | ((uint)outR << 16) | ((uint)outG << 8) | outB;
+                }
+            }
         }
     }
 }

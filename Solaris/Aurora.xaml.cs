@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Imaging;
 using Mathematics;
+using RenderEngine;
 using Solaris.Solaris;
 
 namespace Solaris
@@ -124,7 +125,7 @@ namespace Solaris
         /// <summary>
         /// The third layer
         /// </summary>
-        private Bitmap? _thirdLayer;
+        private UnmanagedImageBuffer? _thirdLayer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Aurora"/> class.
@@ -140,7 +141,7 @@ namespace Solaris
         /// <value>
         /// The bitmap layer one.
         /// </value>
-        internal Bitmap? BitmapLayerOne { get; private set; }
+        internal UnmanagedImageBuffer? BitmapLayerOne { get; private set; }
 
         /// <summary>
         /// Occurs when [tile clicked].
@@ -414,7 +415,16 @@ namespace Solaris
 
             var newBmp = Helper.AddDisplay(control.AuroraWidth, control.AuroraTextureSize, control.AuroraTextures,
                 control._thirdLayer, value);
-            control.LayerThree.Source = newBmp?.ToBitmapImage();
+            control._thirdLayer = newBmp;
+            if (newBmp != null)
+            {
+                using var tempBmp = newBmp.ToBitmap();
+                control.LayerThree.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                control.LayerThree.Source = null;
+            }
         }
 
         /// <summary>
@@ -429,7 +439,16 @@ namespace Solaris
 
             var newBmp = Helper.RemoveDisplay(control.AuroraWidth, control.AuroraTextureSize, control._thirdLayer,
                 value);
-            control.LayerThree.Source = newBmp?.ToBitmapImage();
+            control._thirdLayer = newBmp;
+            if (newBmp != null)
+            {
+                using var tempBmp = newBmp.ToBitmap();
+                control.LayerThree.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                control.LayerThree.Source = null;
+            }
         }
 
         /// <summary>
@@ -463,8 +482,11 @@ namespace Solaris
             if (AuroraGrid)
                 LayerTwo.Source = Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize);
 
-            ReplaceThirdLayer(new Bitmap(Touch.Width > 0 ? (int)Touch.Width : 1,
-                Touch.Height > 0 ? (int)Touch.Height : 1));
+            var initialLayer = new UnmanagedImageBuffer(Touch.Width > 0 ? (int)Touch.Width : 1,
+                Touch.Height > 0 ? (int)Touch.Height : 1);
+            initialLayer.Clear(0, 0, 0, 0);
+
+            ReplaceThirdLayer(initialLayer);
         }
 
         /// <summary>
@@ -482,17 +504,25 @@ namespace Solaris
         /// <summary>
         /// Safely swaps the unmanaged LayerOne Bitmap and immediately frees the old memory.
         /// </summary>
-        private void ReplaceBitmapLayerOne(Bitmap? newBitmap)
+        private void ReplaceBitmapLayerOne(UnmanagedImageBuffer? newBitmap)
         {
             BitmapLayerOne?.Dispose();
             BitmapLayerOne = newBitmap;
-            LayerOne.Source = BitmapLayerOne?.ToBitmapImage();
+            if (BitmapLayerOne != null)
+            {
+                using var tempBmp = BitmapLayerOne.ToBitmap();
+                LayerOne.Source = tempBmp.ToBitmapImage();
+            }
+            else
+            {
+                LayerOne.Source = null;
+            }
         }
 
         /// <summary>
         /// Safely swaps the unmanaged LayerThree Bitmap and immediately frees the old memory.
         /// </summary>
-        private void ReplaceThirdLayer(Bitmap? newBitmap)
+        private void ReplaceThirdLayer(UnmanagedImageBuffer? newBitmap)
         {
             _thirdLayer?.Dispose();
             _thirdLayer = newBitmap;
