@@ -8,7 +8,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -387,8 +386,7 @@ namespace Solaris
             BitmapLayerOne = newBitmap;
             if (BitmapLayerOne != null)
             {
-                using var tempBmp = BitmapLayerOne.ToBitmap();
-                LayerOne.Source = tempBmp.ToBitmapImage();
+                LayerOne.Source = newBitmap?.ToBitmapSource();
             }
             else
             {

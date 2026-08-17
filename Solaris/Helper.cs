@@ -15,7 +15,6 @@ using System.Windows.Media;
 using Extended.Extensions;
 using Imaging;
 using RenderEngine;
-using Solaris.Solaris;
 using Brushes = System.Drawing.Brushes;
 
 namespace Solaris

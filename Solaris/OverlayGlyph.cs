@@ -8,52 +8,53 @@
 
 namespace Solaris
 {
-    namespace Solaris
+    /// <summary>
+    /// Do some basic overlay glyphs for the tiles. 
+    /// These are drawn on top of the tile and can be used to display additional information like health, damage, or other status effects.
+    /// </summary>
+    public sealed class OverlayGlyph
     {
-        public sealed class OverlayGlyph
-        {
-            /// <summary>
-            /// Gets or sets the symbol.
-            /// E.g., "⚔", "🪙", "💧", or "4"
-            /// </summary>
-            /// <value>
-            /// The symbol.
-            /// </value>
-            public string Symbol { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the symbol.
+        /// E.g., "⚔", "🪙", "💧", or "4"
+        /// </summary>
+        /// <value>
+        /// The symbol.
+        /// </value>
+        public string Symbol { get; set; } = string.Empty;
 
-            /// <summary>
-            /// Gets or sets the color.
-            /// </summary>
-            /// <value>
-            /// The color.
-            /// </value>
-            public System.Drawing.Color Color { get; set; } = System.Drawing.Color.Gold;
+        /// <summary>
+        /// Gets or sets the color.
+        /// </summary>
+        /// <value>
+        /// The color.
+        /// </value>
+        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.Gold;
 
-            /// <summary>
-            /// Gets or sets the name of the font.
-            /// Handles Unicode vectors out of the box
-            /// </summary>
-            /// <value>
-            /// The name of the font.
-            /// </value>
-            public string FontName { get; set; } = "Segoe UI Symbol";
+        /// <summary>
+        /// Gets or sets the name of the font.
+        /// Handles Unicode vectors out of the box
+        /// </summary>
+        /// <value>
+        /// The name of the font.
+        /// </value>
+        public string FontName { get; set; } = "Segoe UI Symbol";
 
-            /// <summary>
-            /// Gets or sets the size of the font.
-            /// Scaled proportionally to match your TileSize
-            /// </summary>
-            /// <value>
-            /// The size of the font.
-            /// </value>
-            public float FontSize { get; set; } = 14f;
+        /// <summary>
+        /// Gets or sets the size of the font.
+        /// Scaled proportionally to match your TileSize
+        /// </summary>
+        /// <value>
+        /// The size of the font.
+        /// </value>
+        public float FontSize { get; set; } = 14f;
 
-            /// <summary>
-            /// Gets or sets a value indicating whether this instance is bold.
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> if this instance is bold; otherwise, <c>false</c>.
-            /// </value>
-            public bool IsBold { get; set; } = true;
-        }
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is bold.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is bold; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBold { get; set; } = true;
     }
 }

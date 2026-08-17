@@ -16,7 +16,6 @@ using System.Windows.Input;
 using Imaging;
 using Mathematics;
 using RenderEngine;
-using Solaris.Solaris;
 
 namespace Solaris
 {
@@ -510,8 +509,7 @@ namespace Solaris
             BitmapLayerOne = newBitmap;
             if (BitmapLayerOne != null)
             {
-                using var tempBmp = BitmapLayerOne.ToBitmap();
-                LayerOne.Source = tempBmp.ToBitmapImage();
+                LayerOne.Source = newBitmap?.ToBitmapSource();
             }
             else
             {

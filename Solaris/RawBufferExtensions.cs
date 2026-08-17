@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imaging.Texture;
 using RenderEngine;
@@ -61,6 +62,24 @@ namespace Solaris
 
             target.AddDirtyRect(new Int32Rect(0, 0, source.Width, source.Height));
             target.Unlock();
+        }
+
+        /// <summary>
+        /// Converts an UnmanagedImageBuffer directly into a WPF BitmapSource without intermediate System.Drawing.Bitmap allocations.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <returns></returns>
+        public static BitmapSource ToBitmapSource(this UnmanagedImageBuffer buffer)
+        {
+            return BitmapSource.Create(
+                buffer.Width,
+                buffer.Height,
+                96, 96,
+                PixelFormats.Bgra32,
+                null,
+                buffer.Buffer,
+                buffer.Count,
+                buffer.Width * UnmanagedImageBuffer.BytesPerPixel);
         }
     }
 }
