@@ -17,9 +17,9 @@ namespace Solaris
     public enum DirtyFlags
     {
         None = 0,
-        TileMap = 1 << 0,   // Layer 1: Base terrain / static tiles
-        Grid = 1 << 1,      // Layer 2: Polaris grid overlay
-        Overlays = 1 << 2,  // Layer 3: Selection, glyphs, dynamic cursors
+        TileMap = 1 << 0, // Layer 1: Base terrain / static tiles
+        Grid = 1 << 1, // Layer 2: Polaris grid overlay
+        Overlays = 1 << 2, // Layer 3: Selection, glyphs, dynamic cursors
         Viewport = 1 << 3,
         FullRedraw = TileMap | Grid | Overlays | Viewport
     }

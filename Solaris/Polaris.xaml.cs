@@ -15,7 +15,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Mathematics;
 using RenderEngine;
 
 namespace Solaris
@@ -83,11 +82,6 @@ namespace Solaris
         private readonly Lock _lock = new();
 
         /// <summary>
-        /// The cursor
-        /// </summary>
-        private Coordinate2D _cursor;
-
-        /// <summary>
         /// The active dirty flags indicating invalid layers.
         /// </summary>
         private DirtyFlags _dirtyFlags = DirtyFlags.None;
@@ -112,8 +106,9 @@ namespace Solaris
         /// </summary>
         public Viewport ActiveViewport { get; } = new();
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="Polaris"/> class.
+        /// Initializes a new instance of the <see cref="T:Solaris.Polaris" /> class.
         /// </summary>
         public Polaris()
         {
@@ -327,8 +322,10 @@ namespace Solaris
                     foreach (var tileId in _dirtyTiles)
                     {
                         Helper.RedrawTileRegion(
-                            BitmapLayerOne, tileId, PolarisWidth, PolarisTextureSize, PolarisTextures, PolarisMap, ActiveViewport);
+                            BitmapLayerOne, tileId, PolarisWidth, PolarisTextureSize, PolarisTextures, PolarisMap,
+                            ActiveViewport);
                     }
+
                     LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
                 }
 

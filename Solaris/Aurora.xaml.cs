@@ -523,8 +523,10 @@ namespace Solaris
                     foreach (var tileId in _dirtyTiles)
                     {
                         Helper.RedrawTileRegion(
-                            BitmapLayerOne, tileId, AuroraWidth, AuroraTextureSize, AuroraTextures, AuroraMap, ActiveViewport);
+                            BitmapLayerOne, tileId, AuroraWidth, AuroraTextureSize, AuroraTextures, AuroraMap,
+                            ActiveViewport);
                     }
+
                     LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
                 }
             }
@@ -576,7 +578,8 @@ namespace Solaris
             if (AuroraTextures == null) return;
 
             var newBitmap =
-                Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap, ActiveViewport);
+                Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap,
+                    ActiveViewport);
             ReplaceBitmapLayerOne(newBitmap);
         }
 

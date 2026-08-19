@@ -40,8 +40,10 @@ namespace Solaris
             Dictionary<int, List<int>>? map,
             Viewport? viewport = null)
         {
-            var canvasWidth = viewport != null && viewport.ScreenWidth > 0 ? viewport.ScreenWidth : width * textureSize;
-            var canvasHeight = viewport != null && viewport.ScreenHeight > 0 ? viewport.ScreenHeight : height * textureSize;
+            var canvasWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
+            var canvasHeight = viewport is { ScreenHeight: > 0 }
+                ? viewport.ScreenHeight
+                : height * textureSize;
 
             var canvas = new UnmanagedImageBuffer(canvasWidth, canvasHeight);
             canvas.Clear(0, 0, 0, 0);
@@ -58,7 +60,8 @@ namespace Solaris
             }
 
             // 2. Obtain viewport frustum bounds for spatial culling
-            var bounds = viewport?.GetVisibleTileBounds(width, height, textureSize) ?? new Rectangle(0, 0, width, height);
+            var bounds = viewport?.GetVisibleTileBounds(width, height, textureSize) ??
+                         new Rectangle(0, 0, width, height);
 
             var tiles = new ConcurrentBag<UnmanagedTileBox>();
 
@@ -76,9 +79,7 @@ namespace Solaris
                     return;
                 }
 
-                Point screenPt = viewport != null
-                    ? viewport.WorldToScreen(tile.Key, width, textureSize)
-                    : new Point(tileX * textureSize, tileY * textureSize);
+                Point screenPt = viewport?.WorldToScreen(tile.Key, width, textureSize) ?? new Point(tileX * textureSize, tileY * textureSize);
 
                 foreach (var textureId in tile.Value)
                 {
@@ -86,7 +87,10 @@ namespace Solaris
 
                     if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
-                        tiles.Add(new UnmanagedTileBox { X = screenPt.X, Y = screenPt.Y, Layer = texture.Layer, Buffer = cachedBuffer });
+                        tiles.Add(new UnmanagedTileBox
+                        {
+                            X = screenPt.X, Y = screenPt.Y, Layer = texture.Layer, Buffer = cachedBuffer
+                        });
                     }
                 }
             });
@@ -131,14 +135,13 @@ namespace Solaris
         {
             if (canvas == null || width <= 0 || textureSize <= 0) return;
 
-            Point destPt = viewport != null
-                ? viewport.WorldToScreen(tileIndex, width, textureSize)
-                : new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
+            Point destPt = viewport?.WorldToScreen(tileIndex, width, textureSize) ?? new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
 
             // 1. Clear only the sub-region bounding box
             ClearTileRegion(canvas, destPt.X, destPt.Y, textureSize);
 
-            if (map == null || !map.TryGetValue(tileIndex, out var textureIds) || textureIds == null || textureIds.Count == 0)
+            if (map == null || !map.TryGetValue(tileIndex, out var textureIds) || textureIds == null ||
+                textureIds.Count == 0)
             {
                 return;
             }
@@ -157,7 +160,10 @@ namespace Solaris
 
                 if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texDef))
                 {
-                    tileSlices.Add(new UnmanagedTileBox { X = destPt.X, Y = destPt.Y, Layer = texDef.Layer, Buffer = cachedBuffer });
+                    tileSlices.Add(new UnmanagedTileBox
+                    {
+                        X = destPt.X, Y = destPt.Y, Layer = texDef.Layer, Buffer = cachedBuffer
+                    });
                 }
             }
 
@@ -215,10 +221,10 @@ namespace Solaris
             using var graphics = Graphics.FromImage(bitmap);
 
             for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++)
-                {
-                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-                }
+            for (var x = 0; x < width; x++)
+            {
+                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+            }
 
             return bitmap.ToBitmapImage();
         }
@@ -241,16 +247,16 @@ namespace Solaris
             var count = 0;
 
             for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++, count++)
-                {
-                    var rect = new RectangleF(
-                        (x * textureSize) + padding,
-                        (y * textureSize) + padding,
-                        textureSize - padding,
-                        textureSize - padding);
+            for (var x = 0; x < width; x++, count++)
+            {
+                var rect = new RectangleF(
+                    (x * textureSize) + padding,
+                    (y * textureSize) + padding,
+                    textureSize - padding,
+                    textureSize - padding);
 
-                    graphics.DrawString(count.ToString(), font, brush, rect);
-                }
+                graphics.DrawString(count.ToString(), font, brush, rect);
+            }
 
             return bitmap.ToBitmapImage();
         }
@@ -455,14 +461,7 @@ namespace Solaris
             }
 
             // Cleanly restore LayerThree to its static display buffer or null
-            if (aurora.BitmapLayerThree != null)
-            {
-                aurora.LayerThree.Source = aurora.BitmapLayerThree.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
-            }
-            else
-            {
-                aurora.LayerThree.Source = null;
-            }
+            aurora.LayerThree.Source = aurora.BitmapLayerThree?.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
 
             aurora.IsEnabled = true;
         }

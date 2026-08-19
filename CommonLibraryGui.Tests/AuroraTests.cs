@@ -286,10 +286,7 @@ namespace CommonLibraryGui.Tests
 
             var polaris = new Polaris
             {
-                PolarisTextures = textures,
-                PolarisTextureSize = 100,
-                PolarisHeight = 2,
-                PolarisWidth = 3
+                PolarisTextures = textures, PolarisTextureSize = 100, PolarisHeight = 2, PolarisWidth = 3
             };
 
             polaris.Initiate();
@@ -313,7 +310,8 @@ namespace CommonLibraryGui.Tests
                 polaris.PolarisMap).ToBitmap();
 
             var data = compare.CompareImages(bmpFull, bmpTargeted);
-            Assert.That(data.Similarity, Is.EqualTo(100), $"Targeted sub-region redraw deviated from full generate: {data.Similarity}%");
+            Assert.That(data.Similarity, Is.EqualTo(100),
+                $"Targeted sub-region redraw deviated from full generate: {data.Similarity}%");
         }
 
         /// <summary>
