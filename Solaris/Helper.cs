@@ -5,12 +5,7 @@
  * PURPOSE:     Helper class for image processing and map rendering.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  *
- * TODO / PERFORMANCE ROADMAP:
- * 1. Dirty Rectangle Repainting:
- *    - Avoid full canvas rebuilds during AddTile / RemoveTile operations.
- *    - Re-blit only modified tile bounding boxes into existing UnmanagedImageBuffer layers.
- *
- * 2. Viewport Frustum Culling & Scrolling Engine:
+ * 1. Viewport Frustum Culling & Scrolling Engine:
  *    - Implement camera clipping bounds for large maps.
  *    - Process only visible tile coordinates during parallel spatial mapping passes.
  */
@@ -106,6 +101,89 @@ namespace Solaris
         }
 
         /// <summary>
+        /// Re-blits a single modified tile sub-region into an existing unmanaged canvas buffer.
+        /// Avoids full canvas rebuilds during single tile modifications.
+        /// </summary>
+        /// <param name="canvas">The destination unmanaged canvas layer buffer.</param>
+        /// <param name="tileIndex">The 1D spatial tile index to repaint.</param>
+        /// <param name="width">The map width in tile units.</param>
+        /// <param name="textureSize">The pixel size of individual square tiles.</param>
+        /// <param name="textures">The global texture mapping dictionary.</param>
+        /// <param name="map">The active tile map data structure.</param>
+        internal static void RedrawTileRegion(
+            UnmanagedImageBuffer canvas,
+            int tileIndex,
+            int width,
+            int textureSize,
+            Dictionary<int, Texture>? textures,
+            Dictionary<int, List<int>>? map)
+        {
+            if (canvas == null || width <= 0 || textureSize <= 0) return;
+
+            var destX = (tileIndex % width) * textureSize;
+            var destY = (tileIndex / width) * textureSize;
+
+            // 1. Clear only the bounding box region for this specific tile
+            ClearTileRegion(canvas, destX, destY, textureSize);
+
+            if (map == null || !map.TryGetValue(tileIndex, out var textureIds) || textureIds == null || textureIds.Count == 0)
+            {
+                return;
+            }
+
+            // 2. Fetch and layer-sort the textures active at this coordinate
+            var tileSlices = new List<UnmanagedTileBox>();
+            foreach (var textureId in textureIds)
+            {
+                var cachedBuffer = TextureManager.GetBufferById(textureId);
+
+                if (cachedBuffer == null && TextureManager.TryGetTexture(textureId, textures, out var texture))
+                {
+                    TextureManager.RegisterTexture(texture);
+                    cachedBuffer = TextureManager.GetBufferById(textureId);
+                }
+
+                if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texDef))
+                {
+                    tileSlices.Add(new UnmanagedTileBox { X = destX, Y = destY, Layer = texDef.Layer, Buffer = cachedBuffer });
+                }
+            }
+
+            tileSlices.Sort((a, b) => a.Layer.CompareTo(b.Layer));
+
+            // 3. Re-blit the stacked layers into the cleared sub-region
+            foreach (var slice in tileSlices)
+            {
+                canvas.BlitRegionBlend(
+                    slice.Buffer,
+                    srcX: 0,
+                    srcY: 0,
+                    width: slice.Buffer.Width,
+                    height: slice.Buffer.Height,
+                    destX: slice.X,
+                    destY: slice.Y);
+            }
+        }
+
+        /// <summary>
+        /// Clears a square pixel bounding box within an unmanaged buffer to full transparency.
+        /// </summary>
+        /// <param name="buffer">The target unmanaged image buffer.</param>
+        /// <param name="destX">The starting X coordinate.</param>
+        /// <param name="destY">The starting Y coordinate.</param>
+        /// <param name="size">The square width and height in pixels.</param>
+        private static void ClearTileRegion(UnmanagedImageBuffer buffer, int destX, int destY, int size)
+        {
+            for (var row = destY; row < destY + size; row++)
+            {
+                for (var col = destX; col < destX + size; col++)
+                {
+                    buffer.SetPixelUnsafe(col, row, 0, 0, 0, 0);
+                }
+            }
+        }
+
+        /// <summary>
         /// Generates a grid overlay.
         /// </summary>
         /// <param name="width">The width.</param>
@@ -118,10 +196,10 @@ namespace Solaris
             using var graphics = Graphics.FromImage(bitmap);
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-            {
-                graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-            }
+                for (var x = 0; x < width; x++)
+                {
+                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+                }
 
             return bitmap.ToBitmapImage();
         }
@@ -144,16 +222,16 @@ namespace Solaris
             var count = 0;
 
             for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++, count++)
-            {
-                var rect = new RectangleF(
-                    (x * textureSize) + padding,
-                    (y * textureSize) + padding,
-                    textureSize - padding,
-                    textureSize - padding);
+                for (var x = 0; x < width; x++, count++)
+                {
+                    var rect = new RectangleF(
+                        (x * textureSize) + padding,
+                        (y * textureSize) + padding,
+                        textureSize - padding,
+                        textureSize - padding);
 
-                graphics.DrawString(count.ToString(), font, brush, rect);
-            }
+                    graphics.DrawString(count.ToString(), font, brush, rect);
+                }
 
             return bitmap.ToBitmapImage();
         }

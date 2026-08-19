@@ -88,6 +88,16 @@ namespace Solaris
         private Coordinate2D _cursor;
 
         /// <summary>
+        /// The active dirty flags indicating invalid layers.
+        /// </summary>
+        private DirtyFlags _dirtyFlags = DirtyFlags.None;
+
+        /// <summary>
+        /// Queue of specific tile indices that need sub-region re-blitting.
+        /// </summary>
+        private readonly HashSet<int> _dirtyTiles = new();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Polaris"/> class.
         /// </summary>
         public Polaris()
@@ -219,12 +229,8 @@ namespace Solaris
             var control = (Polaris)d;
             if (e.NewValue == null || control.PolarisTextures == null) return;
 
-            lock (control._lock)
-            {
-                var newBitmap = Helper.GenerateImage(control.PolarisWidth, control.PolarisHeight,
-                    control.PolarisTextureSize, control.PolarisTextures, (Dictionary<int, List<int>>)e.NewValue);
-                control.ReplaceBitmapLayerOne(newBitmap);
-            }
+            control.MarkLayerDirty(DirtyFlags.TileMap);
+            control.RenderDirty();
         }
 
         /// <summary>
@@ -259,6 +265,61 @@ namespace Solaris
 
         #endregion
 
+        #region Dirty Region Management
+
+        /// <summary>
+        /// Marks a specific tile index dirty for targeted redraw.
+        /// </summary>
+        /// <param name="tileIndex">The spatial tile index.</param>
+        /// <param name="flag">The layer flag.</param>
+        public void MarkTileDirty(int tileIndex, DirtyFlags flag = DirtyFlags.TileMap)
+        {
+            _dirtyTiles.Add(tileIndex);
+            _dirtyFlags |= flag;
+        }
+
+        /// <summary>
+        /// Marks an entire layer dirty for a full pass.
+        /// </summary>
+        /// <param name="flag">The layer flag.</param>
+        public void MarkLayerDirty(DirtyFlags flag)
+        {
+            _dirtyFlags |= flag;
+        }
+
+        /// <summary>
+        /// Processes dirty regions and repaints only affected tile sub-regions.
+        /// </summary>
+        public void RenderDirty()
+        {
+            if (_dirtyFlags == DirtyFlags.None) return;
+
+            lock (_lock)
+            {
+                if (_dirtyFlags.HasFlag(DirtyFlags.TileMap))
+                {
+                    if (_dirtyTiles.Count > 0 && BitmapLayerOne != null && PolarisMap != null)
+                    {
+                        foreach (var tileId in _dirtyTiles)
+                        {
+                            Helper.RedrawTileRegion(BitmapLayerOne, tileId, PolarisWidth, PolarisTextureSize, PolarisTextures, PolarisMap);
+                        }
+                        LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
+                    }
+                    else
+                    {
+                        var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
+                        ReplaceBitmapLayerOne(newBitmap);
+                    }
+                }
+
+                _dirtyTiles.Clear();
+                _dirtyFlags = DirtyFlags.None;
+            }
+        }
+
+        #endregion
+
         #region Setup and Memory Management
 
         /// <summary>
@@ -288,6 +349,7 @@ namespace Solaris
         /// <summary>
         /// Safely swaps the unmanaged LayerOne Bitmap and immediately frees the old memory.
         /// </summary>
+        /// <param name="newBitmap">The new unmanaged bitmap layer.</param>
         private void ReplaceBitmapLayerOne(UnmanagedImageBuffer? newBitmap)
         {
             BitmapLayerOne?.Dispose();
@@ -298,6 +360,7 @@ namespace Solaris
         /// <summary>
         /// Safely swaps the unmanaged LayerThree Bitmap and immediately frees the old memory.
         /// </summary>
+        /// <param name="newBitmap">The new unmanaged bitmap layer.</param>
         private void ReplaceBitmapLayerThree(UnmanagedImageBuffer? newBitmap)
         {
             BitmapLayerThree?.Dispose();
@@ -315,12 +378,8 @@ namespace Solaris
             if (!check) return;
 
             PolarisMap = dictionary;
-            lock (_lock)
-            {
-                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures,
-                    PolarisMap);
-                ReplaceBitmapLayerOne(newBitmap);
-            }
+            MarkTileDirty(tileData.Key, DirtyFlags.TileMap);
+            RenderDirty();
         }
 
         /// <summary>
@@ -333,12 +392,8 @@ namespace Solaris
             if (!check) return;
 
             PolarisMap = dictionary;
-            lock (_lock)
-            {
-                var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures,
-                    PolarisMap);
-                ReplaceBitmapLayerOne(newBitmap);
-            }
+            MarkTileDirty(tileData.Key, DirtyFlags.TileMap);
+            RenderDirty();
         }
 
         /// <summary>
@@ -351,6 +406,8 @@ namespace Solaris
                 tileData);
             BitmapLayerThree = newBmp;
             LayerThree.Source = newBmp.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
+
+            MarkTileDirty(tileData.Key, DirtyFlags.Overlays);
         }
 
         /// <summary>
@@ -362,6 +419,8 @@ namespace Solaris
             var newBmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, position);
             BitmapLayerThree = newBmp;
             LayerThree.Source = newBmp.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
+
+            MarkTileDirty(position, DirtyFlags.Overlays);
         }
 
         /// <summary>

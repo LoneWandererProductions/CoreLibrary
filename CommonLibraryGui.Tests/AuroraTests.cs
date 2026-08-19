@@ -270,6 +270,80 @@ namespace CommonLibraryGui.Tests
         }
 
         /// <summary>
+        /// Tests that targeted sub-region tile redrawing produces an output identical to a full canvas rebuild.
+        /// </summary>
+        [Test]
+        public void TargetedRedraw_MatchesFullCanvasRebuild()
+        {
+            var compare = new ImageAnalysis();
+
+            var textures = new Dictionary<int, Texture>
+            {
+                { 0, new Texture { Layer = 0, Id = 0, Path = Path.Combine(_sampleImagesFolder, "Tile.png") } },
+                { 1, new Texture { Layer = 1, Id = 1, Path = Path.Combine(_sampleImagesFolder, "layerOne.png") } },
+                { 2, new Texture { Layer = 1, Id = 2, Path = Path.Combine(_sampleImagesFolder, "LayerTwo.png") } }
+            };
+
+            var polaris = new Polaris
+            {
+                PolarisTextures = textures,
+                PolarisTextureSize = 100,
+                PolarisHeight = 2,
+                PolarisWidth = 3
+            };
+
+            polaris.Initiate();
+
+            // Populate base layer via targeted tile additions
+            polaris.AddTile(new KeyValuePair<int, int>(0, 0));
+            polaris.AddTile(new KeyValuePair<int, int>(1, 0));
+            polaris.AddTile(new KeyValuePair<int, int>(2, 0));
+
+            // Targeted mutation: update tile 0 with an extra layer
+            polaris.AddTile(new KeyValuePair<int, int>(0, 1));
+
+            using var bmpTargeted = polaris.BitmapLayerOne?.ToBitmap();
+
+            // Generate full canvas baseline for visual parity check
+            using var bmpFull = Helper.GenerateImage(
+                polaris.PolarisWidth,
+                polaris.PolarisHeight,
+                polaris.PolarisTextureSize,
+                textures,
+                polaris.PolarisMap).ToBitmap();
+
+            var data = compare.CompareImages(bmpFull, bmpTargeted);
+            Assert.That(data.Similarity, Is.EqualTo(100), $"Targeted sub-region redraw deviated from full generate: {data.Similarity}%");
+        }
+
+        /// <summary>
+        /// Tests the DirtyTracker state lifecycle, flag aggregation, and reset behavior.
+        /// </summary>
+        [Test]
+        public void DirtyTracker_FlagsAndClear_BehaveCorrectly()
+        {
+            var tracker = new DirtyTracker();
+
+            Assert.That(tracker.Flags, Is.EqualTo(DirtyFlags.None));
+            Assert.That(tracker.DirtyTileIndices, Is.Empty);
+
+            // Mark individual tile and layer dirty
+            tracker.MarkTileDirty(3, DirtyFlags.TileMap);
+            tracker.MarkTileDirty(5, DirtyFlags.Overlays);
+
+            Assert.That(tracker.DirtyTileIndices, Contains.Item(3));
+            Assert.That(tracker.DirtyTileIndices, Contains.Item(5));
+            Assert.That(tracker.Flags.HasFlag(DirtyFlags.TileMap), Is.True);
+            Assert.That(tracker.Flags.HasFlag(DirtyFlags.Overlays), Is.True);
+
+            // Reset dirty tracker
+            tracker.Clear();
+
+            Assert.That(tracker.Flags, Is.EqualTo(DirtyFlags.None));
+            Assert.That(tracker.DirtyTileIndices, Is.Empty);
+        }
+
+        /// <summary>
         /// Loads the bitmap.
         /// </summary>
         /// <param name="fileName">Name of the file.</param>

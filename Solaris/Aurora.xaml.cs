@@ -129,6 +129,16 @@ namespace Solaris
         /// </summary>
         private UnmanagedImageBuffer? _thirdLayer;
 
+        /// <summary>
+        /// The active dirty flags indicating invalid layers.
+        /// </summary>
+        private DirtyFlags _dirtyFlags = DirtyFlags.None;
+
+        /// <summary>
+        /// Queue of specific tile indices that need sub-region re-blitting.
+        /// </summary>
+        private readonly HashSet<int> _dirtyTiles = new();
+
         /// <inheritdoc />
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Solaris.Aurora" /> class.
@@ -321,7 +331,8 @@ namespace Solaris
         private static void OnMapChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (Aurora)d;
-            control.UpdateMapAndBitmap();
+            control.MarkLayerDirty(DirtyFlags.TileMap);
+            control.RenderDirty();
         }
 
         /// <summary>
@@ -386,7 +397,8 @@ namespace Solaris
             if (!check) return;
 
             control.AuroraMap = dictionary;
-            control.UpdateMapAndBitmap();
+            control.MarkTileDirty(value.Key, DirtyFlags.TileMap);
+            control.RenderDirty();
         }
 
         /// <summary>
@@ -403,7 +415,8 @@ namespace Solaris
             if (!check) return;
 
             control.AuroraMap = dictionary;
-            control.UpdateMapAndBitmap();
+            control.MarkTileDirty(value.Key, DirtyFlags.TileMap);
+            control.RenderDirty();
         }
 
         /// <summary>
@@ -420,6 +433,8 @@ namespace Solaris
                 control._thirdLayer, value);
             control._thirdLayer = newBmp;
             control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
+
+            control.MarkTileDirty(value.Key, DirtyFlags.Overlays);
         }
 
         /// <summary>
@@ -436,6 +451,8 @@ namespace Solaris
                 value);
             control._thirdLayer = newBmp;
             control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
+
+            control.MarkTileDirty(value, DirtyFlags.Overlays);
         }
 
         /// <summary>
@@ -446,7 +463,64 @@ namespace Solaris
         private static void OnGlyphsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (Aurora)d;
-            control.UpdateGlyphLayer();
+            control.MarkLayerDirty(DirtyFlags.Overlays);
+            control.RenderDirty();
+        }
+
+        #endregion
+
+        #region Dirty Region Management
+
+        /// <summary>
+        /// Marks a specific tile index dirty for targeted redraw.
+        /// </summary>
+        /// <param name="tileIndex">The spatial tile index.</param>
+        /// <param name="flag">The layer flag.</param>
+        public void MarkTileDirty(int tileIndex, DirtyFlags flag = DirtyFlags.TileMap)
+        {
+            _dirtyTiles.Add(tileIndex);
+            _dirtyFlags |= flag;
+        }
+
+        /// <summary>
+        /// Marks an entire layer dirty for a full pass.
+        /// </summary>
+        /// <param name="flag">The layer flag.</param>
+        public void MarkLayerDirty(DirtyFlags flag)
+        {
+            _dirtyFlags |= flag;
+        }
+
+        /// <summary>
+        /// Processes dirty regions and repaints only affected tile sub-regions.
+        /// </summary>
+        public void RenderDirty()
+        {
+            if (_dirtyFlags == DirtyFlags.None) return;
+
+            if (_dirtyFlags.HasFlag(DirtyFlags.TileMap))
+            {
+                if (_dirtyTiles.Count > 0 && BitmapLayerOne != null && AuroraMap != null)
+                {
+                    foreach (var tileId in _dirtyTiles)
+                    {
+                        Helper.RedrawTileRegion(BitmapLayerOne, tileId, AuroraWidth, AuroraTextureSize, AuroraTextures, AuroraMap);
+                    }
+                    LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
+                }
+                else
+                {
+                    UpdateMapAndBitmap();
+                }
+            }
+
+            if (_dirtyFlags.HasFlag(DirtyFlags.Overlays))
+            {
+                UpdateGlyphLayer();
+            }
+
+            _dirtyTiles.Clear();
+            _dirtyFlags = DirtyFlags.None;
         }
 
         #endregion
