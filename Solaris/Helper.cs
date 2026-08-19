@@ -2,12 +2,8 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
  * FILE:        Helper.cs
- * PURPOSE:     Helper class for image processing and map rendering.
+ * PURPOSE:     Helper class for image processing, map rendering, and viewport frustum culling.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
- *
- * 1. Viewport Frustum Culling & Scrolling Engine:
- *    - Implement camera clipping bounds for large maps.
- *    - Process only visible tile coordinates during parallel spatial mapping passes.
  */
 
 using System.Collections.Concurrent;
@@ -23,28 +19,30 @@ using Brushes = System.Drawing.Brushes;
 namespace Solaris
 {
     /// <summary>
-    ///     Helper class that manages image generation tasks.
+    /// Helper class that manages image generation and spatial rendering tasks.
     /// </summary>
     internal static class Helper
     {
         /// <summary>
-        /// Generates the final image based on map and textures.
+        /// Generates the final image based on map, textures, and active camera viewport frustum bounds.
         /// </summary>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
+        /// <param name="width">The map width in tile units.</param>
+        /// <param name="height">The map height in tile units.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="map">The map.</param>
-        /// <returns>Full Image.</returns>
+        /// <param name="viewport">The active rendering viewport for frustum culling and projection mapping.</param>
+        /// <returns>Unmanaged image buffer representing rendered visible canvas.</returns>
         internal static UnmanagedImageBuffer GenerateImage(
             int width, int height, int textureSize,
             Dictionary<int, Texture> textures,
-            Dictionary<int, List<int>>? map)
+            Dictionary<int, List<int>>? map,
+            Viewport? viewport = null)
         {
-            var totalWidth = width * textureSize;
-            var totalHeight = height * textureSize;
+            var canvasWidth = viewport != null && viewport.ScreenWidth > 0 ? viewport.ScreenWidth : width * textureSize;
+            var canvasHeight = viewport != null && viewport.ScreenHeight > 0 ? viewport.ScreenHeight : height * textureSize;
 
-            var canvas = new UnmanagedImageBuffer(totalWidth, totalHeight);
+            var canvas = new UnmanagedImageBuffer(canvasWidth, canvasHeight);
             canvas.Clear(0, 0, 0, 0);
 
             if (map == null) return canvas;
@@ -58,25 +56,36 @@ namespace Solaris
                 }
             }
 
-            // 2. High-Speed Memory Map Translation Pass
+            // 2. Obtain viewport frustum bounds for spatial culling
+            var bounds = viewport?.GetVisibleTileBounds(width, height, textureSize) ?? new Rectangle(0, 0, width, height);
+
             var tiles = new ConcurrentBag<UnmanagedTileBox>();
 
+            // 3. Parallel spatial translation with frustum culling
             Parallel.ForEach(map, tile =>
             {
                 if (tile.Value is not { Count: > 0 }) return;
 
-                var x = (tile.Key % width) * textureSize;
-                var y = (tile.Key / width) * textureSize;
+                var tileX = tile.Key % width;
+                var tileY = tile.Key / width;
+
+                // Frustum Culling Check: Skip tiles outside current camera view
+                if (tileX < bounds.Left || tileX >= bounds.Right || tileY < bounds.Top || tileY >= bounds.Bottom)
+                {
+                    return;
+                }
+
+                Point screenPt = viewport != null
+                    ? viewport.WorldToScreen(tile.Key, width, textureSize)
+                    : new Point(tileX * textureSize, tileY * textureSize);
 
                 foreach (var textureId in tile.Value)
                 {
-                    // --> THE MAGIC HAPPENS HERE <--
-                    // Lightning fast integer lookup! No string hashing in the hot loop.
                     var cachedBuffer = TextureManager.GetBufferById(textureId);
 
                     if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
-                        tiles.Add(new UnmanagedTileBox { X = x, Y = y, Layer = texture.Layer, Buffer = cachedBuffer });
+                        tiles.Add(new UnmanagedTileBox { X = screenPt.X, Y = screenPt.Y, Layer = texture.Layer, Buffer = cachedBuffer });
                     }
                 }
             });
@@ -84,7 +93,7 @@ namespace Solaris
             var sortedTiles = tiles.ToList();
             sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-            // 3. High-performance memory alpha-blitting pass
+            // 4. High-performance memory alpha-blitting pass
             foreach (var slice in sortedTiles)
             {
                 canvas.BlitRegionBlend(
@@ -101,8 +110,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Re-blits a single modified tile sub-region into an existing unmanaged canvas buffer.
-        /// Avoids full canvas rebuilds during single tile modifications.
+        /// Re-blits a single modified tile sub-region into an existing unmanaged canvas buffer using viewport transformation.
         /// </summary>
         /// <param name="canvas">The destination unmanaged canvas layer buffer.</param>
         /// <param name="tileIndex">The 1D spatial tile index to repaint.</param>
@@ -110,28 +118,31 @@ namespace Solaris
         /// <param name="textureSize">The pixel size of individual square tiles.</param>
         /// <param name="textures">The global texture mapping dictionary.</param>
         /// <param name="map">The active tile map data structure.</param>
+        /// <param name="viewport">Optional active viewport camera.</param>
         internal static void RedrawTileRegion(
             UnmanagedImageBuffer canvas,
             int tileIndex,
             int width,
             int textureSize,
             Dictionary<int, Texture>? textures,
-            Dictionary<int, List<int>>? map)
+            Dictionary<int, List<int>>? map,
+            Viewport? viewport = null)
         {
             if (canvas == null || width <= 0 || textureSize <= 0) return;
 
-            var destX = (tileIndex % width) * textureSize;
-            var destY = (tileIndex / width) * textureSize;
+            Point destPt = viewport != null
+                ? viewport.WorldToScreen(tileIndex, width, textureSize)
+                : new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
 
-            // 1. Clear only the bounding box region for this specific tile
-            ClearTileRegion(canvas, destX, destY, textureSize);
+            // 1. Clear only the sub-region bounding box
+            ClearTileRegion(canvas, destPt.X, destPt.Y, textureSize);
 
             if (map == null || !map.TryGetValue(tileIndex, out var textureIds) || textureIds == null || textureIds.Count == 0)
             {
                 return;
             }
 
-            // 2. Fetch and layer-sort the textures active at this coordinate
+            // 2. Collect and sort layer slices
             var tileSlices = new List<UnmanagedTileBox>();
             foreach (var textureId in textureIds)
             {
@@ -145,13 +156,13 @@ namespace Solaris
 
                 if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texDef))
                 {
-                    tileSlices.Add(new UnmanagedTileBox { X = destX, Y = destY, Layer = texDef.Layer, Buffer = cachedBuffer });
+                    tileSlices.Add(new UnmanagedTileBox { X = destPt.X, Y = destPt.Y, Layer = texDef.Layer, Buffer = cachedBuffer });
                 }
             }
 
             tileSlices.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-            // 3. Re-blit the stacked layers into the cleared sub-region
+            // 3. Re-blit updated region
             foreach (var slice in tileSlices)
             {
                 canvas.BlitRegionBlend(
@@ -171,12 +182,15 @@ namespace Solaris
         /// <param name="buffer">The target unmanaged image buffer.</param>
         /// <param name="destX">The starting X coordinate.</param>
         /// <param name="destY">The starting Y coordinate.</param>
-        /// <param name="size">The square width and height in pixels.</param>
+        /// <param name="size">The square size in pixels.</param>
         private static void ClearTileRegion(UnmanagedImageBuffer buffer, int destX, int destY, int size)
         {
-            for (var row = destY; row < destY + size; row++)
+            var endY = System.Math.Min(buffer.Height, destY + size);
+            var endX = System.Math.Min(buffer.Width, destX + size);
+
+            for (var row = System.Math.Max(0, destY); row < endY; row++)
             {
-                for (var col = destX; col < destX + size; col++)
+                for (var col = System.Math.Max(0, destX); col < endX; col++)
                 {
                     buffer.SetPixelUnsafe(col, row, 0, 0, 0, 0);
                 }
@@ -253,11 +267,9 @@ namespace Solaris
             if (glyphMap == null || glyphMap.Count == 0) return overlayFrame;
 
             using var g = Graphics.FromImage(overlayFrame);
-            // THE GRIP: Enable high-fidelity vector text rendering
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
-            // Establish string formatting rules to ensure symbols center perfectly inside the cell block
             using var sf = new StringFormat();
             sf.Alignment = StringAlignment.Center;
             sf.LineAlignment = StringAlignment.Center;
@@ -269,18 +281,14 @@ namespace Solaris
 
                 if (string.IsNullOrEmpty(glyph.Symbol)) continue;
 
-                // Map flat index location straight into 2D chessboard pixel boundaries
                 var cellX = (tileIndex % width) * textureSize;
                 var cellY = (tileIndex / width) * textureSize;
 
-                // Calculate the exact destination boundaries of the chessboard cell space
                 var targetRect = new RectangleF(cellX, cellY, textureSize, textureSize);
 
-                // Build font family profile dynamically
                 var fontStyle = glyph.IsBold ? FontStyle.Bold : FontStyle.Regular;
                 using var font = new Font(glyph.FontName, glyph.FontSize, fontStyle);
                 using var brush = new SolidBrush(glyph.Color);
-                // Draw the crisp vector character straight onto the bitmap buffer plane
                 g.DrawString(glyph.Symbol, font, brush, targetRect, sf);
             }
 
@@ -355,10 +363,8 @@ namespace Solaris
             var x = (position % width) * textureSize;
             var y = (position / width) * textureSize;
 
-            // Attempt fast ID lookup first
             var tileBuffer = TextureManager.GetBufferById(tileId);
 
-            // If it's not cached yet, register it and grab it
             if (tileBuffer == null && TextureManager.TryGetTexture(tileId, textures, out var texture))
             {
                 TextureManager.RegisterTexture(texture);
@@ -422,7 +428,6 @@ namespace Solaris
 
             aurora.IsEnabled = false;
 
-            // Pre-convert avatar once to avoid per-frame conversion overhead
             using var avatarBuffer = UnmanagedImageBuffer.FromBitmap(avatar);
 
             var frameWidth = width * textureSize;
@@ -433,23 +438,16 @@ namespace Solaris
                 var x = (step % width) * textureSize;
                 var y = (step / width) * textureSize;
 
-                // 1. Create a fresh, transparent frame for this specific step to prevent "ghost trails"
                 using var frame = new UnmanagedImageBuffer(frameWidth, frameHeight);
                 frame.Clear(0, 0, 0, 0);
 
-                // 2. Draw the avatar at the current step using unmanaged alpha blending
                 frame.BlitRegionBlend(avatarBuffer, 0, 0, avatarBuffer.Width, avatarBuffer.Height, x, y);
 
-                // 3. Push this frame immediately to the UI so we actually see the animation
                 using var tempBmp = frame.ToBitmap();
                 aurora.LayerThree.Source = tempBmp.ToBitmapImage();
 
-                // 4. Wait before drawing the next frame
                 await Task.Delay(100);
             }
-
-            // Optional: Clear the avatar after the animation is entirely done
-            // aurora.LayerThree.Source = null;
 
             aurora.IsEnabled = true;
         }
@@ -492,15 +490,14 @@ namespace Solaris
                     var srcPixel = pSrc[x];
                     var alpha = (byte)(srcPixel >> 24);
 
-                    if (alpha == 0) continue; // Skip transparent pixels completely
+                    if (alpha == 0) continue;
 
                     if (alpha == 255)
                     {
-                        pDest[x] = srcPixel; // Direct copy for fully opaque pixels
+                        pDest[x] = srcPixel;
                         continue;
                     }
 
-                    // Perform alpha blending for semi-transparent pixels
                     var dstPixel = pDest[x];
 
                     var srcB = (byte)(srcPixel & 0xFF);

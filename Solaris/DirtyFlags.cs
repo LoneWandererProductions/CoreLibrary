@@ -20,6 +20,7 @@ namespace Solaris
         TileMap = 1 << 0,   // Layer 1: Base terrain / static tiles
         Grid = 1 << 1,      // Layer 2: Polaris grid overlay
         Overlays = 1 << 2,  // Layer 3: Selection, glyphs, dynamic cursors
-        FullRedraw = TileMap | Grid | Overlays
+        Viewport = 1 << 3,
+        FullRedraw = TileMap | Grid | Overlays | Viewport
     }
 }

@@ -98,12 +98,32 @@ namespace Solaris
         private readonly HashSet<int> _dirtyTiles = new();
 
         /// <summary>
+        /// Tracks mouse position during pan operations.
+        /// </summary>
+        private Point _lastPanPoint;
+
+        /// <summary>
+        /// Indicates if pan operation is active.
+        /// </summary>
+        private bool _isPanning;
+
+        /// <summary>
+        /// Gets the active camera viewport managing zoom, panning, and spatial culling bounds.
+        /// </summary>
+        public Viewport ActiveViewport { get; } = new();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Polaris"/> class.
         /// </summary>
         public Polaris()
         {
             InitializeComponent();
             Initiate();
+
+            MouseWheel += OnMouseWheelZoom;
+            MouseMove += OnMouseMovePan;
+            MouseDown += OnMouseDownPan;
+            MouseUp += OnMouseUpPan;
         }
 
         // We use these properties to safely manage GDI+ memory
@@ -288,7 +308,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Processes dirty regions and repaints only affected tile sub-regions.
+        /// Processes dirty regions and repaints only affected tile sub-regions or viewport sweeps.
         /// </summary>
         public void RenderDirty()
         {
@@ -296,25 +316,91 @@ namespace Solaris
 
             lock (_lock)
             {
-                if (_dirtyFlags.HasFlag(DirtyFlags.TileMap))
+                if (_dirtyFlags.HasFlag(DirtyFlags.Viewport) || _dirtyTiles.Count == 0)
                 {
-                    if (_dirtyTiles.Count > 0 && BitmapLayerOne != null && PolarisMap != null)
+                    var newBitmap = Helper.GenerateImage(
+                        PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap, ActiveViewport);
+                    ReplaceBitmapLayerOne(newBitmap);
+                }
+                else if (_dirtyFlags.HasFlag(DirtyFlags.TileMap) && BitmapLayerOne != null && PolarisMap != null)
+                {
+                    foreach (var tileId in _dirtyTiles)
                     {
-                        foreach (var tileId in _dirtyTiles)
-                        {
-                            Helper.RedrawTileRegion(BitmapLayerOne, tileId, PolarisWidth, PolarisTextureSize, PolarisTextures, PolarisMap);
-                        }
-                        LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
+                        Helper.RedrawTileRegion(
+                            BitmapLayerOne, tileId, PolarisWidth, PolarisTextureSize, PolarisTextures, PolarisMap, ActiveViewport);
                     }
-                    else
-                    {
-                        var newBitmap = Helper.GenerateImage(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap);
-                        ReplaceBitmapLayerOne(newBitmap);
-                    }
+                    LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
                 }
 
                 _dirtyTiles.Clear();
                 _dirtyFlags = DirtyFlags.None;
+            }
+        }
+
+        #endregion
+
+        #region Viewport Input Interaction Handlers
+
+        /// <summary>
+        /// Called when [mouse wheel zoom].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseWheelEventArgs"/> instance containing the event data.</param>
+        private void OnMouseWheelZoom(object sender, MouseWheelEventArgs e)
+        {
+            var zoomChange = e.Delta > 0 ? 1.1f : 0.9f;
+            ActiveViewport.Zoom = Math.Clamp(ActiveViewport.Zoom * zoomChange, 0.2f, 5.0f);
+
+            MarkLayerDirty(DirtyFlags.Viewport);
+            RenderDirty();
+        }
+
+        /// <summary>
+        /// Called when [mouse down pan].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void OnMouseDownPan(object sender, MouseButtonEventArgs e)
+        {
+            if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                _isPanning = true;
+                _lastPanPoint = e.GetPosition(this);
+                CaptureMouse();
+            }
+        }
+
+        /// <summary>
+        /// Called when [mouse move pan].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
+        private void OnMouseMovePan(object sender, MouseEventArgs e)
+        {
+            if (!_isPanning) return;
+
+            var currentPoint = e.GetPosition(this);
+            var delta = currentPoint - _lastPanPoint;
+
+            ActiveViewport.PanX += (float)delta.X;
+            ActiveViewport.PanY += (float)delta.Y;
+            _lastPanPoint = currentPoint;
+
+            MarkLayerDirty(DirtyFlags.Viewport);
+            RenderDirty();
+        }
+
+        /// <summary>
+        /// Called when [mouse up pan].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void OnMouseUpPan(object sender, MouseButtonEventArgs e)
+        {
+            if (_isPanning && e.MiddleButton == MouseButtonState.Released)
+            {
+                _isPanning = false;
+                ReleaseMouseCapture();
             }
         }
 
@@ -332,6 +418,9 @@ namespace Solaris
 
             Touch.Height = PolarisHeight * PolarisTextureSize;
             Touch.Width = PolarisWidth * PolarisTextureSize;
+
+            ActiveViewport.ScreenWidth = (int)Touch.Width;
+            ActiveViewport.ScreenHeight = (int)Touch.Height;
 
             if (PolarisGrid)
                 LayerTwo.Source = Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
@@ -430,15 +519,15 @@ namespace Solaris
         /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var position = e.GetPosition(Touch);
+            var rawPosition = e.GetPosition(Touch);
+            var screenPoint = new System.Drawing.PointF((float)rawPosition.X, (float)rawPosition.Y);
 
-            var gridX = (int)position.X / PolarisTextureSize;
-            var gridY = (int)position.Y / PolarisTextureSize;
+            var id = ActiveViewport.ScreenToWorld(screenPoint, PolarisWidth, PolarisHeight, PolarisTextureSize);
 
-            _cursor = new Coordinate2D(gridX, gridY);
-            var id = _cursor.ToId(PolarisWidth);
-
-            Clicked?.Invoke(this, id);
+            if (id >= 0)
+            {
+                Clicked?.Invoke(this, id);
+            }
         }
 
         #endregion

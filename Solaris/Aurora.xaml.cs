@@ -139,6 +139,11 @@ namespace Solaris
         /// </summary>
         private readonly HashSet<int> _dirtyTiles = new();
 
+        /// <summary>
+        /// Gets the camera viewport managing dynamic zoom and entity tracking projection.
+        /// </summary>
+        public Viewport ActiveViewport { get; } = new();
+
         /// <inheritdoc />
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Solaris.Aurora" /> class.
@@ -498,20 +503,18 @@ namespace Solaris
         {
             if (_dirtyFlags == DirtyFlags.None) return;
 
-            if (_dirtyFlags.HasFlag(DirtyFlags.TileMap))
+            if (_dirtyFlags.HasFlag(DirtyFlags.Viewport) || _dirtyTiles.Count == 0)
             {
-                if (_dirtyTiles.Count > 0 && BitmapLayerOne != null && AuroraMap != null)
+                UpdateMapAndBitmap();
+            }
+            else if (_dirtyFlags.HasFlag(DirtyFlags.TileMap) && BitmapLayerOne != null && AuroraMap != null)
+            {
+                foreach (var tileId in _dirtyTiles)
                 {
-                    foreach (var tileId in _dirtyTiles)
-                    {
-                        Helper.RedrawTileRegion(BitmapLayerOne, tileId, AuroraWidth, AuroraTextureSize, AuroraTextures, AuroraMap);
-                    }
-                    LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
+                    Helper.RedrawTileRegion(
+                        BitmapLayerOne, tileId, AuroraWidth, AuroraTextureSize, AuroraTextures, AuroraMap, ActiveViewport);
                 }
-                else
-                {
-                    UpdateMapAndBitmap();
-                }
+                LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
             }
 
             if (_dirtyFlags.HasFlag(DirtyFlags.Overlays))
@@ -538,6 +541,9 @@ namespace Solaris
             Touch.Height = AuroraHeight * AuroraTextureSize;
             Touch.Width = AuroraWidth * AuroraTextureSize;
 
+            ActiveViewport.ScreenWidth = (int)Touch.Width;
+            ActiveViewport.ScreenHeight = (int)Touch.Height;
+
             UpdateMapAndBitmap();
 
             if (AuroraGrid)
@@ -558,7 +564,7 @@ namespace Solaris
             if (AuroraTextures == null) return;
 
             var newBitmap =
-                Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap);
+                Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap, ActiveViewport);
             ReplaceBitmapLayerOne(newBitmap);
         }
 
@@ -598,15 +604,15 @@ namespace Solaris
         /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void Touch_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var position = e.GetPosition(Touch);
+            var rawPosition = e.GetPosition(Touch);
+            var screenPoint = new PointF((float)rawPosition.X, (float)rawPosition.Y);
 
-            var gridX = (int)position.X / AuroraTextureSize;
-            var gridY = (int)position.Y / AuroraTextureSize;
+            var id = ActiveViewport.ScreenToWorld(screenPoint, AuroraWidth, AuroraHeight, AuroraTextureSize);
 
-            _cursor = new Coordinate2D(gridX, gridY);
-            var id = _cursor.ToId(AuroraWidth);
-
-            TileClicked?.Invoke(this, id);
+            if (id >= 0)
+            {
+                TileClicked?.Invoke(this, id);
+            }
         }
 
         #endregion
