@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Imaging.Texture\Imaging.Texture.csproj" />
     <ProjectReference Include="..\RenderEngine\RenderEngine.csproj" />
   </ItemGroup>
 

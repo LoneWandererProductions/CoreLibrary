@@ -6,14 +6,15 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Extended.Extensions;
+using RenderEngine;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using Extended.Extensions;
-using RenderEngine;
+using System.Windows.Media.Imaging;
 using Brushes = System.Drawing.Brushes;
 
 namespace Solaris
@@ -177,7 +178,7 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Clears a square pixel bounding box within an unmanaged buffer to full transparency.
+        /// Clears a square pixel bounding box within an unmanaged buffer to full transparency safely clamped to canvas dimensions.
         /// </summary>
         /// <param name="buffer">The target unmanaged image buffer.</param>
         /// <param name="destX">The starting X coordinate.</param>
@@ -185,12 +186,16 @@ namespace Solaris
         /// <param name="size">The square size in pixels.</param>
         private static void ClearTileRegion(UnmanagedImageBuffer buffer, int destX, int destY, int size)
         {
-            var endY = System.Math.Min(buffer.Height, destY + size);
+            var startX = System.Math.Max(0, destX);
+            var startY = System.Math.Max(0, destY);
             var endX = System.Math.Min(buffer.Width, destX + size);
+            var endY = System.Math.Min(buffer.Height, destY + size);
 
-            for (var row = System.Math.Max(0, destY); row < endY; row++)
+            if (startX >= endX || startY >= endY) return;
+
+            for (var row = startY; row < endY; row++)
             {
-                for (var col = System.Math.Max(0, destX); col < endX; col++)
+                for (var col = startX; col < endX; col++)
                 {
                     buffer.SetPixelUnsafe(col, row, 0, 0, 0, 0);
                 }
@@ -412,13 +417,13 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Displays movement animation frame by frame.
+        /// Displays movement animation frame by frame and resets temporary frames when finished.
         /// </summary>
-        /// <param name="aurora">The aurora.</param>
-        /// <param name="steps">The steps.</param>
-        /// <param name="avatar">The avatar.</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
+        /// <param name="aurora">The aurora control instance.</param>
+        /// <param name="steps">The tile steps sequence.</param>
+        /// <param name="avatar">The avatar bitmap.</param>
+        /// <param name="width">The width in tile units.</param>
+        /// <param name="height">The height in tile units.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <returns>Task representing the asynchronous operation.</returns>
         internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap? avatar,
@@ -449,20 +454,30 @@ namespace Solaris
                 await Task.Delay(100);
             }
 
+            // Cleanly restore LayerThree to its static display buffer or null
+            if (aurora.BitmapLayerThree != null)
+            {
+                aurora.LayerThree.Source = aurora.BitmapLayerThree.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
+            }
+            else
+            {
+                aurora.LayerThree.Source = null;
+            }
+
             aurora.IsEnabled = true;
         }
 
         /// <summary>
-        /// Blits a region from source to destination using fast unsafe alpha blending.
+        /// Blits a region from source to destination using fast unsafe alpha blending with full boundary clipping guards.
         /// </summary>
-        /// <param name="dest">The dest.</param>
-        /// <param name="src">The source.</param>
-        /// <param name="srcX">The source x.</param>
-        /// <param name="srcY">The source y.</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <param name="destX">The dest x.</param>
-        /// <param name="destY">The dest y.</param>
+        /// <param name="dest">The destination unmanaged image buffer.</param>
+        /// <param name="src">The source unmanaged image buffer.</param>
+        /// <param name="srcX">The source X offset.</param>
+        /// <param name="srcY">The source Y offset.</param>
+        /// <param name="width">The region width in pixels.</param>
+        /// <param name="height">The region height in pixels.</param>
+        /// <param name="destX">The destination X offset.</param>
+        /// <param name="destY">The destination Y offset.</param>
         private static unsafe void BlitRegionBlend(
             this UnmanagedImageBuffer dest,
             UnmanagedImageBuffer src,
@@ -470,6 +485,63 @@ namespace Solaris
             int width, int height,
             int destX, int destY)
         {
+            if (dest == null || src == null) return;
+
+            // --- DESTINATION CLIPPING GUARDS ---
+            if (destX < 0)
+            {
+                var shift = -destX;
+                srcX += shift;
+                width -= shift;
+                destX = 0;
+            }
+
+            if (destY < 0)
+            {
+                var shift = -destY;
+                srcY += shift;
+                height -= shift;
+                destY = 0;
+            }
+
+            if (destX + width > dest.Width)
+            {
+                width = dest.Width - destX;
+            }
+
+            if (destY + height > dest.Height)
+            {
+                height = dest.Height - destY;
+            }
+
+            // --- SOURCE CLIPPING GUARDS ---
+            if (srcX < 0)
+            {
+                var shift = -srcX;
+                destX += shift;
+                width -= shift;
+                srcX = 0;
+            }
+
+            if (srcY < 0)
+            {
+                var shift = -srcY;
+                destY += shift;
+                height -= shift;
+                srcY = 0;
+            }
+
+            if (srcX + width > src.Width)
+            {
+                width = src.Width - srcX;
+            }
+
+            if (srcY + height > src.Height)
+            {
+                height = src.Height - srcY;
+            }
+
+            // Return immediately if clipped region is entirely off-screen or empty
             if (width <= 0 || height <= 0) return;
 
             var srcStride = src.Width * UnmanagedImageBuffer.BytesPerPixel;

@@ -162,6 +162,14 @@ namespace Solaris
         internal UnmanagedImageBuffer? BitmapLayerOne { get; private set; }
 
         /// <summary>
+        /// Gets the bitmap layer three buffer.
+        /// </summary>
+        /// <value>
+        /// The bitmap layer three buffer.
+        /// </value>
+        internal UnmanagedImageBuffer? BitmapLayerThree => _thirdLayer;
+
+        /// <summary>
         /// Occurs when [tile clicked].
         /// </summary>
         public event EventHandler<int>? TileClicked;
@@ -503,18 +511,22 @@ namespace Solaris
         {
             if (_dirtyFlags == DirtyFlags.None) return;
 
-            if (_dirtyFlags.HasFlag(DirtyFlags.Viewport) || _dirtyTiles.Count == 0)
+            // Only rebuild full canvas if Viewport moved or FullRedraw was explicitly requested
+            if (_dirtyFlags.HasFlag(DirtyFlags.Viewport) || _dirtyFlags.HasFlag(DirtyFlags.FullRedraw))
             {
                 UpdateMapAndBitmap();
             }
             else if (_dirtyFlags.HasFlag(DirtyFlags.TileMap) && BitmapLayerOne != null && AuroraMap != null)
             {
-                foreach (var tileId in _dirtyTiles)
+                if (_dirtyTiles.Count > 0)
                 {
-                    Helper.RedrawTileRegion(
-                        BitmapLayerOne, tileId, AuroraWidth, AuroraTextureSize, AuroraTextures, AuroraMap, ActiveViewport);
+                    foreach (var tileId in _dirtyTiles)
+                    {
+                        Helper.RedrawTileRegion(
+                            BitmapLayerOne, tileId, AuroraWidth, AuroraTextureSize, AuroraTextures, AuroraMap, ActiveViewport);
+                    }
+                    LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
                 }
-                LayerOne.Source = BitmapLayerOne.UpdateWriteableBitmap(LayerOne.Source as WriteableBitmap);
             }
 
             if (_dirtyFlags.HasFlag(DirtyFlags.Overlays))
