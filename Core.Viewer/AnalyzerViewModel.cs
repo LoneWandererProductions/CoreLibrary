@@ -223,7 +223,7 @@ namespace Core.Viewer
                 foreach (var file in files)
                     yield return file;
 
-                string?[] dirs = Array.Empty<string>();
+                var dirs = Array.Empty<string>();
                 try
                 {
                     dirs = Directory.GetDirectories(current);

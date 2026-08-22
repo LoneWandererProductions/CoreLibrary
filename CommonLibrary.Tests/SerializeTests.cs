@@ -25,7 +25,7 @@ namespace CommonLibrary.Tests
         /// <returns> Returns a unique test path.</returns>
         private string GetUniqueTestPath(string prefix)
         {
-            string fileName = $"{prefix}_{Guid.NewGuid():N}.xml";
+            var fileName = $"{prefix}_{Guid.NewGuid():N}.xml";
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
 

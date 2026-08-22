@@ -79,7 +79,7 @@ namespace Solaris
                     return;
                 }
 
-                Point screenPt = viewport?.WorldToScreen(tile.Key, width, textureSize) ?? new Point(tileX * textureSize, tileY * textureSize);
+                var screenPt = viewport?.WorldToScreen(tile.Key, width, textureSize) ?? new Point(tileX * textureSize, tileY * textureSize);
 
                 foreach (var textureId in tile.Value)
                 {
@@ -135,7 +135,7 @@ namespace Solaris
         {
             if (canvas == null || width <= 0 || textureSize <= 0) return;
 
-            Point destPt = viewport?.WorldToScreen(tileIndex, width, textureSize) ?? new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
+            var destPt = viewport?.WorldToScreen(tileIndex, width, textureSize) ?? new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
 
             // 1. Clear only the sub-region bounding box
             ClearTileRegion(canvas, destPt.X, destPt.Y, textureSize);

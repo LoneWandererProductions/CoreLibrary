@@ -91,5 +91,11 @@ namespace Imaging.Texture
         /// The persistence.
         /// </value>
         public double Persistence { get; init; }
+
+        /// <summary>
+        /// Defines how many cells across the texture will contain a stone center.
+        /// A higher number means smaller, more densely packed stones.
+        /// </summary>
+        public int VoronoiGridSize { get; init; } = 4; // Default to 4
     }
 }

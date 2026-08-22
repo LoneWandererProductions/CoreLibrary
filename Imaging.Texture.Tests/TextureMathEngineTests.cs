@@ -52,7 +52,7 @@ namespace Imaging.Texture.Tests
 
             // Initialize your actual noise map based on the test dimensions
             _noiseGenerator = new NoiseGenerator(TestWidth, TestHeight);
-            Console.WriteLine($"Textures will be saved to: {_outputDirectory}");
+            Trace.WriteLine($"Textures will be saved to: {_outputDirectory}");
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Imaging.Texture.Tests
         public void GenerateFoliage_VisualTest()
         {
             // Distance-pinched cellular matrix mapping
-            var buffer = TextureMathEngine.GenerateFoliage(TestWidth, TestHeight);
+            var buffer = TextureMathEngine.GenerateFoliage(TestWidth, TestHeight, _noiseGenerator);
             SaveBufferToImage(buffer, "13_Foliage.png");
         }
 
@@ -213,6 +213,49 @@ namespace Imaging.Texture.Tests
             // Longitudinal sawn tree trunk ellipse mapping
             var buffer = TextureFactory.GenerateWoodPlank(TestWidth, TestHeight, _noiseGenerator);
             SaveBufferToImage(buffer, "14_WoodPlank.png");
+        }
+
+        /// <summary>
+        /// Generates the directional stone visual test with solid, dark mortar.
+        /// Perfect for continuous dungeon walls or paved roads.
+        /// </summary>
+        [TestMethod]
+        public void GenerateDirectionalStone_VisualTest()
+        {
+            // Calls the factory wrapper we built, ensuring mortar is filled in
+            var buffer = TextureFactory.GenerateStoneTexture(TestWidth, TestHeight, _noiseGenerator, fillArea: true);
+            SaveBufferToImage(buffer, "15_DirectionalStone_Solid_4.png");
+        }
+
+        /// <summary>
+        /// Generates the directional stone visual test with transparent gaps.
+        /// Designed for dropping loose rocks or rubble over existing terrain tiles.
+        /// </summary>
+        [TestMethod]
+        public void GenerateDirectionalStoneTransparent_VisualTest()
+        {
+            // By setting fillArea to false, the deep recesses are dropped to Alpha 0
+            var buffer = TextureFactory.GenerateStoneTexture(TestWidth, TestHeight, _noiseGenerator, fillArea: false);
+            SaveBufferToImage(buffer, "16_DirectionalStone_Transparent_4.png");
+        }
+
+        /// <summary>
+        /// Generates the directional stone visual test scaled up to 16.
+        /// </summary>
+        [TestMethod]
+        public void GenerateDirectionalStone_VisualTest_Scale()
+        {
+
+            var conf = TextureConstants.GetStoneConfig();
+            // Clone or create a new config just for this test
+            var testConfig = new TextureConfig
+            {
+                VoronoiGridSize = 16, // Scale up the stones for the larger test image
+                RgbRamp = conf.RgbRamp
+            };
+
+            var buffer = TextureFactory.GenerateStoneTexture(TestWidth, TestHeight, _noiseGenerator, testConfig, fillArea: true);
+            SaveBufferToImage(buffer, "17_DirectionalStone_Solid_16.png");
         }
 
         /// <summary>

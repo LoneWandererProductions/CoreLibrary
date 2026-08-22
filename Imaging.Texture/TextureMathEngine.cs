@@ -960,15 +960,17 @@ namespace Imaging.Texture
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         internal static RawTextureBuffer GenerateFoliage(int width,
-            int height,
-            int leafSize = 40,
-            int alpha = 255,
-            byte leafR = 34, byte leafG = 110, byte leafB = 24, // Main Leaf Green
-            byte shadowR = 12, byte shadowG = 35, byte shadowB = 10) // Deep Shade/Background
+                    int height,
+                    object noiseGenInstance,
+                    int leafSize = 40,
+                    int alpha = 255,
+                    byte leafR = 34, byte leafG = 110, byte leafB = 24, // Main Leaf Green
+                    byte shadowR = 12, byte shadowG = 35, byte shadowB = 10) // Deep Shade/Background
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
             var rand = new Random(54321); // Grounded stable seed
+            dynamic noiseGen = noiseGenInstance;
 
             var gridCols = (width / leafSize) + 2;
             var gridRows = (height / leafSize) + 2;
@@ -998,6 +1000,13 @@ namespace Imaging.Texture
                     var minLeafDist = double.MaxValue;
                     var leafSeedValue = 0.0;
 
+                    // 1. GENERATE CANOPY DEPTH (Global shadow mask)
+                    var canopyDepth = (double)noiseGen.Turbulence(x, y, 48.0) / 255.0;
+
+                    // 2. GENERATE MICRO WARP (Jagged leaf edges)
+                    var warpX = ((double)noiseGen.Turbulence(x + 10, y + 20, 8.0) / 255.0 - 0.5) * 8.0;
+                    var warpY = ((double)noiseGen.Turbulence(x - 10, y - 20, 8.0) / 255.0 - 0.5) * 8.0;
+
                     var startX = Math.Max(0, cellX - 1);
                     var endX = Math.Min(gridCols - 1, cellX + 1);
                     var startY = Math.Max(0, cellY - 1);
@@ -1007,39 +1016,29 @@ namespace Imaging.Texture
                     {
                         for (var checkX = startX; checkX <= endX; checkX++)
                         {
-                            double dx = x - featurePointsX[checkX, checkY];
-                            double dy = y - featurePointsY[checkX, checkY];
+                            double dx = (x + warpX) - featurePointsX[checkX, checkY];
+                            double dy = (y + warpY) - featurePointsY[checkX, checkY];
 
-                            // SHAPE MATH: Elongate vertically (dx * 1.8) and pinch the lateral sides (|dx| * 0.5)
-                            // This mathematically morphs raw circular cell structures into pointed lanceolate leaf shapes.
                             var leafShapeDist = Math.Sqrt(dx * dx * 1.8 + dy * dy * 0.8) + Math.Abs(dx) * 0.5;
 
                             if (leafShapeDist < minLeafDist)
                             {
                                 minLeafDist = leafShapeDist;
-                                // Derive a unique pseudo-random modifier per leaf based on its coordinates
                                 leafSeedValue = (featurePointsX[checkX, checkY] % 100) / 100.0;
                             }
                         }
                     }
 
-                    // Normalize distance to build a rounded 3D lighting/shading envelope profile
                     var blendFactor = Math.Clamp(minLeafDist / maxLeafRadius, 0.0, 1.0);
 
-                    // Invert layout so centers are bright and leaf boundaries drop safely into shadow gradients
-                    var lightIntensity = 1.0 - blendFactor;
+                    // Combine geometric distance with canopy lighting depth
+                    var lightIntensity = (1.0 - blendFactor) * (0.3 + (canopyDepth * 0.7));
 
-                    // Infuse slight leaf-to-leaf color variation using our seed tracker
-                    var rColorModifier = 0.85 + (leafSeedValue * 0.3); // +/- 15% variance
+                    var rColorModifier = 0.85 + (leafSeedValue * 0.3);
 
-                    // Blend base color with deep ambient shadows toward edge structures
-                    var finalR = (byte)Math.Clamp((shadowR + (leafR - shadowR) * lightIntensity) * rColorModifier, 0,
-                        255);
-                    var finalG =
-                        (byte)Math.Clamp((shadowG + (leafG - shadowG) * lightIntensity) * 1.0, 0,
-                            255); // Keep greens prominent
-                    var finalB = (byte)Math.Clamp((shadowB + (leafB - shadowB) * lightIntensity) * rColorModifier, 0,
-                        255);
+                    var finalR = (byte)Math.Clamp((shadowR + (leafR - shadowR) * lightIntensity) * rColorModifier, 0, 255);
+                    var finalG = (byte)Math.Clamp((shadowG + (leafG - shadowG) * lightIntensity) * 1.0, 0, 255);
+                    var finalB = (byte)Math.Clamp((shadowB + (leafB - shadowB) * lightIntensity) * rColorModifier, 0, 255);
 
                     span[idx++] = finalB;
                     span[idx++] = finalG;
@@ -1177,6 +1176,119 @@ namespace Imaging.Texture
                     span[idx++] = (byte)(grainG + (baseG - grainG) * grainFactor); // G
                     span[idx++] = (byte)(grainR + (baseR - grainR) * grainFactor); // R
                     span[idx++] = (byte)alpha; // A
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a haptic stone texture using Voronoi cellular noise and baked directional lighting.
+        /// Writes directly to BGRA byte array in RawTextureBuffer.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="colorPalette">The color palette RGB (Highlight, Base, Shadow, Mortar).</param>
+        /// <param name="gridCells">The number of cells per axis for the Voronoi grid.</param>
+        /// <param name="fillArea">If true, fills mortar with color. If false, mortar is transparent.</param>
+        /// <returns>The generated texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateDirectionalStone(
+            int width,
+            int height,
+            object noiseGenInstance,
+            byte[] colorPalette,
+            int gridCells = 4,
+            bool fillArea = false)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+
+            var noiseGen = noiseGenInstance as NoiseGenerator;
+            if (noiseGen == null) return buffer;
+
+            // 1. Get stone heights (0.0 is mortar, 1.0 is peak rock)
+            var heightMap = noiseGen.GenerateVoronoiMap(gridCells, TextureConstants.DefaultSeed);
+
+            // Lighting vector (Top-Left, pointing down at the surface)
+            double lx = -1.0, ly = -1.0, lz = 1.5;
+            var lightLen = Math.Sqrt(lx * lx + ly * ly + lz * lz);
+            lx /= lightLen; ly /= lightLen; lz /= lightLen;
+
+            var bumpDepth = 4.0;
+            var pixels = buffer.PixelData;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // Calculate row-major packed offset for BGRA byte array
+                    var index = (y * width + x) * 4;
+                    var h = heightMap[y, x];
+
+                    // Drop pixels into full transparency if we don't want to fill mortar
+                    if (!fillArea && h < 0.15)
+                    {
+                        pixels[index] = 0; // Blue
+                        pixels[index + 1] = 0; // Green
+                        pixels[index + 2] = 0; // Red
+                        pixels[index + 3] = 0; // Alpha
+                        continue;
+                    }
+
+                    // Sample neighbors for slope calculations with toroidal wrapping
+                    var hLeft = heightMap[y, (x - 1 + width) % width];
+                    var hRight = heightMap[y, (x + 1) % width];
+                    var hUp = heightMap[(y - 1 + height) % height, x];
+                    var hDown = heightMap[(y + 1) % height, x];
+
+                    var dx = (hLeft - hRight) * bumpDepth;
+                    var dy = (hUp - hDown) * bumpDepth;
+                    const double dz = 1.0;
+
+                    var nLen = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                    var nx = dx / nLen;
+                    var ny = dy / nLen;
+                    var nz = dz / nLen;
+
+                    // Light intensity calculation
+                    var intensity = Math.Clamp((nx * lx) + (ny * ly) + (nz * lz), 0.0, 1.0);
+
+                    byte r, g, b;
+                    byte alpha = 255;
+
+                    // Map intensity to RGB palette
+                    if (h < 0.15) // Mortar pixel (fillArea is true)
+                    {
+                        r = colorPalette[9]; g = colorPalette[10]; b = colorPalette[11];
+                    }
+                    else if (intensity > 0.75) // Highlight
+                    {
+                        r = colorPalette[0]; g = colorPalette[1]; b = colorPalette[2];
+                    }
+                    else if (intensity > 0.35) // Base Mid-tone
+                    {
+                        r = colorPalette[3]; g = colorPalette[4]; b = colorPalette[5];
+                    }
+                    else // Deep Shadow
+                    {
+                        r = colorPalette[6]; g = colorPalette[7]; b = colorPalette[8];
+                    }
+
+                    // Apply micro-grit noise variation across rock faces
+                    if (h >= 0.15)
+                    {
+                        var grit = noiseGen.GetNoise(x, y) * 0.15;
+                        r = (byte)Math.Clamp(r - (r * grit), 0, 255);
+                        g = (byte)Math.Clamp(g - (g * grit), 0, 255);
+                        b = (byte)Math.Clamp(b - (b * grit), 0, 255);
+                    }
+
+                    // Write BGRA directly
+                    pixels[index] = b; // Blue
+                    pixels[index + 1] = g; // Green
+                    pixels[index + 2] = r; // Red
+                    pixels[index + 3] = alpha; // Alpha
                 }
             }
 

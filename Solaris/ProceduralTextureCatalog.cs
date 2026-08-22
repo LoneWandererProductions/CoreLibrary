@@ -54,7 +54,7 @@ namespace Solaris
                 0);
             Register(ProceduralTile.PlasmaArc, TextureFactory.GeneratePlasmaArc(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.TreeBark, TextureFactory.GenerateTreeBark(textureSize, textureSize, noise), 0);
-            Register(ProceduralTile.Foliage, TextureFactory.GenerateFoliage(textureSize, textureSize), 0);
+            Register(ProceduralTile.Foliage, TextureFactory.GenerateFoliage(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.WoodPlank, TextureFactory.GenerateWoodPlank(textureSize, textureSize, noise), 0);
         }
 

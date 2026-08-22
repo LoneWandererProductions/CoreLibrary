@@ -208,7 +208,7 @@ namespace Imaging.Tests
             var imagePath = Path.Combine(SampleImagesFolder.FullName, "base.png");
 
             var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
-            Bitmap? btm = image.ToBitmap();
+            var btm = image.ToBitmap();
 
             var point = new Point { X = 51, Y = 51 };
 
@@ -553,7 +553,7 @@ namespace Imaging.Tests
             var cifPath = Path.Combine(SampleImagesFolder.FullName, "base.cif");
 
             var image = ImageStreamMedia.GetBitmapImageFileStream(imagePath);
-            Bitmap? btm = image.ToBitmap();
+            var btm = image.ToBitmap();
 
             //convert to cif
             Custom.GenerateBitmapToCifFile(btm, cifPath);

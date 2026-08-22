@@ -99,7 +99,7 @@ namespace Core.Apps.Rules
 
                 // 4. The Intersection Test
                 // If the method reads ANY variable that is written to inside the loop, it is NOT invariant.
-                bool dependsOnLoopState =
+                var dependsOnLoopState =
                     readByInvocation.Any(v => mutatedInLoop.Contains(v, SymbolEqualityComparer.Default));
 
                 if (!dependsOnLoopState)

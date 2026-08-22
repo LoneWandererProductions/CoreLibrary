@@ -196,7 +196,7 @@ namespace RenderEngine
                 10007 => TextureMathEngine.GenerateCanvas(_procWidth, _procHeight, lineSpacing: 8, lineThickness: 1),
                 // WIRED: Divert requests safely into your custom factory configurations
                 10008 => TextureFactory.GenerateTreeBark(_procWidth, _procHeight, _lazyNoiseGen),
-                10009 => TextureFactory.GenerateFoliage(_procWidth, _procHeight),
+                10009 => TextureFactory.GenerateFoliage(_procWidth, _procHeight, _lazyNoiseGen),
                 10010 => TextureFactory.GenerateWoodPlank(_procWidth, _procHeight, _lazyNoiseGen),
                 _ => null
             };

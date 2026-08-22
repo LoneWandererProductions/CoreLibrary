@@ -55,7 +55,7 @@ namespace Core.Apps.Development
                 return CommandResult.Fail("No analyzers found via CommandFactory.");
 
             var allDiagnostics = new List<Diagnostic>();
-            List<string?> csFiles = Directory.EnumerateFiles(rootPath, "*.cs", SearchOption.AllDirectories).ToList();
+            var csFiles = Directory.EnumerateFiles(rootPath, "*.cs", SearchOption.AllDirectories).ToList();
 
             foreach (var filePath in csFiles)
             {

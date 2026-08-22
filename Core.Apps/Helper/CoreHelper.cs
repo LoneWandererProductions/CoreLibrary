@@ -163,7 +163,7 @@ namespace Core.Apps.Helper
             {
                 var current = stack.Pop();
 
-                string?[] files = Array.Empty<string>();
+                var files = Array.Empty<string>();
                 try
                 {
                     files = Directory.GetFiles(current, pattern);
@@ -176,7 +176,7 @@ namespace Core.Apps.Helper
                 foreach (var f in files)
                     yield return f;
 
-                string?[] dirs = Array.Empty<string>();
+                var dirs = Array.Empty<string>();
                 try
                 {
                     dirs = Directory.GetDirectories(current);

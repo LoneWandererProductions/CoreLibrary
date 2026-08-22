@@ -96,11 +96,11 @@ namespace Core.Apps.Rules
 
                 // Extract line number (Roslyn line numbers are 0-indexed, your Diagnostic class expects 1-indexed)
                 var lineSpan = diag.Location.GetLineSpan();
-                int lineNumber = lineSpan.StartLinePosition.Line + 1;
-                string targetFile = lineSpan.Path ?? filePath ?? string.Empty;
+                var lineNumber = lineSpan.StartLinePosition.Line + 1;
+                var targetFile = lineSpan.Path ?? filePath ?? string.Empty;
 
                 // Format message to include the Roslyn error code (e.g., CS0168) for context
-                string message = $"{diag.Id}: {diag.GetMessage()}";
+                var message = $"{diag.Id}: {diag.GetMessage()}";
                 const string source = "roslyn";
 
                 yield return new Diagnostic(

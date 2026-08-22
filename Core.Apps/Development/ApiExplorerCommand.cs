@@ -78,7 +78,7 @@ namespace Core.Apps.Development
             "window", ..];
 
             var sb = new StringBuilder();
-            IEnumerable<string?> files = Directory
+            var files = Directory
                 .EnumerateFiles(rootPath, CoreResources.ResourceCsExtension, SearchOption.AllDirectories)
                 .Where(f => !CoreHelper.ShouldIgnoreFile(f));
 

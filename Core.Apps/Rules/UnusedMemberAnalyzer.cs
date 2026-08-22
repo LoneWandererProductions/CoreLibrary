@@ -90,8 +90,8 @@ namespace Core.Apps.Rules
             // 3. Analyze all gathered symbols
             foreach (var (symbol, node, name) in symbolsToCheck)
             {
-                bool isLocalVariable = symbol is ILocalSymbol;
-                bool isPrivateMember = symbol.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Private;
+                var isLocalVariable = symbol is ILocalSymbol;
+                var isPrivateMember = symbol.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Private;
 
                 // We only care about Private class members OR Local variables
                 if (!isPrivateMember && !isLocalVariable)
@@ -104,7 +104,7 @@ namespace Core.Apps.Rules
                 // 4. Check for usage
                 if (!CoreHelper.IsSymbolUsed(model, root, symbol))
                 {
-                    string symbolType = isLocalVariable ? "Local variable" : "Private member";
+                    var symbolType = isLocalVariable ? "Local variable" : "Private member";
 
                     yield return new Diagnostic(
                         Name,

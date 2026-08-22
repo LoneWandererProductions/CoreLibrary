@@ -53,7 +53,7 @@ namespace Core.Viewer
                 return;
             }
 
-            string? sortBy = headerClicked.Column.Header.ToString();
+            var sortBy = headerClicked.Column.Header.ToString();
 
             ListSortDirection direction;
             if (headerClicked != _lastHeaderClicked)
@@ -82,12 +82,12 @@ namespace Core.Viewer
         private void Sort(string sortBy, ListSortDirection direction)
         {
             // Get the view that WPF automatically created for the ItemsSource
-            ICollectionView dataView = CollectionViewSource.GetDefaultView(DiagnosticsListView.ItemsSource);
+            var dataView = CollectionViewSource.GetDefaultView(DiagnosticsListView.ItemsSource);
 
             if (dataView == null) return;
 
             dataView.SortDescriptions.Clear();
-            SortDescription sd = new SortDescription(sortBy, direction);
+            var sd = new SortDescription(sortBy, direction);
             dataView.SortDescriptions.Add(sd);
             dataView.Refresh();
         }

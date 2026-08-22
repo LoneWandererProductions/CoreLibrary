@@ -19,7 +19,7 @@ namespace Imaging.Texture
         private readonly int _height;
 
         /// <summary>
-        ///     A 2D array storing precomputed noise values.
+        ///     A 2D array storing precomputed random noise values.
         /// </summary>
         private readonly double[,] _noise;
 
@@ -54,8 +54,7 @@ namespace Imaging.Texture
             {
                 for (var x = 0; x < _width; x++)
                 {
-                    noiseData[y, x] =
-                        rand.NextDouble(); // Assign a random value between 0 and 1random.NextDouble(); // Random value between 0.0 and 1.0
+                    noiseData[y, x] = rand.NextDouble();
                 }
             }
 
@@ -74,27 +73,6 @@ namespace Imaging.Texture
             x = (x + _width) % _width; // Wrap around horizontally
             y = (y + _height) % _height; // Wrap around vertically
             return _noise[y, x];
-        }
-
-        /// <summary>
-        ///     Computes turbulence noise by layering multiple octaves of smooth noise.
-        ///     Used to create more complex and natural-looking textures.
-        /// </summary>
-        /// <param name="x">The x-coordinate.</param>
-        /// <param name="y">The y-coordinate.</param>
-        /// <param name="size">The initial size of the noise layers (higher values create larger patterns).</param>
-        /// <returns>A turbulence value that enhances visual texture variation.</returns>
-        public double Turbulence(int x, int y, double size)
-        {
-            double value = 0.0, initialSize = size;
-
-            while (size >= 1)
-            {
-                value += SmoothNoise(x / size, y / size) * size;
-                size /= 2.0;
-            }
-
-            return 128.0 * value / initialSize;
         }
 
         /// <summary>
@@ -123,6 +101,102 @@ namespace Imaging.Texture
             var i2 = ImageHelper.Interpolate(v3, v4, xFrac);
 
             return ImageHelper.Interpolate(i1, i2, yFrac);
+        }
+
+        /// <summary>
+        ///     Computes turbulence noise by layering multiple octaves of smooth noise.
+        ///     Used to create more complex and natural-looking textures.
+        ///     
+        ///     Important: Do not Delete! This method gets called at runtime.
+        /// </summary>
+        /// <param name="x">The x-coordinate.</param>
+        /// <param name="y">The y-coordinate.</param>
+        /// <param name="size">The initial size of the noise layers (higher values create larger patterns).</param>
+        /// <returns>A turbulence value that enhances visual texture variation.</returns>
+        public double Turbulence(int x, int y, double size)
+        {
+            double value = 0.0, initialSize = size;
+
+            while (size >= 1)
+            {
+                value += SmoothNoise(x / size, y / size) * size;
+                size /= 2.0;
+            }
+
+            return 128.0 * value / initialSize;
+        }
+
+        /// <summary>
+        ///     Generates a 2D array filled with Voronoi cellular noise for stone/rock structures.
+        ///     Optimized for small texture dimensions (e.g., 64x64).
+        /// </summary>
+        /// <param name="gridCells">Number of cell divisions per axis (e.g., 4 for a 64x64 map).</param>
+        /// <param name="seed">Random seed for deterministic generation.</param>
+        /// <returns>A 2D double array representing stone heightmap distances (0.0 to 1.0).</returns>
+        public double[,] GenerateVoronoiMap(int gridCells = 4, int seed = 42)
+        {
+            var voronoiData = new double[_height, _width];
+            var cellWidth = _width / gridCells;
+            var cellHeight = _height / gridCells;
+
+            var featurePoints = new (double x, double y)[gridCells, gridCells];
+            var rand = new Random(seed);
+
+            // 1. Place random stone center points per grid cell
+            for (var gy = 0; gy < gridCells; gy++)
+            {
+                for (var gx = 0; gx < gridCells; gx++)
+                {
+                    var px = gx * cellWidth + rand.NextDouble() * cellWidth;
+                    var py = gy * cellHeight + rand.NextDouble() * cellHeight;
+                    featurePoints[gx, gy] = (px, py);
+                }
+            }
+
+            var maxDist = Math.Sqrt(cellWidth * cellWidth + cellHeight * cellHeight);
+
+            // 2. Measure distance to closest point with toroidal wrapping
+            for (var y = 0; y < _height; y++)
+            {
+                for (var x = 0; x < _width; x++)
+                {
+                    var currentGridX = x / cellWidth;
+                    var currentGridY = y / cellHeight;
+                    var minDist = double.MaxValue;
+
+                    for (var ny = -1; ny <= 1; ny++)
+                    {
+                        for (var nx = -1; nx <= 1; nx++)
+                        {
+                            var checkX = (currentGridX + nx + gridCells) % gridCells;
+                            var checkY = (currentGridY + ny + gridCells) % gridCells;
+
+                            var point = featurePoints[checkX, checkY];
+                            var px = point.x;
+                            var py = point.y;
+
+                            if (currentGridX + nx < 0) px -= _width;
+                            if (currentGridX + nx >= gridCells) px += _width;
+                            if (currentGridY + ny < 0) py -= _height;
+                            if (currentGridY + ny >= gridCells) py += _height;
+
+                            var dx = x - px;
+                            var dy = y - py;
+                            var dist = Math.Sqrt(dx * dx + dy * dy);
+
+                            if (dist < minDist)
+                            {
+                                minDist = dist;
+                            }
+                        }
+                    }
+
+                    // Invert so stone center = 1.0 (raised) and mortar = 0.0 (recessed)
+                    voronoiData[y, x] = Math.Clamp(1.0 - (minDist / maxDist), 0.0, 1.0);
+                }
+            }
+
+            return voronoiData;
         }
     }
 }

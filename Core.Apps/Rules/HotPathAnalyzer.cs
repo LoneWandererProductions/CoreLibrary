@@ -122,7 +122,7 @@ namespace Core.Apps.Rules
                     a is ConstructorDeclarationSyntax ||
                     a is PropertyDeclarationSyntax);
 
-                string enclosingName = enclosingNode switch
+                var enclosingName = enclosingNode switch
                 {
                     MethodDeclarationSyntax m => m.Identifier.Text,
                     ConstructorDeclarationSyntax c => c.Identifier.Text,
