@@ -38,7 +38,7 @@ namespace FileHandler
 
             foreach (var app in appendix)
             {
-                var files = FileHandlerProcessing.GetFilesByExtension(path, app, subdirectories) ?? new List<string>();
+                var files = FileHandlerProcessing.GetFilesByExtension(path, app, subdirectories);
                 lst.AddRange(files);
             }
 
@@ -54,7 +54,7 @@ namespace FileHandler
         /// <returns>File by criteria</returns>
         public static List<string> GetFilesByExtensionFullPath(string path, string appendix, bool subdirectories)
         {
-            return FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
+            return FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace FileHandler
         public static List<string?> GetFileByExtensionWithoutExtension(string path, string appendix,
             bool subdirectories)
         {
-            var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
+            var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories);
             return files.Select(Path.GetFileNameWithoutExtension).ToList();
         }
 
@@ -92,7 +92,7 @@ namespace FileHandler
         /// <returns>File by criteria</returns>
         public static List<string> GetAllFiles(string path, bool subdirectories)
         {
-            return FileHandlerProcessing.GetFilesByExtension(path, null, subdirectories) ?? new List<string>();
+            return FileHandlerProcessing.GetFilesByExtension(path, null, subdirectories);
         }
 
         /// <summary>
@@ -147,10 +147,9 @@ namespace FileHandler
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
 
-            if (!Directory.Exists(path))
-                return new List<string>();
-
-            return Directory.GetDirectories(path).Select(Path.GetFileName).ToList();
+            return !Directory.Exists(path)
+                ? new List<string?>()
+                : Directory.GetDirectories(path).Select(Path.GetFileName).ToList();
         }
 
         /// <summary>

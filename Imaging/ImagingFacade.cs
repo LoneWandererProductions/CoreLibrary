@@ -38,7 +38,7 @@ namespace Imaging
         /// Gets the singleton instance of the <see cref="ImageRegister"/>.
         /// Allows querying and modifying filter and texture settings globally.
         /// </summary>
-        public static ImageRegister Register => ImageRegister.Instance;
+        public static ImageRegister? Register => ImageRegister.Instance;
 
         /// <summary>
         /// Retrieves the configuration for a specific filter type.

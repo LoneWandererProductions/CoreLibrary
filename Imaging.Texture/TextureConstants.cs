@@ -31,12 +31,20 @@ namespace Imaging.Texture
                 // Reusing this property for the Voronoi grid size (e.g., 4 cells across)
                 VoronoiGridSize = 4,
                 // Format: Highlight [0-2], Base Stone [3-5], Shadow [6-8], Mortar [9-11]
-                RgbRamp = [
-                    220, 220, 220, // Bright edge highlight
-                    130, 130, 130, // Base mid-tone
-                    40, 40, 40,    // Deep directional shadow
-                    15, 15, 15     // Dark mortar/grout
-                ]
+                RgbRamp =  [
+                220,
+                220,
+                220, // Bright edge highlight
+                130,
+                130,
+                130, // Base mid-tone
+                40,
+                40,
+                40, // Deep directional shadow
+                15,
+                15,
+                15 // Dark mortar/grout
+                    ]
             };
         }
 
@@ -50,7 +58,7 @@ namespace Imaging.Texture
             {
                 TurbulenceSize = 32.0,
                 // Stored purely as flat [R, G, B] bytes for the math engine
-                RgbRamp = [40,
+                RgbRamp =  [40,
                 10,
                 10,
                 180,
@@ -74,10 +82,10 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 CellSize = 48,
-                CenterRgb = [140,
+                CenterRgb =  [140,
                 140,
                 145],
-                EdgeRgb = [30,
+                EdgeRgb =  [30,
                 30,
                 30]
             };
@@ -93,7 +101,7 @@ namespace Imaging.Texture
             {
                 TurbulenceSize = 128.0,
                 // Flat [R, G, B] bytes for: Dark Navy -> Deep Blue -> Bright Purple -> White
-                RgbRamp = [5,
+                RgbRamp =  [5,
                 5,
                 20,
                 0,
@@ -117,10 +125,10 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 CellSize = 64,
-                CenterRgb = [230,
+                CenterRgb =  [230,
                 245,
                 255], // Bright icy white for the sharp ridges
-                EdgeRgb = [10,
+                EdgeRgb =  [10,
                 40,
                 80] // Deep water blue for the flat cells
             };
@@ -137,7 +145,7 @@ namespace Imaging.Texture
                 TurbulenceSize = 64.0,
                 WarpScale = 128.0,
                 WarpStrength = 4.0, // High strength creates deep liquid swirls
-                RgbRamp = [0,
+                RgbRamp =  [0,
                 0,
                 10,
                 40,
@@ -164,7 +172,7 @@ namespace Imaging.Texture
                 Octaves = 5,
                 Persistence = 0.5,
                 // Black background -> dark purple -> bright cyan -> white hot core
-                RgbRamp = [0,
+                RgbRamp =  [0,
                 0,
                 0,
                 40,
@@ -189,10 +197,10 @@ namespace Imaging.Texture
             {
                 TurbulenceSize = 16.0, // Maps to horizontal frequency scale
                 WarpStrength = 12.0, // Grain twisting displacement power
-                CenterRgb = [140,
+                CenterRgb =  [140,
                 95,
                 55], // Bright ridge wood highlight color
-                EdgeRgb = [75,
+                EdgeRgb =  [75,
                 45,
                 25] // Dark deep furrow crease color
             };
@@ -207,10 +215,10 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 CellSize = 40,
-                CenterRgb = [34,
+                CenterRgb =  [34,
                 110,
                 24], // Primary outer leaf green color
-                EdgeRgb = [12,
+                EdgeRgb =  [12,
                 35,
                 10] // Deep background ambient shadow drop color
             };
@@ -226,10 +234,10 @@ namespace Imaging.Texture
             {
                 TurbulenceSize = 32.0,
                 WarpStrength = 0.15, // Reusing WarpStrength for internal Engine TurbulencePower
-                CenterRgb = [130,
+                CenterRgb =  [130,
                 85,
                 45], // Base board brown
-                EdgeRgb = [70,
+                EdgeRgb =  [70,
                 40,
                 20] // Dark grain accent lines
             };

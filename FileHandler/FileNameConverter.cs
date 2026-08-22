@@ -5,7 +5,7 @@
  * PURPOSE:     Helps to perform some generic renaming operations
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
-
+// ReSharper disable MemberCanBeInternal
 //TODO Rollback for all Features
 
 using System;
@@ -72,7 +72,7 @@ namespace FileHandler
             RenameFiles(folder, subFolder, name =>
             {
                 var ext = Path.GetExtension(name);
-                var core = Path.GetFileNameWithoutExtension(name)?.ReOrderNumbers();
+                var core = Path.GetFileNameWithoutExtension(name).ReOrderNumbers();
                 return string.IsNullOrEmpty(core) ? name : string.Concat(core, ext);
             });
 

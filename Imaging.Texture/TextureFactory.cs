@@ -26,9 +26,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer. Here lava pool.
         /// </returns>
-        public static RawTextureBuffer GenerateLavaPool(int width, int height, object noiseGenInstance, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateLavaPool(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetLavaPoolConfig();
+            var activeConfig = config ?? TextureConstants.GetLavaPoolConfig();
 
             return TextureMathEngine.GenerateColorMapped(
                 width,
@@ -48,9 +49,9 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer. Here cobblestone.
         /// </returns>
-        public static RawTextureBuffer GenerateCobblestone(int width, int height, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateCobblestone(int width, int height, TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetCobblestoneConfig();
+            var activeConfig = config ?? TextureConstants.GetCobblestoneConfig();
 
             return TextureMathEngine.GenerateCellular(
                 width,
@@ -72,9 +73,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer. Here magical ether.
         /// </returns>
-        public static RawTextureBuffer GenerateMagicalEther(int width, int height, object noiseGenInstance, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateMagicalEther(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetMagicalEtherConfig();
+            var activeConfig = config ?? TextureConstants.GetMagicalEtherConfig();
 
             return TextureMathEngine.GenerateColorMapped(
                 width,
@@ -94,9 +96,9 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer. Here cracked ice.
         /// </returns>
-        public static RawTextureBuffer GenerateCrackedIce(int width, int height, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateCrackedIce(int width, int height, TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetCrackedIceConfig();
+            var activeConfig = config ?? TextureConstants.GetCrackedIceConfig();
             // Calls the engine method containing the F2-F1 math
             return TextureMathEngine.GenerateAdvancedCellular(
                 width, height, activeConfig.CellSize, 255,
@@ -113,9 +115,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer. Here magic portal.
         /// </returns>
-        public static RawTextureBuffer GenerateMagicPortal(int width, int height, object noiseGen, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateMagicPortal(int width, int height, object noiseGen,
+            TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetMagicPortalConfig();
+            var activeConfig = config ?? TextureConstants.GetMagicPortalConfig();
             // Calls the engine method containing the warping math
             return TextureMathEngine.GenerateWarpedMapped(
                 width, height, noiseGen, activeConfig.RgbRamp,
@@ -132,9 +135,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer. Here plasma arc.
         /// </returns>
-        public static RawTextureBuffer GeneratePlasmaArc(int width, int height, object noiseGen, TextureConfig config = null)
+        public static RawTextureBuffer? GeneratePlasmaArc(int width, int height, object noiseGen,
+            TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetPlasmaArcConfig();
+            var activeConfig = config ?? TextureConstants.GetPlasmaArcConfig();
             // Calls the engine method containing the ridged math
             return TextureMathEngine.GenerateRidgedMapped(
                 width, height, noiseGen, activeConfig.RgbRamp,
@@ -151,9 +155,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer containing tree bark.
         /// </returns>
-        public static RawTextureBuffer GenerateTreeBark(int width, int height, object noiseGen, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateTreeBark(int width, int height, object noiseGen,
+            TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetTreeBarkConfig();
+            var activeConfig = config ?? TextureConstants.GetTreeBarkConfig();
 
             return TextureMathEngine.GenerateTreeBark(
                 width,
@@ -178,9 +183,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer containing leaf foliage.
         /// </returns>
-        public static RawTextureBuffer GenerateFoliage(int width, int height, object noiseGen, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateFoliage(int width, int height, object noiseGen,
+            TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetFoliageConfig();
+            var activeConfig = config ?? TextureConstants.GetFoliageConfig();
 
             return TextureMathEngine.GenerateFoliage(
                 width,
@@ -203,9 +209,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer containing a wood plank.
         /// </returns>
-        public static RawTextureBuffer GenerateWoodPlank(int width, int height, object noiseGen, TextureConfig config = null)
+        public static RawTextureBuffer? GenerateWoodPlank(int width, int height, object noiseGen,
+            TextureConfig? config = null)
         {
-            var activeConfig = config ??TextureConstants.GetWoodPlankConfig();
+            var activeConfig = config ?? TextureConstants.GetWoodPlankConfig();
 
             return TextureMathEngine.GenerateWoodPlank(
                 width,
@@ -231,9 +238,10 @@ namespace Imaging.Texture
         /// <returns>
         /// The generated raw texture buffer.
         /// </returns>
-        public static RawTextureBuffer GenerateStoneTexture(int width, int height, object noiseGenInstance, TextureConfig config = null, bool fillArea = false)
+        public static RawTextureBuffer? GenerateStoneTexture(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null, bool fillArea = false)
         {
-            var activeConfig = config ??TextureConstants.GetStoneConfig();
+            var activeConfig = config ?? TextureConstants.GetStoneConfig();
 
             return TextureMathEngine.GenerateDirectionalStone(
                 width,

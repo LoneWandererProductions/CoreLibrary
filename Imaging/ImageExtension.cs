@@ -28,7 +28,7 @@ namespace Imaging
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns>A managed Bitmap instance.</returns>
-        public static unsafe Bitmap? ToManagedBitmap(this RawTextureBuffer source)
+        public static unsafe Bitmap? ToManagedBitmap(this RawTextureBuffer? source)
         {
             var bitmap = new Bitmap(source.Width, source.Height, PixelFormat.Format32bppArgb);
             var rect = new Rectangle(0, 0, source.Width, source.Height);

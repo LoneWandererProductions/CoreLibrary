@@ -72,7 +72,7 @@ namespace Imaging.Helpers
 
             var noiseGen = new NoiseGenerator(width, height);
             var buffer = TextureMathEngine.GenerateClouds(
-                width, height, noiseGen, minValue, maxValue, alpha, turbulenceSize);
+                width, height, noiseGen, alpha, turbulenceSize);
             return buffer.ToManagedBitmap();
         }
 

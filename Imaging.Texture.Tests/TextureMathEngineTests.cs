@@ -245,7 +245,6 @@ namespace Imaging.Texture.Tests
         [TestMethod]
         public void GenerateDirectionalStone_VisualTest_Scale()
         {
-
             var conf = TextureConstants.GetStoneConfig();
             // Clone or create a new config just for this test
             var testConfig = new TextureConfig
@@ -254,14 +253,15 @@ namespace Imaging.Texture.Tests
                 RgbRamp = conf.RgbRamp
             };
 
-            var buffer = TextureFactory.GenerateStoneTexture(TestWidth, TestHeight, _noiseGenerator, testConfig, fillArea: true);
+            var buffer =
+                TextureFactory.GenerateStoneTexture(TestWidth, TestHeight, _noiseGenerator, testConfig, fillArea: true);
             SaveBufferToImage(buffer, "17_DirectionalStone_Solid_16.png");
         }
 
         /// <summary>
         /// Converts the RawTextureBuffer span (BGRA) into a standard PNG file.
         /// </summary>
-        private void SaveBufferToImage(RawTextureBuffer buffer, string filename)
+        private void SaveBufferToImage(RawTextureBuffer? buffer, string filename)
         {
             Assert.IsNotNull(buffer, "Texture buffer was null.");
 

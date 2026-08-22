@@ -36,7 +36,7 @@ namespace Imaging
         /// <value>
         ///     The image settings.
         /// </value>
-        private ImageRegister ImageSettings { get; }
+        private ImageRegister? ImageSettings { get; }
 
         /// <inheritdoc />
         /// <summary>

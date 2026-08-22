@@ -6,6 +6,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,9 +22,6 @@ using System.Windows.Media.Imaging;
 using Imaging.Enums;
 using Imaging.Gifs;
 using Color = System.Drawing.Color;
-
-// ReSharper disable UnusedMemberInSuper.Global
-// ReSharper disable UnusedMember.Global
 
 namespace Imaging.Interfaces
 {
@@ -109,12 +110,12 @@ namespace Imaging.Interfaces
         ///     or
         ///     shape - null
         /// </exception>
-        Bitmap FilterImageArea(Bitmap? image,
+        Bitmap? FilterImageArea(Bitmap? image,
             int? width,
             int? height,
             FiltersType filter,
             MaskShape shape,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null);
 
         /// <summary>
@@ -168,7 +169,7 @@ namespace Imaging.Interfaces
         ///     The cut Image, based on the shape
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        Bitmap? CutBitmap(Bitmap? image, int width, int height, MaskShape shape, object shapeParams = null,
+        Bitmap? CutBitmap(Bitmap? image, int width, int height, MaskShape shape, object? shapeParams = null,
             Point? startPoint = null);
 
         /// <summary>
@@ -396,7 +397,7 @@ namespace Imaging.Interfaces
             int? height,
             Color color,
             MaskShape shape,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null);
 
         /// <summary>

@@ -41,7 +41,7 @@ namespace Imaging.Helpers
             int? height,
             FiltersType filter,
             MaskShape shape,
-            ImageRegister imageSettings,
+            ImageRegister? imageSettings,
             object? shapeParams = null,
             Point? startPoint = null)
         {

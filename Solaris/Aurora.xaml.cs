@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable EventNeverSubscribedTo.Global, this is an library of course not everything must be subscribed.
 
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Mathematics;
 using RenderEngine;
+
 
 namespace Solaris
 {

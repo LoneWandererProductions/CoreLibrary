@@ -62,7 +62,7 @@ namespace FileHandler
                 {
                     FullPath = path,
                     Directory = Path.GetDirectoryName(path) ?? string.Empty,
-                    FileName = Path.GetFileName(path) ?? string.Empty
+                    FileName = Path.GetFileName(path)
                 })
                 // 1. Group by Directory first (Natural Sort)
                 .OrderBy(x => x.Directory, new PureNaturalComparer())

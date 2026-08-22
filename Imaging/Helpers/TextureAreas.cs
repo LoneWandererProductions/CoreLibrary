@@ -38,7 +38,7 @@ namespace Imaging.Helpers
             int height,
             TextureType texture,
             MaskShape shape,
-            ImageRegister imageSettings,
+            ImageRegister? imageSettings,
             object? shapeParams = null,
             Point? startPoint = null)
         {

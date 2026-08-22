@@ -42,7 +42,7 @@ namespace Imaging.Tests
             int? height = 5;
             var color = Color.Red;
             const MaskShape shape = MaskShape.Circle;
-            object shapeParams = null;
+            object? shapeParams = null;
             Point? startPoint = new Point(3, 3); // Non-null start point
 
             // Act

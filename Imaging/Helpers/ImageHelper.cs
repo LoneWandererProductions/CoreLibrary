@@ -59,7 +59,7 @@ namespace Imaging.Helpers
         /// <param name="size">The size of the kernel (must be odd).</param>
         /// <returns>A 2D array representing the Gaussian kernel.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static double[,] GenerateGaussianKernel(double sigma, int size)
+        internal static double[,]? GenerateGaussianKernel(double sigma, int size)
         {
             var kernel = new double[size, size];
             var mean = size / 2.0;

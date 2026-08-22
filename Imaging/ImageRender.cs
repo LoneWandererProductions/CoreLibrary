@@ -48,7 +48,7 @@ namespace Imaging
         /// <value>
         ///     The image settings.
         /// </value>
-        public ImageRegister ImageSettings { get; set; }
+        public ImageRegister? ImageSettings { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -151,12 +151,12 @@ namespace Imaging
         ///     or
         ///     shape - null
         /// </exception>
-        public Bitmap FilterImageArea(Bitmap? image,
+        public Bitmap? FilterImageArea(Bitmap? image,
             int? width,
             int? height,
             FiltersType filter,
             MaskShape shape,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null)
         {
             return FiltersAreas.GenerateFilter(
@@ -547,7 +547,7 @@ namespace Imaging
             int? height,
             Color color,
             MaskShape shape,
-            object shapeParams = null,
+            object? shapeParams = null,
             Point? startPoint = null)
         {
             return ImageStream.FillAreaWithColor(image, width, height, color, shape, shapeParams, startPoint);

@@ -34,7 +34,8 @@ namespace Solaris
             PlasmaArc = 10005,
             TreeBark = 10006,
             Foliage = 10007,
-            WoodPlank = 10008
+            WoodPlank = 10008,
+            Stones = 10009
         }
 
         /// <summary>
@@ -56,6 +57,7 @@ namespace Solaris
             Register(ProceduralTile.TreeBark, TextureFactory.GenerateTreeBark(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.Foliage, TextureFactory.GenerateFoliage(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.WoodPlank, TextureFactory.GenerateWoodPlank(textureSize, textureSize, noise), 0);
+            Register(ProceduralTile.Stones, TextureFactory.GenerateStoneTexture(textureSize, textureSize, noise), 0);
         }
 
         /// <summary>
@@ -64,7 +66,7 @@ namespace Solaris
         /// <param name="tile">The tile.</param>
         /// <param name="rawBuffer">The raw buffer.</param>
         /// <param name="layer">The layer.</param>
-        private static void Register(ProceduralTile tile, RawTextureBuffer rawBuffer, int layer)
+        private static void Register(ProceduralTile tile, RawTextureBuffer? rawBuffer, int layer)
         {
             // Allocate unmanaged memory matching dimensions
             var buffer = new UnmanagedImageBuffer(rawBuffer.Width, rawBuffer.Height);

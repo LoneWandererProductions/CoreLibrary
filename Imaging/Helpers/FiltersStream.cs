@@ -56,7 +56,7 @@ namespace Imaging.Helpers
         /// </returns>
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="OutOfMemoryException"></exception>
-        internal static Bitmap? FilterImage(Bitmap? image, FiltersType filter, ImageRegister imageSettings = null)
+        internal static Bitmap? FilterImage(Bitmap? image, FiltersType filter, ImageRegister? imageSettings = null)
         {
             ImageHelper.ValidateImage(nameof(FilterImage), image);
 
@@ -111,28 +111,28 @@ namespace Imaging.Helpers
                     break;
                 // New convolution-based filters
                 case FiltersType.Sharpen:
-                    settings = _imageSettings?.GetSettings(FiltersType.Sharpen);
+                    settings = _imageSettings.GetSettings(FiltersType.Sharpen);
                     return ApplyFilter(image, _imageSettings?.SharpenFilter, settings.Factor, settings.Bias);
                 case FiltersType.GaussianBlur:
-                    settings = _imageSettings?.GetSettings(FiltersType.GaussianBlur);
+                    settings = _imageSettings.GetSettings(FiltersType.GaussianBlur);
                     return ApplyFilter(image, _imageSettings?.GaussianBlur, settings.Factor, settings.Bias);
                 case FiltersType.Emboss:
-                    settings = _imageSettings?.GetSettings(FiltersType.Emboss);
+                    settings = _imageSettings.GetSettings(FiltersType.Emboss);
                     return ApplyFilter(image, _imageSettings?.EmbossFilter, settings.Factor, settings.Bias);
                 case FiltersType.BoxBlur:
-                    settings = _imageSettings?.GetSettings(FiltersType.BoxBlur);
+                    settings = _imageSettings.GetSettings(FiltersType.BoxBlur);
                     return ApplyFilter(image, _imageSettings?.BoxBlur, settings.Factor, settings.Bias);
                 case FiltersType.Laplacian:
-                    settings = _imageSettings?.GetSettings(FiltersType.Laplacian);
+                    settings = _imageSettings.GetSettings(FiltersType.Laplacian);
                     return ApplyFilter(image, _imageSettings?.LaplacianFilter, settings.Factor, settings.Bias);
                 case FiltersType.EdgeEnhance:
-                    settings = _imageSettings?.GetSettings(FiltersType.EdgeEnhance);
+                    settings = _imageSettings.GetSettings(FiltersType.EdgeEnhance);
                     return ApplyFilter(image, _imageSettings?.EdgeEnhance, settings.Factor, settings.Bias);
                 case FiltersType.MotionBlur:
-                    settings = _imageSettings?.GetSettings(FiltersType.MotionBlur);
+                    settings = _imageSettings.GetSettings(FiltersType.MotionBlur);
                     return ApplyFilter(image, _imageSettings?.MotionBlur, settings.Factor, settings.Bias);
                 case FiltersType.UnsharpMask:
-                    settings = _imageSettings?.GetSettings(FiltersType.UnsharpMask);
+                    settings = _imageSettings.GetSettings(FiltersType.UnsharpMask);
                     return ApplyFilter(image, _imageSettings?.UnsharpMask, settings.Factor, settings.Bias);
                 // custom Filter
                 case FiltersType.DifferenceOfGaussians:
@@ -206,7 +206,7 @@ namespace Imaging.Helpers
         ///     Optional bias added to filtered value (default 0.0).
         /// </param>
         /// <returns>A new Bitmap containing the filtered image.</returns>
-        private static Bitmap? ApplyFilter(Image? sourceBitmap, double[,] filterMatrix, double factor = 1.0,
+        private static Bitmap? ApplyFilter(Image? sourceBitmap, double[,]? filterMatrix, double factor = 1.0,
             double bias = 0.0)
         {
             // Convert source to unmanaged buffer for fast pixel access

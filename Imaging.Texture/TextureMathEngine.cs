@@ -29,7 +29,7 @@ namespace Imaging.Texture
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>RawTextureBuffer containing the generated noise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateNoise(int width,
+        public static RawTextureBuffer? GenerateNoise(int width,
             int height,
             object noiseGenInstance, // Pass your custom NoiseGenerator wrapper
             int minValue = 0,
@@ -83,7 +83,7 @@ namespace Imaging.Texture
         /// <param name="baseB">The base b.</param>
         /// <returns>RawTextureBuffer containing the generated wood texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateWood(int width,
+        public static RawTextureBuffer? GenerateWood(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -143,7 +143,7 @@ namespace Imaging.Texture
         /// <param name="bgA">The bg a.</param>
         /// <returns>RawTextureBuffer containing the generated crosshatch texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateCrosshatch(int width,
+        public static RawTextureBuffer? GenerateCrosshatch(int width,
             int height,
             int lineSpacing = 50,
             int lineThickness = 1,
@@ -226,7 +226,7 @@ namespace Imaging.Texture
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>A raw texture buffer containing the generated concrete texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateConcrete(int width,
+        public static RawTextureBuffer? GenerateConcrete(int width,
             int height,
             object noiseGenInstance,
             int minValue = 50,
@@ -284,7 +284,7 @@ namespace Imaging.Texture
         /// <param name="bgA">The bg a.</param>
         /// <returns>A raw texture buffer containing the generated canvas texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateCanvas(int width,
+        public static RawTextureBuffer? GenerateCanvas(int width,
             int height,
             int lineSpacing = 8,
             int lineThickness = 1,
@@ -389,17 +389,13 @@ namespace Imaging.Texture
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <param name="noiseGenInstance">The noise gen instance.</param>
-        /// <param name="minValue">The minimum value.</param>
-        /// <param name="maxValue">The maximum value.</param>
         /// <param name="alpha">The alpha.</param>
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>Texture buffer with clouds pattern.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateClouds(int width,
+        public static RawTextureBuffer? GenerateClouds(int width,
             int height,
             object noiseGenInstance,
-            int minValue = 0,
-            int maxValue = 255,
             int alpha = 255,
             double turbulenceSize = 64)
         {
@@ -444,7 +440,7 @@ namespace Imaging.Texture
         /// <param name="baseB">The base b.</param>
         /// <returns>Texture buffer with marble pattern.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateMarble(int width,
+        public static RawTextureBuffer? GenerateMarble(int width,
             int height,
             object noiseGenInstance,
             double xPeriod = 5.0,
@@ -493,7 +489,7 @@ namespace Imaging.Texture
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>Texture buffer with wave pattern.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateWave(int width,
+        public static RawTextureBuffer? GenerateWave(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -553,7 +549,7 @@ namespace Imaging.Texture
         /// <param name="edgeB">The edge b.</param>
         /// <returns>The generated texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateCellular(int width,
+        public static RawTextureBuffer? GenerateCellular(int width,
             int height,
             int cellSize = 32,
             int alpha = 255,
@@ -636,7 +632,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateColorMapped(int width,
+        public static RawTextureBuffer? GenerateColorMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb, // Format: [R1,G1,B1, R2,G2,B2, ...]
@@ -695,7 +691,7 @@ namespace Imaging.Texture
         /// <param name="edgeRgb">The edge RGB.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer GenerateAdvancedCellular(int width,
+        internal static RawTextureBuffer? GenerateAdvancedCellular(int width,
             int height,
             int cellSize,
             int alpha,
@@ -794,7 +790,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer GenerateWarpedMapped(int width,
+        internal static RawTextureBuffer? GenerateWarpedMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb,
@@ -860,7 +856,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer GenerateRidgedMapped(int width,
+        internal static RawTextureBuffer? GenerateRidgedMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb,
@@ -959,13 +955,13 @@ namespace Imaging.Texture
         /// <param name="shadowB">The shadow b.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer GenerateFoliage(int width,
-                    int height,
-                    object noiseGenInstance,
-                    int leafSize = 40,
-                    int alpha = 255,
-                    byte leafR = 34, byte leafG = 110, byte leafB = 24, // Main Leaf Green
-                    byte shadowR = 12, byte shadowG = 35, byte shadowB = 10) // Deep Shade/Background
+        internal static RawTextureBuffer? GenerateFoliage(int width,
+            int height,
+            object noiseGenInstance,
+            int leafSize = 40,
+            int alpha = 255,
+            byte leafR = 34, byte leafG = 110, byte leafB = 24, // Main Leaf Green
+            byte shadowR = 12, byte shadowG = 35, byte shadowB = 10) // Deep Shade/Background
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
@@ -1036,9 +1032,11 @@ namespace Imaging.Texture
 
                     var rColorModifier = 0.85 + (leafSeedValue * 0.3);
 
-                    var finalR = (byte)Math.Clamp((shadowR + (leafR - shadowR) * lightIntensity) * rColorModifier, 0, 255);
+                    var finalR = (byte)Math.Clamp((shadowR + (leafR - shadowR) * lightIntensity) * rColorModifier, 0,
+                        255);
                     var finalG = (byte)Math.Clamp((shadowG + (leafG - shadowG) * lightIntensity) * 1.0, 0, 255);
-                    var finalB = (byte)Math.Clamp((shadowB + (leafB - shadowB) * lightIntensity) * rColorModifier, 0, 255);
+                    var finalB = (byte)Math.Clamp((shadowB + (leafB - shadowB) * lightIntensity) * rColorModifier, 0,
+                        255);
 
                     span[idx++] = finalB;
                     span[idx++] = finalG;
@@ -1068,7 +1066,7 @@ namespace Imaging.Texture
         /// <param name="woodB">The wood b.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer GenerateTreeBark(int width,
+        internal static RawTextureBuffer? GenerateTreeBark(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -1133,7 +1131,7 @@ namespace Imaging.Texture
         /// <param name="grainB">The grain b.</param>
         /// <returns>The generated raw texture buffer containing the wooden plank texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer GenerateWoodPlank(int width,
+        internal static RawTextureBuffer? GenerateWoodPlank(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -1194,11 +1192,11 @@ namespace Imaging.Texture
         /// <param name="fillArea">If true, fills mortar with color. If false, mortar is transparent.</param>
         /// <returns>The generated texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateDirectionalStone(
+        public static RawTextureBuffer? GenerateDirectionalStone(
             int width,
             int height,
             object noiseGenInstance,
-            byte[] colorPalette,
+            byte[]? colorPalette,
             int gridCells = 4,
             bool fillArea = false)
         {
@@ -1213,7 +1211,9 @@ namespace Imaging.Texture
             // Lighting vector (Top-Left, pointing down at the surface)
             double lx = -1.0, ly = -1.0, lz = 1.5;
             var lightLen = Math.Sqrt(lx * lx + ly * ly + lz * lz);
-            lx /= lightLen; ly /= lightLen; lz /= lightLen;
+            lx /= lightLen;
+            ly /= lightLen;
+            lz /= lightLen;
 
             var bumpDepth = 4.0;
             var pixels = buffer.PixelData;
@@ -1260,19 +1260,27 @@ namespace Imaging.Texture
                     // Map intensity to RGB palette
                     if (h < 0.15) // Mortar pixel (fillArea is true)
                     {
-                        r = colorPalette[9]; g = colorPalette[10]; b = colorPalette[11];
+                        r = colorPalette[9];
+                        g = colorPalette[10];
+                        b = colorPalette[11];
                     }
                     else if (intensity > 0.75) // Highlight
                     {
-                        r = colorPalette[0]; g = colorPalette[1]; b = colorPalette[2];
+                        r = colorPalette[0];
+                        g = colorPalette[1];
+                        b = colorPalette[2];
                     }
                     else if (intensity > 0.35) // Base Mid-tone
                     {
-                        r = colorPalette[3]; g = colorPalette[4]; b = colorPalette[5];
+                        r = colorPalette[3];
+                        g = colorPalette[4];
+                        b = colorPalette[5];
                     }
                     else // Deep Shadow
                     {
-                        r = colorPalette[6]; g = colorPalette[7]; b = colorPalette[8];
+                        r = colorPalette[6];
+                        g = colorPalette[7];
+                        b = colorPalette[8];
                     }
 
                     // Apply micro-grit noise variation across rock faces

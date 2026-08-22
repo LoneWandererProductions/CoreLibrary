@@ -33,7 +33,7 @@ namespace FileHandler
             }
 
             return fileExtList
-                .Select(ext => ext.Replace(FileHandlerResources.Dot, string.Empty) ?? string.Empty)
+                .Select(ext => ext.Replace(FileHandlerResources.Dot, string.Empty))
                 .ToList();
         }
 

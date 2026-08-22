@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
 
 using System.Drawing;
 
@@ -22,7 +23,7 @@ namespace Imaging.Gifs
         /// <value>
         ///     The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         ///     Gets or sets the delay time.

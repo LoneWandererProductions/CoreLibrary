@@ -2,11 +2,13 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
  * FILE:        Polaris.cs
- * PURPOSE:     Editor Control
+ * PURPOSE:     Editor Control Polaris, the other side of Aurora. It logs All changes to generate the map data or Aurora.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable EventNeverSubscribedTo.Global, this is an library of course not everything must be subscribed.
+
 
 using System;
 using System.Collections.Generic;
@@ -287,7 +289,7 @@ namespace Solaris
         /// </summary>
         /// <param name="tileIndex">The spatial tile index.</param>
         /// <param name="flag">The layer flag.</param>
-        public void MarkTileDirty(int tileIndex, DirtyFlags flag = DirtyFlags.TileMap)
+        private void MarkTileDirty(int tileIndex, DirtyFlags flag = DirtyFlags.TileMap)
         {
             _dirtyTiles.Add(tileIndex);
             _dirtyFlags |= flag;
@@ -297,7 +299,7 @@ namespace Solaris
         /// Marks an entire layer dirty for a full pass.
         /// </summary>
         /// <param name="flag">The layer flag.</param>
-        public void MarkLayerDirty(DirtyFlags flag)
+        private void MarkLayerDirty(DirtyFlags flag)
         {
             _dirtyFlags |= flag;
         }
@@ -305,7 +307,7 @@ namespace Solaris
         /// <summary>
         /// Processes dirty regions and repaints only affected tile sub-regions or viewport sweeps.
         /// </summary>
-        public void RenderDirty()
+        private void RenderDirty()
         {
             if (_dirtyFlags == DirtyFlags.None) return;
 
@@ -464,6 +466,7 @@ namespace Solaris
             if (!check) return;
 
             PolarisMap = dictionary;
+            // ReSharper disable once RedundantArgumentDefaultValue
             MarkTileDirty(tileData.Key, DirtyFlags.TileMap);
             RenderDirty();
         }
@@ -478,6 +481,7 @@ namespace Solaris
             if (!check) return;
 
             PolarisMap = dictionary;
+            // ReSharper disable once RedundantArgumentDefaultValue
             MarkTileDirty(tileData.Key, DirtyFlags.TileMap);
             RenderDirty();
         }
