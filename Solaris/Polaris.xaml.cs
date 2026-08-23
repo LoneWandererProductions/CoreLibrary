@@ -2,13 +2,11 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Solaris
  * FILE:        Polaris.cs
- * PURPOSE:     Editor Control Polaris, the other side of Aurora. It logs All changes to generate the map data or Aurora.
+ * PURPOSE:     Editor Control
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable MemberCanBeInternal
-// ReSharper disable EventNeverSubscribedTo.Global, this is an library of course not everything must be subscribed.
-
 
 using System;
 using System.Collections.Generic;
@@ -115,12 +113,12 @@ namespace Solaris
         public Polaris()
         {
             InitializeComponent();
-            Initiate();
 
             MouseWheel += OnMouseWheelZoom;
             MouseMove += OnMouseMovePan;
             MouseDown += OnMouseDownPan;
             MouseUp += OnMouseUpPan;
+            Loaded += (_, _) => Initiate();
         }
 
         // We use these properties to safely manage GDI+ memory
@@ -275,7 +273,7 @@ namespace Solaris
             var control = (Polaris)d;
             var isNumberEnabled = (bool)e.NewValue;
 
-            control.LayerThree.Source = isNumberEnabled
+            control.LayerFour.Source = isNumberEnabled
                 ? Helper.GenerateNumbers(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize)
                 : null;
         }
@@ -289,7 +287,7 @@ namespace Solaris
         /// </summary>
         /// <param name="tileIndex">The spatial tile index.</param>
         /// <param name="flag">The layer flag.</param>
-        private void MarkTileDirty(int tileIndex, DirtyFlags flag = DirtyFlags.TileMap)
+        public void MarkTileDirty(int tileIndex, DirtyFlags flag = DirtyFlags.TileMap)
         {
             _dirtyTiles.Add(tileIndex);
             _dirtyFlags |= flag;
@@ -299,7 +297,7 @@ namespace Solaris
         /// Marks an entire layer dirty for a full pass.
         /// </summary>
         /// <param name="flag">The layer flag.</param>
-        private void MarkLayerDirty(DirtyFlags flag)
+        public void MarkLayerDirty(DirtyFlags flag)
         {
             _dirtyFlags |= flag;
         }
@@ -307,7 +305,7 @@ namespace Solaris
         /// <summary>
         /// Processes dirty regions and repaints only affected tile sub-regions or viewport sweeps.
         /// </summary>
-        private void RenderDirty()
+        public void RenderDirty()
         {
             if (_dirtyFlags == DirtyFlags.None) return;
 
@@ -425,7 +423,7 @@ namespace Solaris
                 LayerTwo.Source = Helper.GenerateGrid(PolarisWidth, PolarisHeight, PolarisTextureSize);
 
             if (PolarisNumber)
-                LayerThree.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
+                LayerFour.Source = Helper.GenerateNumbers(PolarisWidth, PolarisHeight, PolarisTextureSize);
 
             var initialLayer = new UnmanagedImageBuffer(Touch.Width > 0 ? (int)Touch.Width : 1,
                 Touch.Height > 0 ? (int)Touch.Height : 1);
@@ -466,7 +464,6 @@ namespace Solaris
             if (!check) return;
 
             PolarisMap = dictionary;
-            // ReSharper disable once RedundantArgumentDefaultValue
             MarkTileDirty(tileData.Key, DirtyFlags.TileMap);
             RenderDirty();
         }
@@ -481,7 +478,6 @@ namespace Solaris
             if (!check) return;
 
             PolarisMap = dictionary;
-            // ReSharper disable once RedundantArgumentDefaultValue
             MarkTileDirty(tileData.Key, DirtyFlags.TileMap);
             RenderDirty();
         }
@@ -492,8 +488,8 @@ namespace Solaris
         /// <param name="tileData">The tile data.</param>
         public void AddDisplay(KeyValuePair<int, int> tileData)
         {
-            var newBmp = Helper.AddDisplay(PolarisWidth, PolarisTextureSize, PolarisTextures, BitmapLayerThree,
-                tileData);
+            var newBmp = Helper.AddDisplay(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures,
+                BitmapLayerThree, tileData);
             BitmapLayerThree = newBmp;
             LayerThree.Source = newBmp.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
 

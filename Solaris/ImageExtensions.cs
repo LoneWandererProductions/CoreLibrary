@@ -50,10 +50,10 @@ namespace Solaris
         /// </summary>
         /// <param name="buffer">The source unmanaged image buffer.</param>
         /// <param name="target">The target WPF WriteableBitmap to update.</param>
-        /// <returns>The updated or newly instantiated WriteableBitmap.</returns>
-        public static WriteableBitmap UpdateWriteableBitmap(this UnmanagedImageBuffer? buffer, WriteableBitmap? target)
+        /// <returns>The updated or newly instantiated WriteableBitmap, or null if <paramref name="buffer"/> is null.</returns>
+        public static WriteableBitmap? UpdateWriteableBitmap(this UnmanagedImageBuffer? buffer, WriteableBitmap? target)
         {
-            if (buffer == null) return null!;
+            if (buffer == null) return null;
 
             if (target == null || target.PixelWidth != buffer.Width || target.PixelHeight != buffer.Height)
             {

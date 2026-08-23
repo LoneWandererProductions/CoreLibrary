@@ -8,7 +8,6 @@
 
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable EventNeverSubscribedTo.Global, this is an library of course not everything must be subscribed.
 
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Mathematics;
 using RenderEngine;
-
 
 namespace Solaris
 {
@@ -346,7 +344,7 @@ namespace Solaris
         private static void OnMapChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (Aurora)d;
-            control.MarkLayerDirty(DirtyFlags.TileMap);
+            control.MarkLayerDirty(DirtyFlags.FullRedraw);
             control.RenderDirty();
         }
 
@@ -444,8 +442,8 @@ namespace Solaris
             var control = (Aurora)d;
             var value = (KeyValuePair<int, int>)e.NewValue;
 
-            var newBmp = Helper.AddDisplay(control.AuroraWidth, control.AuroraTextureSize, control.AuroraTextures,
-                control._thirdLayer, value);
+            var newBmp = Helper.AddDisplay(control.AuroraWidth, control.AuroraHeight, control.AuroraTextureSize,
+                control.AuroraTextures, control._thirdLayer, value);
             control._thirdLayer = newBmp;
             control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
 
@@ -610,8 +608,11 @@ namespace Solaris
         /// </summary>
         public void UpdateGlyphLayer()
         {
-            var overlayBmp = Helper.GenerateGlyphOverlay(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraGlyphs);
-            LayerFour.Source = overlayBmp?.ToBitmapImage();
+            using var overlayBmp =
+                Helper.GenerateGlyphOverlay(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraGlyphs);
+            using var overlayBuffer = UnmanagedImageBuffer.FromBitmap(overlayBmp);
+
+            LayerFour.Source = overlayBuffer.UpdateWriteableBitmap(LayerFour.Source as WriteableBitmap);
         }
 
         /// <summary>

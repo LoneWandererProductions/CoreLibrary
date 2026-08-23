@@ -363,13 +363,14 @@ namespace Solaris
         /// Adds a tile image to the display layer.
         /// </summary>
         /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="textures">The textures.</param>
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The identifier tile.</param>
         /// <returns>Image on screen</returns>
         public static UnmanagedImageBuffer AddDisplay(
-            int width, int textureSize, Dictionary<int, Texture> textures, UnmanagedImageBuffer? layer,
+            int width, int height, int textureSize, Dictionary<int, Texture> textures, UnmanagedImageBuffer? layer,
             KeyValuePair<int, int> idTile)
         {
             var (position, tileId) = idTile;
@@ -386,7 +387,7 @@ namespace Solaris
 
             if (layer == null)
             {
-                layer = new UnmanagedImageBuffer(width * textureSize, textureSize);
+                layer = new UnmanagedImageBuffer(width * textureSize, height * textureSize);
                 layer.Clear(0, 0, 0, 0);
             }
 

@@ -129,6 +129,7 @@ namespace Solaris
             }
 
             FileCache.Clear();
+            GlobalTextures.Clear();
         }
 
         /// <summary>
