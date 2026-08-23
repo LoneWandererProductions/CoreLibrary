@@ -115,12 +115,12 @@ namespace Solaris
         public Polaris()
         {
             InitializeComponent();
-            Initiate();
 
             MouseWheel += OnMouseWheelZoom;
             MouseMove += OnMouseMovePan;
             MouseDown += OnMouseDownPan;
             MouseUp += OnMouseUpPan;
+            Loaded += (_, _) => Initiate();
         }
 
         // We use these properties to safely manage GDI+ memory
