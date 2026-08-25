@@ -537,9 +537,22 @@ namespace Imaging.Texture
         /// <summary>
         /// Generates Cellular (Voronoi/Worley) noise. Perfect for cobblestone, dragon scales, or cracked earth.
         /// </summary>
+        /// <remarks>
+        /// The distance field now comes from <see cref="NoiseGenerator.GenerateVoronoiMap" /> instead of a
+        /// second, independent feature-point implementation. That fixes two real defects the old inline
+        /// version had: it clamped at grid edges (so output didn't tile, despite this being used for
+        /// texture types that promise <c>IsTiled</c> support), and it always used a hardcoded seed of
+        /// 12345 regardless of any caller preference. <paramref name="seed" /> defaults to that same
+        /// 12345 so existing callers see pixel-identical output unless they opt into a different seed;
+        /// the tiling fix applies either way since it's a change to how edges are handled, not to the
+        /// random sequence itself. Only the flat center/edge two-color blend stays local to this method -
+        /// <see cref="GenerateDirectionalStone" /> layers a heavier, lit four-color look on the same kind
+        /// of height field for the Stone preset, which is a deliberately different visual style, not a
+        /// duplicate of this one.
+        /// </remarks>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <param name="cellSize">Size of the cell.</param>
+        /// <param name="cellSize">Size of the cell, in pixels.</param>
         /// <param name="alpha">The alpha.</param>
         /// <param name="centerR">The center r.</param>
         /// <param name="centerG">The center g.</param>
@@ -547,6 +560,10 @@ namespace Imaging.Texture
         /// <param name="edgeR">The edge r.</param>
         /// <param name="edgeG">The edge g.</param>
         /// <param name="edgeB">The edge b.</param>
+        /// <param name="seed">
+        /// Seed for feature-point placement. Defaults to the value this method always used internally
+        /// before, so default output is unchanged; pass a different value to get a different pattern.
+        /// </param>
         /// <returns>The generated texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer? GenerateCellular(int width,
@@ -558,57 +575,28 @@ namespace Imaging.Texture
             byte centerB = 100,
             byte edgeR = 20,
             byte edgeG = 20,
-            byte edgeB = 20)
+            byte edgeB = 20,
+            int seed = 12345)
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
-            var rand = new Random(12345); // Fixed seed for stable feature points
 
-            // Precompute feature points for each grid cell to speed up rendering
-            var gridCols = (width / cellSize) + 2;
-            var gridRows = (height / cellSize) + 2;
-            var featurePointsX = new int[gridCols, gridRows];
-            var featurePointsY = new int[gridCols, gridRows];
-
-            for (var y = 0; y < gridRows; y++)
-            {
-                for (var x = 0; x < gridCols; x++)
-                {
-                    featurePointsX[x, y] = (x * cellSize) + rand.Next(0, cellSize);
-                    featurePointsY[x, y] = (y * cellSize) + rand.Next(0, cellSize);
-                }
-            }
+            // gridCells is a cell *count*, cellSize a cell *size in pixels* - derived from width, so this
+            // assumes a roughly square buffer. GenerateVoronoiMap applies one count to both axes, so a
+            // strongly non-square width/height will give rectangular rather than square cells.
+            var gridCells = Math.Max(1, width / cellSize);
+            var noiseGen = new NoiseGenerator(width, height);
+            var heightMap = noiseGen.GenerateVoronoiMap(gridCells, seed);
 
             var idx = 0;
-            var maxDist = cellSize * 1.2; // Approximate max distance for normalization
 
             for (var y = 0; y < height; y++)
             {
                 for (var x = 0; x < width; x++)
                 {
-                    var cellX = x / cellSize;
-                    var cellY = y / cellSize;
-
-                    var minDist = double.MaxValue;
-
-                    // Check surrounding 3x3 cells for the closest feature point
-                    for (var offsetY = -1; offsetY <= 1; offsetY++)
-                    {
-                        for (var offsetX = -1; offsetX <= 1; offsetX++)
-                        {
-                            var checkX = Math.Clamp(cellX + offsetX, 0, gridCols - 1);
-                            var checkY = Math.Clamp(cellY + offsetY, 0, gridRows - 1);
-
-                            double distX = x - featurePointsX[checkX, checkY];
-                            double distY = y - featurePointsY[checkX, checkY];
-                            var dist = Math.Sqrt(distX * distX + distY * distY);
-
-                            if (dist < minDist) minDist = dist;
-                        }
-                    }
-
-                    // Normalize distance and interpolate between center and edge color
-                    var factor = Math.Clamp(minDist / maxDist, 0.0, 1.0);
+                    // GenerateVoronoiMap returns 1.0 at the feature point and 0.0 at the far edge;
+                    // the center/edge blend below expects the opposite direction (0 = center).
+                    var factor = 1.0 - heightMap[y, x];
 
                     span[idx++] = (byte)(centerB + (edgeB - centerB) * factor); // B
                     span[idx++] = (byte)(centerG + (edgeG - centerG) * factor); // G

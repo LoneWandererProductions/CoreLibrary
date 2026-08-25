@@ -103,7 +103,7 @@ namespace Imaging.Helpers
                 TextureType.MagicalEther => TexturePresets.GenerateMagicalEther(width, height),
                 TextureType.Cobblestone => TexturePresets.GenerateCobblestone(width, height),
                 TextureType.DragonScales => TexturePresets.GenerateDragonScales(width, height),
-                TextureType.LavaPool => TexturePresets.GenerateCobblestone(width, height),
+                TextureType.LavaPool => TexturePresets.GenerateLavaPool(width, height),
                 _ => throw new ArgumentOutOfRangeException(nameof(texture), texture,
                     ImagingResources.UnsupportedTexture)
             };
