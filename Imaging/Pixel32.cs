@@ -83,10 +83,10 @@ namespace Imaging
             => a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
 
         /// <summary>
-        /// Equalses the specified other.
+        /// If pixel32 is Equal to the specified other.
         /// </summary>
         /// <param name="other">The other.</param>
-        /// <returns></returns>
+        /// <returns>True if Pixel is equal. Else false.</returns>
         public bool Equals(Pixel32 other) => AreEqual(this, other);
     }
 }

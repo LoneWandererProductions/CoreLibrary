@@ -10,7 +10,6 @@
 // ReSharper disable UnusedMember.Global
 
 using System.Drawing;
-using Mathematics;
 
 namespace Imaging.Compare
 {
@@ -109,7 +108,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
-        bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate2D startCoordinates);
+        bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate startCoordinates);
 
 
         /// <summary>
@@ -122,6 +121,6 @@ namespace Imaging.Compare
         /// <returns>
         ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
-        bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates, int threshold = 0);
+        bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate startCoordinates, int threshold = 0);
     }
 }

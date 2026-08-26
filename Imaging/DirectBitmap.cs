@@ -14,8 +14,10 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
+using Imaging.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -24,7 +26,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Imaging.Interfaces;
 using Color = System.Drawing.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -35,6 +36,7 @@ namespace Imaging
     ///     Simple elegant Solution to get Color of an pixel, for more information look into Source.
     /// </summary>
     /// <seealso cref="T:System.IDisposable" />
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public sealed class DirectBitmap : IEquatable<DirectBitmap>, IPixelSurface
     {
         /// <summary>
@@ -538,14 +540,12 @@ namespace Imaging
         /// </returns>
         public override string ToString()
         {
-            var info = string.Empty;
-
-            for (var i = 0; i < Bits.Length - 1; i++)
+            if (Disposed)
             {
-                info = string.Concat(info, Bits[i], ImagingResources.Indexer);
+                return $"{nameof(DirectBitmap)} [Disposed]";
             }
 
-            return string.Concat(info, ImagingResources.Spacing, Bits[Bits.Length]);
+            return $"{nameof(DirectBitmap)} ({Width}x{Height}, Format: 32bppArgb)";
         }
 
         /// <summary>
@@ -584,6 +584,16 @@ namespace Imaging
         ///   <see langword="true" /> if the specified object  is equal to the current object; otherwise, <see langword="false" />.
         /// </returns>
         public override bool Equals(object? obj) => Equals(obj as DirectBitmap);
+
+        /// <summary>
+        /// Provides a clean string representation for the IDE Debugger.
+        /// </summary>
+        /// <value>
+        /// The debugger display.
+        /// </value>
+        private string DebuggerDisplay => Disposed
+            ? $"{nameof(DirectBitmap)} [Disposed]"
+            : $"{nameof(DirectBitmap)} [{Width}x{Height}] (Pixel32 Count: {Bits?.Length ?? 0})";
 
         /// <summary>
         /// Converts the specified pixels.

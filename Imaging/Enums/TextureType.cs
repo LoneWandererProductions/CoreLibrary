@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Enums
  * FILE:        TextureType.cs
- * PURPOSE:     Enum that shows all textures
+ * PURPOSE:     Enum that shows all current textures
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -64,9 +64,25 @@ namespace Imaging.Enums
         /// The color mapped
         /// </summary>
         ColorMapped = 9,
+
+        /// <summary>
+        /// The magical ether
+        /// </summary>
         MagicalEther = 10,
+
+        /// <summary>
+        /// The cobblestone
+        /// </summary>
         Cobblestone = 11,
+
+        /// <summary>
+        /// The dragon scales
+        /// </summary>
         DragonScales = 12,
-        LavaPool = 13
+
+        /// <summary>
+        /// The lava pool
+        /// </summary>
+        LavaPool = 13,
     }
 }

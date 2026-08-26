@@ -81,7 +81,7 @@ namespace Imaging.Helpers
         /// Gets the magical ether settings.
         /// </summary>
         /// <returns>Texture preset for Magic ether texture.</returns>
-        public static TextureConfiguration GetMagicalEtherSettings()
+        public static TextureConfiguration? GetMagicalEtherSettings()
         {
             return new TextureConfiguration
             {
@@ -98,7 +98,7 @@ namespace Imaging.Helpers
         /// Gets the lava pool settings.
         /// </summary>
         /// <returns>Texture preset for Lava texture.</returns>
-        public static TextureConfiguration GetLavaPoolSettings()
+        public static TextureConfiguration? GetLavaPoolSettings()
         {
             return new TextureConfiguration
             {
@@ -116,7 +116,7 @@ namespace Imaging.Helpers
         /// Gets the cobblestone settings.
         /// </summary>
         /// <returns>Texture preset for Cobblestone texture.</returns>
-        public static TextureConfiguration GetCobblestoneSettings()
+        public static TextureConfiguration? GetCobblestoneSettings()
         {
             return new TextureConfiguration
             {
@@ -130,7 +130,7 @@ namespace Imaging.Helpers
         /// Gets the dragon scales settings.
         /// </summary>
         /// <returns>Texture preset for Dragonscale texture.</returns>
-        public static TextureConfiguration GetDragonScalesSettings()
+        public static TextureConfiguration? GetDragonScalesSettings()
         {
             return new TextureConfiguration
             {

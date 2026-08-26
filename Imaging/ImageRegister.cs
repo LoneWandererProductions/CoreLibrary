@@ -174,7 +174,34 @@ namespace Imaging
                     nameof(TextureConfiguration.LineColor),
                     nameof(TextureConfiguration.LineThickness)
                 }
+            },
+            {
+                // Matches exactly what TextureAreas.GenerateTexture reads for TextureType.Cellular.
+                TextureType.Cellular,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.CellSize),
+                    nameof(TextureConfiguration.Alpha),
+                    nameof(TextureConfiguration.CenterColor),
+                    nameof(TextureConfiguration.EdgeColor)
+                }
+            },
+            {
+                // Matches exactly what TextureAreas.GenerateTexture reads for TextureType.ColorMapped.
+                TextureType.ColorMapped,
+                new HashSet<string>
+                {
+                    nameof(TextureConfiguration.ColorRamp),
+                    nameof(TextureConfiguration.TurbulenceSize),
+                    nameof(TextureConfiguration.Alpha)
+                }
             }
+
+            // MagicalEther, Cobblestone, DragonScales, and LavaPool are deliberately absent here.
+            // TextureAreas.GenerateTexture calls TexturePresets.GenerateXxx(width, height) for those
+            // four with no settings object at all ("Preset textures, no settings can be provided"),
+            // so nothing on TextureConfiguration currently affects their output - registering any
+            // property as active for them would tell the UI to enable fields that do nothing.
 
             // Add other textures as necessary
         };

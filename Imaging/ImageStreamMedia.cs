@@ -89,13 +89,12 @@ namespace Imaging
                 // bmp.CreateOptions = BitmapCreateOptions.DelayCreation; is bad it does not load all data immediately.
                 bmp.CacheOption = BitmapCacheOption.OnLoad;
 
-                using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                using var flStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 bmp.StreamSource = flStream;
 
                 if (width > 0 && height > 0)
                 {
                     bmp.DecodePixelWidth = width;
-                    bmp.DecodePixelHeight = height;
                 }
 
                 bmp.EndInit();

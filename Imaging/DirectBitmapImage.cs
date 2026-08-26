@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -31,6 +32,7 @@ namespace Imaging
     ///     Supports fast SIMD-based pixel operations and unsafe pointer access.
     ///     This class must be used only from the WPF UI thread when updating the bitmap.
     /// </summary>
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public sealed class DirectBitmapImage : IDisposable
     {
         /// <summary>
@@ -280,6 +282,26 @@ namespace Imaging
             _bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
             _bitmap.Unlock();
         }
+
+        /// <summary>
+        /// Returns a summary string representing the bitmap image dimensions and pixel format.
+        /// </summary>
+        public override string ToString()
+        {
+            if (_disposed)
+            {
+                return $"{nameof(DirectBitmapImage)} [Disposed]";
+            }
+
+            return $"{nameof(DirectBitmapImage)} ({Width}x{Height}, Format: Bgra32)";
+        }
+
+        /// <summary>
+        /// Provides a clean string representation for the IDE Debugger without UI thread side-effects.
+        /// </summary>
+        private string DebuggerDisplay => _disposed
+            ? $"{nameof(DirectBitmapImage)} [Disposed]"
+            : $"{nameof(DirectBitmapImage)} [{Width}x{Height}] (Pixel32 Count: {Bits?.Length ?? 0})";
 
         /// <summary>
         /// Converts the image.

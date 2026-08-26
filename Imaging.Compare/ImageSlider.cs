@@ -7,7 +7,6 @@
  */
 
 using System.Drawing;
-using Mathematics;
 
 namespace Imaging.Compare
 {
@@ -26,7 +25,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     <c>true</c> if [is part of] [the specified big image path]; otherwise, <c>false</c>.
         /// </returns>
-        internal static bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates,
+        internal static bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate startCoordinates,
             int threshold = 0)
         {
             using var bigImage = new Bitmap(bigImagePath);
@@ -44,7 +43,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     <c>true</c> if the small image is part of the big image; otherwise, <c>false</c>.
         /// </returns>
-        internal static bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate2D startCoordinates,
+        internal static bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate startCoordinates,
             int threshold = 0)
         {
             var bigHeight = bigImage.Height;
@@ -70,13 +69,13 @@ namespace Imaging.Compare
                     CheckFull(dbmBig, dbmSmall, i, j, threshold))
                 {
                     smallImageBottomEdge.Dispose();
-                    startCoordinates = new Coordinate2D(j, i);
+                    startCoordinates = new Coordinate(j, i);
                     return true;
                 }
             }
 
             smallImageBottomEdge.Dispose();
-            startCoordinates = Coordinate2D.NullPoint;
+            startCoordinates = Coordinate.NullPoint;
             return false;
         }
 

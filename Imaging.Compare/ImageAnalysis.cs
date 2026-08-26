@@ -9,7 +9,6 @@
 // ReSharper disable MemberCanBeInternal
 
 using System.Drawing;
-using Mathematics;
 
 namespace Imaging.Compare
 {
@@ -190,7 +189,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate2D startCoordinates)
+        public bool IsPartOf(Bitmap? bigImage, Bitmap? smallImage, out Coordinate startCoordinates)
         {
             return ImageSlider.IsPartOf(bigImage, smallImage, out startCoordinates);
         }
@@ -206,7 +205,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     <c>true</c> if [is part of] [the specified big image]; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate2D startCoordinates,
+        public bool IsPartOf(string bigImagePath, string smallImagePath, out Coordinate startCoordinates,
             int threshold = 0)
         {
             return ImageSlider.IsPartOf(bigImagePath, smallImagePath, out startCoordinates, threshold);
