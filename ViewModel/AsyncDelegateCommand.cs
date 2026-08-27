@@ -53,10 +53,12 @@ namespace ViewModel
         ///     executable.
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown when the execute action is null.</exception>
-        public AsyncDelegateCommand(Func<T, Task> execute, Predicate<T>? canExecute = null)
+        public AsyncDelegateCommand(Func<T, Task> execute, Predicate<T>? canExecute = null,
+            Action<Exception>? onException = null)
         {
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
+            _onException = onException;
         }
 
         /// <inheritdoc />
