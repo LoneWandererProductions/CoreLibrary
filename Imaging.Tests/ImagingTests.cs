@@ -159,7 +159,7 @@ namespace Imaging.Tests
             using var btm = image.ToBitmap();
             using var cutOut = ImageStream.CutBitmap(btm, 22, 10, 50, 50);
 
-            var point = Coordinate2D.NullPoint;
+            var point = Coordinate.NullPoint;
 
             var check = ImageSlider.IsPartOf(btm, cutOut, out point);
 
