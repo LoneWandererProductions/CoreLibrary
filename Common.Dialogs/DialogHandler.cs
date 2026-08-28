@@ -43,7 +43,7 @@ namespace Common.Dialogs
         ///     Shows the login screen.
         /// </summary>
         /// <returns>Sql Connection String Builder</returns>
-        public static SqlConnect ShowLoginScreen()
+        public static SqlConnect? ShowLoginScreen()
         {
             var login = new SqlLogin();
             _ = login.ShowDialog();
@@ -77,12 +77,7 @@ namespace Common.Dialogs
             var input = new InputBox(header, description);
             _ = input.ShowDialog();
 
-            if (string.IsNullOrEmpty(input.InputText))
-            {
-                return string.Empty;
-            }
-
-            return input.InputText;
+            return string.IsNullOrEmpty(input.InputText) ? string.Empty : input.InputText;
         }
 
         /// <summary>
@@ -93,7 +88,7 @@ namespace Common.Dialogs
         /// <param name="appendage">File Extension we allow</param>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>PathObject with basic File Parameters</returns>
-        public static PathObject? HandleFileOpen(string appendage, string folder = "")
+        public static PathObject? HandleFileOpen(string appendage, string? folder = "")
         {
             if (string.IsNullOrEmpty(appendage))
             {
@@ -161,7 +156,7 @@ namespace Common.Dialogs
         /// <param name="appendage">File Extension we allow</param>
         /// <param name="folder">Folder, optional parameter, uses CurrentDictionary as fallback</param>
         /// <returns>PathObject with basic File Parameters</returns>
-        public static PathObject? HandleFileSave(string appendage, string folder = "")
+        public static PathObject? HandleFileSave(string appendage, string? folder = "")
         {
             if (string.IsNullOrEmpty(appendage))
             {

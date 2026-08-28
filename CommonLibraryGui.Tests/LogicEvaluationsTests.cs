@@ -53,7 +53,12 @@ namespace CommonLibraryGui.Tests
             var conditions = new List<FilterOption>
             {
                 new FilterOption { SelectedCompareOperator = CompareOperator.Like, EntryText = "Common" },
-                new FilterOption { SelectedLogicalOperator = LogicOperator.AndNot, SelectedCompareOperator = CompareOperator.Like, EntryText = "Draft" }
+                new FilterOption
+                {
+                    SelectedLogicalOperator = LogicOperator.AndNot,
+                    SelectedCompareOperator = CompareOperator.Like,
+                    EntryText = "Draft"
+                }
             };
 
             // Act & Assert
