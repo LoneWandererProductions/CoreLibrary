@@ -54,6 +54,7 @@
     <ProjectReference Include="..\Common.Controls\Common.Controls.csproj" />
     <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
     <ProjectReference Include="..\Common.Images\Common.Images.csproj" />
+    <ProjectReference Include="..\CommonFilter\CommonFilter.csproj" />
     <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
     <ProjectReference Include="..\Imaging.Cifs\Imaging.Cifs.csproj" />
     <ProjectReference Include="..\Imaging.Compare\Imaging.Compare.csproj" />
