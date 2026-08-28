@@ -29,11 +29,23 @@ namespace CommonFilter
         public FilterWindow(Filter filter)
         {
             InitializeComponent();
-            View.Reference = this;
             _interface = filter;
+
+            // Subscribe to ViewModel event to avoid hard circular dependencies
+            View.RequestClose += OnRequestClose;
 
             // Add the first blank filter row on startup
             View.AddCommand.Execute(null);
+        }
+
+        /// <summary>
+        /// Called when [request close].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="conditions">The conditions.</param>
+        private void OnRequestClose(object? sender, List<FilterOption> conditions)
+        {
+            GetConditions(conditions);
         }
 
         /// <summary>

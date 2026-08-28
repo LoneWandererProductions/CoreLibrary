@@ -8,6 +8,7 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -24,12 +25,9 @@ namespace CommonFilter
     internal sealed class FilterWindowView : ViewModelBase
     {
         /// <summary>
-        ///     Gets or sets the reference.
+        /// Event raised when editing is complete, passing conditions back to the host window.
         /// </summary>
-        /// <value>
-        ///     The reference.
-        /// </value>
-        public FilterWindow Reference { get; set; } = null!;
+        public event EventHandler<List<FilterOption>>? RequestClose;
 
         /// <summary>
         ///     Gets the add command.
@@ -50,14 +48,6 @@ namespace CommonFilter
             new DelegateCommand<object>(DoneAction, CanExecute);
 
         /// <summary>
-        ///     Gets or sets the filter.
-        /// </summary>
-        /// <value>
-        ///     The filter.
-        /// </value>
-        public Dictionary<int, SearchParameterControl> Filter { get; set; }
-
-        /// <summary>
         /// Gets or sets the filters.
         /// </summary>
         /// <value>
@@ -76,7 +66,6 @@ namespace CommonFilter
             Filters.Add(newItem);
         }
 
-
         /// <summary>
         /// Removes the item.
         /// </summary>
@@ -93,7 +82,7 @@ namespace CommonFilter
         private void DoneAction(object obj)
         {
             var options = Filters.Select(filter => filter.Options).ToList();
-            Reference.GetConditions(options);
+            RequestClose?.Invoke(this, options);
         }
     }
 }

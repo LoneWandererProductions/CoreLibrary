@@ -8,10 +8,8 @@
 
 // ReSharper disable MemberCanBePrivate.Global
 
-
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Input;
 using ViewModel;
 
@@ -21,14 +19,8 @@ namespace CommonFilter
     /// <summary>
     ///     Search View
     /// </summary>
-    /// <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
-    internal sealed class SearchParameterViewModel : INotifyPropertyChanged
+    internal sealed class SearchParameterViewModel : ViewModelBase
     {
-        /// <summary>
-        ///     The delete command
-        /// </summary>
-        private ICommand _deleteCommand;
-
         /// <summary>
         ///     The entry text
         /// </summary>
@@ -129,8 +121,7 @@ namespace CommonFilter
         /// <value>
         ///     The delete command.
         /// </value>
-        public ICommand DeleteCommand =>
-            _deleteCommand = new DelegateCommand<object>(DeleteAction, CanExecute);
+        public ICommand DeleteCommand { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchParameterViewModel"/> class.
@@ -139,13 +130,8 @@ namespace CommonFilter
         public SearchParameterViewModel(Action<SearchParameterViewModel> deleteCallback)
         {
             _deleteCallback = deleteCallback;
+            DeleteCommand = new DelegateCommand<object>(DeleteAction, CanExecute);
         }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Triggers if an Attribute gets changed
-        /// </summary>
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         ///     Gets the options.
@@ -175,15 +161,6 @@ namespace CommonFilter
         {
             // check if executing is allowed, not used right now
             return true;
-        }
-
-        /// <summary>
-        ///     Called when [property changed].
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

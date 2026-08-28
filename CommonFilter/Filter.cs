@@ -75,7 +75,8 @@ namespace CommonFilter
         /// <returns>Condition fulfilled?</returns>
         public bool CheckFilter(string input)
         {
-            if (Conditions.Count == 0 || string.IsNullOrEmpty(input))
+            // Fixed: Check if Conditions is null before accessing .Count
+            if (Conditions == null || Conditions.Count == 0 || string.IsNullOrEmpty(input))
             {
                 return false;
             }
@@ -88,7 +89,8 @@ namespace CommonFilter
         /// </summary>
         internal void Done()
         {
-            FilterChanged(this, EventArgs.Empty);
+            // Fixed: Thread-safe event invocation
+            FilterChanged?.Invoke(this, EventArgs.Empty);
             _filter.Close();
         }
     }
