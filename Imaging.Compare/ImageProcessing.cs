@@ -6,6 +6,7 @@
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
+using System.Collections.Concurrent;
 using System.Drawing;
 using Extended.Extensions;
 
@@ -34,7 +35,7 @@ namespace Imaging.Compare
             IEnumerable<ImageSimilar> images,
             float maximumDifferenceInPercentage)
         {
-            var similarImagesFound = new List<ImageSimilar>();
+            var similarImagesFound = new ConcurrentBag<ImageSimilar>();
 
             _ = Parallel.ForEach(images, image =>
             {
@@ -46,12 +47,12 @@ namespace Imaging.Compare
                 }
             });
 
-            if (similarImagesFound.IsNullOrEmpty())
+            if (similarImagesFound.IsEmpty)
             {
                 return null;
             }
 
-            return similarImagesFound.Count == 1 ? null : similarImagesFound;
+            return similarImagesFound.Count == 1 ? null : similarImagesFound.ToList();
         }
 
         /// <summary>
@@ -62,11 +63,8 @@ namespace Imaging.Compare
         /// <returns>Image Object to compare</returns>
         internal static ImageSimilar GenerateData(Bitmap? bitmap, int id)
         {
-            // Resize
-            bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
-
-            // Use our new Format
-            var dbm = DirectBitmap.GetInstance(bitmap);
+            using var scaled = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
+            using var dbm = DirectBitmap.GetInstance(scaled);
 
             // Initialize variables for average color value
             var r = 0.0; // Use double for precision

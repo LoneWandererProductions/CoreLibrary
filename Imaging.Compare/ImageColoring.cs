@@ -34,7 +34,7 @@ namespace Imaging.Compare
         /// <param name="checkSubfolders">Whether to look in subfolders too</param>
         /// <param name="extensions">The extensions.</param>
         /// <returns>List of Images with similar Color range</returns>
-        internal static List<string>? GetSimilarColors(int r, int g, int b, int range, string folderPath,
+        internal static List<string?>? GetSimilarColors(int r, int g, int b, int range, string? folderPath,
             bool checkSubfolders, IEnumerable<string> extensions)
         {
             var localDate = DateTime.Now;
@@ -73,7 +73,7 @@ namespace Imaging.Compare
         /// <exception cref="OutOfMemoryException">Out of Memory</exception>
         /// <exception cref="ArgumentException">Wrong Argument</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        private static List<ImageColor> GetSortedColorValues(IReadOnlyCollection<string> imagePaths)
+        private static List<ImageColor> GetSortedColorValues(IReadOnlyCollection<string?> imagePaths)
         {
             var imagePathsAndGrayValues = new List<ImageColor>(imagePaths.Count);
 

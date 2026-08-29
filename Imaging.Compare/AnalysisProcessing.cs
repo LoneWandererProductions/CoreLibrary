@@ -100,7 +100,7 @@ namespace Imaging.Compare
         /// <param name="bitmap">The bitmap.</param>
         /// <param name="path">The Path to the image.</param>
         /// <returns>ImageColor Object</returns>
-        internal static ImageColor GenerateData(Bitmap? bitmap, string path)
+        internal static ImageColor GenerateData(Bitmap? bitmap, string? path)
         {
             _render = new ImageRender();
 

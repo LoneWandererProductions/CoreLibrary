@@ -31,7 +31,7 @@ namespace Imaging.Compare
         /// <returns>List of Images with similar Color range</returns>
         /// <exception cref="ArgumentException">Argument Exception</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        List<string>? FindImagesInColorRange(int r, int g, int b, int range, string folderPath,
+        List<string?>? FindImagesInColorRange(int r, int g, int b, int range, string? folderPath,
             bool checkSubfolders,
             IEnumerable<string> extensions);
 

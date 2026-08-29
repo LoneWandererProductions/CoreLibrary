@@ -23,7 +23,7 @@ namespace Imaging.Compare
         /// <summary>
         ///     The Temp path dictionary
         /// </summary>
-        private static Dictionary<int, string>? Translator { get; set; }
+        private static Dictionary<int, string?>? Translator { get; set; }
 
         /// <summary>
         ///     Find all similar images in a folder, and possibly subfolders
@@ -35,7 +35,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        internal static List<List<string>>? GetSimilarImages(string folderPath, bool checkSubfolders,
+        internal static List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions, float threshold)
         {
             var localDate = DateTime.Now;
@@ -82,6 +82,8 @@ namespace Imaging.Compare
                 foreach (var cache in duplicates.Select(item => ImageProcessing.FindSimilarImages(item, dup, threshold))
                              .Where(cache => cache != null))
                 {
+                    if (cache == null) continue;
+
                     dup = dup.Except(cache).ToList();
                     groups.Add(cache);
                 }
@@ -112,8 +114,10 @@ namespace Imaging.Compare
         /// <exception cref="OutOfMemoryException">Out of Memory</exception>
         /// <exception cref="ArgumentException">Wrong Argument</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        private static List<ImageSimilar> GetSortedGrayScaleValues()
+        private static List<ImageSimilar>? GetSortedGrayScaleValues()
         {
+            if (Translator == null) return null;
+
             var imagePathsAndGrayValues = new List<ImageSimilar>(Translator.Count);
 
             //with sanity check in Case one file went missing, we won't have to stop everything
@@ -121,6 +125,8 @@ namespace Imaging.Compare
             {
                 try
                 {
+                    if (value == null) continue;
+
                     using var btm = new Bitmap(value);
                     var dup = ImageProcessing.GenerateData(btm, key);
                     imagePathsAndGrayValues.Add(dup);
@@ -131,14 +137,14 @@ namespace Imaging.Compare
                 }
                 catch (OutOfMemoryException ex)
                 {
+                    // Skip this one file rather than aborting the whole scan - see
+                    // the identical fix in ImageDuplication.GetSortedGrayScaleValues.
                     var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
-                    Trace.WriteLine(ex, memory);
-                    throw;
+                    Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
                 }
                 catch (InvalidOperationException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new InvalidOperationException(ex.Message);
                 }
             }
 
@@ -153,26 +159,30 @@ namespace Imaging.Compare
         /// <param name="imagePathsAndGrayValues">The image paths and gray values.</param>
         /// <returns>Group of Duplicates</returns>
         private static List<List<ImageSimilar>> GetDuplicateGroups(
-            IReadOnlyCollection<ImageSimilar> imagePathsAndGrayValues)
+            IReadOnlyCollection<ImageSimilar>? imagePathsAndGrayValues)
         {
             var duplicateGroups = new List<List<ImageSimilar>>();
             var currentDuplicates = new List<ImageSimilar>();
-            var dup = new List<ImageSimilar>(imagePathsAndGrayValues);
 
-            foreach (var duplicate in imagePathsAndGrayValues)
+            if (imagePathsAndGrayValues != null)
             {
-                currentDuplicates.AddRange(dup.Where(image => duplicate.Equals(image)));
+                var dup = new List<ImageSimilar>(imagePathsAndGrayValues);
 
-                dup = dup.Except(currentDuplicates).ToList();
+                foreach (var duplicate in imagePathsAndGrayValues)
+                {
+                    currentDuplicates.AddRange(dup.Where(image => duplicate.Equals(image)));
 
-                if (currentDuplicates.Count is 1 or 0)
-                {
-                    currentDuplicates.Clear();
-                }
-                else
-                {
-                    duplicateGroups.Add(currentDuplicates);
-                    currentDuplicates = new List<ImageSimilar>();
+                    dup = dup.Except(currentDuplicates).ToList();
+
+                    if (currentDuplicates.Count is 1 or 0)
+                    {
+                        currentDuplicates.Clear();
+                    }
+                    else
+                    {
+                        duplicateGroups.Add(currentDuplicates);
+                        currentDuplicates = new List<ImageSimilar>();
+                    }
                 }
             }
 
@@ -186,7 +196,7 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="duplicateGroups">The duplicate groups.</param>
         /// <returns>List of Similar Images</returns>
-        private static List<List<string>> Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
+        private static List<List<string>>? Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
         {
             return duplicateGroups.Select(group =>
                     (from element in @group where Translator[element.Id] != null select Translator[element.Id])

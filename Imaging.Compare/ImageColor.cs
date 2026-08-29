@@ -89,7 +89,7 @@ namespace Imaging.Compare
         /// <value>
         ///     The path.
         /// </value>
-        internal string Path { get; init; }
+        internal string? Path { get; init; }
 
         /// <inheritdoc cref="IComparable" />
         /// <summary>
