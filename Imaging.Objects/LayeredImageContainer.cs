@@ -1,16 +1,14 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     RenderEngine
+ * PROJECT:     Imaging.Objects
  * FILE:        LayeredImageContainer.cs
  * PURPOSE:     Layered Image Container to overlay Images in a quick way.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
-using Imaging.Objects;
+// ReSharper disable MemberCanBeInternal
 
-namespace RenderEngine
+namespace Imaging.Objects
 {
     /// <inheritdoc />
     /// <summary>
@@ -80,7 +78,7 @@ namespace RenderEngine
         {
             if (layer.Width != _width || layer.Height != _height)
             {
-                throw new ArgumentException(RenderResource.ErrorLayerSize);
+                throw new ArgumentException(ImageResource.ErrorLayerSize);
             }
 
             _layers.Add(layer);
@@ -112,7 +110,7 @@ namespace RenderEngine
         {
             if (_layers.Count == 0)
             {
-                throw new InvalidOperationException(RenderResource.ErrorNoLayers);
+                throw new InvalidOperationException(ImageResource.ErrorNoLayers);
             }
 
             var result = new UnmanagedImageBuffer(_width, _height);
@@ -145,7 +143,7 @@ namespace RenderEngine
                 if (index < 0 || index >= _layers.Count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(layerIndices),
-                        string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+                        string.Format(ImageResource.ErrorInvalidLayerIndex, index));
                 }
 
                 var layerSpan = _layers[index].BufferSpan;
@@ -165,7 +163,7 @@ namespace RenderEngine
         {
             if (layer.Width != _width || layer.Height != _height)
             {
-                throw new ArgumentException(RenderResource.ErrorLayerSizeMismatch);
+                throw new ArgumentException(ImageResource.ErrorLayerSizeMismatch);
             }
 
             _layers.Insert(index, layer);
@@ -181,7 +179,7 @@ namespace RenderEngine
             if (index < 0 || index >= _layers.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index),
-                    string.Format(RenderResource.ErrorInvalidLayerIndex, index));
+                    string.Format(ImageResource.ErrorInvalidLayerIndex, index));
             }
 
             _layers.RemoveAt(index);

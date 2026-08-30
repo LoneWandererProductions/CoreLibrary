@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net9.0-windows</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<UseWPF>true</UseWPF>
-	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
-		<ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
-		<ProjectReference Include="..\Core.Apps\Core.Apps.csproj" />
-		<ProjectReference Include="..\ViewModel\ViewModel.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
+    <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
+    <ProjectReference Include="..\Core.Apps\Core.Apps.csproj" />
+    <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
+  </ItemGroup>
 
 </Project>

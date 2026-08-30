@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Texture
- * FILE:        Imaging.Texture.Tests.cs
+ * FILE:        TextureMathEngineTests.cs
  * PURPOSE:     Mostly visual tests for the texture generation methods in the TextureMathEngine class.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */

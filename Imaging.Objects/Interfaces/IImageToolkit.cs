@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     RenderEngine
+ * PROJECT:     Imaging.Objects.Interfaces
  * FILE:        IImageToolkit.cs
  * PURPOSE:     Interface declaration for my Image Toolkit.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,9 +10,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-using Imaging.Objects;
-
-namespace RenderEngine.Interfaces
+namespace Imaging.Objects.Interfaces
 {
     /// <summary>
     ///     Interface for our ImageToolkit

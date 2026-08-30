@@ -46,25 +46,6 @@ namespace Imaging.Objects
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Coordinate" /> class.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// <param name="width">The width.</param>
-        public Coordinate(int x, int y, int width)
-        {
-            X = x;
-            Y = y;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Coordinate" /> class.
-        /// </summary>
-        public Coordinate()
-        {
-        }
-
-        /// <summary>
         ///     Gets the null point.
         /// </summary>
         /// <value>
@@ -88,6 +69,7 @@ namespace Imaging.Objects
         /// </value>
         public int X { get; }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Equals the specified other.
         /// </summary>
@@ -105,7 +87,7 @@ namespace Imaging.Objects
         /// <returns>
         ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Coordinate other && Equals(other);
         }
