@@ -10,8 +10,8 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable MemberCanBePrivate.Global
 
+using Imaging.Objects;
 using Imaging.Texture;
-using RenderEngine;
 
 namespace Solaris
 {

@@ -17,8 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Mathematics;
-using RenderEngine;
+using Imaging.Objects;
 
 namespace Solaris
 {
@@ -122,7 +121,7 @@ namespace Solaris
         /// <summary>
         /// The cursor
         /// </summary>
-        private Coordinate2D _cursor;
+        private Coordinate _cursor;
 
         /// <summary>
         /// The third layer

@@ -32,6 +32,11 @@
     <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
     <ProjectReference Include="..\Pathfinder\Pathfinder.csproj" />
     <ProjectReference Include="..\Serializer\Serializer.csproj" />
+    <ProjectReference Include="..\SqliteHelper\SqliteHelper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.12.0" />
   </ItemGroup>
 
 </Project>

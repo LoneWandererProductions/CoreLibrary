@@ -6,8 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Extended.Extensions;
-using RenderEngine;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Extended.Extensions;
+using Imaging.Objects;
 using Brushes = System.Drawing.Brushes;
 
 namespace Solaris

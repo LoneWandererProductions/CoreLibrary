@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
+using Imaging.Objects;
 using Imaging.Texture;
 using OpenTK.Graphics.OpenGL4;
 using System;

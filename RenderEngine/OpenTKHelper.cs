@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Objects;
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Diagnostics;

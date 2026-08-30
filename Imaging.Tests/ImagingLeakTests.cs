@@ -10,6 +10,7 @@
  */
 
 using System.Drawing;
+using Imaging.Enums;
 
 namespace Imaging.Tests
 {
@@ -53,7 +54,7 @@ namespace Imaging.Tests
             LeakDetector.Monitor(() =>
             {
                 // Testing if ApplyFilter cleans up its internal DirectBitmap
-                var filtered = ImagingFacade.ApplyFilter(testBmp, Enums.FiltersType.Sepia);
+                var filtered = ImagingFacade.ApplyFilter(testBmp, FiltersType.Sepia);
                 filtered?.Dispose();
             }, "Sepia Filter Disposal Test");
         }

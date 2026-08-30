@@ -1,19 +1,17 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     RenderEngine
+ * PROJECT:     Imaging.Objects
  * FILE:        UnmanagedImageBuffer.cs
  * PURPOSE:     A way to store images in a fast way.
  *              It aims to bridge System.Drawing and OpenGL in a clean and fast way.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace RenderEngine
+namespace Imaging.Objects
 {
     /// <inheritdoc cref="IDisposable" />
     /// <summary>
@@ -51,7 +49,7 @@ namespace RenderEngine
         /// Holds raw pixel data in row-major order (top-left → bottom-right).
         /// Each pixel is stored as BGRA (little endian: 0xAABBGGRR).
         /// </summary>
-        private IntPtr _buffer;
+        private nint _buffer;
 
         /// <summary>
         /// Returns a span over the raw buffer.
@@ -68,10 +66,10 @@ namespace RenderEngine
         public int Count => Width * Height * BytesPerPixel;
 
         /// <summary>
-        /// Gets the <see cref="System.Byte"/> at the specified index.
+        /// Gets the <see cref="byte"/> at the specified index.
         /// </summary>
         /// <value>
-        /// The <see cref="System.Byte"/>.
+        /// The <see cref="byte"/>.
         /// </value>
         /// <param name="index">The index.</param>
         /// <returns>Data at index</returns>
@@ -204,9 +202,9 @@ namespace RenderEngine
 
                 // Unpack BGRA uint into bytes
                 buffer[offset + 0] = (byte)(bgra & 0xFF); // B
-                buffer[offset + 1] = (byte)((bgra >> 8) & 0xFF); // G
-                buffer[offset + 2] = (byte)((bgra >> 16) & 0xFF); // R
-                buffer[offset + 3] = (byte)((bgra >> 24) & 0xFF); // A
+                buffer[offset + 1] = (byte)(bgra >> 8 & 0xFF); // G
+                buffer[offset + 2] = (byte)(bgra >> 16 & 0xFF); // R
+                buffer[offset + 3] = (byte)(bgra >> 24 & 0xFF); // A
             }
         }
 
@@ -220,7 +218,7 @@ namespace RenderEngine
         public void ReplaceBuffer(ReadOnlySpan<byte> fullBuffer)
         {
             var bufferSize = Width * Height * BytesPerPixel;
-            if (fullBuffer.Length != bufferSize) throw new ArgumentException(RenderResource.ErrorInputBuffer);
+            if (fullBuffer.Length != bufferSize) throw new ArgumentException(ImageResource.ErrorInputBuffer);
 
             fullBuffer.CopyTo(BufferSpan);
         }
@@ -260,10 +258,10 @@ namespace RenderEngine
             var invAlpha = 255 - a;
 
             // Formula: (NewColor * Alpha + OldColor * InvAlpha) >> 8
-            span[offset + 0] = (byte)((b * a + span[offset + 0] * invAlpha) >> 8); // B
-            span[offset + 1] = (byte)((g * a + span[offset + 1] * invAlpha) >> 8); // G
-            span[offset + 2] = (byte)((r * a + span[offset + 2] * invAlpha) >> 8); // R
-            span[offset + 3] = (byte)((a * a + span[offset + 3] * invAlpha) >> 8); // A
+            span[offset + 0] = (byte)(b * a + span[offset + 0] * invAlpha >> 8); // B
+            span[offset + 1] = (byte)(g * a + span[offset + 1] * invAlpha >> 8); // G
+            span[offset + 2] = (byte)(r * a + span[offset + 2] * invAlpha >> 8); // R
+            span[offset + 3] = (byte)(a * a + span[offset + 3] * invAlpha >> 8); // A
         }
 
         /// <summary>
@@ -290,8 +288,8 @@ namespace RenderEngine
             var destStride = Width * BytesPerPixel;
 
             // 3. Find the exact starting memory addresses for the top-left pixel of the copy regions
-            var pSrc = (byte*)src._buffer.ToPointer() + (srcY * srcStride) + (srcX * BytesPerPixel);
-            var pDest = (byte*)_buffer.ToPointer() + (destY * destStride) + (destX * BytesPerPixel);
+            var pSrc = (byte*)src._buffer.ToPointer() + srcY * srcStride + srcX * BytesPerPixel;
+            var pDest = (byte*)_buffer.ToPointer() + destY * destStride + destX * BytesPerPixel;
 
             // 4. The ultra-fast copy loop
             for (var y = 0; y < height; y++)
@@ -309,7 +307,7 @@ namespace RenderEngine
         /// Returns the raw pointer to the unmanaged buffer.
         /// Use with caution — pointer arithmetic required.
         /// </summary>
-        public IntPtr Buffer => _buffer;
+        public nint Buffer => _buffer;
 
         public int Id { get; set; }
 
@@ -349,7 +347,7 @@ namespace RenderEngine
         /// Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString() => $"{nameof(UnmanagedImageBuffer)}({Width}x{Height}, Ptr=0x{_buffer:X})";
 
@@ -372,10 +370,10 @@ namespace RenderEngine
         /// </summary>
         public void Dispose()
         {
-            if (_buffer != IntPtr.Zero)
+            if (_buffer != nint.Zero)
             {
                 Marshal.FreeHGlobal(_buffer);
-                _buffer = IntPtr.Zero;
+                _buffer = nint.Zero;
             }
 
             GC.SuppressFinalize(this);
@@ -410,8 +408,8 @@ namespace RenderEngine
                     // Fallback: Copy row by row (Still 100x faster than pixel-by-pixel)
                     for (var y = 0; y < height; y++)
                     {
-                        var srcRow = (byte*)bmpData.Scan0 + (y * bmpData.Stride);
-                        var dstRow = (byte*)buffer._buffer + (y * rowBytes);
+                        var srcRow = (byte*)bmpData.Scan0 + y * bmpData.Stride;
+                        var dstRow = (byte*)buffer._buffer + y * rowBytes;
                         System.Buffer.MemoryCopy(srcRow, dstRow, rowBytes, rowBytes);
                     }
                 }
@@ -461,7 +459,7 @@ namespace RenderEngine
         /// </summary>
         public static uint PackBgra(byte a, byte r, byte g, byte b)
         {
-            return ((uint)a << 24) | ((uint)r << 16) | ((uint)g << 8) | b;
+            return (uint)a << 24 | (uint)r << 16 | (uint)g << 8 | b;
         }
 
         /// <summary>

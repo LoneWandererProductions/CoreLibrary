@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Objects;
 using System.Drawing;
 
 namespace Imaging.Compare

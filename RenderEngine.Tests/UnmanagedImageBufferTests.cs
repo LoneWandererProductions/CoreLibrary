@@ -7,6 +7,7 @@
  */
 
 using System.Drawing;
+using Imaging.Objects;
 
 namespace RenderEngine.Tests
 {

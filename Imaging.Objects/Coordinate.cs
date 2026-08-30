@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     Imaging.Compare
+ * PROJECT:     Imaging.Objects
  * FILE:        Coordinate.cs
  * PURPOSE:     A more clever way to handle some 2D coordinate Stuff
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -14,7 +14,7 @@
 
 using System.Diagnostics;
 
-namespace Imaging.Compare
+namespace Imaging.Objects
 {
     /// <inheritdoc />
     /// <summary>

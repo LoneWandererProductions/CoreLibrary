@@ -13,6 +13,7 @@ using FileHandler;
 using Imaging.Cifs;
 using Imaging.Compare;
 using Imaging.Helpers;
+using Imaging.Objects;
 using Mathematics;
 
 namespace Imaging.Tests

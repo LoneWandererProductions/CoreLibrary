@@ -12,7 +12,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using RenderEngine;
+using Imaging.Objects;
 
 namespace Solaris
 {

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
+    <ProjectReference Include="..\Imaging.Objects\Imaging.Objects.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
   </ItemGroup>
 

@@ -6,7 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using RenderEngine;
+using Imaging.Objects;
 
 namespace Solaris
 {

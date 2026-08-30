@@ -12,8 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using RenderEngine;
-
+using Imaging.Objects;
 
 namespace Solaris
 {

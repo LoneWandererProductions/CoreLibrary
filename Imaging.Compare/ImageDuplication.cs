@@ -10,6 +10,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -32,7 +33,7 @@ namespace Imaging.Compare
         /// <summary>
         ///     The Temp path dictionary
         /// </summary>
-        private static Dictionary<int, string>? Translator { get; set; }
+        private static Dictionary<int, string?>? Translator { get; set; }
 
         /// <summary>
         ///     Find all duplicate images in a folder, and possibly subfolders
@@ -43,7 +44,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        internal static List<List<string>>? GetDuplicateImages(string folderPath, bool checkSubfolders,
+        internal static List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions)
         {
             var localDate = DateTime.Now;
@@ -81,13 +82,16 @@ namespace Imaging.Compare
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
         private static List<ImageDuplicate> GetSortedGrayScaleValues()
         {
-            var imagePathsAndGrayValues = new List<ImageDuplicate>(Translator.Count);
+            var imagePathsAndGrayValues = new ConcurrentBag<ImageDuplicate>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            foreach (var (key, value) in Translator.Where(pathImage => File.Exists(pathImage.Value)))
+            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
             {
+                var (key, value) = pathImage;
                 try
                 {
+                    if (value == null) return;
+
                     using var btm = new Bitmap(value);
                     var dup = GenerateData(btm, key);
                     imagePathsAndGrayValues.Add(dup);
@@ -98,18 +102,19 @@ namespace Imaging.Compare
                 }
                 catch (OutOfMemoryException ex)
                 {
+                    // Skip this one file rather than aborting the whole scan - losing
+                    // everything processed so far over one oversized/corrupt image is
+                    // exactly the failure mode a bulk duplicate scan needs to avoid.
                     var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
-                    Trace.WriteLine(ex, memory);
-                    throw;
+                    Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
                 }
                 catch (InvalidOperationException ex)
                 {
                     Trace.WriteLine(ex);
-                    throw new InvalidOperationException(ex.Message);
                 }
-            }
+            });
 
-            return imagePathsAndGrayValues;
+            return imagePathsAndGrayValues.ToList();
         }
 
         /// <summary>
@@ -158,23 +163,28 @@ namespace Imaging.Compare
         /// <returns>Image Object to compare</returns>
         private static ImageDuplicate GenerateData(Bitmap? bitmap, int id)
         {
-            //resize
-            bitmap = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
-
-            //use our new Format
-            var dbm = DirectBitmap.GetInstance(bitmap);
+            // resize. Disposed via 'using' - BitmapScaling allocates a new Bitmap
+            // (and therefore a new GDI+ handle) on every call, and this method used
+            // to leak it, along with three other objects below, on every single image
+            // processed. At a handful of images that's invisible; at thousands it can
+            // exhaust the process's GDI handle quota well before RAM becomes an issue.
+            using var scaled = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             //get the average Color Value
             var r = 0;
             var b = 0;
             var g = 0;
 
-            for (var y = 0; y < ImageResources.DuplicateSize; y++)
-            for (var x = 0; x < ImageResources.DuplicateSize; x++)
+            using (var colorDbm = DirectBitmap.GetInstance(scaled))
             {
-                r += dbm.GetPixel(x, y).R;
-                b += dbm.GetPixel(x, y).B;
-                g += dbm.GetPixel(x, y).G;
+                for (var y = 0; y < ImageResources.DuplicateSize; y++)
+                for (var x = 0; x < ImageResources.DuplicateSize; x++)
+                {
+                    var pixel = colorDbm.GetPixel(x, y);
+                    r += pixel.R;
+                    b += pixel.B;
+                    g += pixel.G;
+                }
             }
 
             r /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
@@ -182,24 +192,19 @@ namespace Imaging.Compare
             g /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
 
             var image = new byte[ImageResources.DuplicateSize, ImageResources.DuplicateSize];
-            var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
             //get greyscale
-            bitmap = Render.FilterImage(bitmap, FiltersType.GrayScale);
+            using var gray = Render.FilterImage(scaled, FiltersType.GrayScale);
 
             //Get array Map for comparison
-            dbm = DirectBitmap.GetInstance(bitmap);
+            using var grayDbm = DirectBitmap.GetInstance(gray);
 
             try
             {
-                var i = -1;
                 for (var y = 0; y < ImageResources.DuplicateSize; y++)
                 for (var x = 0; x < ImageResources.DuplicateSize; x++)
                 {
-                    i++;
-                    var cache = dbm.GetPixel(x, y).R;
-                    image[x, y] = cache;
-                    hash[i] = cache;
+                    image[x, y] = grayDbm.GetPixel(x, y).R;
                 }
             }
             catch (InvalidOperationException ex)

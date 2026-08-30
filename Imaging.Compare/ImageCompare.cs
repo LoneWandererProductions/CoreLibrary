@@ -27,7 +27,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        public List<List<string>>? GetSimilarImages(string folderPath, bool checkSubfolders,
+        public List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions, float threshold)
         {
             return ImageSimilarity.GetSimilarImages(folderPath, checkSubfolders, extensions, threshold);
@@ -43,7 +43,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        public List<List<string>>? GetDuplicateImages(string folderPath, bool checkSubfolders,
+        public List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions)
         {
             return ImageDuplication.GetDuplicateImages(folderPath, checkSubfolders, extensions);
