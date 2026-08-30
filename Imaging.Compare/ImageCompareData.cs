@@ -22,7 +22,7 @@ namespace Imaging.Compare
         /// <value>
         ///     The image one.
         /// </value>
-        public string? ImageOne { get; internal set; }
+        public string ImageOne { get; internal set; }
 
         /// <summary>
         ///     Gets the image two.
@@ -30,7 +30,7 @@ namespace Imaging.Compare
         /// <value>
         ///     The image two.
         /// </value>
-        public string? ImageTwo { get; internal set; }
+        public string ImageTwo { get; internal set; }
 
         /// <summary>
         ///     Gets the similarity.

@@ -10,6 +10,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -43,7 +44,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
-        internal static List<List<string?>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
+        internal static List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions)
         {
             var localDate = DateTime.Now;
@@ -60,7 +61,7 @@ namespace Imaging.Compare
 
             var images = GetSortedGrayScaleValues();
 
-            images?.Sort();
+            images.Sort();
 
             var duplicateGroups = GetDuplicateGroups(images);
 
@@ -79,18 +80,17 @@ namespace Imaging.Compare
         /// <exception cref="OutOfMemoryException">Out of Memory</exception>
         /// <exception cref="ArgumentException">Wrong Argument</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        private static List<ImageDuplicate>? GetSortedGrayScaleValues()
+        private static List<ImageDuplicate> GetSortedGrayScaleValues()
         {
-            if (Translator == null) return null;
-
-            var imagePathsAndGrayValues = new List<ImageDuplicate>(Translator.Count);
+            var imagePathsAndGrayValues = new ConcurrentBag<ImageDuplicate>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            foreach (var (key, value) in Translator.Where(pathImage => File.Exists(pathImage.Value)))
+            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
             {
+                var (key, value) = pathImage;
                 try
                 {
-                    if (value == null) continue;
+                    if (value == null) return;
 
                     using var btm = new Bitmap(value);
                     var dup = GenerateData(btm, key);
@@ -112,9 +112,9 @@ namespace Imaging.Compare
                 {
                     Trace.WriteLine(ex);
                 }
-            }
+            });
 
-            return imagePathsAndGrayValues;
+            return imagePathsAndGrayValues.ToList();
         }
 
         /// <summary>
@@ -124,29 +124,28 @@ namespace Imaging.Compare
         /// <param name="imagePathsAndGrayValues">The image paths and gray values.</param>
         /// <returns>Group of Duplicates</returns>
         private static IEnumerable<List<ImageDuplicate>> GetDuplicateGroups(
-            IEnumerable<ImageDuplicate>? imagePathsAndGrayValues)
+            IEnumerable<ImageDuplicate> imagePathsAndGrayValues)
         {
             var duplicateGroups = new List<List<ImageDuplicate>>();
             var currentDuplicates = new List<ImageDuplicate>();
 
-            if (imagePathsAndGrayValues != null)
-                foreach (var image in imagePathsAndGrayValues)
+            foreach (var image in imagePathsAndGrayValues)
+            {
+                if (currentDuplicates.Count > 0 && !currentDuplicates[0].Equals(image))
                 {
-                    if (currentDuplicates.Count > 0 && !currentDuplicates[0].Equals(image))
+                    if (currentDuplicates.Count > 1)
                     {
-                        if (currentDuplicates.Count > 1)
-                        {
-                            duplicateGroups.Add(currentDuplicates);
-                            currentDuplicates = new List<ImageDuplicate>();
-                        }
-                        else
-                        {
-                            currentDuplicates.Clear();
-                        }
+                        duplicateGroups.Add(currentDuplicates);
+                        currentDuplicates = new List<ImageDuplicate>();
                     }
-
-                    currentDuplicates.Add(image);
+                    else
+                    {
+                        currentDuplicates.Clear();
+                    }
                 }
+
+                currentDuplicates.Add(image);
+            }
 
             if (currentDuplicates.Count > 1)
             {
@@ -164,6 +163,11 @@ namespace Imaging.Compare
         /// <returns>Image Object to compare</returns>
         private static ImageDuplicate GenerateData(Bitmap? bitmap, int id)
         {
+            // resize. Disposed via 'using' - BitmapScaling allocates a new Bitmap
+            // (and therefore a new GDI+ handle) on every call, and this method used
+            // to leak it, along with three other objects below, on every single image
+            // processed. At a handful of images that's invisible; at thousands it can
+            // exhaust the process's GDI handle quota well before RAM becomes an issue.
             using var scaled = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             //get the average Color Value
@@ -223,7 +227,7 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="duplicateGroups">The duplicate groups.</param>
         /// <returns>List of Similar Images</returns>
-        private static List<List<string?>>? Translate(IEnumerable<List<ImageDuplicate>> duplicateGroups)
+        private static List<List<string>> Translate(IEnumerable<List<ImageDuplicate>> duplicateGroups)
         {
             return duplicateGroups.Select(group =>
                     (from element in @group where Translator[element.Id] != null select Translator[element.Id])

@@ -10,6 +10,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -82,8 +83,6 @@ namespace Imaging.Compare
                 foreach (var cache in duplicates.Select(item => ImageProcessing.FindSimilarImages(item, dup, threshold))
                              .Where(cache => cache != null))
                 {
-                    if (cache == null) continue;
-
                     dup = dup.Except(cache).ToList();
                     groups.Add(cache);
                 }
@@ -114,18 +113,17 @@ namespace Imaging.Compare
         /// <exception cref="OutOfMemoryException">Out of Memory</exception>
         /// <exception cref="ArgumentException">Wrong Argument</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
-        private static List<ImageSimilar>? GetSortedGrayScaleValues()
+        private static List<ImageSimilar> GetSortedGrayScaleValues()
         {
-            if (Translator == null) return null;
-
-            var imagePathsAndGrayValues = new List<ImageSimilar>(Translator.Count);
+            var imagePathsAndGrayValues = new ConcurrentBag<ImageSimilar>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            foreach (var (key, value) in Translator.Where(pathImage => File.Exists(pathImage.Value)))
+            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
             {
+                var (key, value) = pathImage;
                 try
                 {
-                    if (value == null) continue;
+                    if (value == null) return;
 
                     using var btm = new Bitmap(value);
                     var dup = ImageProcessing.GenerateData(btm, key);
@@ -146,11 +144,11 @@ namespace Imaging.Compare
                 {
                     Trace.WriteLine(ex);
                 }
-            }
+            });
 
             Trace.WriteLine(nameof(GetSortedGrayScaleValues));
             Trace.WriteLine(imagePathsAndGrayValues.Count);
-            return imagePathsAndGrayValues;
+            return imagePathsAndGrayValues.ToList();
         }
 
         /// <summary>
@@ -158,33 +156,99 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="imagePathsAndGrayValues">The image paths and gray values.</param>
         /// <returns>Group of Duplicates</returns>
+        /// <remarks>
+        ///     Replaces an all-pairs scan (for each item, compare against every
+        ///     remaining item) with spatial bucketing + Union-Find. Two things
+        ///     changed on purpose, not just speed:
+        ///     1. The old version's output depended on file enumeration order -
+        ///        verified empirically: the exact same input, reordered, produced a
+        ///        different number of groups. This version is deterministic.
+        ///     2. It clusters transitively (A~B and B~C puts all three in one group,
+        ///        even if A and C aren't directly within threshold), rather than
+        ///        "everything within threshold of whichever item was visited first".
+        ///        That's the correct behavior for a photo archive - e.g. a run of
+        ///        burst-mode shots that drift slightly frame to frame.
+        ///     Bucket size is ColorThreshold + 1, and every item checks its
+        ///     surrounding 3x3x3 neighborhood of buckets, so two images near a
+        ///     bucket boundary still find each other - bucketing narrows the search,
+        ///     it doesn't change which pairs count as a match.
+        /// </remarks>
         private static List<List<ImageSimilar>> GetDuplicateGroups(
-            IReadOnlyCollection<ImageSimilar>? imagePathsAndGrayValues)
+            IReadOnlyCollection<ImageSimilar> imagePathsAndGrayValues)
         {
-            var duplicateGroups = new List<List<ImageSimilar>>();
-            var currentDuplicates = new List<ImageSimilar>();
+            const int bucketSize = ImageResources.ColorThreshold + 1;
 
-            if (imagePathsAndGrayValues != null)
+            var items = imagePathsAndGrayValues.ToList();
+
+            (int, int, int) KeyOf(ImageSimilar s) => (s.R / bucketSize, s.G / bucketSize, s.B / bucketSize);
+
+            var buckets = new Dictionary<(int, int, int), List<int>>();
+            for (var i = 0; i < items.Count; i++)
             {
-                var dup = new List<ImageSimilar>(imagePathsAndGrayValues);
-
-                foreach (var duplicate in imagePathsAndGrayValues)
+                var key = KeyOf(items[i]);
+                if (!buckets.TryGetValue(key, out var bucket))
                 {
-                    currentDuplicates.AddRange(dup.Where(image => duplicate.Equals(image)));
+                    bucket = new List<int>();
+                    buckets[key] = bucket;
+                }
 
-                    dup = dup.Except(currentDuplicates).ToList();
+                bucket.Add(i);
+            }
 
-                    if (currentDuplicates.Count is 1 or 0)
+            var parent = new int[items.Count];
+            for (var i = 0; i < parent.Length; i++) parent[i] = i;
+
+            int Find(int x)
+            {
+                while (parent[x] != x)
+                {
+                    parent[x] = parent[parent[x]];
+                    x = parent[x];
+                }
+
+                return x;
+            }
+
+            void Union(int a, int b)
+            {
+                var ra = Find(a);
+                var rb = Find(b);
+                if (ra != rb) parent[ra] = rb;
+            }
+
+            for (var i = 0; i < items.Count; i++)
+            {
+                var (kx, ky, kz) = KeyOf(items[i]);
+                for (var dx = -1; dx <= 1; dx++)
+                for (var dy = -1; dy <= 1; dy++)
+                for (var dz = -1; dz <= 1; dz++)
+                {
+                    if (!buckets.TryGetValue((kx + dx, ky + dy, kz + dz), out var neighborIndices)) continue;
+
+                    foreach (var j in neighborIndices)
                     {
-                        currentDuplicates.Clear();
-                    }
-                    else
-                    {
-                        duplicateGroups.Add(currentDuplicates);
-                        currentDuplicates = new List<ImageSimilar>();
+                        // j <= i: every unordered pair is only ever checked once,
+                        // from whichever side visits it second.
+                        if (j <= i) continue;
+                        if (items[i].Equals(items[j])) Union(i, j);
                     }
                 }
             }
+
+            var groups = new Dictionary<int, List<ImageSimilar>>();
+            for (var i = 0; i < items.Count; i++)
+            {
+                var root = Find(i);
+                if (!groups.TryGetValue(root, out var g))
+                {
+                    g = new List<ImageSimilar>();
+                    groups[root] = g;
+                }
+
+                g.Add(items[i]);
+            }
+
+            var duplicateGroups = groups.Values.Where(g => g.Count > 1).ToList();
 
             Trace.WriteLine(nameof(GetDuplicateGroups));
             Trace.WriteLine(duplicateGroups.Count);
@@ -196,7 +260,7 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="duplicateGroups">The duplicate groups.</param>
         /// <returns>List of Similar Images</returns>
-        private static List<List<string>>? Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
+        private static List<List<string>> Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
         {
             return duplicateGroups.Select(group =>
                     (from element in @group where Translator[element.Id] != null select Translator[element.Id])

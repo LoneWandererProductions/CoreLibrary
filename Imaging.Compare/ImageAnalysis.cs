@@ -64,7 +64,7 @@ namespace Imaging.Compare
         {
             var lst = new List<ImageData>(imagePaths.Count);
 
-            lst.AddRange(collection: imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache != null));
+            lst.AddRange(imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache != null));
 
             //File was skipped? Return null
             if (lst.Count != imagePaths.Count)
