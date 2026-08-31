@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Extended.Extensions\Extended.Extensions.csproj" />
+    <ProjectReference Include="..\Imaging.Objects\Imaging.Objects.csproj" />
     <ProjectReference Include="..\Imaging.Texture\Imaging.Texture.csproj" />
     <ProjectReference Include="..\Mathematics.Constants\Mathematics.Constants.csproj" />
   </ItemGroup>
