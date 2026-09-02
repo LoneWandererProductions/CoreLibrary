@@ -7,14 +7,14 @@
  * DESCRIPTION:
  * Basic Transaction Log for tracking Add, Remove, and Change operations with unique entries.
  * Designed as a minimal, thread-safe utility for logging changes in collections or objects.
- * * This class provides a bare-bones implementation intended for adaptation to specific use cases.
+ * This class provides a bare-bones implementation intended for adaptation to specific use cases.
  * It focuses on tracking state changes without assumptions about persistence or complex undo-redo mechanisms.
- * * Usage Notes:
+ * Usage Notes:
  * - Thread-safe via internal locking and concurrent dictionary.
  * - Uses integer keys managed internally; may need customization for key management.
  * - Does not enforce validation beyond basic checks; users should adapt as needed.
  * - Intended primarily for lightweight change tracking and simple transaction logging scenarios.
- * * Future improvements could include:
+ * Future improvements could include:
  * - Persistence support
  * - Undo/Redo operations
  * - More advanced query/filtering of logs
@@ -198,7 +198,7 @@ namespace ExtendedSystemObjects
         ///      Gets all newly added items (i.e., those not marked as StartData).
         /// </summary>
         /// <returns>A dictionary of new items or null if none exist.</returns>
-        public Dictionary<int, LogEntry> GetNewItems()
+        public Dictionary<int, LogEntry>? GetNewItems()
         {
             lock (_lock)
             {

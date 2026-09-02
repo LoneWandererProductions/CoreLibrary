@@ -45,7 +45,16 @@ namespace ExtendedSystemObjects
             if (expiryTime != null)
             {
                 HasExpireTime = true;
-                ExpiryDate = CreationDate.Add((TimeSpan)expiryTime);
+                try
+                {
+                    ExpiryDate = CreationDate.Add(expiryTime.Value);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Trace.WriteLine($"Failed to calculate expiry date for item with creation date {CreationDate} and expiry time {expiryTime}");
+                    // Fallback to MaxValue if TimeSpan overflows DateTime limits
+                    ExpiryDate = DateTime.MaxValue;
+                }
             }
             else
             {
@@ -141,25 +150,41 @@ namespace ExtendedSystemObjects
         {
             if (data == null) return 0;
 
-            // 1. Handle Strings (Existing)
+            // 1. Handle Strings
             if (data is string s) return (s.Length * sizeof(char)) + 24;
 
-            // 2. NEW: Handle Arrays (Very important for byte[] tests!)
+            // 2. Handle Arrays safely (prevents Marshal.SizeOf exception on reference arrays)
             if (data is Array array)
             {
-                // Get the length of the array and multiply by the size of the element type
-                long elementSize = Marshal.SizeOf(array.GetType().GetElementType() ?? typeof(byte));
-                return (array.Length * elementSize) + 24;
+                try
+                {
+                    var elementType = array.GetType().GetElementType() ?? typeof(byte);
+                    long elementSize = elementType.IsValueType ? Marshal.SizeOf(elementType) : IntPtr.Size;
+                    return (array.Length * elementSize) + 24;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Failed to calculate size for array of type {array.GetType()}. Falling back to default size estimation. Exception: {ex}");
+                    return (array.Length * IntPtr.Size) + 24;
+                }
             }
 
-            // 3. Handle Value Types (Existing)
-            if (typeof(T).IsValueType)
+            // 3. Handle Value Types (using runtime type handles boxed primitives/structs when T is object or interface)
+            var actualType = data.GetType();
+            if (actualType.IsValueType)
             {
-                try { return Marshal.SizeOf(typeof(T)); }
-                catch { return IntPtr.Size; }
+                try
+                {
+                    return Marshal.SizeOf(actualType);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Failed to calculate size for value type {actualType}. Falling back to default size estimation. Exception: {ex}");
+                    return IntPtr.Size;
+                }
             }
 
-            // 4. Handle Reference Types (Existing)
+            // 4. Handle Reference Types
             return IntPtr.Size + 16;
         }
 
