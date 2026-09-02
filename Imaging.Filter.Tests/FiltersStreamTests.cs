@@ -177,7 +177,8 @@ namespace Imaging.Filter.Tests
             using var g = Graphics.FromImage(bmp);
 
             // 1. Diagonal Gradient Background (Tests banding and color matrix shifts)
-            using (var brush = new LinearGradientBrush(new Point(0, 0), new Point(width, height), Color.DarkBlue, Color.Orange))
+            using (var brush =
+                   new LinearGradientBrush(new Point(0, 0), new Point(width, height), Color.DarkBlue, Color.Orange))
             {
                 g.FillRectangle(brush, 0, 0, width, height);
             }

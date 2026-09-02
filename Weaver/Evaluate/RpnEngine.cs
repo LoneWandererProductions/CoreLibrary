@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using Weaver.Interfaces;
 using Weaver.Registry;
 using Weaver.ScriptEngine;
@@ -36,7 +38,7 @@ namespace Weaver.Evaluate
         /// <summary>
         /// The operators
         /// </summary>
-        private static readonly Dictionary<string?, (int precedence, bool rightAssociative, int arity)> Operators =
+        private static readonly Dictionary<string, (int precedence, bool rightAssociative, int arity)> Operators =
             new()
             {
                 ["!"] = (5, true, 1),
@@ -74,37 +76,37 @@ namespace Weaver.Evaluate
 
             foreach (var token in tokens)
             {
-                if (double.TryParse(token, out _) || _registry!.IsNumericType(token))
+                if (double.TryParse(token, out _) || (_registry?.IsNumericType(token) ?? false))
                 {
                     output.Add(token);
                     continue;
                 }
 
-                if (token.Equals("true", StringComparison.OrdinalIgnoreCase))
+                if (token?.Equals("true", StringComparison.OrdinalIgnoreCase) == true)
                 {
                     output.Add("1");
                     continue;
                 }
 
-                if (token.Equals("false", StringComparison.OrdinalIgnoreCase))
+                if (token?.Equals("false", StringComparison.OrdinalIgnoreCase) == true)
                 {
                     output.Add("0");
                     continue;
                 }
 
-                if (token == "(")
+                switch (token)
                 {
-                    ops.Push(token);
-                    continue;
-                }
+                    case "(":
+                        ops.Push(token);
+                        continue;
+                    case ")":
+                    {
+                        while (ops.Count > 0 && ops.Peek() != "(")
+                            output.Add(ops.Pop());
 
-                if (token == ")")
-                {
-                    while (ops.Count > 0 && ops.Peek() != "(")
-                        output.Add(ops.Pop());
-
-                    ops.Pop(); // remove "("
-                    continue;
+                        ops.Pop(); // remove "("
+                        continue;
+                    }
                 }
 
                 if (!Operators.TryGetValue(token, out var op1))
@@ -144,7 +146,7 @@ namespace Weaver.Evaluate
                 {
                     stack.Push(num);
                 }
-                else if (_registry!.IsNumericType(token))
+                else if (_registry?.IsNumericType(token) ?? false)
                 {
                     stack.Push(GetNumericValue(token));
                 }

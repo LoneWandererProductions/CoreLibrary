@@ -51,7 +51,8 @@ namespace ExtendedSystemObjects
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    Trace.WriteLine($"Failed to calculate expiry date for item with creation date {CreationDate} and expiry time {expiryTime}");
+                    Trace.WriteLine(
+                        $"Failed to calculate expiry date for item with creation date {CreationDate} and expiry time {expiryTime}");
                     // Fallback to MaxValue if TimeSpan overflows DateTime limits
                     ExpiryDate = DateTime.MaxValue;
                 }
@@ -138,7 +139,7 @@ namespace ExtendedSystemObjects
         /// <value>
         ///      The additional metadata.
         /// </value>
-        public Dictionary<string, object> AdditionalMetadata { get; set; } = new();
+        public Dictionary<string, object>? AdditionalMetadata { get; set; } = new();
 
         /// <summary>
         ///      Calculates the size of an object using deterministic estimation.
@@ -164,7 +165,8 @@ namespace ExtendedSystemObjects
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"Failed to calculate size for array of type {array.GetType()}. Falling back to default size estimation. Exception: {ex}");
+                    Trace.WriteLine(
+                        $"Failed to calculate size for array of type {array.GetType()}. Falling back to default size estimation. Exception: {ex}");
                     return (array.Length * IntPtr.Size) + 24;
                 }
             }
@@ -179,7 +181,8 @@ namespace ExtendedSystemObjects
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"Failed to calculate size for value type {actualType}. Falling back to default size estimation. Exception: {ex}");
+                    Trace.WriteLine(
+                        $"Failed to calculate size for value type {actualType}. Falling back to default size estimation. Exception: {ex}");
                     return IntPtr.Size;
                 }
             }

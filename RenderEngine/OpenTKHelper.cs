@@ -6,13 +6,16 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Objects;
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
+
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Imaging.Objects;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace RenderEngine
@@ -36,7 +39,7 @@ namespace RenderEngine
         /// <param name="source">GLSL shader source code.</param>
         /// <returns>OpenGL shader ID.</returns>
         /// <exception cref="Exception">Thrown if compilation fails.</exception>
-        internal static int CompileShader(ShaderType type, string source)
+        private static int CompileShader(ShaderType type, string source)
         {
             var shader = GL.CreateShader(type);
             GL.ShaderSource(shader, source);

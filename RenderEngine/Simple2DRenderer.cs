@@ -16,10 +16,10 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-using Imaging.Objects;
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Diagnostics;
+using Imaging.Objects;
 
 
 namespace RenderEngine
@@ -474,7 +474,7 @@ namespace RenderEngine
         /// <param name="radiusX">The radius x.</param>
         /// <param name="radiusY">The radius y.</param>
         /// <param name="segments">The segments.</param>
-        /// <param name="fill">The fill.</param>
+        /// <param name="fill">The fill color.</param>
         public void DrawSolidEllipse(
             float cx, float cy,
             float radiusX, float radiusY,

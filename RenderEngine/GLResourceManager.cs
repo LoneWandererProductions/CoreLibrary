@@ -9,12 +9,12 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
-using Imaging.Objects;
 using Imaging.Texture;
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Imaging.Objects;
 
 namespace RenderEngine
 {
@@ -99,7 +99,6 @@ namespace RenderEngine
                 { 10005, ("Crosshatch", "Pixel-perfect grid intersecting alignment lines overlay.") },
                 { 10006, ("Concrete", "Industrial high-contrast gritty stone concrete texture map.") },
                 { 10007, ("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.") },
-                // WIRED: New nature engine assets added below
                 { 10008, ("TreeBark", "Anisotropic domain-warped vertical furrowed bark grain.") },
                 { 10009, ("Foliage", "Dense organic canopy composed of distance-pinched leaf profiles.") },
                 { 10010, ("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.") }
@@ -143,10 +142,6 @@ namespace RenderEngine
                 return GetFallbackTexture();
             }
 
-            // Handle Collision Safeguard
-            // If the incoming ID is a low integer, check if it exists as a loaded handle in your file cache.
-            // If it's NOT a recognized file handle, it's a loose structural placeholder (like your terrain's default '4').
-            // Intercept it and force the fallback checkerboard texture to render instead!
             if (!_allTrackedHandles.Contains(textureId))
             {
                 return GetFallbackTexture();
@@ -195,10 +190,11 @@ namespace RenderEngine
                     lineThickness: 2),
                 10006 => TextureMathEngine.GenerateConcrete(_procWidth, _procHeight, _lazyNoiseGen),
                 10007 => TextureMathEngine.GenerateCanvas(_procWidth, _procHeight, lineSpacing: 8, lineThickness: 1),
-                // WIRED: Divert requests safely into your custom factory configurations
                 10008 => TextureFactory.GenerateTreeBark(_procWidth, _procHeight, _lazyNoiseGen),
                 10009 => TextureFactory.GenerateFoliage(_procWidth, _procHeight, _lazyNoiseGen),
                 10010 => TextureFactory.GenerateWoodPlank(_procWidth, _procHeight, _lazyNoiseGen),
+                10011 => TextureFactory.GenerateCobblestone(_procWidth, _procHeight),
+                1012 => TextureFactory.GenerateStoneTexture(_procWidth, _procHeight, _lazyNoiseGen),
                 _ => null
             };
 
@@ -214,7 +210,6 @@ namespace RenderEngine
 
         /// <summary>
         /// Gets the texture from file system pathing.
-        /// Be careful, this can overwrite existing textures.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Id of Texture</returns>
@@ -246,7 +241,6 @@ namespace RenderEngine
             var sampleId = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, sampleId);
 
-            // Reverted directly back to PixelInternalFormat.Rgba from Last Known Good state
             GL.TexImage2D(
                 TextureTarget.Texture2D,
                 0,
@@ -278,8 +272,6 @@ namespace RenderEngine
                     (int)TextureMagFilter.Nearest);
             }
 
-            // 5. Anisotropic Filtering — checkerboards at grazing angles are the textbook
-            // case FOR anisotropic filtering, not against it.
             GL.GetFloat((GetPName)0x84FF, out float maxAniso);
             if (maxAniso > 0.0f)
             {
@@ -299,48 +291,39 @@ namespace RenderEngine
         /// <returns>Id of Texture, fallback, checkerboard</returns>
         public int GetFallbackTexture()
         {
-            // If GL.GenTexture() runs early or on a background thread without a current context,
-            // it returns 0. Checking >= 0 erroneously caches 0, causing the 3D engine to unbind
-            // textures and bleed your last active asset (the font atlas) into the scene.
             if (_fallbackTextureId > 0) return _fallbackTextureId;
 
-            // 1. Expand the 8x8 grid to 64x64 to create a deep, smooth Mipmap chain
             const int size = 64;
-            const int tileSize = 8; // 8x8 tiles
+            const int tileSize = 8;
             var pixels = new byte[size * size * 4];
 
             for (var y = 0; y < size; y++)
             {
                 for (var x = 0; x < size; x++)
                 {
-                    // Calculate distance to the tile boundary to anti-alias the edge
                     var fx = (x % tileSize) / (float)tileSize;
                     var fy = (y % tileSize) / (float)tileSize;
 
-                    // Soften the boundary transition by 1 pixel (removes infinite frequency)
                     var edgeX = Math.Min(fx, 1.0f - fx) * tileSize;
                     var edgeY = Math.Min(fy, 1.0f - fy) * tileSize;
                     var minEdge = Math.Min(edgeX, edgeY);
 
-                    // Smoothstep factor between 0.0 and 1.0 along edges
                     var smooth = Math.Clamp(minEdge, 0.0f, 1.0f);
 
                     var isWhiteTile = (((x / tileSize) % 2) ^ ((y / tileSize) % 2)) == 0;
 
-                    // Soften contrast slightly (e.g., 30 to 225) to stop harsh high-frequency spikes
                     var targetColor = isWhiteTile ? 225f : 30f;
                     var centerColor = isWhiteTile ? 30f : 225f;
 
-                    // Blend the boundary pixel smoothly
                     var color =
                         (byte)Math.Clamp(Math.Min(targetColor, centerColor + smooth * (targetColor - centerColor)), 0,
                             255);
 
                     var idx = (y * size + x) * 4;
-                    pixels[idx] = color; // R
-                    pixels[idx + 1] = color; // G
-                    pixels[idx + 2] = color; // B
-                    pixels[idx + 3] = 255; // A
+                    pixels[idx] = color;
+                    pixels[idx + 1] = color;
+                    pixels[idx + 2] = color;
+                    pixels[idx + 3] = 255;
                 }
             }
 
@@ -349,26 +332,21 @@ namespace RenderEngine
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, size, size, 0,
                 PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
 
-            // 1. Tiling: Use Repeat so UV coordinates > 1.0 tile smoothly
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
                 (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
                 (int)TextureWrapMode.Repeat);
 
-            // 2. Bilinear/Trilinear filtering smooths high-contrast color transitions
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
                 (int)TextureMinFilter.LinearMipmapLinear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
                 (int)TextureMagFilter.Linear);
 
-            // 3. Generate deep mipmap chain
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
-            // 4. Anisotropic Filtering: Fixes grazing angle Moiré patterns!
             GL.GetFloat((GetPName)0x84FF, out float maxAniso);
             if (maxAniso > 0.0f)
             {
-                // Push anisotropic limit up to 16.0x for sharp grazing angles
                 GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)0x84FE, Math.Min(maxAniso, 16.0f));
             }
 
@@ -383,7 +361,6 @@ namespace RenderEngine
         /// </summary>
         /// <param name="textures">The procedural textures data map.</param>
         /// <returns>Dictionary of Input id and Id of texture</returns>
-        /// <exception cref="ArgumentNullException">proceduralTextures - Procedural texture item entry ID evaluates to null.</exception>
         public Dictionary<int, int> CreateMasterTextures(Dictionary<int, UnmanagedImageBuffer?> textures)
         {
             var result = new Dictionary<int, int>();
@@ -393,7 +370,6 @@ namespace RenderEngine
                 if (tex == null)
                     throw new ArgumentNullException(nameof(textures), $"Texture {id} is null.");
 
-                // Delegates to GetTexture so handles are registered in _allTrackedHandles
                 var texId = GetTexture(tex, opaqueFastPath: false);
                 result[id] = texId;
             }
@@ -469,6 +445,28 @@ namespace RenderEngine
                     vertexSrc = ShaderResource.TexturedQuad2DVertexShader;
                     fragmentSrc = ShaderResource.TexturedQuad2DFragmentShader;
                     break;
+                case ShaderTypeApp.PhongLighting: // UNUSED for now
+                    vertexSrc = ShaderResource.PhongLightingVertexShader;
+                    fragmentSrc = ShaderResource.PhongLightingFragmentShader;
+                    break;
+                case ShaderTypeApp.Instancing: // UNUSED for now
+                    vertexSrc = ShaderResource.InstancingVertexShader;
+                    fragmentSrc = ShaderResource.InstancingFragmentShader;
+                    break;
+                case ShaderTypeApp.PostProcessing: // Now active for Painterly & Stylized Filters
+                    vertexSrc = ShaderResource.PostProcessingVertexShader;
+                    fragmentSrc = ShaderResource.PostProcessingFragmentShader;
+                    break;
+                case ShaderTypeApp.WaterRipple: // UNUSED for now
+                    vertexSrc = ShaderResource.WaterRippleVertexShader;
+                    fragmentSrc = ShaderResource.WaterRippleFragmentShader;
+                    break;
+
+                case ShaderTypeApp.VolumetricFog: // UNUSED for now
+                    vertexSrc = ShaderResource.VolumetricFogVertexShader;
+                    fragmentSrc = ShaderResource.VolumetricFogFragmentShader;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(appType));
             }
@@ -493,7 +491,6 @@ namespace RenderEngine
         /// <param name="vertexSource">The vertex source.</param>
         /// <param name="fragmentSource">The fragment source.</param>
         /// <returns>Id of Shader.</returns>
-        /// <exception cref="System.Exception">Shader program link failed: " + info</exception>
         private static int CompileAndLinkShader(string vertexSource, string fragmentSource)
         {
             var vertex = CompileSingleShader(ShaderType.VertexShader, vertexSource);
@@ -526,7 +523,6 @@ namespace RenderEngine
         /// <param name="type">The type.</param>
         /// <param name="source">The source.</param>
         /// <returns>Id of Shader.</returns>
-        /// <exception cref="System.Exception">Error compiling {type}: {info}</exception>
         private static int CompileSingleShader(ShaderType type, string source)
         {
             var shader = GL.CreateShader(type);
@@ -553,7 +549,6 @@ namespace RenderEngine
 
             _disposed = true;
 
-            // Delete ALL OpenGL texture handles tracked across all allocation pathways
             foreach (var texId in _allTrackedHandles)
             {
                 GL.DeleteTexture(texId);

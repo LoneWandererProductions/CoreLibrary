@@ -1,10 +1,12 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ScriptEngine
  * FILE:        Lexer.cs
  * PURPOSE:     Your file purpose here
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable MemberCanBeInternal
 
 using System.Diagnostics;
 using System.Text;
@@ -51,11 +53,14 @@ namespace Weaver.ScriptEngine
         private int _pos;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Lexer"/> class for the given script input.
+        /// Initializes a new instance of the Lexer class.
         /// </summary>
         /// <param name="input">The script source text to tokenize.</param>
+        /// <exception cref="System.ArgumentNullException">Input was null.</exception>
         public Lexer(string? input)
         {
+            ArgumentNullException.ThrowIfNull(input);
+
             // normalize line endings
             _input = input.Replace("\r\n", "\n");
         }
