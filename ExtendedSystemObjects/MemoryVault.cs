@@ -128,6 +128,14 @@ namespace ExtendedSystemObjects
         public long MemoryThreshold { get; init; } = 10 * 1024 * 1024; // Default 10 MB
 
         /// <summary>
+        /// Gets the last error message.
+        /// </summary>
+        /// <value>
+        /// The last error message.
+        /// </value>
+        public string LastErrorMessage { get; private set; } = string.Empty;
+
+        /// <summary>
         ///     Event triggered when memory usage exceeds the threshold.
         /// </summary>
         public event EventHandler<VaultMemoryThresholdExceededEventArgs>? MemoryThresholdExceeded;
@@ -329,8 +337,11 @@ namespace ExtendedSystemObjects
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                var message = $"Failed to save item with identifier {identifier} to disk at {filePath}: {ex}";
+                LastErrorMessage = message;
+                Trace.WriteLine(message);
                 return false;
             }
         }
@@ -358,8 +369,11 @@ namespace ExtendedSystemObjects
                     return Add(vaultItem.Data, vaultItem.ExpiryTime, vaultItem.Description);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                var message = $"Failed to load item from disk at {filePath}: {ex}";
+                LastErrorMessage = message;
+                Trace.WriteLine(message);
                 return -1;
             }
 
