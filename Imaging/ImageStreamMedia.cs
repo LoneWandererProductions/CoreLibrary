@@ -7,6 +7,8 @@
  * SOURCE:      https://lodev.org/cgtutor/floodfill.html
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System;
 using System.Diagnostics;
 using System.Drawing;

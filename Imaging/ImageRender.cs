@@ -230,6 +230,8 @@ namespace Imaging
         public Bitmap? CutBitmap(Bitmap? image, int width, int height, MaskShape shape, object? shapeParams = null,
             Point? startPoint = null)
         {
+            if (image == null) return null;
+
             var btm = ImageStream.CutBitmap(image, 0, 0, image.Height, image.Width);
 
             // If no start point is provided, default to (0, 0)
