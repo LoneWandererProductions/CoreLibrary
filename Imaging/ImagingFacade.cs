@@ -111,7 +111,22 @@ namespace Imaging
         /// <summary>
         /// Gets the last error message recorded by the Imaging engine.
         /// </summary>
-        public static string? LastError => Register.LastError;
+        public static string? LastError => Register?.LastError;
+
+        /// <summary>
+        /// The render engine
+        /// </summary>
+        private static readonly ImageRender RenderEngine = new();
+
+        /// <summary>
+        /// The filter engine
+        /// </summary>
+        private static readonly FilterGenerator FilterEngine = new();
+
+        /// <summary>
+        /// The texture engine
+        /// </summary>
+        private static readonly TextureGenerator TextureEngine = new();
 
         #endregion
 
@@ -123,7 +138,7 @@ namespace Imaging
         /// <param name="path">The path.</param>
         /// <returns>A <see cref="BitmapImage"/> representing the loaded image.</returns>
         public static BitmapImage LoadBitmapImage(string path)
-            => new ImageRender().GetBitmapImageFileStream(path);
+            => RenderEngine.GetBitmapImageFileStream(path);
 
 
         /// <summary>
@@ -132,7 +147,7 @@ namespace Imaging
         /// <param name="path">The file path to the image.</param>
         /// <returns>A <see cref="Bitmap"/> representing the loaded image.</returns>
         public static Bitmap LoadBitmap(string path)
-            => new ImageRender().GetOriginalBitmap(path);
+            => RenderEngine.GetOriginalBitmap(path);
 
         /// <summary>
         ///     Saves a bitmap to the specified path in the given format.
@@ -141,7 +156,7 @@ namespace Imaging
         /// <param name="path">The target file path.</param>
         /// <param name="format">The <see cref="ImageFormat"/> to save as.</param>
         public static void Save(Bitmap? bitmap, string path, ImageFormat format)
-            => new ImageRender().SaveBitmap(bitmap, path, format);
+            => RenderEngine.SaveBitmap(bitmap, path, format);
 
         #endregion
 
@@ -153,7 +168,7 @@ namespace Imaging
         /// <param name="bitmap">The source bitmap.</param>
         /// <returns>The converted <see cref="BitmapImage"/>.</returns>
         public static BitmapImage ToBitmapImage(Bitmap? bitmap)
-            => new ImageRender().BitmapToBitmapImage(bitmap);
+            => RenderEngine.BitmapToBitmapImage(bitmap);
 
         /// <summary>
         ///     Converts a WPF <see cref="BitmapImage"/> to a <see cref="Bitmap"/>.
@@ -161,7 +176,7 @@ namespace Imaging
         /// <param name="bitmapImage">The source bitmap image.</param>
         /// <returns>The converted <see cref="Bitmap"/>.</returns>
         public static Bitmap? ToBitmap(BitmapImage bitmapImage)
-            => new ImageRender().BitmapImageToBitmap(bitmapImage);
+            => RenderEngine.BitmapImageToBitmap(bitmapImage);
 
         #endregion
 
@@ -175,7 +190,7 @@ namespace Imaging
         /// <param name="height">The target height.</param>
         /// <returns>A resized <see cref="Bitmap"/>.</returns>
         public static Bitmap? Resize(Bitmap? image, int width, int height)
-            => new ImageRender().BitmapScaling(image, width, height);
+            => RenderEngine.BitmapScaling(image, width, height);
 
         /// <summary>
         ///     Resizes the specified bitmap by a scaling factor.
@@ -184,7 +199,7 @@ namespace Imaging
         /// <param name="scaling">Scaling factor (1.0 = original size).</param>
         /// <returns>A resized <see cref="Bitmap"/>.</returns>
         public static Bitmap Resize(Bitmap? image, float scaling)
-            => new ImageRender().BitmapScaling(image, scaling);
+            => RenderEngine.BitmapScaling(image, scaling);
 
         /// <summary>
         ///     Crops the bitmap to the specified rectangle.
@@ -196,7 +211,7 @@ namespace Imaging
         /// <param name="height">The height of the cropped area.</param>
         /// <returns>The cropped <see cref="Bitmap"/>.</returns>
         public static Bitmap? Crop(Bitmap? image, int x, int y, int width, int height)
-            => new ImageRender().CutBitmap(image, x, y, height, width);
+            => RenderEngine.CutBitmap(image, x, y, height, width);
 
         #endregion
 
@@ -209,7 +224,7 @@ namespace Imaging
         /// <param name="filter">The filter type to apply.</param>
         /// <returns>The filtered <see cref="Bitmap"/>.</returns>
         public static Bitmap? ApplyFilter(Bitmap? image, FiltersType filter)
-            => new ImageRender().FilterImage(image, filter);
+            => RenderEngine.FilterImage(image, filter);
 
         /// <summary>
         /// Applies a filter to a specified area of the bitmap with optional shape masking.
@@ -225,7 +240,7 @@ namespace Imaging
         public static Bitmap? ApplyFilterArea(Bitmap? image, FiltersType filter, MaskShape shape,
             object? shapeParams = null,
             Point? startPoint = null)
-            => new FilterGenerator().GenerateFilterOverlay(image, image.Width, image.Height, filter, shape, startPoint,
+            => FilterEngine.GenerateFilterOverlay(image, image.Width, image.Height, filter, shape, startPoint,
                 shapeParams);
 
         #endregion
@@ -239,7 +254,7 @@ namespace Imaging
         /// <param name="p">The pixel location.</param>
         /// <returns>The <see cref="Color"/> of the pixel.</returns>
         public static System.Drawing.Color GetPixel(Bitmap? image, Point p)
-            => new ImageRender().GetPixel(image, p);
+            => RenderEngine.GetPixel(image, p);
 
         /// <summary>
         ///     Sets the color of a pixel at the specified point.
@@ -248,7 +263,7 @@ namespace Imaging
         /// <param name="p">The pixel location.</param>
         /// <param name="color">The color to set.</param>
         public static void SetPixel(Bitmap? image, Point p, System.Drawing.Color color)
-            => new ImageRender().SetPixel(image, p, color);
+            => RenderEngine.SetPixel(image, p, color);
 
         /// <summary>
         ///     Performs a flood-fill operation starting from the specified pixel.
@@ -258,7 +273,7 @@ namespace Imaging
         /// <param name="y">Y-coordinate of start point.</param>
         /// <param name="newColor">The fill color.</param>
         public static void FloodFill(Bitmap? image, int x, int y, System.Drawing.Color newColor)
-            => new ImageRender().FloodFillScanLineStack(image, x, y, newColor);
+            => RenderEngine.FloodFillScanLineStack(image, x, y, newColor);
 
         #endregion
 
@@ -273,7 +288,7 @@ namespace Imaging
         /// <param name="y">Y-coordinate for overlay placement.</param>
         /// <returns>The combined <see cref="Bitmap"/>.</returns>
         public static Bitmap? Combine(Bitmap? baseImage, Bitmap? overlay, int x, int y)
-            => new ImageRender().CombineBitmap(baseImage, overlay, x, y);
+            => RenderEngine.CombineBitmap(baseImage, overlay, x, y);
 
         /// <summary>
         ///     Blends two images by averaging pixel values.
@@ -282,7 +297,7 @@ namespace Imaging
         /// <param name="b">The second bitmap.</param>
         /// <returns>The blended <see cref="Bitmap"/>.</returns>
         public static Bitmap Blend(Bitmap? a, Bitmap? b)
-            => new ImageRender().AverageImages(a, b);
+            => RenderEngine.AverageImages(a, b);
 
         #endregion
 
@@ -295,7 +310,7 @@ namespace Imaging
         /// <param name="factor">Brightness factor.</param>
         /// <returns>The adjusted <see cref="Bitmap"/>.</returns>
         public static Bitmap? AdjustBrightness(Bitmap? image, double factor)
-            => new ImageRender().AdjustBrightness(image, factor);
+            => RenderEngine.AdjustBrightness(image, factor);
 
         /// <summary>
         ///     Adjusts the hue of the bitmap.
@@ -304,7 +319,7 @@ namespace Imaging
         /// <param name="shift">Hue shift value.</param>
         /// <returns>The adjusted <see cref="Bitmap"/>.</returns>
         public static Bitmap? AdjustHue(Bitmap? image, double shift)
-            => new ImageRender().AdjustHue(image, shift);
+            => RenderEngine.AdjustHue(image, shift);
 
         /// <summary>
         ///     Adjusts the saturation of the bitmap.
@@ -313,7 +328,7 @@ namespace Imaging
         /// <param name="factor">Saturation factor.</param>
         /// <returns>The adjusted <see cref="Bitmap"/>.</returns>
         public static Bitmap? AdjustSaturation(Bitmap? image, double factor)
-            => new ImageRender().AdjustSaturation(image, factor);
+            => RenderEngine.AdjustSaturation(image, factor);
 
         /// <summary>
         ///     Applies gamma correction to the bitmap.
@@ -322,7 +337,7 @@ namespace Imaging
         /// <param name="gamma">Gamma value.</param>
         /// <returns>The gamma-corrected <see cref="Bitmap"/>.</returns>
         public static Bitmap? ApplyGamma(Bitmap? image, double gamma)
-            => new ImageRender().ApplyGammaCorrection(image, gamma);
+            => RenderEngine.ApplyGammaCorrection(image, gamma);
 
         #endregion
 
@@ -414,7 +429,7 @@ namespace Imaging
         /// </returns>
         public static Bitmap? GenerateTextureOverlay(Bitmap image, TextureType type, MaskShape shape,
             object? shapeParams = null, Point? startPoint = null)
-            => new TextureGenerator().GenerateTextureOverlay(image, image.Width, image.Height, type, shape, startPoint,
+            => TextureEngine.GenerateTextureOverlay(image, image.Width, image.Height, type, shape, startPoint,
                 shapeParams);
 
         /// <summary>
@@ -429,7 +444,7 @@ namespace Imaging
         /// <returns>The generated texture as a <see cref="Bitmap"/>.</returns>
         public static Bitmap? GenerateTexture(int width, int height, TextureType type, MaskShape shape,
             object shapeParams, Point? startPoint = null)
-            => new TextureGenerator().GenerateTexture(width, height, type, shape, startPoint, shapeParams);
+            => TextureEngine.GenerateTexture(width, height, type, shape, startPoint, shapeParams);
 
         #endregion
     }

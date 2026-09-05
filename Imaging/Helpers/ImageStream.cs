@@ -108,7 +108,7 @@ namespace Imaging.Helpers
 
             // 1. Create the destination bitmap
             var btm = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
-            btm.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+            btm.SetResolution(image!.HorizontalResolution, image.VerticalResolution);
 
             try
             {
@@ -147,7 +147,7 @@ namespace Imaging.Helpers
         {
             ImageHelper.ValidateImage(nameof(BitmapScaling), image);
 
-            var width = (int)(image.Width * scaling);
+            var width = (int)(image!.Width * scaling);
             var height = (int)(image.Height * scaling);
 
             //needed because of: A Graphics object cannot be created from an image that has an indexed pixel format
@@ -263,7 +263,7 @@ namespace Imaging.Helpers
             }
 
             //get a graphics object from the image so we can draw on it
-            using var graph = Graphics.FromImage(image);
+            using var graph = Graphics.FromImage(image!);
 
             graph.DrawImage(overlay,
                 new Rectangle(x, y, overlay.Width, overlay.Height));
@@ -296,7 +296,7 @@ namespace Imaging.Helpers
             graph.Clear(Color.White);
             var rect = new Rectangle(x, y, width, height);
 
-            graph.DrawImage(image, 0, 0, rect, GraphicsUnit.Pixel);
+            graph.DrawImage(image!, 0, 0, rect, GraphicsUnit.Pixel);
 
             return btm;
         }
@@ -342,7 +342,7 @@ namespace Imaging.Helpers
         {
             ImageHelper.ValidateImage(nameof(EraseRectangle), image);
 
-            using var graph = Graphics.FromImage(image);
+            using var graph = Graphics.FromImage(image!);
 
             graph.CompositingMode = CompositingMode.SourceCopy;
 
@@ -381,7 +381,7 @@ namespace Imaging.Helpers
             }
 
             //Calculate the size of the new Bitmap because if we rotate the Image it will be bigger
-            var wOver = image.Width / 2.0f;
+            var wOver = image!.Width / 2.0f;
             var hOver = image.Height / 2.0f;
 
             // Get the coordinates of the corners, taking the origin to be the centre of the bitmap.
@@ -508,7 +508,7 @@ namespace Imaging.Helpers
 
             try
             {
-                image.Save(path, format);
+                image!.Save(path, format);
             }
             catch (ExternalException ex)
             {
@@ -557,7 +557,7 @@ namespace Imaging.Helpers
                 //get the Bitmap
                 var btm = dbm.ToBitmap();
                 //make Transparent
-                btm.MakeTransparent(replacementColor);
+                btm!.MakeTransparent(replacementColor);
                 //cleanup
                 dbm.Dispose();
                 return btm;
@@ -583,7 +583,7 @@ namespace Imaging.Helpers
         {
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
-            if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            if (point.X < 0 || point.X >= image!.Width || point.Y < 0 || point.Y >= image.Height)
             {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
             }
@@ -615,7 +615,7 @@ namespace Imaging.Helpers
                 throw new ArgumentOutOfRangeException(nameof(radius), ImagingResources.ErrorRadius);
             }
 
-            if (point.X < 0 || point.X >= image.Width || point.Y < 0 || point.Y >= image.Height)
+            if (point.X < 0 || point.X >= image!.Width || point.Y < 0 || point.Y >= image.Height)
             {
                 throw new ArgumentOutOfRangeException(nameof(point), ImagingResources.ErrorOutOfBounds);
             }
@@ -704,7 +704,7 @@ namespace Imaging.Helpers
         {
             ImageHelper.ValidateImage(nameof(SetPixel), image);
 
-            var points = ImageHelper.GetCirclePoints(point, radius, image.Height, image.Width);
+            var points = ImageHelper.GetCirclePoints(point, radius, image!.Height, image.Width);
 
             return points.Aggregate(image, (current, pointSingle) => SetPixel(current, pointSingle, color));
         }
