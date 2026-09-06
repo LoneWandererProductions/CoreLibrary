@@ -108,7 +108,7 @@ namespace Imaging.Compare
             bitmap = _render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             //use our new Format
-            var dbm = DirectBitmap.GetInstance(bitmap);
+            using var scaled = DirectBitmap.GetInstance(bitmap);
 
             //get the average Color Value
             var r = 0;
@@ -118,9 +118,9 @@ namespace Imaging.Compare
             for (var y = 0; y < ImageResources.DuplicateSize; y++)
             for (var x = 0; x < ImageResources.DuplicateSize; x++)
             {
-                r += dbm.GetPixel(x, y).R;
-                b += dbm.GetPixel(x, y).B;
-                g += dbm.GetPixel(x, y).G;
+                r += scaled.GetPixel(x, y).R;
+                b += scaled.GetPixel(x, y).B;
+                g += scaled.GetPixel(x, y).G;
             }
 
             r /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
@@ -134,7 +134,7 @@ namespace Imaging.Compare
             bitmap = _render.FilterImage(bitmap, FiltersType.GrayScale);
 
             //Get array Map for comparison
-            dbm = DirectBitmap.GetInstance(bitmap);
+            using var dbm = DirectBitmap.GetInstance(bitmap);
 
             try
             {
@@ -229,7 +229,7 @@ namespace Imaging.Compare
             var width = Math.Min(first.Width, second.Width);
             var height = Math.Min(first.Height, second.Height);
 
-            var canvas = _render.CutBitmap(first, 0, 0, height, width);
+            using var canvas = _render.CutBitmap(first, 0, 0, height, width);
 
             using var dbmCanvas = new DirectBitmap(canvas);
             using var dbmCompare = new DirectBitmap(second);

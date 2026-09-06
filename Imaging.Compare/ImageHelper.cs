@@ -30,8 +30,8 @@ namespace Imaging.Compare
             return new ImageCompareData
             {
                 Similarity = ImageProcessing.GetPercentageDifference(oneSimilar, twoSimilar),
-                ImageOne = AnalysisProcessing.GetImageDetails(first).GetDetailsSimple(),
-                ImageTwo = AnalysisProcessing.GetImageDetails(second).GetDetailsSimple()
+                ImageOne = AnalysisProcessing.GetImageDetails(first)!.GetDetailsSimple(),
+                ImageTwo = AnalysisProcessing.GetImageDetails(second)!.GetDetailsSimple()
             };
         }
 
@@ -54,8 +54,9 @@ namespace Imaging.Compare
                 throw new ArgumentException(string.Concat(ImageResources.ErrorFileNotFound, second));
             }
 
-            var one = new Bitmap(first);
-            var two = new Bitmap(second);
+            // Using declarations guarantee disposal upon exiting the method scope or throwing an exception
+            using var one = new Bitmap(first);
+            using var two = new Bitmap(second);
 
             var oneSimilar = ImageProcessing.GenerateData(one, 0);
             var twoSimilar = ImageProcessing.GenerateData(two, 1);
@@ -63,8 +64,8 @@ namespace Imaging.Compare
             return new ImageCompareData
             {
                 Similarity = ImageProcessing.GetPercentageDifference(oneSimilar, twoSimilar),
-                ImageOne = AnalysisProcessing.GetImageDetails(first).GetDetails(),
-                ImageTwo = AnalysisProcessing.GetImageDetails(second).GetDetails()
+                ImageOne = AnalysisProcessing.GetImageDetails(first)!.GetDetails(),
+                ImageTwo = AnalysisProcessing.GetImageDetails(second)!.GetDetails()
             };
         }
 
