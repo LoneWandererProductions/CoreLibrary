@@ -13,6 +13,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 using Imaging.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -74,51 +75,60 @@ namespace Imaging.Gifs
             {
                 var frames = new List<Bitmap>();
 
-                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var gifImage = Image.FromStream(fs);
-
-                var frameCount = gifImage.GetFrameCount(FrameDimension.Time);
-                var width = gifImage.Width;
-                var height = gifImage.Height;
-
-                // This is our canvas that survives the loop
-                var masterCanvas = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                using var g = Graphics.FromImage(masterCanvas);
-
-                // Start the whole GIF on a Gray floor
-                g.Clear(System.Drawing.Color.Gray);
-
-                // GIF Property ID for Frame Delay and Disposal
-                // 0x5100 is the PropertyTagFrameDelay in GDI+
-                var disposalProperty = gifImage.GetPropertyItem(0x5100);
-
-                for (var i = 0; i < frameCount; i++)
+                try
                 {
-                    gifImage.SelectActiveFrame(FrameDimension.Time, i);
+                    using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    using var gifImage = Image.FromStream(fs);
 
-                    // Get the disposal method for THIS specific frame
-                    // The disposal method is usually the 4th byte of the property data
-                    var disposalMethod = disposalProperty.Value[i * 4 + 3];
+                    var frameCount = gifImage.GetFrameCount(FrameDimension.Time);
+                    var width = gifImage.Width;
+                    var height = gifImage.Height;
 
-                    // If Disposal Method is 2 (Restore to Background),
-                    // we have to clear the canvas back to Gray before drawing this frame
-                    if (disposalMethod == 2)
+                    // Add 'using' so the master canvas is destroyed when we are done
+                    using var masterCanvas = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    using var g = Graphics.FromImage(masterCanvas);
+
+                    g.Clear(System.Drawing.Color.Gray);
+
+                    var disposalProperty = gifImage.GetPropertyItem(0x5100);
+
+                    if(disposalProperty == null || disposalProperty.Value == null || disposalProperty.Value.Length < frameCount * 4)
                     {
-                        g.Clear(System.Drawing.Color.Gray);
+                        throw new InvalidDataException("GIF does not contain valid disposal method data.");
                     }
 
-                    // Draw the current frame patch
-                    g.DrawImage(gifImage, new Rectangle(0, 0, width, height));
+                    for (var i = 0; i < frameCount; i++)
+                    {
+                        gifImage.SelectActiveFrame(FrameDimension.Time, i);
 
-                    // Snapshot the result
-                    frames.Add(new Bitmap(masterCanvas));
+                        var disposalMethod = disposalProperty.Value[i * 4 + 3];
 
-                    // If the disposal method was 3 (Restore to Previous),
-                    // technically we should undo the last draw, but Method 2 is the
-                    // one that usually causes the "white hole" issue.
+                        if (disposalMethod == 2)
+                        {
+                            g.Clear(System.Drawing.Color.Gray);
+                        }
+
+                        g.DrawImage(gifImage, new Rectangle(0, 0, width, height));
+
+                        // Snapshot the result
+                        frames.Add(new Bitmap(masterCanvas));
+                    }
+
+                    return frames;
                 }
+                catch (Exception ex)
+                {
+                    // If anything fails mid-extraction, destroy the orphaned frames
+                    foreach (var frame in frames)
+                    {
+                        frame?.Dispose();
+                    }
+                    frames.Clear();
 
-                return frames;
+                    Trace.WriteLine($"Error splitting GIF: {ex.Message}");
+
+                    throw; // Rethrow so the caller knows it failed
+                }
             });
         }
 

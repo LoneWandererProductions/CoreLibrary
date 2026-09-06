@@ -244,11 +244,18 @@ namespace Imaging
         }
 
         /// <summary>
-        ///     Gets the instance.
+        /// Gets the instance.
         /// </summary>
         /// <param name="btm">The custom Bitmap.</param>
+        /// <returns>New Instance of <see cref="DirectBitmap"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the provided bitmap is null.</exception>
         public static DirectBitmap GetInstance(Bitmap? btm)
         {
+            if (btm == null)
+            {
+                throw new ArgumentNullException(nameof(btm), ImagingResources.ErrorWrongParameters);
+            }
+
             var dbm = new DirectBitmap(btm.Width, btm.Height);
 
             // Lock source bits
@@ -256,21 +263,28 @@ namespace Imaging
             var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
                 PixelFormat.Format32bppArgb);
 
-            // We can copy directly into our Bits array since it's pinned
-            unsafe
+            try
             {
-                fixed (Pixel32* pDest = dbm.Bits)
+                // We can copy directly into our Bits array since it's pinned
+                unsafe
                 {
-                    Buffer.MemoryCopy(
-                        (void*)srcData.Scan0,
-                        pDest,
-                        dbm.Bits.Length * 4,
-                        dbm.Bits.Length * 4
-                    );
+                    fixed (Pixel32* pDest = dbm.Bits)
+                    {
+                        Buffer.MemoryCopy(
+                            (void*)srcData.Scan0,
+                            pDest,
+                            dbm.Bits!.Length * 4,
+                            dbm.Bits.Length * 4
+                        );
+                    }
                 }
             }
+            finally
+            {
+                // Guaranteed to run, preventing the image from being permanently locked
+                btm.UnlockBits(srcData);
+            }
 
-            btm.UnlockBits(srcData);
             return dbm;
         }
 

@@ -166,6 +166,11 @@ namespace Imaging
         /// <returns>A bitmap resulting from applying the pixel operation, or null if an error occurs.</returns>
         private static Bitmap? ProcessImages(Image? imgOne, Image? imgTwo, Func<Color, Color, Color> pixelOperation)
         {
+            if (imgOne == null || imgTwo == null)
+            {
+                return null;
+            }
+
             if (imgOne.Width != imgTwo.Width || imgOne.Height != imgTwo.Height)
             {
                 throw new ArgumentException("All images must have the same dimensions.");
@@ -174,7 +179,7 @@ namespace Imaging
             var width = imgOne.Width;
             var height = imgOne.Height;
 
-            var dbm = new DirectBitmap(width, height);
+            using var dbm = new DirectBitmap(width, height);
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
             using (var dbmOne = new DirectBitmap(imgOne))

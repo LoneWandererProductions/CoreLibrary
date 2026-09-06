@@ -87,8 +87,8 @@ namespace Imaging.Helpers
         {
             ImageHelper.ValidateImage(nameof(ProcessImage), image);
 
-            var source = new DirectBitmap(image);
-            var dbm = new DirectBitmap(source.Width, source.Height);
+            using var source = new DirectBitmap(image);
+            using var dbm = new DirectBitmap(source.Width, source.Height);
 
             for (var y = 0; y < source.Height; y++)
             {

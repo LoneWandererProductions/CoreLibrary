@@ -278,7 +278,7 @@ namespace Imaging.Helpers
             }
 
             // Create a new bitmap to store the processed image
-            var dbm = new DirectBitmap(image);
+            using var dbm = new DirectBitmap(image);
             // Create a new bitmap to store the processed image
             var processedImage = new Bitmap(dbm.Width, dbm.Height);
 
@@ -300,8 +300,6 @@ namespace Imaging.Helpers
                 using var brush = new SolidBrush(averageColor);
                 g.FillRectangle(brush, x, y, rectWidth, rectHeight);
             }
-
-            dbm.Dispose();
 
             return processedImage;
         }
@@ -404,7 +402,7 @@ namespace Imaging.Helpers
         private static Bitmap? ApplyAnisotropicKuwahara(Bitmap? image, int baseWindowSize = 5)
         {
             var dbmBase = new DirectBitmap(image);
-            var dbm = new DirectBitmap(image.Width, image.Height);
+            var dbm = new DirectBitmap(image!.Width, image.Height);
             var halfBaseWindow = baseWindowSize / 2;
 
             // Prepare a list to store the pixels to set in bulk using SIMD
@@ -441,6 +439,7 @@ namespace Imaging.Helpers
             finally
             {
                 dbm.Dispose(); // Now we can safely dispose the wrapper
+                dbmBase.Dispose(); // Dispose the base image wrapper
             }
         }
 
@@ -451,8 +450,8 @@ namespace Imaging.Helpers
         /// <returns>Filtered Image</returns>
         private static Bitmap? ApplyFloydSteinbergDithering(Bitmap? image)
         {
-            var dbmBase = new DirectBitmap(image);
-            var dbm = new DirectBitmap(image.Width, image.Height);
+            using var dbmBase = new DirectBitmap(image);
+            using var dbm = new DirectBitmap(image!.Width, image.Height);
 
             // Convert to grayscale
             var grayBitmap = FilterImage(image, FiltersType.GrayScale);
@@ -464,7 +463,7 @@ namespace Imaging.Helpers
             int[,] ditherMatrix = { { 0, 0, 7 }, { 3, 5, 1 } };
 
             // Apply dithering
-            for (var y = 0; y < grayBitmap.Height; y++)
+            for (var y = 0; y < grayBitmap!.Height; y++)
             for (var x = 0; x < grayBitmap.Width; x++)
             {
                 // Get the original grayscale pixel value
@@ -561,7 +560,7 @@ namespace Imaging.Helpers
         private static Bitmap? ApplyPostProcessingAntialiasing(Bitmap? image, double sigma = 1.0)
         {
             // Convert the image to DirectBitmap
-            var dbmBase = new DirectBitmap(image);
+            using var dbmBase = new DirectBitmap(image);
 
             // Generate a Gaussian kernel
             var gaussianKernel = ImageHelper.GenerateGaussianKernel(sigma, 5);
@@ -906,12 +905,12 @@ namespace Imaging.Helpers
         /// <returns>Filtered Image</returns>
         private static Bitmap? SubtractImages(Image? imgOne, Image? imgTwo)
         {
-            var dbm = new DirectBitmap(imgOne.Width, imgOne.Height);
+            using var dbm = new DirectBitmap(imgOne!.Width, imgOne.Height);
             // Prepare a list to store the pixels to set in bulk using SIMD
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
-            var dbmOne = new DirectBitmap(imgOne);
-            var dbmTwo = new DirectBitmap(imgTwo);
+            using var dbmOne = new DirectBitmap(imgOne);
+            using var dbmTwo = new DirectBitmap(imgTwo);
 
             for (var y = 0; y < dbmOne.Height; y++)
             for (var x = 0; x < dbmOne.Width; x++)

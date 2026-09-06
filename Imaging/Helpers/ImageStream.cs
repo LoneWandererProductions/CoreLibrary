@@ -654,7 +654,7 @@ namespace Imaging.Helpers
             ImageHelper.ValidateImage(nameof(SetPixel), image);
 
             //use our new Format
-            var dbm = DirectBitmap.GetInstance(image);
+            using var dbm = DirectBitmap.GetInstance(image);
             dbm.SetPixel(point.X, point.Y, color);
 
             return dbm.ToBitmap();
@@ -672,8 +672,8 @@ namespace Imaging.Helpers
         {
             ImageHelper.ValidateImage(nameof(GetPixel), image);
 
-            var source = new DirectBitmap(image);
-            var dbm = new DirectBitmap(source.Width, source.Height);
+            using var source = new DirectBitmap(image);
+            using var dbm = new DirectBitmap(source.Width, source.Height);
 
             for (var y = 0; y < source.Height; y++)
             for (var x = 0; x < source.Width; x++)
@@ -790,8 +790,8 @@ namespace Imaging.Helpers
         internal static Bitmap? FloodFillScanLineStack(Bitmap? image, int x, int y, Color newColor)
         {
             // Create a new bitmap to store the processed image
-            var dbm = new DirectBitmap(image);
-            var result = new DirectBitmap(image);
+            using var dbm = new DirectBitmap(image);
+            using var result = new DirectBitmap(image);
 
             var oldColor = dbm.GetPixel(x, y);
             if (oldColor == newColor)
