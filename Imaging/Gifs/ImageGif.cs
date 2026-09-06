@@ -72,7 +72,7 @@ namespace Imaging.Gifs
         /// <summary>
         /// The loader CTS
         /// </summary>
-        private CancellationTokenSource _loaderCts;
+        private CancellationTokenSource? _loaderCts;
 
         /// <summary>
         /// Occurs when [image loaded].
@@ -125,7 +125,14 @@ namespace Imaging.Gifs
         /// <param name="path">The path.</param>
         private async void LoadGifAsync(string? path)
         {
-            await _loaderCts.CancelAsync();
+            // 1. Check for null before cancelling
+            if (_loaderCts != null)
+            {
+                await _loaderCts.CancelAsync();
+                _loaderCts.Dispose(); // Clean up the old instance
+            }
+
+            // 2. Assign the new instance
             _loaderCts = new CancellationTokenSource();
             var token = _loaderCts.Token;
 
