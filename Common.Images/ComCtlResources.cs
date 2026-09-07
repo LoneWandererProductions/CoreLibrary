@@ -66,6 +66,26 @@ namespace Common.Images
         internal const string ContextDeselectAll = "Deselect All";
 
         /// <summary>
+        ///     The Context Menu Delete Selected (const). Value: "Delete Selected".
+        /// </summary>
+        internal const string ContextDeleteSelected = "Delete Selected";
+
+        /// <summary>
+        ///     The Context Menu Open in Explorer (const). Value: "Open in Explorer".
+        /// </summary>
+        internal const string ContextOpenInExplorer = "Open in Explorer";
+
+        /// <summary>
+        ///     The explorer executable (const). Value: "explorer.exe".
+        /// </summary>
+        internal const string Explorer = "explorer.exe";
+
+        /// <summary>
+        ///     The explorer "select file" argument prefix (const). Value: "/select,".
+        /// </summary>
+        internal const string ExplorerSelectArgument = "/select,";
+
+        /// <summary>
         ///     The error could not load image (const). Value: "Error could not load Image:".
         /// </summary>
         internal const string ErrorCouldNotLoadImage = "Error could not load Image:";

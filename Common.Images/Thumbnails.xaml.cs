@@ -132,9 +132,23 @@ namespace Common.Images
             new FrameworkPropertyMetadata(null));
 
         /// <summary>
-        ///     The refresh
+        ///     The delete selected command property. Bind this to expose a "Delete Selected" entry in
+        ///     the right-click context menu (mainly used by the duplicate/similar-image compare view).
+        ///     When executed, it's invoked with the control's <see cref="Selection" /> dictionary as the
+        ///     command parameter, exactly like the "Delete Selected" button in the Compare window does.
         /// </summary>
-        private static bool _refresh = true;
+        public static readonly DependencyProperty DeleteSelectedCommandProperty = DependencyProperty.Register(
+            nameof(DeleteSelectedCommand), typeof(ICommand), typeof(Thumbnails), new PropertyMetadata(null));
+
+        /// <summary>
+        ///     The refresh
+        ///     IMPORTANT: this must be an INSTANCE field, not static. The Compare/duplicate view hosts
+        ///     several independent Thumbnails controls at once (one per group). When this was static,
+        ///     one control's brief "suppress refresh" window (e.g. during RemoveSingleItem) could silently
+        ///     swallow a completely unrelated control's legitimate ItemsSource change, which is why the
+        ///     duplicate/similar view would sometimes fail to update its list after a delete.
+        /// </summary>
+        private bool _refresh = true;
 
         /// <summary>
         ///     The cancellation token source
@@ -357,6 +371,20 @@ namespace Common.Images
         /// </value>
         public bool IsSelectionValid => Selection is { Count: > 0 };
 
+        /// <summary>
+        /// Gets or sets the command executed by the "Delete Selected" right-click context menu entry.
+        /// Leave unset to hide that menu entry entirely (e.g. for the main viewer's thumb strip, which
+        /// has no equivalent multi-select delete concept).
+        /// </summary>
+        /// <value>
+        /// The delete selected command.
+        /// </value>
+        public ICommand? DeleteSelectedCommand
+        {
+            get => (ICommand?)GetValue(DeleteSelectedCommandProperty);
+            set => SetValue(DeleteSelectedCommandProperty, value);
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
@@ -390,12 +418,12 @@ namespace Common.Images
                 return;
             }
 
-            if (!_refresh)
+            if (control == null || !control._refresh)
             {
                 return;
             }
 
-            control?.OnItemsSourceChanged();
+            _ = control.OnItemsSourceChanged();
         }
 
         /// <summary>
@@ -534,7 +562,7 @@ namespace Common.Images
 
             try
             {
-                token.ThrowIfCancellationRequested();
+                if (token.IsCancellationRequested) return;
 
                 // Copy items source
                 var pics = new Dictionary<int, string>(ItemsSource);
@@ -601,16 +629,23 @@ namespace Common.Images
                 var semaphore = new SemaphoreSlim(4);
                 var tasks = pics.Select(async kv =>
                 {
-                    await semaphore.WaitAsync(token);
-                    if (token.IsCancellationRequested)
+                    try
                     {
-                        semaphore.Release();
-                        return;
+                        await semaphore.WaitAsync();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return; // Gracefully exit without triggering an exception wave
                     }
 
                     try
                     {
+                        if (token.IsCancellationRequested) return;
                         await LoadSingleImage(kv.Key, kv.Value, exGrid, token, cellSize, thumbWidth);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
                     }
                     finally
                     {
@@ -727,7 +762,7 @@ namespace Common.Images
                 exGrid.Children.Add(cellContainer);
 
                 images.MouseDown += ImageClick_MouseDown;
-            }, DispatcherPriority.Normal, token);
+            }, DispatcherPriority.Normal);
         }
 
         /// <summary>
@@ -827,6 +862,27 @@ namespace Common.Images
         }
 
         /// <summary>
+        ///     Selects (highlights) and centers the item with the given id.
+        ///     Unlike <see cref="Next" />/<see cref="Previous" />, this does not derive the target from
+        ///     the control's own last-clicked border - it takes the id directly from the caller (normally
+        ///     FileContext.CurrentId, the single source of truth for "what image is currently displayed").
+        ///     Use this after any navigation that changes the current image (Next/Previous/initial load/
+        ///     delete/rename) so the thumbnail highlight and scroll position can never drift out of sync
+        ///     with what's actually being shown.
+        /// </summary>
+        /// <param name="id">The identifier of the item to select and scroll into view.</param>
+        public void SelectAndCenter(int id)
+        {
+            if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
+            {
+                return;
+            }
+
+            UpdateSelectedBorder(border);
+            CenterOnItem(id);
+        }
+
+        /// <summary>
         ///     Centers the ScrollViewer on a specific item by its ID.
         /// </summary>
         /// <param name="id">The ID of the item to center on.</param>
@@ -840,6 +896,15 @@ namespace Common.Images
             // Check if the item with the specified ID exists
             if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
             {
+                // ScrollToHorizontalOffset/ScrollToVerticalOffset don't take effect synchronously -
+                // they just request a layout pass. If this method gets called again (e.g. the next
+                // arrow-key press) before that pass has actually run, TransformToAncestor below would
+                // measure off the *old*, not-yet-scrolled position, so the target would land one item
+                // short - it only ever "catches up" once a layout pass finally squeezes in, which
+                // looks like the highlight/scroll only updating every other keypress. Forcing the
+                // layout to flush here guarantees we always measure from where the view really is.
+                MainScrollViewer.UpdateLayout();
+
                 // Get the position of the target element relative to the ScrollViewer
                 var itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
                 var itemPosition = itemTransform.Transform(new Point(0, 0));
@@ -886,7 +951,79 @@ namespace Common.Images
             menuItem.Click += DeselectAll_Click;
             _ = cm.Items.Add(menuItem);
 
+            // "Open in Explorer" doesn't need any external wiring - the file path is right here
+            // in ItemsSource, so the control can just launch it itself.
+            if (ItemsSource != null && ItemsSource.ContainsKey(value))
+            {
+                _ = cm.Items.Add(new Separator());
+
+                menuItem = new MenuItem { Header = ComCtlResources.ContextOpenInExplorer };
+                menuItem.Click += OpenInExplorer_Click;
+                _ = cm.Items.Add(menuItem);
+            }
+
+            // "Delete Selected" only shows up when the host has actually wired a command for it
+            // (currently the duplicate/similar-image compare view) - the main thumb strip has no
+            // equivalent multi-select delete concept, so it simply won't appear there.
+            if (DeleteSelectedCommand != null)
+            {
+                menuItem = new MenuItem { Header = ComCtlResources.ContextDeleteSelected };
+                menuItem.Click += DeleteSelected_Click;
+                _ = cm.Items.Add(menuItem);
+            }
+
             cm.IsOpen = true;
+        }
+
+        /// <summary>
+        ///     Handles the Click event of the "Open in Explorer" context menu entry.
+        ///     Opens the containing folder with the right-clicked file pre-selected.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void OpenInExplorer_Click(object sender, RoutedEventArgs e)
+        {
+            if (ItemsSource == null || !ItemsSource.TryGetValue(_selection, out var path) ||
+                string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return;
+            }
+
+            try
+            {
+                _ = Process.Start(ComCtlResources.Explorer,
+                    $"{ComCtlResources.ExplorerSelectArgument}\"{path}\"");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Could not open Explorer for {path}: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        ///     Handles the Click event of the "Delete Selected" context menu entry.
+        ///     If nothing is currently checked, the right-clicked item is deleted on its own - matching
+        ///     the same "fall back to the current item" behaviour as the Compare window's own button.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void DeleteSelected_Click(object sender, RoutedEventArgs e)
+        {
+            if (DeleteSelectedCommand == null)
+            {
+                return;
+            }
+
+            var selection = Selection ?? new ConcurrentDictionary<int, bool>();
+            if (selection.IsEmpty)
+            {
+                selection.TryAdd(_selection, true);
+            }
+
+            if (DeleteSelectedCommand.CanExecute(selection))
+            {
+                DeleteSelectedCommand.Execute(selection);
+            }
         }
 
         /// <summary>

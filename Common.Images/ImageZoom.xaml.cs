@@ -89,7 +89,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -128,19 +127,22 @@ namespace Common.Images
         public event DelegateMultiFrame SelectedMultiFrames;
 
         /// <summary>
-        ///     The image source property
+        /// The universal image path property (handles both static and animated images).
         /// </summary>
-        public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
-            typeof(BitmapImage),
-            typeof(ImageZoom), new PropertyMetadata(OnImageSourcePropertyChanged));
+        public static readonly DependencyProperty ImagePathProperty = DependencyProperty.Register(
+            nameof(ImagePath),
+            typeof(string),
+            typeof(ImageZoom),
+            new PropertyMetadata(null, OnImagePathPropertyChanged));
 
         /// <summary>
-        ///     The gif image source property
+        ///     The in-memory image source property (for edits, filters, and non-GIFs).
         /// </summary>
-        public static readonly DependencyProperty ImageGifSourceProperty = DependencyProperty.Register(
-            nameof(ImageGifPath),
-            typeof(string),
-            typeof(ImageZoom), new PropertyMetadata(OnImageGifSourcePropertyChanged));
+        public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(
+            nameof(ImageSource),
+            typeof(BitmapSource),
+            typeof(ImageZoom),
+            new PropertyMetadata(null, OnImageSourcePropertyChanged));
 
         /// <summary>
         ///     The tools
@@ -187,6 +189,78 @@ namespace Common.Images
             get => (ICommand)GetValue(SelectedMultiFramesCommandProperty);
             set => SetValue(SelectedMultiFramesCommandProperty, value);
         }
+
+        /// <summary>
+        /// Gets or sets the image path.
+        /// </summary>
+        /// <value>
+        /// The image path.
+        /// </value>
+        public string? ImagePath
+        {
+            get => (string)GetValue(ImagePathProperty);
+            set => SetValue(ImagePathProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the in-memory ImageSource.
+        /// </summary>
+        /// <value>
+        /// The image source.
+        /// </value>
+        public BitmapSource? ImageSource
+        {
+            get => (BitmapSource)GetValue(ImageSourceProperty);
+            set => SetValue(ImageSourceProperty, value);
+        }
+
+        /// <summary>
+        /// Called when [image source property changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnImageSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is ImageZoom control)
+            {
+                if (e.NewValue is BitmapSource newSource)
+                {
+                    control.BtmImage.StopGif(); // Stop any running GIF
+
+                    // Reset zoom/pan before swapping in the new image. OnImagePathChanged (the GIF
+                    // path) already does this, but this - the far more common, static-image path -
+                    // never did: the old zoom level and scroll/pan position just carried straight
+                    // over onto whatever image loaded next, which is why zooming/panning one image
+                    // and then switching left the view looking completely off on the next one.
+                    control.ResetTransforms(resetZoom: true);
+
+                    control.BtmImage.Source = newSource; // Push the edited bitmap to the core image control
+
+                    // Instantly update canvas boundaries to match the newly generated bitmap
+                    control.MainCanvas.Height = newSource.Height;
+                    control.MainCanvas.Width = newSource.Width;
+                    control.SelectionAdorner?.UpdateImageTransform(control.BtmImage.RenderTransform);
+                }
+                else
+                {
+                    control.BtmImage.Source = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called when [image path property changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
+        private static void OnImagePathPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is ImageZoom control)
+            {
+                control.OnImagePathChanged();
+            }
+        }
+
 
         /// <summary>
         ///     The image clicked command property
@@ -301,30 +375,6 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Gets or sets the items source.
-        /// </summary>
-        /// <value>
-        ///     The items source.
-        /// </value>
-        public BitmapImage ItemsSource
-        {
-            get => (BitmapImage)GetValue(ImageSourceProperty);
-            set => SetValue(ImageSourceProperty, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the gif image  path.
-        /// </summary>
-        /// <value>
-        ///     The gif image path.
-        /// </value>
-        public string? ImageGifPath
-        {
-            get => (string)GetValue(ImageGifSourceProperty);
-            set => SetValue(ImageGifSourceProperty, value);
-        }
-
-        /// <summary>
         ///     Gets or sets the zoom.
         /// </summary>
         /// <value>
@@ -380,29 +430,6 @@ namespace Common.Images
         public event DelegatePoint SelectedPoint;
 
         /// <summary>
-        ///     Called when [image source property changed].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        private static void OnImageSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var control = sender as ImageZoom;
-            control?.OnImageSourceChanged();
-        }
-
-        /// <summary>
-        ///     Called when [image GIF source property changed].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        private static void OnImageGifSourcePropertyChanged(DependencyObject sender,
-            DependencyPropertyChangedEventArgs e)
-        {
-            var control = sender as ImageZoom;
-            control?.OnImageSourceGifChanged();
-        }
-
-        /// <summary>
         ///     Called when [selection tool changed].
         /// </summary>
         /// <param name="d">The d.</param>
@@ -428,21 +455,25 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Called when [image source GIF changed].
+        /// Called when [image source GIF changed].
         /// </summary>
-        private void OnImageSourceGifChanged()
+        private void OnImagePathChanged()
         {
-            if (string.IsNullOrEmpty(ImageGifPath) || !File.Exists(ImageGifPath))
+            if (string.IsNullOrEmpty(ImagePath))
             {
+                BtmImage.StopGif();
+                BtmImage.Source = null;
                 return;
             }
 
-            // reset position + scroll
+            // Reset position + scroll
             ResetTransforms(resetZoom: true);
 
-            BtmImage.GifSource = ImageGifPath;
+            // Pass the path to ImageGif. It will automatically figure out if it's a GIF or a static image.
+            BtmImage.GifSource = ImagePath;
 
-            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
+            // Note: SelectionAdorner and Canvas sizing will be updated automatically 
+            // when BtmImage_ImageLoaded fires!
         }
 
         /// <summary>
@@ -465,62 +496,6 @@ namespace Common.Images
 
             // Ensure the adorner updates with the new zoom scale
             SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-        }
-
-        /// <summary>
-        ///     Called when [image source changed].
-        /// </summary>
-        private void OnImageSourceChanged()
-        {
-            //// Prevent any GIF from reasserting itself
-            //BtmImage.GifSource = null;
-            //// Force WPF to process the null assignment immediately
-            //Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Render);
-
-            BtmImage.StopGif();
-
-            // this block aboe is absolutey necessary to avoid that WPF keeps the old GIF playing
-
-            // Load ItemsSource via stream to avoid WPF URI cache if possible
-            if (ItemsSource != null && !string.IsNullOrEmpty(ItemsSource.UriSource?.OriginalString))
-            {
-                // Best: create a new BitmapImage from a stream on demand
-                try
-                {
-                    var uri = ItemsSource.UriSource;
-                    var path = uri.IsAbsoluteUri ? uri.LocalPath : uri.OriginalString;
-                    using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    var bmp = new BitmapImage();
-                    bmp.BeginInit();
-                    bmp.CacheOption = BitmapCacheOption.OnLoad;
-                    bmp.StreamSource = fs;
-                    bmp.EndInit();
-                    bmp.Freeze();
-                    BtmImage.Source = bmp;
-                }
-                catch
-                {
-                    // fallback to existing ItemsSource
-                    BtmImage.Source = ItemsSource;
-                }
-            }
-            else
-            {
-                // ItemsSource is already a BitmapImage created in-memory
-                BtmImage.Source = ItemsSource;
-            }
-
-            if (BtmImage.Source == null)
-                return;
-
-            // reset position + scroll (optional)
-            ResetTransforms(resetZoom: false);
-
-            MainCanvas.Height = BtmImage.Source.Height;
-            MainCanvas.Width = BtmImage.Source.Width;
-
-            SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
-            AttachAdorner(SelectionTool);
         }
 
         /// <summary>
@@ -605,6 +580,9 @@ namespace Common.Images
                 case ImageZoomTools.Ellipse:
                 case ImageZoomTools.FreeForm:
                     break;
+                case ImageZoomTools.Dot:
+                    SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
+                    break;
                 default:
                     return;
             }
@@ -622,29 +600,40 @@ namespace Common.Images
 
             if (SelectionAdorner == null) return;
 
-            // 1. Identify "Immediate Action" tools (Drawing tools)
+            // 🔴 1. NEW: Handle Point-based tools (Pencil, Color Picker) explicitly
+            if (SelectionTool == ImageZoomTools.Dot)
+            {
+                SelectionAdorner.CaptureAndClear(); // Clear the red dot visual
+
+                // Fire the Point command to ImageView
+                SafeExecuteCommand(SelectedPointCommand, _startPoint);
+                SelectedPoint?.Invoke(_startPoint);
+
+                return; // Exit early!
+            }
+
+            // 2. Identify "Immediate Action" tools (Shapes, Frames)
+            // 🔴 REMOVED 'ImageZoomTools.Dot' from this list
             var isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
                                 SelectionTool == ImageZoomTools.Ellipse ||
                                 SelectionTool == ImageZoomTools.FreeForm ||
-                                SelectionTool == ImageZoomTools.Trace ||
-                                SelectionTool == ImageZoomTools.Dot;
+                                SelectionTool == ImageZoomTools.Trace;
 
             if (isDrawingTool)
             {
-                // 2. Capture the data AND Clear the visuals immediately
-                // This prevents the "Ghost Frame" from sticking around
+                // 3. Capture the data AND Clear the visuals immediately
                 var frame = SelectionAdorner.CaptureAndClear();
 
-                // 3. Validation: Ensure we actually drew something substantial
+                // 4. Validation: Ensure we actually drew something substantial
                 var isValid = (frame.Width > 0 && frame.Height > 0) ||
                               frame.Points is { Count: > 0 };
 
                 if (isValid)
                 {
-                    // 4. Fire the Command to the ViewModel (Update the Bitmap)
+                    // 5. Fire the Command to the ViewModel (Update the Bitmap)
                     SafeExecuteCommand(SelectedFrameCommand, frame);
 
-                    // 5. Fire the Event (if anything else is listening)
+                    // 6. Fire the Event (if anything else is listening)
                     SelectedFrame?.Invoke(frame);
                 }
             }
@@ -874,10 +863,8 @@ namespace Common.Images
                     // Dispose image resources
                     if (BtmImage != null)
                     {
-                        BtmImage.Source = null;
-                        BtmImage.GifSource = null;
+                        BtmImage.StopGif(); // Stop the timer and clear internal states safely
 
-                        // Remove adorner
                         try
                         {
                             var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
