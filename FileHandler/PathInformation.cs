@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        PathInformation.cs
  * PURPOSE:     Generic System Functions for Path
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 using System.IO;

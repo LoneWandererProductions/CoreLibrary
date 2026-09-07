@@ -3,12 +3,11 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleCut.cs
 * PURPOSE:     Does all types of File Operations, Copy Files and deletes them afterwards.
-* PROGRAMMER:   Peter Geinitz (Wayfarer)
+* PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
-// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ namespace FileHandler
         /// <param name="overwrite">Is overwrite allowed</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static async Task<bool> CutFiles(string source, string target, bool overwrite)
+        public static async Task<bool> CutFiles(string? source, string? target, bool overwrite)
         {
             FileHandlerProcessing.ValidatePaths(source, target);
 
@@ -101,7 +100,7 @@ namespace FileHandler
         /// <param name="overwrite">Is overwrite allowed</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CutFiles(List<string>? source, string target, bool overwrite)
+        public static bool CutFiles(List<string?> source, string target, bool overwrite)
         {
             if (source == null || source.Count == 0 || string.IsNullOrEmpty(target))
             {

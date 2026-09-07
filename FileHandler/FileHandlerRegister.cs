@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandlerRegister.cs
  * PURPOSE:     Register for basic configs and some Messages
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
@@ -43,17 +43,17 @@ namespace FileHandler
         /// <value>
         ///     The error log.
         /// </value>
-        public static List<string>? ErrorLog { get; private set; }
+        public static List<string> ErrorLog { get; private set; }
 
         /// <summary>
         ///     Send the status
         /// </summary>
-        public static EventHandler<string>? SendStatus { get; set; }
+        public static EventHandler<string?> SendStatus { get; set; }
 
         /// <summary>
         ///     Send the overview
         /// </summary>
-        public static EventHandler<FileItems>? SendOverview { get; set; }
+        public static EventHandler<FileItems> SendOverview { get; set; }
 
         /// <summary>
         ///     Adds the error.
@@ -61,7 +61,7 @@ namespace FileHandler
         /// <param name="method">The method.</param>
         /// <param name="path">The path.</param>
         /// <param name="exception">The exception.</param>
-        public static void AddError(string method, string path, Exception exception)
+        public static void AddError(string method, string? path, Exception exception)
         {
             lock (ErrorLogLock)
             {
@@ -103,7 +103,7 @@ namespace FileHandler
         /// <value>
         ///     The Items.
         /// </value>
-        public List<string>? Elements { get; init; }
+        public List<string?> Elements { get; init; }
 
         /// <summary>
         ///     Gets or sets the Message.
@@ -111,6 +111,6 @@ namespace FileHandler
         /// <value>
         ///     The Message.
         /// </value>
-        public string? Message { get; init; }
+        public string Message { get; init; }
     }
 }

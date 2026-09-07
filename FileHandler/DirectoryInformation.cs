@@ -3,7 +3,7 @@
 * PROJECT:     FileHandler
 * FILE:        DirectoryInformation.cs
 * PURPOSE:     Generic System Functions for Directories
-* PROGRAMMER:  Peter Geinitz (Wayfarer) 
+* PROGRAMER:   Peter Geinitz (Wayfarer) 
 */
 
 using System;
@@ -22,7 +22,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="level">Levels to go up</param>
         /// <returns>Parent directory path</returns>
-        public static string GetParentDirectory(int level)
+        public static string? GetParentDirectory(int level)
             => GetParentDirectoryFromPath(Directory.GetCurrentDirectory(), level);
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace FileHandler
         /// <param name="level">Levels to go up</param>
         /// <returns>Parent directory path</returns>
         /// <exception cref="FileHandlerException"></exception>
-        public static string GetParentDirectoryFromPath(string startPath, int level)
+        public static string? GetParentDirectoryFromPath(string? startPath, int level)
         {
             if (string.IsNullOrEmpty(startPath))
                 throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory}: startPath was empty");

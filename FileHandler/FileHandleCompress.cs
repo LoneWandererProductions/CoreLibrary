@@ -3,13 +3,10 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleCompress.cs
 * PURPOSE:     File Compression Utilities
-* PROGRAMMER:   Peter Geinitz (Wayfarer)
+* PROGRAMER:   Peter Geinitz (Wayfarer)
 * Sources:     https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.zipfile?view=net-5.0
 *              https://docs.microsoft.com/de-de/dotnet/api/system.io.compression.ziparchive.entries?view=net-5.0
 */
-
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable UnusedMember.Global
 
 using System;
 using System.Collections.Generic;
@@ -18,6 +15,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+
+// ReSharper disable UnusedMember.Global
 
 namespace FileHandler
 {
@@ -35,8 +34,8 @@ namespace FileHandler
         /// <param name="compressionLevel">Optional compression level (default Optimal).</param>
         /// <returns>Operation success as <c>true</c> or <c>false</c>.</returns>
         public static async Task<bool> SaveZip(
-            string zipPath,
-            List<string> fileToAdd,
+            string? zipPath,
+            List<string?> fileToAdd,
             bool delete = true,
             CompressionLevel compressionLevel = CompressionLevel.Optimal)
         {
@@ -88,7 +87,7 @@ namespace FileHandler
         /// <param name="delete">If <c>true</c>, deletes the zip file after extraction. Default is true.</param>
         /// <returns>Operation success as <c>true</c> or <c>false</c>.</returns>
         /// <exception cref="FileHandlerException">Thrown if the zip file does not exist.</exception>
-        public static async Task<bool> OpenZip(string zipPath, string extractPath, bool delete = true)
+        public static async Task<bool> OpenZip(string? zipPath, string? extractPath, bool delete = true)
         {
             if (!File.Exists(zipPath))
                 throw new FileHandlerException(string.Concat(FileHandlerResources.ErrorFileNotFound, zipPath));
@@ -123,8 +122,8 @@ namespace FileHandler
         /// <param name="compressionLevel">The compression level.</param>
         /// <returns>Operation success as <c>true</c> or <c>false</c>.</returns>
         public static async Task<bool> SaveZipTransactional(
-            string zipPath,
-            List<string> filesToAdd,
+            string? zipPath,
+            List<string?> filesToAdd,
             bool delete = true,
             CompressionLevel compressionLevel = CompressionLevel.Optimal)
         {

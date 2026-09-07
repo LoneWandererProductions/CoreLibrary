@@ -6,15 +6,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable MemberCanBeInternal
-// ReSharper disable UnusedMember.Global
-
 using System;
 
 namespace FileHandler
 {
-    /// <inheritdoc />
     /// <summary>
     /// Represents errors that occur within the <c>FileHandler</c> library.
     /// </summary>
@@ -29,17 +24,15 @@ namespace FileHandler
         /// </summary>
         public string? FilePath { get; }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:FileHandler.FileHandlerException" /> class.
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class.
         /// </summary>
         public FileHandlerException()
         {
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:FileHandler.FileHandlerException" /> class with a specified error message.
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified error message.
         /// </summary>
         /// <param name="message">The message describing the error.</param>
         public FileHandlerException(string message)
@@ -47,9 +40,8 @@ namespace FileHandler
         {
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:FileHandler.FileHandlerException" /> class with a specified
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified
         /// error message and a reference to the inner exception that caused this exception.
         /// </summary>
         /// <param name="message">The message describing the error.</param>
@@ -59,9 +51,8 @@ namespace FileHandler
         {
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:FileHandler.FileHandlerException" /> class with a specified
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified
         /// error message and an associated file path.
         /// </summary>
         /// <param name="message">The message describing the error.</param>
@@ -72,9 +63,8 @@ namespace FileHandler
             FilePath = filePath;
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:FileHandler.FileHandlerException" /> class with a specified
+        /// Initializes a new instance of the <see cref="FileHandlerException"/> class with a specified
         /// error message, associated file path, and a reference to the inner exception that caused this exception.
         /// </summary>
         /// <param name="message">The message describing the error.</param>

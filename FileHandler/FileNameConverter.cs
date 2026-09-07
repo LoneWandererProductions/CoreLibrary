@@ -3,12 +3,13 @@
  * PROJECT:     FileHandler
  * FILE:        FileNameConverter.cs
  * PURPOSE:     Helps to perform some generic renaming operations
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
-// ReSharper disable MemberCanBeInternal
+
 //TODO Rollback for all Features
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace FileHandler
         /// <param name="folder">The root folder to search in.</param>
         /// <param name="subFolder">If <c>true</c>, search recursively in subfolders.</param>
         /// <returns>The number of files successfully renamed.</returns>
-        public static Task<int> RemoveAppendage(string appendage, string folder, bool subFolder) =>
+        public static Task<int> RemoveAppendage(string appendage, string? folder, bool subFolder) =>
             RenameFiles(folder, subFolder, filePath =>
             {
                 var directory = Path.GetDirectoryName(filePath);
@@ -46,7 +47,7 @@ namespace FileHandler
         /// <param name="folder">The root folder to search in.</param>
         /// <param name="subFolder">If <c>true</c>, search recursively in subfolders.</param>
         /// <returns>The number of files successfully renamed.</returns>
-        public static Task<int> AddAppendage(string appendage, string folder, bool subFolder) =>
+        public static Task<int> AddAppendage(string appendage, string? folder, bool subFolder) =>
             RenameFiles(folder, subFolder, name => name.AddAppendage(appendage));
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace FileHandler
         /// <param name="folder">The root folder to search in.</param>
         /// <param name="subFolder">If <c>true</c>, search recursively in subfolders.</param>
         /// <returns>The number of files successfully renamed.</returns>
-        public static Task<int> ReplacePart(string targetStr, string update, string folder, bool subFolder) =>
+        public static Task<int> ReplacePart(string targetStr, string update, string? folder, bool subFolder) =>
             RenameFiles(folder, subFolder, name => name.ReplacePart(targetStr, update));
 
         /// <summary>
@@ -68,11 +69,11 @@ namespace FileHandler
         /// <param name="folder">The root folder to search in.</param>
         /// <param name="subFolder">If <c>true</c>, search recursively in subfolders.</param>
         /// <returns>The number of files successfully renamed.</returns>
-        public static Task<int> ReOrderNumbers(string folder, bool subFolder) =>
+        public static Task<int> ReOrderNumbers(string? folder, bool subFolder) =>
             RenameFiles(folder, subFolder, name =>
             {
                 var ext = Path.GetExtension(name);
-                var core = Path.GetFileNameWithoutExtension(name).ReOrderNumbers();
+                var core = Path.GetFileNameWithoutExtension(name)?.ReOrderNumbers();
                 return string.IsNullOrEmpty(core) ? name : string.Concat(core, ext);
             });
 
@@ -97,11 +98,11 @@ namespace FileHandler
         /// If a rename fails, the process stops, and the finished count is returned.
         /// </remarks>
         private static async Task<int> RenameFiles(
-            string folder,
+            string? folder,
             bool subFolder,
             Func<string, string> renameSelector)
         {
-            var lst = FileHandleSearch.GetAllFiles(folder, subFolder);
+            List<string?>? lst = FileHandleSearch.GetAllFiles(folder, subFolder);
 
             if (lst == null || lst.Count == 0)
                 return 0;

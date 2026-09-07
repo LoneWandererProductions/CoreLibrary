@@ -29,7 +29,7 @@ namespace FileHandler
         /// <param name="path">The path of the file to delete.</param>
         /// <returns>True if the file was successfully deleted; otherwise, false.</returns>
         /// <exception cref="FileHandlerException">Thrown when the path is empty or null.</exception>
-        public static async Task<bool> DeleteFile(string path)
+        public static async Task<bool> DeleteFile(string? path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);

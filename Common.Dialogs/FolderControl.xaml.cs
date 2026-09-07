@@ -73,5 +73,28 @@ namespace Common.Dialogs
             PathEntry.Visibility = Visibility.Collapsed;
             PathDisplay.Visibility = Visibility.Visible;
         }
+
+        /// <summary>
+        /// Handles the KeyDown event of the PathEntry control to trigger navigation on Enter key press.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
+        private void PathEntry_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // Execute the GoCommand to navigate if path exists
+                if (ViewModel.GoCommand.CanExecute(null))
+                {
+                    ViewModel.GoCommand.Execute(null);
+                }
+
+                // Hide the text box and show the display text block again
+                PathEntry.Visibility = Visibility.Collapsed;
+                PathDisplay.Visibility = Visibility.Visible;
+
+                e.Handled = true;
+            }
+        }
     }
 }

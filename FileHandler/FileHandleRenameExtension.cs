@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandleRenameExtension.cs
  * PURPOSE:     Unified safe rename helpers (append/remove/replace/reorder)
- * PROGRAMMER:  Peter Geinitz (Wayfarer) 
+ * PROGRAMER:   Peter Geinitz (Wayfarer) 
  */
 
 using System;

@@ -3,7 +3,7 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleCopy.cs
 * PURPOSE:     Does all types of File Operations, Copy Files
-* PROGRAMMER:  Peter Geinitz (Wayfarer)
+* PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -33,7 +33,7 @@ namespace FileHandler
         /// <param name="overwrite">Is overwrite allowed, optional, default true</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CopyFiles(string source, string target, bool overwrite = true)
+        public static bool CopyFiles(string? source, string? target, bool overwrite = true)
         {
             FileHandlerProcessing.ValidatePaths(source, target);
 
@@ -62,7 +62,7 @@ namespace FileHandler
         /// <param name="overwrite">Is overwrite allowed, optional, default true.</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CopyFiles(List<string>? source, string target, bool overwrite = true)
+        public static bool CopyFiles(List<string?> source, string? target, bool overwrite = true)
         {
             if (source == null || source.Count == 0 || string.IsNullOrEmpty(target))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -75,7 +75,7 @@ namespace FileHandler
             // Overview event
             var overview = new FileItems
             {
-                Elements = new List<string>(source), Message = FileHandlerResources.InformationFileDeletion
+                Elements = new List<string?>(source), Message = FileHandlerResources.InformationFileDeletion
             };
             FileHandlerRegister.SendOverview?.Invoke(nameof(CopyFiles), overview);
 
@@ -112,7 +112,7 @@ namespace FileHandler
         /// <param name="target">Full qualified target Path</param>
         /// <returns>List of Files that were not copied, can be null.</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static IList<string>? CopyFiles(string source, string target)
+        public static IList<string>? CopyFiles(string? source, string? target)
         {
             FileHandlerProcessing.ValidatePaths(source, target);
 
@@ -132,7 +132,7 @@ namespace FileHandler
             if (targetFiles == null)
                 return null;
 
-            var intersect = sourceFiles.Intersect(targetFiles).ToList();
+            List<string?> intersect = sourceFiles.Intersect(targetFiles).ToList();
             var except = sourceFiles.Except(targetFiles).ToList();
 
             if (intersect.Count == 0)
@@ -152,7 +152,7 @@ namespace FileHandler
         /// <param name="target">Full qualified target Path</param>
         /// <returns>Status if we encountered any problems</returns>
         /// <exception cref="FileHandlerException">No Correct Path was provided</exception>
-        public static bool CopyFilesReplaceIfNewer(string source, string target)
+        public static bool CopyFilesReplaceIfNewer(string? source, string? target)
         {
             FileHandlerProcessing.ValidatePaths(source, target);
 

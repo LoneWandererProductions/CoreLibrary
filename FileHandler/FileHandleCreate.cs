@@ -22,7 +22,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">Target folder path.</param>
         /// <exception cref="FileHandlerException">Thrown if the path is null or empty.</exception>
-        public static void CreateFolder(string path)
+        public static void CreateFolder(string? path)
         {
             if (string.IsNullOrWhiteSpace(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -52,7 +52,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">Full folder path.</param>
         /// <returns>True if the folder was created or already exists; false if creation failed.</returns>
-        private static bool CreateDirectory(string path)
+        private static bool CreateDirectory(string? path)
         {
             try
             {

@@ -59,10 +59,11 @@
         <!-- Display and input Path -->
         <Grid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center">
             <TextBox x:Name="PathEntry"
-                     Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
-                     Padding="2"
-                     Visibility="Collapsed"
-                     LostFocus="PathEntry_LostFocus" />
+                       Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
+                       Padding="2"
+                       Visibility="Collapsed"
+                       LostFocus="PathEntry_LostFocus"
+                       KeyDown="PathEntry_KeyDown" />
             <TextBlock x:Name="PathDisplay"
                        Text="{Binding Paths}"
                        TextTrimming="CharacterEllipsis"

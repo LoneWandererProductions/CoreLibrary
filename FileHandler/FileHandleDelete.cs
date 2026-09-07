@@ -3,7 +3,7 @@
 * PROJECT:     FileHandler
 * FILE:        FileHandleDelete.cs
 * PURPOSE:     Handles all types of file operations, including deletion
-* PROGRAMMER:  Peter Geinitz (Wayfarer)
+* PROGRAMER:   Peter Geinitz (Wayfarer)
 */
 
 using System;
@@ -26,7 +26,7 @@ namespace FileHandler
         /// <param name="path">Target file path.</param>
         /// <returns>True if deletion succeeded, false otherwise.</returns>
         /// <exception cref="FileHandlerException">Thrown when path is null or empty.</exception>
-        public static async Task<bool> DeleteFile(string path)
+        public static async Task<bool> DeleteFile(string? path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -87,7 +87,7 @@ namespace FileHandler
         /// <param name="path">Target folder path.</param>
         /// <param name="subdirectories">Include subfolders if true.</param>
         /// <returns>True if deletion succeeded.</returns>
-        public static async Task<bool> DeleteAllContents(string path, bool subdirectories = true)
+        public static async Task<bool> DeleteAllContents(string? path, bool subdirectories = true)
         {
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -127,7 +127,7 @@ namespace FileHandler
         /// <param name="fileExtList">List of file extensions to delete.</param>
         /// <param name="subdirectories">Include subfolders if true.</param>
         /// <returns>True if deletion succeeded.</returns>
-        public static async Task<bool> DeleteFolderContentsByExtension(string path, List<string> fileExtList,
+        public static async Task<bool> DeleteFolderContentsByExtension(string? path, List<string> fileExtList,
             bool subdirectories = true)
         {
             if (string.IsNullOrEmpty(path))
@@ -157,7 +157,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">Target folder path.</param>
         /// <returns>True if deletion succeeded.</returns>
-        public static async Task<bool> DeleteCompleteFolder(string path)
+        public static async Task<bool> DeleteCompleteFolder(string? path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);
@@ -183,7 +183,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">Target file path.</param>
         /// <returns>True if file is locked, false otherwise.</returns>
-        public static bool IsFileLocked(string path)
+        public static bool IsFileLocked(string? path)
         {
             try
             {
@@ -204,7 +204,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="path">Target folder path.</param>
         /// <returns>True if folder deleted.</returns>
-        public static bool DeleteFolder(string path)
+        public static bool DeleteFolder(string? path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyString);

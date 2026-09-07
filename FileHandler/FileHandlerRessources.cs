@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileHandlerResources.cs
  * PURPOSE:     String Resources
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 namespace FileHandler
@@ -13,6 +13,11 @@ namespace FileHandler
     /// </summary>
     internal static class FileHandlerResources
     {
+        /// <summary>
+        ///     The star dot (const). Value: "*.".
+        /// </summary>
+        internal const string StarDot = "*.";
+
         /// <summary>
         ///     The dot (const). Value: ".".
         /// </summary>

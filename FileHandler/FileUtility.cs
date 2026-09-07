@@ -3,7 +3,7 @@
  * PROJECT:     FileHandler
  * FILE:        FileUtility.cs
  * PURPOSE:     Some Basic helper Functions
- * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
 // ReSharper disable UnusedMember.Global
