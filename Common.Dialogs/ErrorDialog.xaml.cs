@@ -6,8 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable MemberCanBeInternal
-
+using System;
+using System.Text;
 using System.Windows;
 
 namespace Common.Dialogs
@@ -16,38 +16,81 @@ namespace Common.Dialogs
     /// <summary>
     ///     The error window.
     /// </summary>
-    /// <seealso cref="T:System.Windows.Window" />
-    /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
     public sealed partial class ErrorDialog
     {
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Common.Dialogs.CustomErrorDialog" /> class.
+        ///     Initializes a new instance of the <see cref="ErrorDialog" /> class.
         /// </summary>
-        /// <param name="header">The header.</param>
-        /// <param name="message">The message.</param>
-        /// <param name="source">The source.</param>
-        /// <param name="details">The details.</param>
-        public ErrorDialog(string header, string message, string source = null!, string details = null!)
+        /// <param name="header">The main error header.</param>
+        /// <param name="message">The descriptive message.</param>
+        /// <param name="source">The originating source or component.</param>
+        /// <param name="details">Extended stack trace or detail logs.</param>
+        public ErrorDialog(string header, string message, string? source = null, string? details = null)
         {
             InitializeComponent();
 
-            // Set default error title or use a localized string
-            ErrorTitleText.Text = header;
+            ErrorTitleText.Text = string.IsNullOrWhiteSpace(header) ? "An Error Occurred" : header;
+            ErrorMessageText.Text = message ?? string.Empty;
 
-            // Set error message, prepend source if provided
-            ErrorMessageText.Text = string.IsNullOrWhiteSpace(source) ? message : $"{source}\n{message}";
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                ErrorSourceText.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ErrorSourceText.Text = $"Source: {source}";
+                ErrorSourceText.Visibility = Visibility.Visible;
+            }
 
-            // Set error details if provided
-            ErrorDetailsText.Text = details;
+            if (string.IsNullOrWhiteSpace(details))
+            {
+                DetailsExpander.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ErrorDetailsText.Text = details;
+                DetailsExpander.Visibility = Visibility.Visible;
+            }
         }
 
+        /// <summary>
+        ///     Copies the formatted error details directly to the clipboard.
+        /// </summary>
+        private void CopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"[Header] {ErrorTitleText.Text}");
+
+            if (ErrorSourceText.Visibility == Visibility.Visible && !string.IsNullOrWhiteSpace(ErrorSourceText.Text))
+            {
+                sb.AppendLine($"[{ErrorSourceText.Text}]");
+            }
+
+            if (!string.IsNullOrWhiteSpace(ErrorMessageText.Text))
+            {
+                sb.AppendLine($"[Message]\n{ErrorMessageText.Text}");
+            }
+
+            if (DetailsExpander.Visibility == Visibility.Visible && !string.IsNullOrWhiteSpace(ErrorDetailsText.Text))
+            {
+                sb.AppendLine();
+                sb.AppendLine("[Details]");
+                sb.AppendLine(ErrorDetailsText.Text);
+            }
+
+            try
+            {
+                Clipboard.SetText(sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"Failed to copy to clipboard: {ex.Message}", "Clipboard Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
 
         /// <summary>
         ///     Handles the Click event of the CloseButton control.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();

@@ -2,31 +2,107 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Error"
-        Width="400" Height="200"
+        Width="480"
+        MinWidth="420"
+        MaxWidth="600"
+        SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+        ResizeMode="NoResize"
+        UseLayoutRounding="True">
 
-        <TextBlock x:Name="ErrorTitleText" FontWeight="Bold" FontSize="16" Grid.Row="0" />
-        <TextBlock x:Name="ErrorMessageText" TextWrapping="Wrap" Margin="0,21,0,23" Grid.Row="0" Grid.RowSpan="2" />
-
-        <Expander Header="Details" Grid.Row="1">
-            <TextBlock x:Name="ErrorDetailsText" FontSize="12" TextWrapping="Wrap" />
-        </Expander>
-
-        <Button Content="OK" HorizontalAlignment="Center" Width="100" Margin="0,10,0,0" Click="CloseButton_Click"
-                Grid.Row="2" />
-    </Grid>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Common.Dialogs;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Transparent Read-Only TextBox to enable text selection/copying -->
+            <Style x:Key="SelectableTextStyle" TargetType="TextBox">
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Focusable" Value="True" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Section: Icon + Title + Source -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Visual Error Badge -->
+            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16" Background="#FEE2E2" Margin="0,0,12,0" VerticalAlignment="Top">
+                <TextBlock Text="⚠️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+
+            <!-- Header Text Stack -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBox x:Name="ErrorTitleText" 
+                         Style="{StaticResource SelectableTextStyle}"
+                         FontWeight="Bold" 
+                         FontSize="15" 
+                         Foreground="#DC2626" />
+                <TextBox x:Name="ErrorSourceText" 
+                         Style="{StaticResource SelectableTextStyle}"
+                         FontSize="11" 
+                         Foreground="#6B7280" 
+                         Margin="0,2,0,0" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Primary Error Message -->
+        <TextBox x:Name="ErrorMessageText" 
+                 Grid.Row="1" 
+                 Style="{StaticResource SelectableTextStyle}"
+                 FontSize="13" 
+                 Margin="0,0,0,12" 
+                 MaxHeight="160" />
+
+        <!-- Collapsible Exception / StackTrace Details -->
+        <Expander x:Name="DetailsExpander" 
+                  Header="Details" 
+                  Grid.Row="2" 
+                  Margin="0,0,0,16">
+            <Border Background="#F9FAFB" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,8,0,0">
+                <TextBox x:Name="ErrorDetailsText" 
+                         Style="{StaticResource SelectableTextStyle}"
+                         FontFamily="Consolas, Courier New, monospace" 
+                         FontSize="11" 
+                         Foreground="#374151" 
+                         MaxHeight="180" />
+            </Border>
+        </Expander>
+
+        <!-- Action Bar -->
+        <Grid Grid.Row="3">
+            <Button Content="📋 Copy Details" 
+                    HorizontalAlignment="Left" 
+                    Padding="12,5" 
+                    Click="CopyButton_Click" 
+                    ToolTip="Copy full error information to system clipboard" />
+
+            <Button Content="OK" 
+                    HorizontalAlignment="Right" 
+                    Width="85" 
+                    Padding="0,5" 
+                    IsDefault="True" 
+                    IsCancel="True" 
+                    Click="CloseButton_Click" />
+        </Grid>
+    </Grid>
 </Window>

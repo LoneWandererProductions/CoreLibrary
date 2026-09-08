@@ -162,6 +162,15 @@ namespace Common.Images
             typeof(ImageZoom), null);
 
         /// <summary>
+        ///     The lock zoom property. When set, switching to a new image keeps the current zoom
+        ///     level *and* pan position exactly as they are instead of resetting to fit/top-left -
+        ///     handy for paging through a folder of equal-sized scans (e.g. a scanned book) where
+        ///     you've zoomed in to read text and want every page to land in the same spot.
+        /// </summary>
+        public static readonly DependencyProperty LockZoomProperty = DependencyProperty.Register(
+            nameof(LockZoom), typeof(bool), typeof(ImageZoom), new PropertyMetadata(false));
+
+        /// <summary>
         ///     The zoom scale property
         /// </summary>
         public static readonly DependencyProperty ZoomScaleProperty =
@@ -227,18 +236,39 @@ namespace Common.Images
                 {
                     control.BtmImage.StopGif(); // Stop any running GIF
 
-                    // Reset zoom/pan before swapping in the new image. OnImagePathChanged (the GIF
-                    // path) already does this, but this - the far more common, static-image path -
-                    // never did: the old zoom level and scroll/pan position just carried straight
-                    // over onto whatever image loaded next, which is why zooming/panning one image
-                    // and then switching left the view looking completely off on the next one.
-                    control.ResetTransforms(resetZoom: true);
+                    // Reset zoom/pan before swapping in the new image - unless the user has asked
+                    // to keep it locked (e.g. paging through a folder of equal-sized scans, where
+                    // landing on the same zoomed-in spot on every page is exactly the point).
+                    // OnImagePathChanged (the GIF path) has the same reset+lock handling below, but
+                    // this - the far more common, static-image path - never reset at all: the old
+                    // zoom level and scroll/pan position just carried straight over onto whatever
+                    // image loaded next, which is why zooming/panning one image and then switching
+                    // left the view looking completely off on the next one.
+                    if (!control.LockZoom)
+                    {
+                        control.ResetTransforms(resetZoom: true);
 
-                    control.BtmImage.Source = newSource; // Push the edited bitmap to the core image control
+                        control.BtmImage.Source = newSource; // Push the edited bitmap to the core image control
 
-                    // Instantly update canvas boundaries to match the newly generated bitmap
-                    control.MainCanvas.Height = newSource.Height;
-                    control.MainCanvas.Width = newSource.Width;
+                        // Instantly update canvas boundaries to match the newly generated bitmap
+                        control.MainCanvas.Height = newSource.Height;
+                        control.MainCanvas.Width = newSource.Width;
+                    }
+                    else
+                    {
+                        control.BtmImage.Source = newSource;
+
+                        // Keep the canvas sized for the CURRENT zoom level, not just the raw image
+                        // size - otherwise the scrollable area would shrink back down to 1:1 even
+                        // though the render transform is still scaled up, clipping/misaligning the
+                        // locked-in view. Mirrors the sizing logic in Canvas_MouseWheel.
+                        var scale = control.BtmImage.RenderTransform is MatrixTransform mt ? mt.Matrix.M11 : 1.0;
+                        control.MainCanvas.Width =
+                            Math.Max(newSource.Width * scale, control.ScrollView.ActualWidth);
+                        control.MainCanvas.Height =
+                            Math.Max(newSource.Height * scale, control.ScrollView.ActualHeight);
+                    }
+
                     control.SelectionAdorner?.UpdateImageTransform(control.BtmImage.RenderTransform);
                 }
                 else
@@ -398,6 +428,19 @@ namespace Common.Images
             set => SetValue(AutoplayGif, value);
         }
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether the current zoom level and pan position
+        ///     should be kept when switching to a different image, instead of resetting.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> to keep zoom/pan locked across images; otherwise, <c>false</c>.
+        /// </value>
+        public bool LockZoom
+        {
+            get => (bool)GetValue(LockZoomProperty);
+            set => SetValue(LockZoomProperty, value);
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Implementation of IDisposable interface.
@@ -466,8 +509,13 @@ namespace Common.Images
                 return;
             }
 
-            // Reset position + scroll
-            ResetTransforms(resetZoom: true);
+            // Reset position + scroll - unless zoom is locked (see LockZoom / OnImageSourcePropertyChanged
+            // for the full explanation). BtmImage_ImageLoaded below handles the matching canvas-size
+            // side of the same lock once the GIF has actually finished loading.
+            if (!LockZoom)
+            {
+                ResetTransforms(resetZoom: true);
+            }
 
             // Pass the path to ImageGif. It will automatically figure out if it's a GIF or a static image.
             BtmImage.GifSource = ImagePath;
@@ -485,8 +533,19 @@ namespace Common.Images
         private void BtmImage_ImageLoaded(object sender, EventArgs e)
         {
             // Now the source is fully loaded, you can safely access it
-            MainCanvas.Height = BtmImage.Source.Height;
-            MainCanvas.Width = BtmImage.Source.Width;
+            if (!LockZoom)
+            {
+                MainCanvas.Height = BtmImage.Source.Height;
+                MainCanvas.Width = BtmImage.Source.Width;
+            }
+            else
+            {
+                // Keep the canvas sized for the CURRENT zoom level rather than the raw frame size -
+                // see OnImageSourcePropertyChanged for why.
+                var scale = BtmImage.RenderTransform is MatrixTransform mt ? mt.Matrix.M11 : 1.0;
+                MainCanvas.Width = Math.Max(BtmImage.Source.Width * scale, ScrollView.ActualWidth);
+                MainCanvas.Height = Math.Max(BtmImage.Source.Height * scale, ScrollView.ActualHeight);
+            }
 
             // Update the adorner with the new image transform
             SelectionAdorner?.UpdateImageTransform(BtmImage.RenderTransform);
@@ -813,6 +872,11 @@ namespace Common.Images
                 matrix.M11 = ZoomScale;
                 matrix.M22 = ZoomScale;
             }
+
+            // Actually apply the matrix - this used to be computed and then silently dropped,
+            // meaning ResetTransforms never really reset anything: the old zoom/pan stuck around
+            // on the render transform no matter what was calculated above.
+            BtmImage.RenderTransform = new MatrixTransform(matrix);
 
             // 2. Sync Sizes (Use ActualWidth if loaded, otherwise Source width)
             var baseWidth = BtmImage.ActualWidth > 0 ? BtmImage.ActualWidth : (BtmImage.Source?.Width ?? 0);

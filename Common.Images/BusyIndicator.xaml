@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="Common.Images.BusyIndicator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             SnapsToDevicePixels="True"
+             d:DesignHeight="14" d:DesignWidth="14">
+    <Grid>
+        <Ellipse x:Name="Dot"
+                 Width="12" Height="12"
+                 Fill="#2ECC71"
+                 Stroke="#33000000"
+                 StrokeThickness="0.75" />
+    </Grid>
+</UserControl>

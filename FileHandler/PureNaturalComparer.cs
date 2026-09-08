@@ -70,7 +70,15 @@ namespace FileHandler
                 }
                 else
                 {
-                    int r = x[ix].CompareTo(y[iy]);
+                    // Case-insensitive on purpose: Windows file systems are themselves
+                    // case-insensitive (you can't have "file.txt" and "FILE.txt" side by
+                    // side), so there's no risk of two distinct real files silently
+                    // comparing as "equal" here. Without this, plain ordinal char
+                    // comparison puts every uppercase letter before every lowercase one
+                    // (A-Z are 65-90, a-z are 97-122), so any folder with mixed-case
+                    // names - camera files next to renamed ones, "IMG_1.jpg" next to
+                    // "sunset.jpg" - ends up in an order that looks essentially random.
+                    int r = char.ToUpperInvariant(x[ix]).CompareTo(char.ToUpperInvariant(y[iy]));
                     if (r != 0) return r;
 
                     ix++;

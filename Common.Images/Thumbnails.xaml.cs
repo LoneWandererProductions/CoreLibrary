@@ -873,13 +873,24 @@ namespace Common.Images
         /// <param name="id">The identifier of the item to select and scroll into view.</param>
         public void SelectAndCenter(int id)
         {
-            if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
+            // Defer to after the next layout/render pass rather than doing this inline. A plain
+            // synchronous UpdateLayout() call inside CenterOnItem still isn't quite enough on its
+            // own under back-to-back key presses - WPF can apply a ScrollToXOffset request itself
+            // slightly after Arrange, tied to the render pass rather than pure layout, so a second
+            // press arriving before that render tick lands measures off a still-stale position.
+            // Queuing at DispatcherPriority.Loaded guarantees a full Measure/Arrange/Render cycle
+            // has actually completed before we touch anything - this is the standard WPF fix for
+            // "ScrollIntoView / selection only updates every other time" style bugs.
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                return;
-            }
+                if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
+                {
+                    return;
+                }
 
-            UpdateSelectedBorder(border);
-            CenterOnItem(id);
+                UpdateSelectedBorder(border);
+                CenterOnItem(id);
+            }), DispatcherPriority.Loaded);
         }
 
         /// <summary>
