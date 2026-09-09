@@ -7,7 +7,7 @@
  */
 
 using System.Diagnostics;
-using ExtendedSystemObjects;
+using Extended.Objects;
 
 namespace Common.ExtendedObject.Tests
 {

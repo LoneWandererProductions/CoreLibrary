@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        LogEntry.cs
  * PURPOSE:     Basic Transaction Log Object that holds all Infos
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -8,7 +8,7 @@
 
 // ReSharper disable MemberCanBeInternal
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <summary>
     ///     Entry that describes Changes to Objects in the Dictionary

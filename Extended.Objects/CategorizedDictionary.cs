@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        CategorizedDictionary.cs
  * PURPOSE:     Extended Dictionary with a Category.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -11,12 +11,9 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <inheritdoc />
     /// <summary>

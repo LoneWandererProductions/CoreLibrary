@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        Utility.cs
  * PURPOSE:     Some Methods I seem to use very often. Might add a better way to search the keys!
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,13 +10,10 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using ExtendedSystemObjects.Helper;
+using Extended.Objects.Helper;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <summary>
     ///     The utility class.
@@ -128,7 +125,7 @@ namespace ExtendedSystemObjects
 
             while (left <= right)
             {
-                var mid = left + ((right - left) >> 1);
+                var mid = left + (right - left >> 1);
                 var midKey = sortedKeys[mid];
 
                 if (midKey == target) return mid;

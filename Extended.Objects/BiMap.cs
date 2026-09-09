@@ -11,11 +11,9 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMethodReturnValue.Global
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <inheritdoc />
     /// <summary>
@@ -97,7 +95,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         /// <param name="left">The left.</param>
         /// <param name="right">The right.</param>
-        /// <exception cref="System.ArgumentException">Duplicate detected. Both values must be unique across their respective sides.</exception>
+        /// <exception cref="ArgumentException">Duplicate detected. Both values must be unique across their respective sides.</exception>
         public void Add(T left, T right)
         {
             lock (_lock)

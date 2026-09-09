@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataFormatter\DataFormatter.csproj" />
-    <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
+    <ProjectReference Include="..\Extended.Objects\Extended.Objects.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
   </ItemGroup>
 

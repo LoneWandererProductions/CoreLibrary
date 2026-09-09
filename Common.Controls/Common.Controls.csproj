@@ -11,7 +11,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Extended.Extensions\Extended.Extensions.csproj" />
-        <ProjectReference Include="..\ExtendedSystemObjects\ExtendedSystemObjects.csproj" />
+        <ProjectReference Include="..\Extended.Objects\Extended.Objects.csproj" />
         <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
     </ItemGroup>
 

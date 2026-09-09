@@ -8,7 +8,7 @@
 
 using System.Drawing;
 using DataFormatter;
-using ExtendedSystemObjects;
+using Extended.Objects;
 
 namespace Imaging.Cifs
 {

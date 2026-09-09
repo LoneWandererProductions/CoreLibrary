@@ -1,12 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects.Helper
+ * PROJECT:     Extended.Objects.Helper
  * FILE:        ExtendedSystemObjects.Helper/SharedResources.cs
  * PURPOSE:     Generic System Functions for ListsCollection of Strings and constants.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace ExtendedSystemObjects.Helper
+namespace Extended.Objects.Helper
 {
     /// <summary>
     ///     The extended system objects Resources class.

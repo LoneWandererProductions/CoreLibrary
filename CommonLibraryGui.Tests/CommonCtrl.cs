@@ -39,6 +39,7 @@ namespace CommonLibraryGui.Tests
             _ = new ScrollingRichTextBox();
             _ = new Thumbnails();
             _ = new NativeBitmapDisplay();
+            _ = new BusyIndicator();
 
             Assert.Pass();
         }

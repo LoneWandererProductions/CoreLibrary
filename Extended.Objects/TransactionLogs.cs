@@ -25,11 +25,8 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <summary>
     ///      Basic Transaction Log with unique entries and generic entries.

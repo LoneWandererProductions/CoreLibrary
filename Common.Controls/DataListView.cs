@@ -17,7 +17,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Extended.Extensions;
-using ExtendedSystemObjects;
+using Extended.Objects;
 using ViewModel;
 
 namespace Common.Controls

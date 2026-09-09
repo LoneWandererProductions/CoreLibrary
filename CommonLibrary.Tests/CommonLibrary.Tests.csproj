@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CommonFilter\CommonFilter.csproj" />
     <ProjectReference Include="..\Core.MemoryLog\Core.MemoryLog.csproj" />
+    <ProjectReference Include="..\Extended.Objects\Extended.Objects.csproj" />
     <ProjectReference Include="..\FileHandler\FileHandler.csproj" />
     <ProjectReference Include="..\InterOp\InterOp.csproj" />
     <ProjectReference Include="..\LightVector\LightVector.csproj" />

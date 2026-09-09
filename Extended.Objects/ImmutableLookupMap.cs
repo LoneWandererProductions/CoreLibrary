@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        ImmutableLookupMap.cs
  * PURPOSE:     A high-performance, immutable lookup map that uses an array-based internal structure for fast key-value lookups.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -9,14 +9,12 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBeInternal
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using ExtendedSystemObjects.Helper;
+using Extended.Objects.Helper;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <inheritdoc />
     /// <summary>
@@ -144,7 +142,7 @@ namespace ExtendedSystemObjects
 
             for (var i = 0; i < capacity; i++)
             {
-                var index = (hash + i) & mask;
+                var index = hash + i & mask;
 
                 // If we hit an empty slot, the key definitely isn't here
                 if (!_keyPresence[index]) break;
@@ -175,7 +173,7 @@ namespace ExtendedSystemObjects
 
             for (var i = 0; i < capacity; i++)
             {
-                var index = (hash + i) & mask;
+                var index = hash + i & mask;
 
                 if (!_keyPresence[index]) break; // Hit an empty slot; key doesn't exist
 

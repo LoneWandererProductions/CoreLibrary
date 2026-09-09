@@ -8,12 +8,10 @@
 
 // ReSharper disable UnusedMember.Global
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <summary>
     ///      Vault item with expiration and data tracking
@@ -152,7 +150,7 @@ namespace ExtendedSystemObjects
             if (data == null) return 0;
 
             // 1. Handle Strings
-            if (data is string s) return (s.Length * sizeof(char)) + 24;
+            if (data is string s) return s.Length * sizeof(char) + 24;
 
             // 2. Handle Arrays safely (prevents Marshal.SizeOf exception on reference arrays)
             if (data is Array array)
@@ -160,14 +158,14 @@ namespace ExtendedSystemObjects
                 try
                 {
                     var elementType = array.GetType().GetElementType() ?? typeof(byte);
-                    long elementSize = elementType.IsValueType ? Marshal.SizeOf(elementType) : IntPtr.Size;
-                    return (array.Length * elementSize) + 24;
+                    long elementSize = elementType.IsValueType ? Marshal.SizeOf(elementType) : nint.Size;
+                    return array.Length * elementSize + 24;
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine(
                         $"Failed to calculate size for array of type {array.GetType()}. Falling back to default size estimation. Exception: {ex}");
-                    return (array.Length * IntPtr.Size) + 24;
+                    return array.Length * nint.Size + 24;
                 }
             }
 
@@ -183,12 +181,12 @@ namespace ExtendedSystemObjects
                 {
                     Trace.WriteLine(
                         $"Failed to calculate size for value type {actualType}. Falling back to default size estimation. Exception: {ex}");
-                    return IntPtr.Size;
+                    return nint.Size;
                 }
             }
 
             // 4. Handle Reference Types
-            return IntPtr.Size + 16;
+            return nint.Size + 16;
         }
 
         /// <summary>
@@ -196,7 +194,7 @@ namespace ExtendedSystemObjects
         /// </summary>
         public override string ToString()
         {
-            var status = HasExpired ? "EXPIRED" : (HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent");
+            var status = HasExpired ? "EXPIRED" : HasExpireTime ? $"Expires: {ExpiryDate}" : "Persistent";
             return $"VaultItem<{typeof(TU).Name}> | {status} | Size: {DataSize} bytes | Desc: {Description}";
         }
     }

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        MemoryVault.cs
  * PURPOSE:     In Memory Storage
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -14,16 +14,12 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text.Json;
-using System.Threading;
-using ExtendedSystemObjects.Helper;
+using Extended.Objects.Helper;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <inheritdoc />
     /// <summary>
@@ -449,7 +445,7 @@ namespace ExtendedSystemObjects
         /// Converts to string.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {

@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        VaultMetadata.cs
  * PURPOSE:     Metadata for all saved Infos about the stored items.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
@@ -10,10 +10,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedMember.Global
 
-using System;
-using System.Collections.Generic;
-
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <summary>
     ///     Meta Data for the class

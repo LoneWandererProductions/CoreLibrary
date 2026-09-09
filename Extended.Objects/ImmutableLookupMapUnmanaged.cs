@@ -1,6 +1,6 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
- * PROJECT:     ExtendedSystemObjects
+ * PROJECT:     Extended.Objects
  * FILE:        ImmutableLookupMap.cs
  * PURPOSE:     A high-performance, immutable lookup map that uses an array-based internal structure for fast key-value lookups.
  *              This version is limited to unmanaged types and uses UnmanagedArray<T>.
@@ -10,16 +10,14 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MemberCanBePrivate.Global
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Extended.Objects.Helper;
 using Extended.Unmanaged;
-using ExtendedSystemObjects.Helper;
 
-namespace ExtendedSystemObjects
+namespace Extended.Objects
 {
     /// <inheritdoc cref="IDisposable" />
     /// <summary>
@@ -145,7 +143,7 @@ namespace ExtendedSystemObjects
 
             for (var i = 0; i < _capacity; i++)
             {
-                var index = (hash + i) & _mask;
+                var index = hash + i & _mask;
                 var entry = entriesPtr + index;
 
                 if (entry->IsPresent == 0) break;
@@ -175,7 +173,7 @@ namespace ExtendedSystemObjects
 
             for (var i = 0; i < _capacity; i++)
             {
-                var index = (hash + i) & _mask;
+                var index = hash + i & _mask;
                 var entry = entriesPtr + index;
 
                 if (entry->IsPresent == 0) break;
