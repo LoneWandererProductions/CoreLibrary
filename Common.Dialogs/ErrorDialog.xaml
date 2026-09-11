@@ -1,4 +1,4 @@
-﻿<Window x:Class="Common.Dialogs.ErrorDialog"
+<Window x:Class="Common.Dialogs.ErrorDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Error"
@@ -8,13 +8,14 @@
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        UseLayoutRounding="True">
+        UseLayoutRounding="True"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}">
 
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Common.Dialogs;component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            <!-- Theme now comes from Application.Resources (App.xaml) - was merging Common.Dialogs'
+                 own Themes/Generic.xaml here, which no longer exists. -->
 
             <!-- Transparent Read-Only TextBox to enable text selection/copying -->
             <Style x:Key="SelectableTextStyle" TargetType="TextBox">
@@ -46,7 +47,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Visual Error Badge -->
-            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16" Background="#FEE2E2" Margin="0,0,12,0" VerticalAlignment="Top">
+            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16" Background="#3A1C1C" Margin="0,0,12,0" VerticalAlignment="Top">
                 <TextBlock Text="⚠️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
 
@@ -56,11 +57,11 @@
                          Style="{StaticResource SelectableTextStyle}"
                          FontWeight="Bold" 
                          FontSize="15" 
-                         Foreground="#DC2626" />
+                         Foreground="#FF6B6B" />
                 <TextBox x:Name="ErrorSourceText" 
                          Style="{StaticResource SelectableTextStyle}"
                          FontSize="11" 
-                         Foreground="#6B7280" 
+                         Foreground="#AAAAAA" 
                          Margin="0,2,0,0" />
             </StackPanel>
         </Grid>
@@ -78,12 +79,12 @@
                   Header="Details" 
                   Grid.Row="2" 
                   Margin="0,0,0,16">
-            <Border Background="#F9FAFB" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,8,0,0">
+            <Border Background="#1A1A1A" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,8,0,0">
                 <TextBox x:Name="ErrorDetailsText" 
                          Style="{StaticResource SelectableTextStyle}"
                          FontFamily="Consolas, Courier New, monospace" 
                          FontSize="11" 
-                         Foreground="#374151" 
+                         Foreground="#CCCCCC" 
                          MaxHeight="180" />
             </Border>
         </Expander>

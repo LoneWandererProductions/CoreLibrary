@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              x:Name="ColorPickerControl"
-             d:DesignHeight="450" d:DesignWidth="450">
+             d:DesignHeight="450" 
+             d:DesignWidth="450">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />

@@ -33,6 +33,14 @@ namespace Common.Dialogs
         public string Header { get; set; }
 
         /// <summary>
+        /// Gets a simple glyph representing this item, purely by kind (drive vs. folder vs. file) -
+        /// not tied to file type or content in any way, just enough to break up the plain-text tree
+        /// visually. Uses the same plain-Unicode-emoji approach already used elsewhere in the app
+        /// rather than a custom icon font, so nothing extra needs to ship or be measured.
+        /// </summary>
+        public string Icon { get; }
+
+        /// <summary>
         /// Gets the child folders and files. Populated on demand when expanded.
         /// </summary>
         public ObservableCollection<FolderItemViewModel> Children { get; } = new();
@@ -90,8 +98,34 @@ namespace Common.Dialogs
         {
             Path = path;
             Header = System.IO.Path.GetFileName(path);
+            if (string.IsNullOrEmpty(Header)) Header = path; // drive roots like "C:\" have no file name part
             _parentVm = parentVm;
             HasChildren = SafeHasChildren(path);
+            Icon = DetermineIcon(path);
+        }
+
+        /// <summary>
+        /// Picks an icon glyph purely from the kind of entry this is - a drive root, a regular
+        /// folder, or (when ShowFiles is on) a plain file. No file-type or content inspection.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        private static string DetermineIcon(string path)
+        {
+            try
+            {
+                // A drive root looks like "C:\" - GetPathRoot returns the same string back for one.
+                var root = System.IO.Path.GetPathRoot(path);
+                if (!string.IsNullOrEmpty(root) && root.Equals(path, StringComparison.OrdinalIgnoreCase))
+                {
+                    return "\U0001F4BD"; // 💽
+                }
+
+                return Directory.Exists(path) ? "\U0001F4C1" : "\U0001F4C4"; // 📁 or 📄
+            }
+            catch
+            {
+                return "\U0001F4C1";
+            }
         }
 
         /// <summary>

@@ -10,7 +10,17 @@
     Name="ImgZoom"
     d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <!--
+            No hardcoded color here on purpose - ImageZoom is a reusable control, and forcing a
+            color scheme onto it would be a bad call for anyone embedding it elsewhere. ScrollViewer
+            defaults to an opaque SystemColors.Window (white) background when nothing is set, which
+            is why this used to look "aggressively white" regardless of the host window's own theme.
+            Binding to the UserControl's own (inherited, already-existing) Background property means
+            it's transparent by default, and each consumer just sets Background="..." on the
+            <ImageZoom> element itself to opt into whatever look fits.
+        -->
         <ScrollViewer x:Name="ScrollView"
+                      Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
             <Canvas x:Name="MainCanvas"

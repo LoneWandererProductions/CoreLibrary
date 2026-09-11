@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
+             x:Name="Root"
              d:DesignHeight="25" d:DesignWidth="75">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -17,7 +18,17 @@
         <Button Content="C" HorizontalAlignment="Center" Width="25" Click="Button_Click" Name="Button" />
         <Popup Name="Pop" StaysOpen="False" PlacementTarget="{Binding ElementName=Button}" Grid.ColumnSpan="3"
                Grid.Column="0">
-            <Grid Name="GridPicker" Background="AliceBlue">
+            <!--
+                No hardcoded color here on purpose, same reasoning as ImageZoom/Thumbnails - this is
+                a reusable control. Used to be Background="AliceBlue", which is exactly the kind of
+                thing that looks glaringly out of place dropped into a dark-themed host. A Popup's
+                content isn't part of the same visual tree as its placement target, so a
+                RelativeSource AncestorType lookup (which walks the visual tree) wouldn't reach back
+                to this UserControl - ElementName works here instead, since it resolves via the XAML
+                NameScope rather than the visual tree, and Popup content defined inline like this
+                still shares that NameScope with the rest of the file.
+            -->
+            <Grid Name="GridPicker" Background="{Binding Background, ElementName=Root}">
                 <commonImages:ColorPicker ColorChanged="ColorPickerMenu_ColorChanged" />
             </Grid>
         </Popup>

@@ -18,8 +18,6 @@ namespace Common.Dialogs
     [ToolboxItem(false)]
     public sealed partial class FolderBrowser
     {
-        private readonly FolderViewModel _viewModel;
-
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the FolderBrowser dialog.
@@ -36,10 +34,14 @@ namespace Common.Dialogs
         {
             InitializeComponent();
 
-            // Set up the ViewModel
-            _viewModel = new FolderViewModel();
-            VFolder.DataContext = _viewModel;
-            _viewModel.StartFolder = startFolder;
+            // Use FolderControl's own ViewModel as the single source of truth instead of creating
+            // a second, competing FolderViewModel here and reassigning VFolder.DataContext to it.
+            // That used to leave two separate instances alive: the XAML bindings inside
+            // FolderControl.xaml ended up wired to whichever instance DataContext pointed at,
+            // while FolderControl's code-behind (Enter-to-navigate, keyboard shortcuts, etc.)
+            // reached for the OTHER, disconnected instance via its own ViewModel property - so
+            // pressing Enter after typing a path silently did nothing.
+            VFolder.Initiate(startFolder ?? string.Empty);
         }
 
         /// <summary>
@@ -70,7 +72,7 @@ namespace Common.Dialogs
         private void HandleButtonClick(bool isOkClicked)
         {
             Root = isOkClicked
-                ? _viewModel.Paths // take currently navigated folder
+                ? VFolder.ViewModel.Paths // take currently navigated folder
                 : null;
 
             Close();

@@ -8,6 +8,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -25,6 +26,27 @@ namespace Common.Dialogs
     /// </summary>
     public sealed class FolderViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Back-navigation history (most recently visited folder on top). Populated by
+        /// <see cref="LoadRootAsync" /> whenever navigation moves to a genuinely different folder,
+        /// so Back/Forward behave the same standard way as Explorer or a browser: going Up counts
+        /// as a navigation too, and Back simply undoes it.
+        /// </summary>
+        private readonly Stack<string> _backStack = new();
+
+        /// <summary>
+        /// Forward-navigation history, populated only by <see cref="BackCommand" /> and cleared
+        /// whenever a fresh (non-history) navigation happens.
+        /// </summary>
+        private readonly Stack<string> _forwardStack = new();
+
+        /// <summary>
+        /// Set while <see cref="BackCommand" />/<see cref="ForwardCommand" /> are driving a
+        /// navigation, so <see cref="LoadRootAsync" /> knows not to push onto the history stacks
+        /// for a move that came from history in the first place.
+        /// </summary>
+        private bool _isNavigatingHistory;
+
         /// <summary>
         /// The start folder
         /// </summary>
@@ -153,6 +175,23 @@ namespace Common.Dialogs
         public RelayCommand UpCommand { get; }
 
         /// <summary>
+        /// Gets the command that navigates back to the previously visited folder.
+        /// </summary>
+        /// <value>
+        /// The back command.
+        /// </value>
+        public RelayCommand BackCommand { get; }
+
+        /// <summary>
+        /// Gets the command that re-navigates forward after a Back, mirroring standard
+        /// browser/Explorer navigation semantics.
+        /// </summary>
+        /// <value>
+        /// The forward command.
+        /// </value>
+        public RelayCommand ForwardCommand { get; }
+
+        /// <summary>
         /// Gets the go command.
         /// </summary>
         /// <value>
@@ -230,7 +269,31 @@ namespace Common.Dialogs
 
                 if (!string.IsNullOrEmpty(parent))
                     await LoadRootAsync(parent);
-            });
+            }, () => !string.IsNullOrEmpty(SafeGetParent(Paths)));
+
+            BackCommand = new RelayCommand(async () =>
+            {
+                if (_backStack.Count == 0) return;
+
+                var target = _backStack.Pop();
+                if (!string.IsNullOrEmpty(Paths)) _forwardStack.Push(Paths);
+
+                _isNavigatingHistory = true;
+                await LoadRootAsync(target);
+                _isNavigatingHistory = false;
+            }, () => _backStack.Count > 0);
+
+            ForwardCommand = new RelayCommand(async () =>
+            {
+                if (_forwardStack.Count == 0) return;
+
+                var target = _forwardStack.Pop();
+                if (!string.IsNullOrEmpty(Paths)) _backStack.Push(Paths);
+
+                _isNavigatingHistory = true;
+                await LoadRootAsync(target);
+                _isNavigatingHistory = false;
+            }, () => _forwardStack.Count > 0);
 
             GoCommand = new RelayCommand(async () =>
             {
@@ -303,6 +366,15 @@ namespace Common.Dialogs
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task LoadRootAsync(string path)
         {
+            // Record history for a genuine navigation (not one already driven by Back/Forward,
+            // and not a no-op re-navigation to the folder we're already on).
+            if (!_isNavigatingHistory && !string.IsNullOrEmpty(Paths) &&
+                !string.Equals(Paths, path, StringComparison.OrdinalIgnoreCase))
+            {
+                _backStack.Push(Paths);
+                _forwardStack.Clear();
+            }
+
             Paths = path;
 
             var directories =
@@ -324,6 +396,13 @@ namespace Common.Dialogs
                         FolderItems.Add(
                             new FolderItemViewModel(file, this) { Header = Path.GetFileName(file) });
                 }
+
+                // Buttons don't automatically know the back/forward/up stacks just changed -
+                // nudge WPF to re-check CanExecute now rather than waiting for the next
+                // incidental UI event to trigger CommandManager's automatic requery.
+                UpCommand.RaiseCanExecuteChanged();
+                BackCommand.RaiseCanExecuteChanged();
+                ForwardCommand.RaiseCanExecuteChanged();
             });
         }
 

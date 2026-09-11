@@ -5,7 +5,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="" Height="120" Width="250">
+        Title="" Height="120" Width="250"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="45" />
@@ -27,11 +29,4 @@
         <Label x:Name="LLblText" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0"
                Grid.ColumnSpan="3" Grid.Column="0" />
     </Grid>
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Common.Dialogs;component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
 </Window>

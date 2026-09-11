@@ -3,33 +3,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="clr-namespace:Common.Dialogs"
     x:Class="Common.Dialogs.FolderBrowser"
-    Title="FolderBrowser"
+    Title="Select Folder"
+    Width="620" Height="420"
+    MinWidth="520" MinHeight="360"
+    WindowStartupLocation="CenterOwner"
+    ResizeMode="CanResizeWithGrip"
+    Background="{DynamicResource WindowBackgroundBrush}"
+    Foreground="{DynamicResource TextPrimaryBrush}"
     Topmost="False">
-    <Grid>
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="320" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Button Content="OK" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,10,0,10"
-                VerticalAlignment="Stretch"
+        <common:FolderControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" x:Name="VFolder" />
+        <Button Content="OK" Grid.Column="1" Grid.Row="1" Width="90" Margin="0,10,0,0"
+                IsDefault="True"
+                ToolTip="Confirm and select this folder (Enter)"
                 Click="BtnOk_Click" />
-        <Button Content="Cancel" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,10,0,10"
-                VerticalAlignment="Stretch"
+        <Button Content="Cancel" Grid.Column="3" Grid.Row="1" Width="90" Margin="0,10,0,0"
+                IsCancel="True"
+                ToolTip="Close without selecting a folder (Esc)"
                 Click="BtnCancel_Click" />
-        <common:FolderControl Grid.Row="0" Grid.Column="1" x:Name="VFolder" Grid.ColumnSpan="3" />
     </Grid>
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Common.Dialogs;component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
 </Window>

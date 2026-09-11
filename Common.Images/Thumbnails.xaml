@@ -6,7 +6,14 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <!--
+        Same reasoning as ImageZoom: no hardcoded color, this is a reusable control. ScrollViewer's
+        default opaque white background otherwise ignores whatever the host window's theme is.
+        Binding to the UserControl's own inherited Background keeps it transparent unless a
+        consumer explicitly sets Background="..." on the <Thumbnails> element.
+    -->
     <ScrollViewer x:Name="MainScrollViewer"
+                  Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}"
                   HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
         <ScrollViewer.LayoutTransform>
