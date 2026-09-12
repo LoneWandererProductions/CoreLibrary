@@ -7,7 +7,6 @@
     <Nullable>enable</Nullable>
     <UseVSTest>true</UseVSTest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RunSettingsFilePath>D:\Users\peter\Source\Repos\CoreLibrary\Imaging.Texture.Tests\bin\Debug\net9.0-windows\fine-code-coverage\coverage-tool-output\Imaging.Texture.Tests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>

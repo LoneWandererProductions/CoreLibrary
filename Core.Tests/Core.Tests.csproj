@@ -13,7 +13,6 @@
       For more information, visit https://learn.microsoft.com/dotnet/core/testing/unit-testing-platform-integration-dotnet-test#show-failure-per-test
       -->
     <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
-    <RunSettingsFilePath>D:\Users\peter\Source\Repos\CoreLibrary\Core.Tests\bin\Debug\net9.0-windows\fine-code-coverage\coverage-tool-output\Core.Tests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>

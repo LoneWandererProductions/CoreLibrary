@@ -8,7 +8,6 @@
     <Nullable>enable</Nullable>
     <!-- UseWpf is required because your tests use System.Windows (Canvas, Line, Point) -->
     <UseWpf>true</UseWpf>
-    <RunSettingsFilePath>D:\Users\peter\Source\Repos\CoreLibrary\CommonLibraryGui.Tests\bin\Debug\net9.0-windows\fine-code-coverage\coverage-tool-output\CommonLibraryGui.Tests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
