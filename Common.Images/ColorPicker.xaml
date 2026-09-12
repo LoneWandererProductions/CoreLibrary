@@ -6,7 +6,10 @@
              mc:Ignorable="d"
              x:Name="ColorPickerControl"
              d:DesignHeight="450" 
-             d:DesignWidth="450">
+             d:DesignWidth="450"
+             UseLayoutRounding="True"
+             Background="{DynamicResource WindowBackgroundBrush}"
+             Foreground="{DynamicResource TextPrimaryBrush}">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />

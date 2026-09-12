@@ -10,7 +10,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Imaging
 {
@@ -347,9 +347,13 @@ namespace Imaging
         public const string GeneralProcessingError = "An error occurred while processing the image.";
 
         /// <summary>
-        ///     The File Appendix
+        ///     The File Appendix. ObservableCollection rather than List on purpose: since plugins
+        ///     (see ImageDecoderPluginRegistry) can register new extensions into this list at
+        ///     runtime, anything bound to it (e.g. the Converter window's format dropdowns) needs
+        ///     to actually notice when it changes. A plain List gives no such notification, so a
+        ///     ComboBox already bound to it before a plugin registers would just silently go stale.
         /// </summary>
-        public static readonly List<string> Appendix = 
+        public static readonly ObservableCollection<string> Appendix =
 
         [
             JpgExt,

@@ -10,11 +10,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Plugins.Interface;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
-using Imaging.Interfaces;
 
 namespace Imaging.Plugins
 {
@@ -34,6 +34,21 @@ namespace Imaging.Plugins
 
         /// <inheritdoc />
         public IReadOnlyCollection<string> SupportedExtensions { get; } = new[] { ".ppm" };
+
+        /// <inheritdoc />
+        public bool CanDecode(byte[] header)
+        {
+            // A binary PPM file must be at least 3 bytes long and start with "P6" 
+            // followed by a whitespace character (space, tab, newline, or carriage return).
+            if (header == null || header.Length < 3)
+            {
+                return false;
+            }
+
+            return header[0] == 'P' &&
+                   header[1] == '6' &&
+                   (header[2] == ' ' || header[2] == '\t' || header[2] == '\n' || header[2] == '\r');
+        }
 
         /// <inheritdoc />
         public Bitmap Decode(string path)
@@ -137,7 +152,7 @@ namespace Imaging.Plugins
         /// '#' comments (which run to end of line), per the Netpbm spec.
         /// </summary>
         /// <param name="stream">The stream.</param>
-        /// <returns></returns>
+        /// <returns>The next token from the stream.</returns>
         /// <exception cref="System.IO.InvalidDataException">Unexpected end of file while reading PPM header.</exception>
         private static string ReadToken(Stream stream)
         {

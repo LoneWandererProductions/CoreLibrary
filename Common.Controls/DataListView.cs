@@ -2,7 +2,8 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Common.Controls
  * FILE:        DataListView.cs
- * PURPOSE:     Basic View for ListView
+ * PURPOSE:     Basic View for ListView. Is hard coded to work with DataList and DataItem. Should be used as a View for DataList
+ *              It has a ChangeLog to track changes and a unique name check to prevent duplicates
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 

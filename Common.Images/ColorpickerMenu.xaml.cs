@@ -122,6 +122,9 @@ namespace Common.Images
             var rectangle = ColorPickerHelper.GetColorPreview(colorHsv);
 
             _ = CanvasPreview.Children.Add(rectangle);
+
+            // A real color is now shown - hide the "empty swatch" diagonal-line placeholder.
+            EmptyIndicator.Visibility = Visibility.Collapsed;
         }
     }
 }

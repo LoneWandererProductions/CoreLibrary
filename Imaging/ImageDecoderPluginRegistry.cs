@@ -6,13 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Imaging.Helpers;
+using Imaging.Plugins.Interface;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Imaging.Interfaces;
 
 namespace Imaging
 {
@@ -21,25 +22,38 @@ namespace Imaging
     ///     handle this extension?" for <c>ImageStream.GetOriginalBitmap</c>.
     /// </summary>
     /// <remarks>
-    ///     Deliberately simple: <see cref="Assembly.LoadFrom(string)" /> plus
-    ///     reflection, not a full plugin framework (MEF, AssemblyLoadContext
-    ///     isolation, hot-unload). SlimViewer's plugins are trusted, first-party,
-    ///     restart-to-update DLLs, not untrusted or hot-swappable code, so the
-    ///     extra machinery a general-purpose plugin host needs isn't buying
-    ///     anything here. If that ever changes - loading plugins you didn't write,
-    ///     or needing to unload/reload one without restarting - an
-    ///     AssemblyLoadContext-per-plugin is the natural next step; the
-    ///     <see cref="IImageDecoderPlugin" /> contract doesn't need to change to
-    ///     get there.
+    ///     Deliberately simple: plugins are trusted, first-party DLLs and are
+    ///     loaded with an AssemblyLoadContext and AssemblyDependencyResolver so
+    ///     that plugin-specific managed and native dependencies remain next to
+    ///     the plugin. There is no hot-unload or isolation requirement.
     /// </remarks>
     public sealed class ImageDecoderPluginRegistry
     {
+        /// <summary>
+        /// The lazy instance
+        /// </summary>
         private static readonly Lazy<ImageDecoderPluginRegistry> LazyInstance =
             new(() => new ImageDecoderPluginRegistry());
 
+        /// <summary>
+        /// The by extension
+        /// </summary>
         private readonly Dictionary<string, IImageDecoderPlugin> _byExtension =
             new(StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// The plugins
+        /// </summary>
+        private readonly List<IImageDecoderPlugin> _plugins = new();
+
+        /// <summary>
+        /// The load contexts
+        /// </summary>
+        private readonly List<PluginLoadContext> _loadContexts = new();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ImageDecoderPluginRegistry"/> class from being created.
+        /// </summary>
         private ImageDecoderPluginRegistry()
         {
         }
@@ -50,9 +64,12 @@ namespace Imaging
         public static ImageDecoderPluginRegistry Instance => LazyInstance.Value;
 
         /// <summary>
-        ///     Gets the plugins currently loaded, for a diagnostics/about screen if
-        ///     one is ever wanted.
+        /// Gets the plugins currently loaded, for a diagnostics/about screen if
+        /// one is ever wanted.
         /// </summary>
+        /// <value>
+        /// The loaded plugins.
+        /// </value>
         public IReadOnlyCollection<IImageDecoderPlugin> LoadedPlugins => _byExtension.Values.Distinct().ToList();
 
         /// <summary>
@@ -94,63 +111,83 @@ namespace Imaging
         {
             ArgumentNullException.ThrowIfNull(plugin);
 
+            _plugins.Add(plugin);
+
+            // We still register extensions for the UI/Appendix, but NOT for routing
             foreach (var ext in plugin.SupportedExtensions)
             {
                 var normalized = NormalizeExtension(ext);
-                _byExtension[normalized] = plugin;
-
                 if (!ImagingResources.Appendix.Contains(normalized, StringComparer.OrdinalIgnoreCase))
                 {
                     ImagingResources.Appendix.Add(normalized);
                 }
             }
 
-            Trace.WriteLine(
-                $"[ImageDecoderPluginRegistry] Loaded '{plugin.Name}' for {string.Join(", ", plugin.SupportedExtensions)}");
+            Trace.WriteLine($"[ImageDecoderPluginRegistry] Loaded '{plugin.Name}'");
         }
 
         /// <summary>
-        ///     Looks up whether a plugin handles <paramref name="extension" />.
+        /// Looks up whether a plugin handles <paramref name="extension" />.
         /// </summary>
-        /// <param name="extension">Extension including the leading dot, any case.</param>
-        public bool TryGetDecoder(string? extension, out IImageDecoderPlugin? plugin)
+        /// <param name="headerBytes">The header bytes.</param>
+        /// <param name="plugin">The plugin.</param>
+        /// <returns><c>true</c> if a plugin was found; otherwise, <c>false</c>.</returns>
+        public bool TryGetDecoder(byte[] headerBytes, out IImageDecoderPlugin? plugin)
         {
-            plugin = null;
-            return !string.IsNullOrEmpty(extension) &&
-                   _byExtension.TryGetValue(NormalizeExtension(extension), out plugin);
+            // Iterate through plugins and let them inspect the magic numbers
+            plugin = _plugins.FirstOrDefault(p => p.CanDecode(headerBytes));
+            return plugin != null;
         }
 
+        /// <summary>
+        /// Loads the plugins from assembly.
+        /// </summary>
+        /// <param name="dllPath">The DLL path.</param>
         private void LoadPluginsFromAssembly(string dllPath)
         {
             Assembly assembly;
 
             try
             {
-                assembly = Assembly.LoadFrom(dllPath);
+                var fullPath = Path.GetFullPath(dllPath);
+
+                var loadContext = new PluginLoadContext(fullPath);
+                _loadContexts.Add(loadContext);
+
+                assembly = loadContext.LoadFromAssemblyPath(fullPath);
             }
-            catch (Exception ex) when (ex is BadImageFormatException or FileLoadException or IOException)
+            catch (Exception ex) when (
+                ex is BadImageFormatException or
+                FileLoadException or
+                IOException)
             {
-                Trace.WriteLine($"[ImageDecoderPluginRegistry] Could not load '{dllPath}': {ex}");
+                Trace.WriteLine(
+                    $"[ImageDecoderPluginRegistry] Could not load '{dllPath}': {ex}");
+
                 return;
             }
 
             IEnumerable<Type> candidateTypes;
+
             try
             {
                 candidateTypes = assembly.GetTypes();
             }
             catch (ReflectionTypeLoadException ex)
             {
-                // Some types in the assembly failed to load (e.g. a dependency
-                // this plugin needs isn't present) - use whichever types DID
-                // load rather than discarding the whole assembly over it.
                 candidateTypes = ex.Types.OfType<Type>();
-                Trace.WriteLine($"[ImageDecoderPluginRegistry] Partial load for '{dllPath}': {ex}");
+
+                Trace.WriteLine(
+                    $"[ImageDecoderPluginRegistry] Partial load for '{dllPath}': {ex}");
             }
 
             foreach (var type in candidateTypes)
             {
-                if (type is not { IsClass: true, IsAbstract: false } ||
+                if (type is not
+                    {
+                        IsClass: true,
+                        IsAbstract: false
+                    } ||
                     !typeof(IImageDecoderPlugin).IsAssignableFrom(type))
                 {
                     continue;
@@ -158,20 +195,28 @@ namespace Imaging
 
                 try
                 {
-                    if (Activator.CreateInstance(type) is IImageDecoderPlugin plugin)
+                    if (Activator.CreateInstance(type)
+                        is IImageDecoderPlugin plugin)
                     {
                         Register(plugin);
                     }
                 }
-                catch (Exception ex) when (ex is MissingMethodException or TargetInvocationException)
+                catch (Exception ex) when (
+                    ex is MissingMethodException or
+                    TargetInvocationException)
                 {
-                    // A plugin whose constructor throws (bad config, missing
-                    // resource, etc.) is skipped, not fatal to the others.
-                    Trace.WriteLine($"[ImageDecoderPluginRegistry] Failed to construct '{type.FullName}': {ex}");
+                    Trace.WriteLine(
+                        $"[ImageDecoderPluginRegistry] " +
+                        $"Failed to construct '{type.FullName}': {ex}");
                 }
             }
         }
 
+        /// <summary>
+        /// Normalizes the extension.
+        /// </summary>
+        /// <param name="extension">The extension.</param>
+        /// <returns>The normalized extension.</returns>
         private static string NormalizeExtension(string extension)
         {
             var trimmed = extension.Trim();

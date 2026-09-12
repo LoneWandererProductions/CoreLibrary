@@ -13,6 +13,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
+using Imaging.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -25,7 +26,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Common.Images
@@ -690,7 +690,7 @@ namespace Common.Images
             if (token.IsCancellationRequested) return;
 
             // 1. Heavy lifting (IO) happens on the background thread
-            var bitmap = await GetBitmapImageFileStreamAsync(filePath, cellSize, cellSize);
+            var bitmap = await ImageStream.GetBitmapImageFileStreamAsync(filePath, cellSize, cellSize);
             if (bitmap == null || token.IsCancellationRequested) return;
 
             // 2. ALL UI element creation and property setting happens on the UI Thread
@@ -766,46 +766,6 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Gets the bitmap image file stream asynchronous.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <returns>The loaded and resized Image</returns>
-        private static async Task<BitmapImage?> GetBitmapImageFileStreamAsync(string filePath, int width, int height)
-        {
-            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)) return null;
-
-            return await Task.Run(() =>
-            {
-                try
-                {
-                    var imageBytes = File.ReadAllBytes(filePath);
-
-                    var bitmapImage = new BitmapImage();
-
-                    using var ms = new MemoryStream(imageBytes);
-                    bitmapImage.BeginInit();
-
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-
-                    bitmapImage.DecodePixelWidth = width;
-                    bitmapImage.StreamSource = ms;
-                    bitmapImage.EndInit();
-
-                    bitmapImage.Freeze();
-
-                    return bitmapImage;
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine($"Fehler beim Laden: {ex.Message}");
-                    return null;
-                }
-            });
-        }
-
-        /// <summary>
         ///     Just some Method to Delegate click
         /// </summary>
         /// <param name="sender">Image</param>
@@ -842,6 +802,11 @@ namespace Common.Images
         /// </summary>
         public void Next()
         {
+            if (Border == null || Border.Count == 0)
+            {
+                return;
+            }
+
             var currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
             var newIndex = (currentIndex + 1) % Border.Count; // Loop to the start if at the end
             SelectImageAtIndex(newIndex);
@@ -854,6 +819,11 @@ namespace Common.Images
         /// </summary>
         public void Previous()
         {
+            if (Border == null || Border.Count == 0)
+            {
+                return;
+            }
+
             var currentIndex = _currentSelectedBorder == null ? -1 : GetCurrentIndex(_currentSelectedBorder.Name);
             var newIndex = (currentIndex - 1 + Border.Count) % Border.Count; // Loop to the end if at the start
             SelectImageAtIndex(newIndex);
@@ -1044,6 +1014,11 @@ namespace Common.Images
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void Deselect_Click(object sender, RoutedEventArgs e)
         {
+            if (ChkBox?.ContainsKey(_selection) != true)
+            {
+                return;
+            }
+
             var check = ChkBox[_selection];
             check.IsChecked = check.IsChecked != true;
         }
@@ -1055,7 +1030,7 @@ namespace Common.Images
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.Count == 0)
+            if (Selection.IsEmpty || ChkBox == null || ChkBox.Count == 0)
             {
                 return;
             }
@@ -1083,7 +1058,7 @@ namespace Common.Images
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox)
+            if (sender is not CheckBox clickedCheckBox || Keys == null)
             {
                 return;
             }

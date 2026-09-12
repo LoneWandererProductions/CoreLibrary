@@ -15,7 +15,8 @@
             <ColumnDefinition Width="25" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Button Content="C" HorizontalAlignment="Center" Width="25" Click="Button_Click" Name="Button" />
+        <Button Content="C" HorizontalAlignment="Center" Width="25" Click="Button_Click" Name="Button"
+                ToolTip="Pick a color" />
         <Popup Name="Pop" StaysOpen="False" PlacementTarget="{Binding ElementName=Button}" Grid.ColumnSpan="3"
                Grid.Column="0">
             <!--
@@ -32,6 +33,22 @@
                 <commonImages:ColorPicker ColorChanged="ColorPickerMenu_ColorChanged" />
             </Grid>
         </Popup>
-        <Canvas Grid.Column="1" Name="CanvasPreview" />
+
+        <!--
+            Bordered placeholder swatch: before AddColor() puts a real color rectangle inside
+            CanvasPreview, the canvas is just empty/transparent, which on a dark host reads as
+            "nothing here" rather than "an unset color swatch". This border+diagonal-line gives it
+            a visible, recognizable "empty swatch" presence; AddColor's rectangle then fully covers
+            it once a color is actually picked.
+        -->
+        <Border Grid.Column="1" Width="25" Height="25" BorderThickness="1"
+                BorderBrush="{Binding Foreground, ElementName=Root}" Opacity="0.6"
+                ToolTip="Current canvas background color (unset)">
+            <Grid>
+                <Path x:Name="EmptyIndicator" Data="M 0 0 L 25 25" Stretch="Fill"
+                      Stroke="{Binding Foreground, ElementName=Root}" StrokeThickness="1" />
+                <Canvas Name="CanvasPreview" />
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
