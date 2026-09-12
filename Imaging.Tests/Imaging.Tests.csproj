@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseVSTest>true</UseVSTest>
+    <RunSettingsFilePath>D:\Users\peter\Source\Repos\CoreLibrary\Imaging.Tests\bin\Debug\net9.0-windows\fine-code-coverage\coverage-tool-output\Imaging.Tests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>

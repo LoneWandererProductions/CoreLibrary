@@ -14,6 +14,7 @@
       -->
     <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RunSettingsFilePath>D:\Users\peter\Source\Repos\CoreLibrary\Common.ExtendedObject.Tests\bin\Debug\net9.0\fine-code-coverage\coverage-tool-output\Common.ExtendedObject.Tests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
