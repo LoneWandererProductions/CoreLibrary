@@ -6,6 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Class="Debugger.Trail"
     mc:Ignorable="d"
+    Background="{DynamicResource WindowBackgroundBrush}"
+    Foreground="{DynamicResource TextPrimaryBrush}"
     Title="Trail" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
