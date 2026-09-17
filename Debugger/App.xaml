@@ -4,5 +4,22 @@
              x:ClassModifier="internal"
              StartupUri="Trail.xaml">
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--
+                    Application.Resources is the one place WPF checks as a final fallback for
+                    EVERY DynamicResource/StaticResource lookup across the whole running process -
+                    regardless of which assembly a given Window or UserControl lives in. Putting the
+                    theme here means every dialog (Common.Dialogs, Common.Images, SlimViews.Tooling)
+                    picks it up automatically without needing its own per-file merge, which is what
+                    was actually being reached for by stripping the theme out of Common.Dialogs and
+                    hoping SlimViewer's would "just apply" - that hope is correct, it just needed to
+                    be declared here rather than removed from the individual dialog files (which just
+                    left them with no theme merged in at all, and left two of them - ErrorDialog and
+                    SqlLogin - pointing at a Common.Dialogs theme file that no longer exists).
+                -->
+                <ResourceDictionary Source="pack://application:,,,/Debugger;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
