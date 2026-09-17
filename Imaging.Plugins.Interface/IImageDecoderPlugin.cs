@@ -43,17 +43,21 @@ namespace Imaging.Plugins.Interface
         IReadOnlyCollection<string> SupportedExtensions { get; }
 
         /// <summary>
-        ///     Decode the file at <paramref name="path" /> into a fully independent
-        ///     Bitmap (no lingering reference to the source file or stream - same
-        ///     contract as <c>ImageStream.GetOriginalBitmap</c>).
+        ///     Decode already-read file bytes into a fully independent Bitmap (no
+        ///     lingering reference to the source buffer). Takes the bytes rather
+        ///     than a path on purpose: the caller (ImageStream) already reads the
+        ///     file once to sniff the header via <see cref="CanDecode" /> - passing
+        ///     those same bytes through here means the file is only ever read from
+        ///     disk once per decode, instead of the header-sniff read plus a second,
+        ///     full re-read inside the plugin.
         /// </summary>
-        /// <param name="path">Full path to the file to decode.</param>
+        /// <param name="data">The full file contents, already read into memory.</param>
         /// <returns>The decoded image.</returns>
         /// <exception cref="Exception">
         ///     Throw on failure rather than returning null - the caller logs and
         ///     handles it exactly like a native decode failure.
         /// </exception>
-        Bitmap Decode(string path);
+        Bitmap Decode(byte[] data);
 
         /// <summary>
         /// Determines whether this instance can decode the specified header.

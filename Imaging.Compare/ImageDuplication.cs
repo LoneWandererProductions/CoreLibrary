@@ -47,11 +47,40 @@ namespace Imaging.Compare
         internal static List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions)
         {
+            return folderPath == null
+                ? null
+                : GetDuplicateImages(new[] { folderPath }, checkSubfolders, extensions);
+        }
+
+        /// <summary>
+        ///     Find all duplicate images across one or more folders (and possibly their
+        ///     subfolders), searching the combined pool together - so a duplicate that exists in
+        ///     two different selected folders is still found as a duplicate, not missed by
+        ///     scanning each folder in isolation.
+        /// </summary>
+        /// <param name="folderPaths">The folders to look for duplicates in.</param>
+        /// <param name="checkSubfolders">Whether to look in subfolders too</param>
+        /// <param name="extensions">The extensions.</param>
+        /// <returns>
+        ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
+        /// </returns>
+        internal static List<List<string>>? GetDuplicateImages(IEnumerable<string?> folderPaths,
+            bool checkSubfolders, IEnumerable<string> extensions)
+        {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
 
-            //create Directories
-            var imagePaths = FileHandleSearch.GetFilesByExtensionFullPath(folderPath, extensions, checkSubfolders);
+            var extensionList = extensions.ToList();
+
+            // Same file-gathering step as before, just repeated per selected folder and merged
+            // into one pool - everything from here down (hashing, sorting, grouping) is already
+            // folder-agnostic, it just operates on a flat list of paths.
+            var imagePaths = folderPaths
+                .Where(f => !string.IsNullOrWhiteSpace(f))
+                .SelectMany(f => FileHandleSearch.GetFilesByExtensionFullPath(f, extensionList, checkSubfolders))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
             if (imagePaths.IsNullOrEmpty())
             {
                 return null;

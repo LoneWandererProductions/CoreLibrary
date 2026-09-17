@@ -39,11 +39,37 @@ namespace Imaging.Compare
         internal static List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
             IEnumerable<string> extensions, float threshold)
         {
+            return folderPath == null
+                ? null
+                : GetSimilarImages(new[] { folderPath }, checkSubfolders, extensions, threshold);
+        }
+
+        /// <summary>
+        ///     Find all similar images across one or more folders (and possibly their
+        ///     subfolders), searching the combined pool together - see
+        ///     <see cref="ImageDuplication.GetDuplicateImages(IEnumerable{string?}, bool, IEnumerable{string})" />
+        ///     for why this matters for cross-folder matches.
+        /// </summary>
+        /// <param name="folderPaths">The folders to look for similar images in.</param>
+        /// <param name="checkSubfolders">Whether to look in subfolders too</param>
+        /// <param name="extensions">The extensions.</param>
+        /// <param name="threshold">The Value of differences allowed.</param>
+        /// <returns>
+        ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
+        /// </returns>
+        internal static List<List<string>>? GetSimilarImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
+            IEnumerable<string> extensions, float threshold)
+        {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
 
-            //create Directories
-            var imagePaths = FileHandleSearch.GetFilesByExtensionFullPath(folderPath, extensions, checkSubfolders);
+            var extensionList = extensions.ToList();
+
+            var imagePaths = folderPaths
+                .Where(f => !string.IsNullOrWhiteSpace(f))
+                .SelectMany(f => FileHandleSearch.GetFilesByExtensionFullPath(f, extensionList, checkSubfolders))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
             if (imagePaths.IsNullOrEmpty())
             {

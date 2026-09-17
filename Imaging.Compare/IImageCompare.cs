@@ -30,6 +30,20 @@ namespace Imaging.Compare
             IEnumerable<string> extensions, float threshold);
 
         /// <summary>
+        ///     Find all similar images across one or more folders (and possibly their
+        ///     subfolders), searched together as a single pool.
+        /// </summary>
+        /// <param name="folderPaths">The folders to look for similar images in.</param>
+        /// <param name="checkSubfolders">Whether to look in subfolders too</param>
+        /// <param name="extensions">The extensions.</param>
+        /// <param name="threshold">The Value of differences allowed.</param>
+        /// <returns>
+        ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
+        /// </returns>
+        List<List<string>>? GetSimilarImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
+            IEnumerable<string> extensions, float threshold);
+
+        /// <summary>
         ///     Find all duplicate images in a folder, and possibly subfolders
         /// </summary>
         /// <param name="folderPath">The folder to look for duplicates in</param>
@@ -39,6 +53,19 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
+            IEnumerable<string> extensions);
+
+        /// <summary>
+        ///     Find all duplicate images across one or more folders (and possibly their
+        ///     subfolders), searched together as a single pool.
+        /// </summary>
+        /// <param name="folderPaths">The folders to look for duplicates in.</param>
+        /// <param name="checkSubfolders">Whether to look in subfolders too</param>
+        /// <param name="extensions">The extensions.</param>
+        /// <returns>
+        ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
+        /// </returns>
+        List<List<string>>? GetDuplicateImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
             IEnumerable<string> extensions);
     }
 }

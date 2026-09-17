@@ -48,13 +48,10 @@ namespace Imaging.Plugins
         }
 
         /// <inheritdoc />
-        public Bitmap Decode(string path)
+        public Bitmap Decode(byte[] data)
         {
-            // Read the file into memory since the micro-library expects raw bytes
-            var fileBytes = File.ReadAllBytes(path);
-
             var decoder = new SimpleDecoder();
-            return decoder.DecodeFromBytes(fileBytes, fileBytes.Length);
+            return decoder.DecodeFromBytes(data, data.Length);
         }
     }
 }

@@ -51,13 +51,13 @@ namespace Imaging.Plugins
         }
 
         /// <inheritdoc />
-        public Bitmap Decode(string path)
+        public Bitmap Decode(byte[] data)
         {
-            using var stream = File.OpenRead(path);
+            using var stream = new MemoryStream(data);
 
             if (ReadToken(stream) != "P6")
             {
-                throw new InvalidDataException($"'{path}' is not a binary (P6) PPM file.");
+                throw new InvalidDataException("Not a binary (P6) PPM file.");
             }
 
             var width = int.Parse(ReadToken(stream));
@@ -67,7 +67,7 @@ namespace Imaging.Plugins
             if (maxValue is <= 0 or > 255)
             {
                 throw new NotSupportedException(
-                    $"'{path}' uses max value {maxValue}; only 8-bit-per-channel PPM (1-255) is supported.");
+                    $"Uses max value {maxValue}; only 8-bit-per-channel PPM (1-255) is supported.");
             }
 
             var rgb = new byte[width * height * 3];
@@ -78,7 +78,7 @@ namespace Imaging.Plugins
                 if (n == 0)
                 {
                     throw new EndOfStreamException(
-                        $"'{path}' is truncated: expected {rgb.Length} bytes of pixel data, got {read}.");
+                        $"Truncated: expected {rgb.Length} bytes of pixel data, got {read}.");
                 }
 
                 read += n;

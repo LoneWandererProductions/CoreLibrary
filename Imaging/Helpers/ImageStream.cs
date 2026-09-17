@@ -65,7 +65,11 @@ namespace Imaging.Helpers
                     {
                         Trace.WriteLine($"Decoder found: {plugin.Name}");
 
-                        using var gdiBitmap = plugin.Decode(filePath);
+                        // Pass the bytes already read above rather than the path - this is what
+                        // actually eliminates the double read: it used to be plugin.Decode(filePath),
+                        // which had every plugin re-open and re-read the whole file from disk a
+                        // second time, right after we'd just read it here for the header sniff.
+                        using var gdiBitmap = plugin.Decode(bytes);
 
                         Trace.WriteLine(
                             $"Decoder returns Bitmap: {gdiBitmap.Width}x{gdiBitmap.Height}, " +
@@ -138,7 +142,10 @@ namespace Imaging.Helpers
                 // 1. Ask the plugin registry if any loaded plugin recognizes the TRUE format
                 if (ImageDecoderPluginRegistry.Instance.TryGetDecoder(bytes, out var plugin))
                 {
-                    return plugin.Decode(path);
+                    // Pass the bytes already read above rather than the path - same fix as
+                    // GetBitmapImageFileStreamAsync: this call used to be plugin.Decode(path),
+                    // which had the plugin re-read the whole file from disk a second time.
+                    return plugin.Decode(bytes);
                 }
 
                 // 2. If no plugin claims it, fall back to native GDI+
