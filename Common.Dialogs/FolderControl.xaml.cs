@@ -6,6 +6,7 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -66,14 +67,20 @@ namespace Common.Dialogs
         private void PathDisplay_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _pathBeforeEdit = ViewModel.Paths;
+            ViewModel.LookUp = ViewModel.Paths;
 
-            // Hide the display, show the box
-            PathDisplay.Visibility = Visibility.Collapsed;
+            // Hide the entire border, not just the text block inside it
+            PathDisplayBorder.Visibility = Visibility.Collapsed;
             PathEntry.Visibility = Visibility.Visible;
 
-            // Focus the box and select all text for easy editing
-            PathEntry.Focus();
-            PathEntry.SelectAll();
+            e.Handled = true;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                PathEntry.Focus();
+                Keyboard.Focus(PathEntry);
+                PathEntry.SelectAll();
+            }), System.Windows.Threading.DispatcherPriority.Input);
         }
 
         /// <summary>
@@ -83,9 +90,9 @@ namespace Common.Dialogs
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void PathEntry_LostFocus(object sender, RoutedEventArgs e)
         {
-            // Switch back when clicking away
             PathEntry.Visibility = Visibility.Collapsed;
-            PathDisplay.Visibility = Visibility.Visible;
+            // Show the border again
+            PathDisplayBorder.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -98,26 +105,24 @@ namespace Common.Dialogs
         {
             if (e.Key == Key.Enter)
             {
-                // Execute the GoCommand to navigate if path exists
                 if (ViewModel.GoCommand.CanExecute(null))
                 {
                     ViewModel.GoCommand.Execute(null);
                 }
 
-                // Hide the text box and show the display text block again
                 PathEntry.Visibility = Visibility.Collapsed;
-                PathDisplay.Visibility = Visibility.Visible;
+                // Show the border again
+                PathDisplayBorder.Visibility = Visibility.Visible;
 
                 e.Handled = true;
             }
             else if (e.Key == Key.Escape)
             {
-                // Discard whatever was typed and go back to showing the actual current path -
-                // previously Escape did nothing at all here.
                 ViewModel.LookUp = _pathBeforeEdit ?? ViewModel.Paths;
 
                 PathEntry.Visibility = Visibility.Collapsed;
-                PathDisplay.Visibility = Visibility.Visible;
+                // Show the border again
+                PathDisplayBorder.Visibility = Visibility.Visible;
 
                 e.Handled = true;
             }

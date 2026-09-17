@@ -44,7 +44,14 @@ namespace FileHandler
                 {
                     // Use SendToRecycleBin but consider UIOption.OnlyErrorDialogs
                     // to prevent the "Are you sure?" popups from hanging your logic.
-                    FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                    //
+                    // IMPORTANT: this Shell API call is genuinely synchronous/blocking, and can
+                    // easily take 50-200ms+ per file (Recycle Bin moves go through the Windows
+                    // Shell, which is slow especially with cloud-sync/context-menu extensions
+                    // installed).
+
+                    await Task.Run(() =>
+                        FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin));
                     return true;
                 }
                 catch (IOException ex) when (i < maxTries - 1)

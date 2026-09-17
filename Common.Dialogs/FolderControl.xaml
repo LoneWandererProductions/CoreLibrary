@@ -68,22 +68,28 @@
             </StackPanel>
 
             <!-- Display and input Path -->
-            <Grid Grid.Row="2" VerticalAlignment="Center">
+            <Grid Grid.Row="2" VerticalAlignment="Center" Cursor="Arrow">
                 <TextBox x:Name="PathEntry"
-                         Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="8,6"
-                         Visibility="Collapsed"
-                         LostFocus="PathEntry_LostFocus"
-                         KeyDown="PathEntry_KeyDown" />
-                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
-                        BorderThickness="1" CornerRadius="4">
+             Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
+             Background="{DynamicResource InputBrush}"
+             Foreground="{DynamicResource TextEmphasisBrush}"
+             Padding="8,6"
+             Visibility="Collapsed"
+             LostFocus="PathEntry_LostFocus"
+             KeyDown="PathEntry_KeyDown" />
+
+                <Border x:Name="PathDisplayBorder"
+            Background="{DynamicResource SurfaceBrush}" 
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1" 
+            CornerRadius="4">
                     <TextBlock x:Name="PathDisplay"
-                               Text="{Binding Paths}"
-                               TextTrimming="CharacterEllipsis"
-                               Padding="8,6"
-                               Cursor="IBeam"
-                               ToolTip="Click to edit the path directly"
-                               MouseDown="PathDisplay_MouseDown" />
+                   Text="{Binding Paths}"
+                   TextTrimming="CharacterEllipsis"
+                   Padding="8,6"
+                   Cursor="IBeam"
+                   ToolTip="Click to edit the path directly"
+                   MouseDown="PathDisplay_MouseDown" />
                 </Border>
             </Grid>
 

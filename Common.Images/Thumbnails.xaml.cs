@@ -464,6 +464,17 @@ namespace Common.Images
                 Thb.Children.Remove(checkbox);
             }
 
+            // This id's identity is gone - it must not linger in Selection. Previously this was
+            // never cleaned up here: a checked item that got deleted stayed "checked" forever as
+            // far as Selection was concerned, even though its checkbox/border/image were all gone.
+            // That corrupted every subsequent selection-based operation - most visibly,
+            // IsSelectionEmpty (a plain Selection.Count == 0 check) would incorrectly report
+            // "something is selected" from stale entries alone, so the next single-image delete
+            // (intended as "nothing selected, delete the current image") took the wrong branch:
+            // it tried to delete the stale (already-gone) ids instead, found no valid paths, and
+            // silently did nothing.
+            Selection?.TryRemove(id, out _);
+
             _ = ItemsSource.Remove(id);
 
             _refresh = true;
@@ -626,34 +637,30 @@ namespace Common.Images
                 Thb.Children.Add(exGrid);
 
                 // --- Load images with limited concurrency ---
-                var semaphore = new SemaphoreSlim(4);
-                var tasks = pics.Select(async kv =>
+                // Parallel.ForEachAsync (.NET 6+) is the purpose-built replacement for the old
+                // manual SemaphoreSlim + task-list + Task.WhenAll dance: it caps concurrency via
+                // MaxDegreeOfParallelism, wires cancellation through automatically, and reads as
+                // "run this many at a time" instead of hand-rolled acquire/release/finally
+                // plumbing. Note this doesn't change how many threads a single LoadSingleImage
+                // call occupies while running - that's addressed separately in
+                // ImageStream.GetBitmapImageFileStreamAsync, which now does its file read with
+                // ReadAllBytesAsync instead of a blocking File.ReadAllBytes, so each occupied
+                // thread is held only for the actual decode, not the disk wait too.
+                await Parallel.ForEachAsync(pics, new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = 4,
+                    CancellationToken = token
+                }, async (kv, ct) =>
                 {
                     try
                     {
-                        await semaphore.WaitAsync();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        return; // Gracefully exit without triggering an exception wave
-                    }
-
-                    try
-                    {
-                        if (token.IsCancellationRequested) return;
-                        await LoadSingleImage(kv.Key, kv.Value, exGrid, token, cellSize, thumbWidth);
+                        await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
                     }
                     catch (OperationCanceledException)
                     {
                         // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
                     }
-                    finally
-                    {
-                        semaphore.Release();
-                    }
-                }).ToArray();
-
-                await Task.WhenAll(tasks);
+                });
 
                 ImageLoaded?.Invoke();
             }
@@ -843,24 +850,19 @@ namespace Common.Images
         /// <param name="id">The identifier of the item to select and scroll into view.</param>
         public void SelectAndCenter(int id)
         {
-            // Defer to after the next layout/render pass rather than doing this inline. A plain
-            // synchronous UpdateLayout() call inside CenterOnItem still isn't quite enough on its
-            // own under back-to-back key presses - WPF can apply a ScrollToXOffset request itself
-            // slightly after Arrange, tied to the render pass rather than pure layout, so a second
-            // press arriving before that render tick lands measures off a still-stale position.
-            // Queuing at DispatcherPriority.Loaded guarantees a full Measure/Arrange/Render cycle
-            // has actually completed before we touch anything - this is the standard WPF fix for
-            // "ScrollIntoView / selection only updates every other time" style bugs.
-            Dispatcher.BeginInvoke(new Action(() =>
+            // No longer deferred to DispatcherPriority.Loaded - that was only needed because
+            // CenterOnItem used to measure the target element's already-rendered position via
+            // TransformToAncestor, which could race an in-flight layout/render pass under
+            // back-to-back key presses. Now that CenterOnItem computes the target position
+            // arithmetically instead of measuring anything, there's no render-pipeline race left
+            // to defer around, so this can just run immediately.
+            if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
             {
-                if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
-                {
-                    return;
-                }
+                return;
+            }
 
-                UpdateSelectedBorder(border);
-                CenterOnItem(id);
-            }), DispatcherPriority.Loaded);
+            UpdateSelectedBorder(border);
+            CenterOnItem(id);
         }
 
         /// <summary>
@@ -869,37 +871,79 @@ namespace Common.Images
         /// <param name="id">The ID of the item to center on.</param>
         public void CenterOnItem(int id)
         {
-            if (MainScrollViewer == null || Border == null)
+            if (MainScrollViewer == null) return;
+
+            // Compute the cell's position arithmetically from known grid geometry (column count,
+            // cell size) instead of measuring the already-rendered element via
+            // TransformToAncestor. The measurement approach depended on a layout pass having
+            // actually caught up with any pending change (a previous scroll request, a
+            // border-thickness change from the selection highlight, etc.) before the transform
+            // could be trusted - UpdateLayout() and deferring to DispatcherPriority.Loaded both
+            // helped, but were still fundamentally racing the render pipeline. This calculation
+            // only depends on values that are already known for certain - the id, the grid's
+            // column count (ThumbWidth), and the uniform cell size (ThumbCellSize), the same
+            // values LoadSingleImage itself used to place the cell in the first place - so there's
+            // nothing left to race.
+            var columns = Math.Max(1, ThumbWidth);
+            var cellSize = ThumbCellSize > 0 ? ThumbCellSize : 100;
+
+            var row = id / columns;
+            var col = id % columns;
+
+            var itemX = col * cellSize;
+            var itemY = row * cellSize;
+
+            var centerOffsetX = itemX - MainScrollViewer.ViewportWidth / 2 + cellSize / 2.0;
+            var centerOffsetY = itemY - MainScrollViewer.ViewportHeight / 2 + cellSize / 2.0;
+
+            MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
+            MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
+        }
+
+        /// <summary>
+        ///     Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
+        ///     on a predicate over each item's file path, without touching <see cref="ItemsSource" />
+        ///     or re-decoding/reloading anything - this is deliberately just a Visibility toggle on
+        ///     cells that already exist, so it stays cheap even on every keystroke.
+        ///     Note: cells live in a fixed Grid with an explicit Row/Column per id (not a reflowing
+        ///     panel like WrapPanel), so hiding a cell leaves a gap at its original position rather
+        ///     than repacking the grid - a filtered view will look sparse rather than tightly packed.
+        /// </summary>
+        /// <param name="predicate">
+        ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
+        ///     <c>null</c> to clear the filter and show everything again.
+        /// </param>
+        public void ApplyFilter(Func<string, bool>? predicate)
+        {
+            if (Border == null || ItemsSource == null) return;
+
+            foreach (var (id, border) in Border)
             {
-                return;
+                if (border?.Parent is not UIElement cellContainer) continue;
+
+                var isVisible = predicate == null ||
+                                 (ItemsSource.TryGetValue(id, out var path) &&
+                                  !string.IsNullOrEmpty(path) && predicate(path));
+
+                cellContainer.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
             }
+        }
 
-            // Check if the item with the specified ID exists
-            if (Border.TryGetValue(id, out var targetElement) && targetElement != null)
-            {
-                // ScrollToHorizontalOffset/ScrollToVerticalOffset don't take effect synchronously -
-                // they just request a layout pass. If this method gets called again (e.g. the next
-                // arrow-key press) before that pass has actually run, TransformToAncestor below would
-                // measure off the *old*, not-yet-scrolled position, so the target would land one item
-                // short - it only ever "catches up" once a layout pass finally squeezes in, which
-                // looks like the highlight/scroll only updating every other keypress. Forcing the
-                // layout to flush here guarantees we always measure from where the view really is.
-                MainScrollViewer.UpdateLayout();
+        /// <summary>
+        ///     Gets the ids of thumbnails currently showing (i.e. not hidden by
+        ///     <see cref="ApplyFilter" />), in ascending order. Used to keep keyboard/button
+        ///     Next/Previous navigation consistent with what's actually on screen while a filter is
+        ///     active, instead of stepping through items the user can't even see.
+        /// </summary>
+        public List<int> GetVisibleIds()
+        {
+            if (Border == null) return [];
 
-                // Get the position of the target element relative to the ScrollViewer
-                var itemTransform = targetElement.TransformToAncestor(MainScrollViewer);
-                var itemPosition = itemTransform.Transform(new Point(0, 0));
-
-                // Calculate the offsets needed to center the item
-                var centerOffsetX = itemPosition.X - MainScrollViewer.ViewportWidth / 2 +
-                                    targetElement.RenderSize.Width / 2;
-                var centerOffsetY = itemPosition.Y - MainScrollViewer.ViewportHeight / 2 +
-                                    targetElement.RenderSize.Height / 2;
-
-                // Set the ScrollViewer's offset to center the item
-                MainScrollViewer.ScrollToHorizontalOffset(centerOffsetX);
-                MainScrollViewer.ScrollToVerticalOffset(centerOffsetY);
-            }
+            return Border
+                .Where(kvp => kvp.Value?.Parent is UIElement { Visibility: Visibility.Visible })
+                .Select(kvp => kvp.Key)
+                .OrderBy(id => id)
+                .ToList();
         }
 
         /// <summary>

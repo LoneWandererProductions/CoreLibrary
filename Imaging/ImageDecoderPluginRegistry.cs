@@ -42,6 +42,17 @@ namespace Imaging
             new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
+        /// Encoder plugins by extension. Lives in this same class (rather than a separate
+        /// registry) specifically so a plugin DLL only ever gets scanned/loaded once - loading it
+        /// a second time through a second AssemblyLoadContext just to check for encoders would
+        /// double the load-time cost and give the two halves distinct CLR type identities for no
+        /// benefit, since every plugin type here is already being inspected for IImageDecoderPlugin
+        /// anyway.
+        /// </summary>
+        private readonly Dictionary<string, IImageEncoderPlugin> _encodersByExtension =
+            new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// The plugins
         /// </summary>
         private readonly List<IImageDecoderPlugin> _plugins = new();
@@ -127,6 +138,41 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Registers an encoder plugin instance directly, mirroring <see cref="Register(IImageDecoderPlugin)" />
+        /// for the write side. Also usable directly for tests/explicit wiring.
+        /// </summary>
+        public void RegisterEncoder(IImageEncoderPlugin plugin)
+        {
+            ArgumentNullException.ThrowIfNull(plugin);
+
+            foreach (var ext in plugin.SupportedExtensions)
+            {
+                var normalized = NormalizeExtension(ext);
+                _encodersByExtension[normalized] = plugin;
+
+                if (!ImagingResources.Appendix.Contains(normalized, StringComparer.OrdinalIgnoreCase))
+                {
+                    ImagingResources.Appendix.Add(normalized);
+                }
+            }
+
+            Trace.WriteLine($"[ImageDecoderPluginRegistry] Loaded encoder '{plugin.Name}'");
+        }
+
+        /// <summary>
+        /// Looks up whether a plugin can encode/save the given extension - the write-side
+        /// counterpart to <see cref="TryGetDecoder" />, used by the save path when the target
+        /// extension isn't one of the built-in GDI+ formats.
+        /// </summary>
+        /// <param name="extension">The target file extension (with or without the leading dot).</param>
+        /// <param name="plugin">The encoder plugin, if one is registered for this extension.</param>
+        /// <returns><c>true</c> if a plugin encoder was found; otherwise, <c>false</c>.</returns>
+        public bool TryGetEncoder(string extension, out IImageEncoderPlugin? plugin)
+        {
+            return _encodersByExtension.TryGetValue(NormalizeExtension(extension), out plugin);
+        }
+
+        /// <summary>
         /// Looks up whether a plugin handles <paramref name="extension" />.
         /// </summary>
         /// <param name="headerBytes">The header bytes.</param>
@@ -187,18 +233,35 @@ namespace Imaging
                     {
                         IsClass: true,
                         IsAbstract: false
-                    } ||
-                    !typeof(IImageDecoderPlugin).IsAssignableFrom(type))
+                    })
+                {
+                    continue;
+                }
+
+                var isDecoder = typeof(IImageDecoderPlugin).IsAssignableFrom(type);
+                var isEncoder = typeof(IImageEncoderPlugin).IsAssignableFrom(type);
+
+                // Neither interface implemented - not a plugin type we care about.
+                if (!isDecoder && !isEncoder)
                 {
                     continue;
                 }
 
                 try
                 {
-                    if (Activator.CreateInstance(type)
-                        is IImageDecoderPlugin plugin)
+                    // Create once and check both interfaces on the same instance - a single
+                    // class implementing both decode and encode (a format's full round-trip)
+                    // shouldn't be constructed twice just because it fits two roles.
+                    var instance = Activator.CreateInstance(type);
+
+                    if (instance is IImageDecoderPlugin decoderPlugin)
                     {
-                        Register(plugin);
+                        Register(decoderPlugin);
+                    }
+
+                    if (instance is IImageEncoderPlugin encoderPlugin)
+                    {
+                        RegisterEncoder(encoderPlugin);
                     }
                 }
                 catch (Exception ex) when (

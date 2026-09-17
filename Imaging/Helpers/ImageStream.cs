@@ -45,12 +45,17 @@ namespace Imaging.Helpers
         {
             if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath)) return null;
 
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 try
                 {
-                    // Read header bytes to check for plugin support
-                    var bytes = File.ReadAllBytes(filePath);
+                    // Read header bytes to check for plugin support. This used to be
+                    // File.ReadAllBytes (synchronous) inside Task.Run - meaning the thread-pool
+                    // thread was held hostage for the entire disk read, not just the decode. With
+                    // ReadAllBytesAsync, the actual I/O wait happens via the OS's async I/O
+                    // completion mechanism and doesn't occupy a thread at all; the thread is only
+                    // needed again once bytes are ready, for the (much shorter) CPU-bound decode.
+                    var bytes = await File.ReadAllBytesAsync(filePath);
                     var headerLen = Math.Min(16, bytes.Length);
                     var header = new byte[headerLen];
                     Array.Copy(bytes, header, headerLen);
