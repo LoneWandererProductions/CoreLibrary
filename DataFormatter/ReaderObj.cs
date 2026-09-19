@@ -29,8 +29,10 @@ namespace DataFormatter
         public static ObjFile? ReadObj(string filePath)
         {
             var lst = ReadText.ReadFile(filePath);
-
-            if (lst.Count == 0) return null;
+            if (lst == null)
+            {
+                return null;
+            }
 
             var vectors = new List<TertiaryVector>();
             var faces = new List<TertiaryFace>();

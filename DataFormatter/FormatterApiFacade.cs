@@ -61,7 +61,7 @@ namespace DataFormatter
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>the values as String[]. Can return null.</returns>
-        public static IEnumerable<string> ReadFile(string path) => ReadText.ReadFile(path);
+        public static IEnumerable<string>? ReadFile(string path) => ReadText.ReadFile(path);
 
         /// <summary>
         /// Writes the file.
