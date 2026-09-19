@@ -114,7 +114,8 @@ namespace Common.Dialogs
                 catch
                 {
                     // Fallback to native MessageBox if custom XAML or resource initialization fails
-                    MessageBox.Show($"{safeMessage}\n\n{safeDetails}", safeTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"{safeMessage}\n\n{safeDetails}", safeTitle, MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
 
@@ -155,11 +156,7 @@ namespace Common.Dialogs
                 folder = Directory.GetCurrentDirectory();
             }
 
-            var openFile = new OpenFileDialog
-            {
-                Filter = NormalizeFilter(appendage),
-                InitialDirectory = folder
-            };
+            var openFile = new OpenFileDialog { Filter = NormalizeFilter(appendage), InitialDirectory = folder };
 
             if (openFile.ShowDialog() != true)
             {
@@ -184,9 +181,7 @@ namespace Common.Dialogs
 
             var openFile = new OpenFileDialog
             {
-                Filter = NormalizeFilter(appendage),
-                InitialDirectory = folder,
-                Multiselect = true
+                Filter = NormalizeFilter(appendage), InitialDirectory = folder, Multiselect = true
             };
 
             if (openFile.ShowDialog() != true)
@@ -214,9 +209,7 @@ namespace Common.Dialogs
 
             var saveFile = new SaveFileDialog
             {
-                Filter = NormalizeFilter(appendage),
-                InitialDirectory = folder,
-                OverwritePrompt = true
+                Filter = NormalizeFilter(appendage), InitialDirectory = folder, OverwritePrompt = true
             };
 
             if (saveFile.ShowDialog() != true)

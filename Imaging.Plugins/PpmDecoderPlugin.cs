@@ -38,7 +38,7 @@ namespace Imaging.Plugins
         /// <inheritdoc />
         public bool CanDecode(byte[] header)
         {
-            // A binary PPM file must be at least 3 bytes long and start with "P6" 
+            // A binary PPM file must be at least 3 bytes long and start with "P6"
             // followed by a whitespace character (space, tab, newline, or carriage return).
             if (header == null || header.Length < 3)
             {

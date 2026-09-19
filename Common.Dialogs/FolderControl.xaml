@@ -27,11 +27,11 @@
                         Command="{Binding DesktopCommand}" ToolTip="Jump to the Desktop folder" />
                 <Button Content="💽  This PC"
                         Command="{Binding RootCommand}" ToolTip="Jump to the drive root" />
-                <Button Content="📄  Documents" 
+                <Button Content="📄  Documents"
                         Command="{Binding DocsCommand}" ToolTip="Jump to Documents" />
-                <Button Content="👤  Personal" 
+                <Button Content="👤  Personal"
                         Command="{Binding PersonalCommand}" ToolTip="Jump to your user profile folder" />
-                <Button Content="🖼️  Pictures" 
+                <Button Content="🖼️  Pictures"
                         Command="{Binding PicturesCommand}" ToolTip="Jump to Pictures" />
                 <Separator Margin="4,8" />
                 <Button Content="➕  New Folder"
@@ -55,11 +55,11 @@
 
             <!-- Navigation buttons -->
             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Button Content="◀"  Command="{Binding BackCommand}"
+                <Button Content="◀" Command="{Binding BackCommand}"
                         ToolTip="Back (Alt+Left)" Margin="0,0,4,0" />
                 <Button Content="▶" Command="{Binding ForwardCommand}"
                         ToolTip="Forward (Alt+Right)" Margin="0,0,4,0" />
-                <Button Content="▲ Up"  Command="{Binding UpCommand}"
+                <Button Content="▲ Up" Command="{Binding UpCommand}"
                         ToolTip="Up to parent folder (Backspace)" Margin="0,0,10,0" />
                 <Button Content="Go" Command="{Binding GoCommand}"
                         ToolTip="Navigate to the typed path (Enter)" Margin="0,0,4,0" />
@@ -70,26 +70,26 @@
             <!-- Display and input Path -->
             <Grid Grid.Row="2" VerticalAlignment="Center" Cursor="Arrow">
                 <TextBox x:Name="PathEntry"
-             Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
-             Background="{DynamicResource InputBrush}"
-             Foreground="{DynamicResource TextEmphasisBrush}"
-             Padding="8,6"
-             Visibility="Collapsed"
-             LostFocus="PathEntry_LostFocus"
-             KeyDown="PathEntry_KeyDown" />
+                         Text="{Binding LookUp, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{DynamicResource InputBrush}"
+                         Foreground="{DynamicResource TextEmphasisBrush}"
+                         Padding="8,6"
+                         Visibility="Collapsed"
+                         LostFocus="PathEntry_LostFocus"
+                         KeyDown="PathEntry_KeyDown" />
 
                 <Border x:Name="PathDisplayBorder"
-            Background="{DynamicResource SurfaceBrush}" 
-            BorderBrush="{DynamicResource BorderBrush}"
-            BorderThickness="1" 
-            CornerRadius="4">
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4">
                     <TextBlock x:Name="PathDisplay"
-                   Text="{Binding Paths}"
-                   TextTrimming="CharacterEllipsis"
-                   Padding="8,6"
-                   Cursor="IBeam"
-                   ToolTip="Click to edit the path directly"
-                   MouseDown="PathDisplay_MouseDown" />
+                               Text="{Binding Paths}"
+                               TextTrimming="CharacterEllipsis"
+                               Padding="8,6"
+                               Cursor="IBeam"
+                               ToolTip="Click to edit the path directly"
+                               MouseDown="PathDisplay_MouseDown" />
                 </Border>
             </Grid>
 

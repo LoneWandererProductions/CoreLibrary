@@ -85,14 +85,16 @@ namespace Imaging.Gifs
                     var height = gifImage.Height;
 
                     // Add 'using' so the master canvas is destroyed when we are done
-                    using var masterCanvas = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    using var masterCanvas =
+                        new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                     using var g = Graphics.FromImage(masterCanvas);
 
                     g.Clear(System.Drawing.Color.Gray);
 
                     var disposalProperty = gifImage.GetPropertyItem(0x5100);
 
-                    if(disposalProperty == null || disposalProperty.Value == null || disposalProperty.Value.Length < frameCount * 4)
+                    if (disposalProperty == null || disposalProperty.Value == null ||
+                        disposalProperty.Value.Length < frameCount * 4)
                     {
                         throw new InvalidDataException("GIF does not contain valid disposal method data.");
                     }
@@ -123,6 +125,7 @@ namespace Imaging.Gifs
                     {
                         frame?.Dispose();
                     }
+
                     frames.Clear();
 
                     Trace.WriteLine($"Error splitting GIF: {ex.Message}");

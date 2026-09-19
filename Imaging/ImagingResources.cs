@@ -353,7 +353,7 @@ namespace Imaging
         ///     to actually notice when it changes. A plain List gives no such notification, so a
         ///     ComboBox already bound to it before a plugin registers would just silently go stale.
         /// </summary>
-        public static readonly ObservableCollection<string> Appendix =
+        public static readonly ObservableCollection<string> Appendix = 
 
         [
             JpgExt,

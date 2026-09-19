@@ -486,7 +486,7 @@ namespace Common.Images
         private async Task OnItemsSourceChanged()
         {
             // 1. Signal cancellation to the PREVIOUS run
-            _loadingCts?.Cancel();
+            await _loadingCts?.CancelAsync();
 
             // 2. WAIT for the previous run to finish or acknowledge cancellation
             // This prevents "Double-Loading" and collection collisions
@@ -560,7 +560,7 @@ namespace Common.Images
             if (ItemsSource?.Any() != true) return;
 
             // 1. Manage the internal CTS
-            _cancellationTokenSource?.Cancel();
+            await _cancellationTokenSource?.CancelAsync();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -646,21 +646,18 @@ namespace Common.Images
                 // ImageStream.GetBitmapImageFileStreamAsync, which now does its file read with
                 // ReadAllBytesAsync instead of a blocking File.ReadAllBytes, so each occupied
                 // thread is held only for the actual decode, not the disk wait too.
-                await Parallel.ForEachAsync(pics, new ParallelOptions
-                {
-                    MaxDegreeOfParallelism = 4,
-                    CancellationToken = token
-                }, async (kv, ct) =>
-                {
-                    try
+                await Parallel.ForEachAsync(pics,
+                    new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = token }, async (kv, ct) =>
                     {
-                        await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
-                    }
-                });
+                        try
+                        {
+                            await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
+                        }
+                    });
 
                 ImageLoaded?.Invoke();
             }
@@ -913,19 +910,64 @@ namespace Common.Images
         ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
         ///     <c>null</c> to clear the filter and show everything again.
         /// </param>
+        /// <summary>
+        ///     Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
+        ///     on a predicate over each item's file path, without touching <see cref="ItemsSource" />
+        ///     or re-decoding/reloading anything - this is deliberately just Visibility + a
+        ///     Grid.Row/Column reassignment on cells that already exist, so it stays cheap even on
+        ///     every keystroke. Matching cells are packed to the front (row-major, same order the
+        ///     grid was originally filled in) rather than left sitting at their original positions
+        ///     with gaps where non-matches used to be - clearing the filter (predicate: null)
+        ///     restores everyone to their original position.
+        /// </summary>
+        /// <param name="predicate">
+        ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
+        ///     <c>null</c> to clear the filter and show everything again.
+        /// </param>
         public void ApplyFilter(Func<string, bool>? predicate)
         {
             if (Border == null || ItemsSource == null) return;
 
-            foreach (var (id, border) in Border)
+            // Same column count the grid was originally built with (see LoadSingleImage's own
+            // Grid.SetRow(cellContainer, key / thumbWidth) / SetColumn(... key % thumbWidth)) -
+            // reusing it here keeps a reflowed filtered view laid out exactly like the original.
+            var totalColumns = Thb.Children.OfType<Grid>().FirstOrDefault()?.ColumnDefinitions.Count ?? 0;
+
+            // Stable original order (ids were assigned sequentially when the grid was built).
+            var orderedIds = Border.Keys.OrderBy(id => id).ToList();
+
+            var visibleIds = predicate == null
+                ? orderedIds
+                : orderedIds.Where(id =>
+                    ItemsSource.TryGetValue(id, out var path) &&
+                    !string.IsNullOrEmpty(path) &&
+                    predicate(path)).ToList();
+
+            var visibleSet = new HashSet<int>(visibleIds);
+            var position = 0;
+
+            foreach (var id in orderedIds)
             {
-                if (border?.Parent is not UIElement cellContainer) continue;
+                if (!Border.TryGetValue(id, out var border) || border?.Parent is not UIElement cellContainer)
+                {
+                    continue;
+                }
 
-                var isVisible = predicate == null ||
-                                 (ItemsSource.TryGetValue(id, out var path) &&
-                                  !string.IsNullOrEmpty(path) && predicate(path));
+                if (!visibleSet.Contains(id))
+                {
+                    cellContainer.Visibility = Visibility.Collapsed;
+                    continue;
+                }
 
-                cellContainer.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+                cellContainer.Visibility = Visibility.Visible;
+
+                if (totalColumns > 0)
+                {
+                    Grid.SetRow(cellContainer, position / totalColumns);
+                    Grid.SetColumn(cellContainer, position % totalColumns);
+                }
+
+                position++;
             }
         }
 
@@ -937,7 +979,9 @@ namespace Common.Images
         /// </summary>
         public List<int> GetVisibleIds()
         {
-            if (Border == null) return [];
+            if (Border == null) return
+            []
+            ;
 
             return Border
                 .Where(kvp => kvp.Value?.Parent is UIElement { Visibility: Visibility.Visible })

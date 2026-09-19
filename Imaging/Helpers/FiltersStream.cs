@@ -206,7 +206,7 @@ namespace Imaging.Helpers
         ///     Optional bias added to filtered value (default 0.0).
         /// </param>
         /// <returns>A new Bitmap containing the filtered image.</returns>
-        private static Bitmap? ApplyFilter(Image? sourceBitmap, double[,]? filterMatrix, double factor = 1.0,
+        private static Bitmap ApplyFilter(Image? sourceBitmap, double[,]? filterMatrix, double factor = 1.0,
             double bias = 0.0)
         {
             // Convert source to unmanaged buffer for fast pixel access
@@ -330,7 +330,7 @@ namespace Imaging.Helpers
                     {
                         for (var i = -1; i <= 1; i++)
                         {
-                            var (r, g, b, a) = sourceBuffer.GetPixel(x + i, y + j);
+                            var (r, _, _, _) = sourceBuffer.GetPixel(x + i, y + j);
 
                             int grayValue = r; // grayscale
 

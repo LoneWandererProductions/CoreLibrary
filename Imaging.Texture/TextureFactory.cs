@@ -251,5 +251,96 @@ namespace Imaging.Texture
                 activeConfig.VoronoiGridSize,
                 fillArea);
         }
+
+        /// <summary>
+        /// Generates a directional brushed steel texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>
+        /// The generated raw texture buffer.
+        /// </returns>
+        public static RawTextureBuffer? GenerateSteel(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetSteelConfig();
+
+            return TextureMathEngine.GenerateBrushedSteel(
+                width, height, noiseGen, 255,
+                activeConfig.TurbulenceSize, 2.0,
+                activeConfig.CenterRgb[0], activeConfig.CenterRgb[1], activeConfig.CenterRgb[2],
+                activeConfig.EdgeRgb[0], activeConfig.EdgeRgb[1], activeConfig.EdgeRgb[2]
+            );
+        }
+
+        /// <summary>
+        /// Generates a high-gloss latex texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>
+        /// The generated raw texture buffer.
+        /// </returns>
+        public static RawTextureBuffer? GenerateLatex(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetLatexConfig();
+
+            return TextureMathEngine.GenerateLatex(
+                width, height, noiseGen, 255,
+                activeConfig.TurbulenceSize,
+                activeConfig.Persistence,
+                activeConfig.CenterRgb[0], activeConfig.CenterRgb[1], activeConfig.CenterRgb[2],
+                activeConfig.EdgeRgb[0], activeConfig.EdgeRgb[1], activeConfig.EdgeRgb[2]
+            );
+        }
+
+        /// <summary>
+        /// Generates a pebbled organic leather texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>
+        /// The generated raw texture buffer.
+        /// </returns>
+        public static RawTextureBuffer? GenerateLeather(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetLeatherConfig();
+
+            return TextureMathEngine.GenerateLeather(
+                width, height, noiseGen,
+                activeConfig.CellSize, 255, activeConfig.WarpStrength,
+                activeConfig.EdgeRgb[0], activeConfig.EdgeRgb[1], activeConfig.EdgeRgb[2],
+                activeConfig.CenterRgb[0], activeConfig.CenterRgb[1], activeConfig.CenterRgb[2]
+            );
+        }
+
+        /// <summary>
+        /// Generates a high polished chrome steel texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>
+        /// The generated raw texture buffer.
+        /// </returns>
+        public static RawTextureBuffer? GeneratePolishedSteel(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetPolishedSteelConfig();
+
+            return TextureMathEngine.GeneratePolishedSteel(
+                width, height, noiseGen, 255,
+                activeConfig.Persistence, activeConfig.WarpScale, activeConfig.WarpStrength
+            );
+        }
     }
 }

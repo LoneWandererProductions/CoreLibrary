@@ -256,6 +256,7 @@ namespace Imaging.Compare
                         // j <= i: every unordered pair is only ever checked once,
                         // from whichever side visits it second.
                         if (j <= i) continue;
+
                         if (items[i].Equals(items[j])) Union(i, j);
                     }
                 }

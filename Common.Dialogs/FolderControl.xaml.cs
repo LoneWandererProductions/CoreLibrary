@@ -148,19 +148,19 @@ namespace Common.Dialogs
                     break;
 
                 case Key.Left when Keyboard.Modifiers == ModifierKeys.Alt &&
-                                    ViewModel.BackCommand.CanExecute(null):
+                                   ViewModel.BackCommand.CanExecute(null):
                     ViewModel.BackCommand.Execute(null);
                     e.Handled = true;
                     break;
 
                 case Key.Right when Keyboard.Modifiers == ModifierKeys.Alt &&
-                                     ViewModel.ForwardCommand.CanExecute(null):
+                                    ViewModel.ForwardCommand.CanExecute(null):
                     ViewModel.ForwardCommand.Execute(null);
                     e.Handled = true;
                     break;
 
                 case Key.Up when Keyboard.Modifiers == ModifierKeys.Alt &&
-                                  ViewModel.UpCommand.CanExecute(null):
+                                 ViewModel.UpCommand.CanExecute(null):
                     // Alt+Up is the other very common "go up" convention (used alongside Backspace).
                     ViewModel.UpCommand.Execute(null);
                     e.Handled = true;

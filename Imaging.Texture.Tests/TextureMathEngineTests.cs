@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Texture
- * FILE:        TextureMathEngineTests.cs
+ * FILE:        Imaging.Texture.Tests.cs
  * PURPOSE:     Mostly visual tests for the texture generation methods in the TextureMathEngine class.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -256,6 +256,67 @@ namespace Imaging.Texture.Tests
             var buffer =
                 TextureFactory.GenerateStoneTexture(TestWidth, TestHeight, _noiseGenerator, testConfig, fillArea: true);
             SaveBufferToImage(buffer, "17_DirectionalStone_Solid_16.png");
+        }
+
+        [TestMethod]
+        public void GenerateGenerateCobblestone_VisualTest()
+        {
+            // By setting fillArea to false, the deep recesses are dropped to Alpha 0
+            var buffer = TextureFactory.GenerateCobblestone(TestWidth, TestHeight);
+            SaveBufferToImage(buffer, "18_Cobblestone.png");
+        }
+
+
+        /// <summary>
+        /// Generates the brushed steel visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateSteel_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateSteel(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "19_BrushedSteel.png");
+        }
+
+        /// <summary>
+        /// Generates the default and custom base color latex visual tests.
+        /// </summary>
+        [TestMethod]
+        public void GenerateLatex_VisualTest()
+        {
+            // Default dark latex
+            var buffer = TextureFactory.GenerateLatex(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "20_Latex_Default.png");
+
+            // Custom base color test (Red Latex)
+            var redLatexConfig = TextureConstants.GetCustomLatexConfig(180, 15, 30);
+            var redBuffer = TextureFactory.GenerateLatex(TestWidth, TestHeight, _noiseGenerator, redLatexConfig);
+            SaveBufferToImage(redBuffer, "20_Latex_Red.png");
+        }
+
+        /// <summary>
+        /// Generates the default brown and custom tan leather visual tests.
+        /// </summary>
+        [TestMethod]
+        public void GenerateLeather_VisualTest()
+        {
+            // Default dark brown leather
+            var buffer = TextureFactory.GenerateLeather(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "21_Leather_Default.png");
+
+            // Custom base color test (Tan Leather)
+            var tanConfig = TextureConstants.GetCustomLeatherConfig(180, 120, 70);
+            var tanBuffer = TextureFactory.GenerateLeather(TestWidth, TestHeight, _noiseGenerator, tanConfig);
+            SaveBufferToImage(tanBuffer, "21_Leather_Tan.png");
+        }
+
+        /// <summary>
+        /// Generates the high polished chrome steel visual test.
+        /// </summary>
+        [TestMethod]
+        public void GeneratePolishedSteel_VisualTest()
+        {
+            var buffer = TextureFactory.GeneratePolishedSteel(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "22_PolishedSteel.png");
         }
 
         /// <summary>

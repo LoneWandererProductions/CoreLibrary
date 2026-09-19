@@ -47,62 +47,64 @@
             </Grid.ColumnDefinitions>
 
             <!-- Visual Error Badge -->
-            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16" Background="#3A1C1C" Margin="0,0,12,0" VerticalAlignment="Top">
+            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16" Background="#3A1C1C" Margin="0,0,12,0"
+                    VerticalAlignment="Top">
                 <TextBlock Text="⚠️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
 
             <!-- Header Text Stack -->
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <TextBox x:Name="ErrorTitleText" 
+                <TextBox x:Name="ErrorTitleText"
                          Style="{StaticResource SelectableTextStyle}"
-                         FontWeight="Bold" 
-                         FontSize="15" 
+                         FontWeight="Bold"
+                         FontSize="15"
                          Foreground="#FF6B6B" />
-                <TextBox x:Name="ErrorSourceText" 
+                <TextBox x:Name="ErrorSourceText"
                          Style="{StaticResource SelectableTextStyle}"
-                         FontSize="11" 
-                         Foreground="#AAAAAA" 
+                         FontSize="11"
+                         Foreground="#AAAAAA"
                          Margin="0,2,0,0" />
             </StackPanel>
         </Grid>
 
         <!-- Primary Error Message -->
-        <TextBox x:Name="ErrorMessageText" 
-                 Grid.Row="1" 
+        <TextBox x:Name="ErrorMessageText"
+                 Grid.Row="1"
                  Style="{StaticResource SelectableTextStyle}"
-                 FontSize="13" 
-                 Margin="0,0,0,12" 
+                 FontSize="13"
+                 Margin="0,0,0,12"
                  MaxHeight="160" />
 
         <!-- Collapsible Exception / StackTrace Details -->
-        <Expander x:Name="DetailsExpander" 
-                  Header="Details" 
-                  Grid.Row="2" 
+        <Expander x:Name="DetailsExpander"
+                  Header="Details"
+                  Grid.Row="2"
                   Margin="0,0,0,16">
-            <Border Background="#1A1A1A" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,8,0,0">
-                <TextBox x:Name="ErrorDetailsText" 
+            <Border Background="#1A1A1A" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="8"
+                    Margin="0,8,0,0">
+                <TextBox x:Name="ErrorDetailsText"
                          Style="{StaticResource SelectableTextStyle}"
-                         FontFamily="Consolas, Courier New, monospace" 
-                         FontSize="11" 
-                         Foreground="#CCCCCC" 
+                         FontFamily="Consolas, Courier New, monospace"
+                         FontSize="11"
+                         Foreground="#CCCCCC"
                          MaxHeight="180" />
             </Border>
         </Expander>
 
         <!-- Action Bar -->
         <Grid Grid.Row="3">
-            <Button Content="📋 Copy Details" 
-                    HorizontalAlignment="Left" 
-                    Padding="12,5" 
-                    Click="CopyButton_Click" 
+            <Button Content="📋 Copy Details"
+                    HorizontalAlignment="Left"
+                    Padding="12,5"
+                    Click="CopyButton_Click"
                     ToolTip="Copy full error information to system clipboard" />
 
-            <Button Content="OK" 
-                    HorizontalAlignment="Right" 
-                    Width="85" 
-                    Padding="0,5" 
-                    IsDefault="True" 
-                    IsCancel="True" 
+            <Button Content="OK"
+                    HorizontalAlignment="Right"
+                    Width="85"
+                    Padding="0,5"
+                    IsDefault="True"
+                    IsCancel="True"
                     Click="CloseButton_Click" />
         </Grid>
     </Grid>

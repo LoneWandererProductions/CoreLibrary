@@ -204,8 +204,8 @@ namespace Imaging
             }
             catch (Exception ex) when (
                 ex is BadImageFormatException or
-                FileLoadException or
-                IOException)
+                    FileLoadException or
+                    IOException)
             {
                 Trace.WriteLine(
                     $"[ImageDecoderPluginRegistry] Could not load '{dllPath}': {ex}");
@@ -266,7 +266,7 @@ namespace Imaging
                 }
                 catch (Exception ex) when (
                     ex is MissingMethodException or
-                    TargetInvocationException)
+                        TargetInvocationException)
                 {
                     Trace.WriteLine(
                         $"[ImageDecoderPluginRegistry] " +
