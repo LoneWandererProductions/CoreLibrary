@@ -46,7 +46,7 @@ namespace Core.Viewer
         /// <summary>
         /// The selected analyzer
         /// </summary>
-        private ICodeAnalyzer _selectedAnalyzer;
+        private ICodeAnalyzer? _selectedAnalyzer;
 
         /// <summary>
         /// The analyzers
@@ -83,7 +83,7 @@ namespace Core.Viewer
         /// <summary>
         /// The analyzer currently selected by the user.
         /// </summary>
-        public ICodeAnalyzer SelectedAnalyzer
+        public ICodeAnalyzer? SelectedAnalyzer
         {
             get => _selectedAnalyzer;
             set => SetProperty(ref _selectedAnalyzer, value);

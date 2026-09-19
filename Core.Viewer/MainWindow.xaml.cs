@@ -45,15 +45,31 @@ namespace Core.Viewer
         {
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
 
-            // Ignore clicks on the padding space next to the columns or columns without a Tag
-            if (headerClicked == null ||
-                headerClicked.Role == GridViewColumnHeaderRole.Padding ||
-                headerClicked.Column.Header == null)
+            // Ignore clicks on the padding space next to the columns or columns without a Header
+            if (headerClicked?.Column.Header == null ||
+                headerClicked.Role == GridViewColumnHeaderRole.Padding)
             {
                 return;
             }
 
-            var sortBy = headerClicked.Column.Header.ToString();
+            var header = headerClicked.Column.Header.ToString();
+
+            // Map the UI header string to the actual nested property path on DiagnosticItemViewModel
+            var sortBy = header switch
+            {
+                "Status" => "SeveritySymbol",
+                "Level" => "Level",
+                "Analyzer" => "Name",
+                "File" => "FileName",
+                "FilePath" => "FilePath",
+                "Message" => "Message",
+                "LineNumber" => "LineNumber",
+                "Source" => "Source",
+                _ => null // Ignore the "Actions" column
+            };
+
+            // If it's a column we can't sort by (like Actions), do nothing
+            if (string.IsNullOrEmpty(sortBy)) return;
 
             ListSortDirection direction;
             if (headerClicked != _lastHeaderClicked)

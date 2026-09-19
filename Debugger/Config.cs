@@ -28,7 +28,7 @@ namespace Debugger
         /// <summary>
         ///     Gets or sets the debug path.
         /// </summary>
-        public string DebugPath
+        public string? DebugPath
         {
             get => DebugRegister.DebugPath;
             set

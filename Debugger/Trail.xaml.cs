@@ -7,6 +7,7 @@
  */
 
 // ReSharper disable MemberCanBeInternal
+// ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Diagnostics;
@@ -42,7 +43,7 @@ namespace Debugger
         /// <summary>
         /// Dispatcher timer used to periodically poll the log source for updates.
         /// </summary>
-        private DispatcherTimer _dispatcherTimer;
+        private DispatcherTimer? _dispatcherTimer;
 
         /// <summary>
         /// Tracks the last known line count to avoid re-appending duplicate entries.
@@ -112,7 +113,7 @@ namespace Debugger
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        private void DispatcherTimer_Tick(object? sender, EventArgs e)
         {
             var lines = _logSource.ReadAll().ToList();
             if (lines.Count == _lastLineCount)
@@ -135,7 +136,7 @@ namespace Debugger
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="line">The line.</param>
-        private void OnLogLineReceived(object sender, string line)
+        private void OnLogLineReceived(object? sender, string line)
         {
             Dispatcher.Invoke(() => AppendLine(line, false));
         }
@@ -298,7 +299,7 @@ namespace Debugger
         /// </summary>
         private async Task LoadFileAsync()
         {
-            _dispatcherTimer.Stop();
+            _dispatcherTimer?.Stop();
             _logSource.Stop();
 
             Log.Document.Blocks.Clear();
@@ -336,7 +337,7 @@ namespace Debugger
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void FilterChanged(object sender, EventArgs e)
+        private void FilterChanged(object? sender, EventArgs e)
         {
             Log.Document.Blocks.Clear();
 
