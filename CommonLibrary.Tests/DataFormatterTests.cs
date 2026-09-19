@@ -179,7 +179,7 @@ namespace CommonLibrary.Tests
             File.WriteAllLines(filepath, csvContent);
 
             // Act
-            var layers = SegmentedCsvHandler.ReadCsvWithLayerKeywords(filepath);
+            var layers = SegmentedCsvHandler.ReadCsvWithLayerKeywords(filepath, layerKeyword);
 
             // Assert
             Assert.IsNotNull(layers, "The layers should not be null.");
