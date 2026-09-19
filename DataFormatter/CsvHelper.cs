@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedMember.Global
+
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +19,9 @@ using System.Text;
 
 namespace DataFormatter
 {
+    /// <summary>
+    /// Shared Helper class for csv processing.
+    /// </summary>
     internal static class CsvHelper
     {
         /// <summary>
