@@ -112,7 +112,7 @@ namespace ViewModel
         /// </summary>
         /// <param name="obj">Command parameter.</param>
         /// <returns>True if executable.</returns>
-        protected bool CanExecute(object obj) => true;
+        public virtual bool CanExecute(object obj) => true;
 
         /// <summary>
         ///     Determines if a generic command can execute (default always true).

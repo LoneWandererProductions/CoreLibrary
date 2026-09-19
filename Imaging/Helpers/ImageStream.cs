@@ -108,7 +108,7 @@ namespace Imaging.Helpers
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException">File not Found</exception>
-        internal static Bitmap? LoadBitmapFromFile(string path)
+        internal static Bitmap? LoadBitmapFromFile(string? path)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -131,7 +131,7 @@ namespace Imaging.Helpers
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        internal static Bitmap GetOriginalBitmap(string path)
+        internal static Bitmap? GetOriginalBitmap(string? path)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -539,7 +539,7 @@ namespace Imaging.Helpers
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         /// <exception cref="IOException">File already exists</exception>
         /// <exception cref="ExternalException">Errors with the Path</exception>
-        internal static void SaveBitmap(Bitmap? image, string path, ImageFormat format)
+        internal static void SaveBitmap(Bitmap? image, string? path, ImageFormat? format)
         {
             ImageHelper.ValidateImage(nameof(SaveBitmap), image);
 
@@ -989,7 +989,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Returns a BitmapImage.</returns>
-        private static BitmapImage ConvertBitmapToBitmapSource(Bitmap gdiBitmap, int width, int height)
+        private static BitmapImage ConvertBitmapToBitmapSource(Bitmap? gdiBitmap, int width, int height)
         {
             using var ms = new MemoryStream();
 

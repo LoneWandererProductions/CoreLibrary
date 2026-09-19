@@ -66,14 +66,14 @@ namespace Imaging.Gifs
         /// List of Images from gif
         /// </returns>
         /// <exception cref="System.IO.IOException">File not found: {path}</exception>
-        internal static async Task<List<Bitmap>> SplitGifAsync(string path)
+        internal static async Task<List<Bitmap?>> SplitGifAsync(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
                 throw new IOException($"File not found: {path}");
 
             return await Task.Run(() =>
             {
-                var frames = new List<Bitmap>();
+                var frames = new List<Bitmap?>();
 
                 try
                 {

@@ -9,16 +9,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Image = System.Windows.Controls.Image;
 
 namespace Imaging.Gifs
 {
-    /// <inheritdoc cref="Image" />
+    /// <inheritdoc cref="System.Windows.Controls.Image" />
     /// <summary>
     /// Image control capable of playing animated GIFs in a self-contained way.
     /// Switching GIF → non-GIF will always clear old frames and stop timers.

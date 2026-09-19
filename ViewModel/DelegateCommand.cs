@@ -25,7 +25,7 @@ namespace ViewModel
         /// <summary>
         ///     The predicate to determine if the command can execute.
         /// </summary>
-        private readonly Predicate<T>? _canExecute;
+        private readonly Predicate<object?>? _canExecute;
 
         /// <summary>
         /// The execute command.
@@ -39,9 +39,9 @@ namespace ViewModel
         /// <param name="canExecute">A predicate to determine if the command can execute. If null, the command is always
         /// executable.</param>
         /// <exception cref="System.ArgumentNullException">execute</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the action is null.</exception>
-        public DelegateCommand(Action<T?> execute, Predicate<T?>? canExecute = null)
+        public DelegateCommand(Action<T?> execute, Predicate<object?>? canExecute = null)
         {
+            // Added the ArgumentNullException throw that was documented in your XML comments
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }

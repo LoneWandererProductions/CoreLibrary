@@ -24,6 +24,16 @@ namespace Common.Images
         internal const string ErrorSwitchingColor = "Error switching color.";
 
         /// <summary>
+        ///     The information ardoner null (const). Value: "Adorner was outside of the image control.".
+        /// </summary>
+        internal const string InformationArdonerNull = "Adorner was outside of the image control.";
+
+        /// <summary>
+        ///     Error, Color Selection initializing parameters (const). Value: "Error initializing color selection control"
+        /// </summary>
+        internal const string ErrorInitializingColorSelection = "Error initializing color selection control";
+
+        /// <summary>
         ///     Error, Color Dictionary initializing parameters (const). Value: "Error initializing color Dictionary "
         /// </summary>
         internal const string ErrorInitializingColorDictionary = "Error initializing color Dictionary ";
@@ -74,5 +84,10 @@ namespace Common.Images
         ///     The explorer "select file" argument prefix (const). Value: "/select,".
         /// </summary>
         internal const string ExplorerSelectArgument = "/select,";
+
+        /// <summary>
+        ///     The error could not load image (const). Value: "Error could not load Image:".
+        /// </summary>
+        internal const string ErrorCouldNotLoadImage = "Error could not load Image:";
     }
 }

@@ -37,7 +37,7 @@ namespace Imaging
         /// <returns>
         /// A <see cref="BitmapImage" />.
         /// </returns>
-        public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
+        public static BitmapImage GetBitmapImage(string? path, int width = 0, int height = 0)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -80,7 +80,7 @@ namespace Imaging
         /// <param name="width">Target width (optional).</param>
         /// <param name="height">Target height (optional).</param>
         /// <returns>A <see cref="BitmapImage"/> or null if the format is invalid.</returns>
-        public static BitmapImage? GetBitmapImageFileStream(string path, int width = 0, int height = 0)
+        public static BitmapImage? GetBitmapImageFileStream(string? path, int width = 0, int height = 0)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -143,7 +143,7 @@ namespace Imaging
         /// <param name="bitmap">The source bitmap.</param>
         /// <returns>A <see cref="BitmapImage"/>.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static BitmapImage BitmapToBitmapImage(Bitmap? bitmap)
+        internal static BitmapImage? BitmapToBitmapImage(Bitmap? bitmap)
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 

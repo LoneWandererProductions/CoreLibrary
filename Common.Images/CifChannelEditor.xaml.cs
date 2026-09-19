@@ -23,13 +23,12 @@ using SystemDrawingColor = System.Drawing.Color;
 
 namespace Common.Images
 {
-    /// <inheritdoc cref="UserControl" />
     /// <summary>
     /// Custom Control for Color Channel manipulation.
     /// </summary>
-    /// <seealso cref="T:System.Windows.Controls.UserControl" />
-    /// <seealso cref="T:System.Windows.Markup.IComponentConnector" />
-    public partial class CifChannelEditor
+    /// <seealso cref="System.Windows.Controls.UserControl" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
+    public partial class CifChannelEditor : UserControl
     {
         /// <summary>
         /// The writeable bitmap
@@ -56,9 +55,8 @@ namespace Common.Images
         /// </summary>
         public ObservableCollection<CifColorItem> PaletteItems { get; } = new();
 
-        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Common.Images.CifChannelEditor" /> class.
+        /// Initializes a new instance of the <see cref="CifChannelEditor"/> class.
         /// </summary>
         public CifChannelEditor()
         {
@@ -218,7 +216,7 @@ namespace Common.Images
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void OnChannelOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CifChannelEditor { CifSource: { } } editor)
+            if (d is CifChannelEditor editor && editor.CifSource != null)
             {
                 editor.RequestRender();
             }
@@ -231,7 +229,7 @@ namespace Common.Images
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void OnRenderStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CifChannelEditor { CifSource: { } } editor)
+            if (d is CifChannelEditor editor && editor.CifSource != null)
             {
                 editor.RequestRender();
             }
@@ -277,7 +275,7 @@ namespace Common.Images
             if (CifSource == null || _writeableBitmap == null) return;
 
             // Cancel any pending render operations to prevent UI thread thrashing
-            await _renderTokenSource?.CancelAsync();
+            _renderTokenSource?.Cancel();
             _renderTokenSource = new CancellationTokenSource();
             var token = _renderTokenSource.Token;
 
@@ -394,7 +392,7 @@ namespace Common.Images
         private void LoadCif_Click(object sender, RoutedEventArgs e)
         {
             var target = DialogHandler.HandleFileOpen(CifFilter);
-            if (string.IsNullOrEmpty(target?.FilePath))
+            if (target == null || string.IsNullOrEmpty(target.FilePath))
             {
                 return;
             }
@@ -425,7 +423,7 @@ namespace Common.Images
             }
 
             var target = DialogHandler.HandleFileSave(CifFilter);
-            if (string.IsNullOrEmpty(target?.FilePath))
+            if (target == null || string.IsNullOrEmpty(target.FilePath))
             {
                 return;
             }

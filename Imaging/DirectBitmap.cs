@@ -541,7 +541,7 @@ namespace Imaging
         ///     Converts the Bits into bitmapImage.
         /// </summary>
         /// <returns>BitmapImage image data</returns>
-        public BitmapImage ToBitmapImage()
+        public BitmapImage? ToBitmapImage()
         {
             return UnsafeBitmap.ToBitmapImage();
         }

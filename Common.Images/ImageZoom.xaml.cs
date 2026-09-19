@@ -124,7 +124,7 @@ namespace Common.Images
         /// <summary>
         /// Occurs when [selected multi frames].
         /// </summary>
-        public event DelegateMultiFrame? SelectedMultiFrames;
+        public event DelegateMultiFrame SelectedMultiFrames;
 
         /// <summary>
         /// The universal image path property (handles both static and animated images).
@@ -357,7 +357,7 @@ namespace Common.Images
         /// <summary>
         ///     The selection adorner
         /// </summary>
-        private SelectionAdorner? SelectionAdorner { get; set; }
+        private SelectionAdorner SelectionAdorner { get; set; }
 
         /// <summary>
         ///     Gets or sets the image clicked command.
@@ -465,12 +465,12 @@ namespace Common.Images
         /// <summary>
         ///     Occurs when [selected frame] was changed
         /// </summary>
-        public event DelegateFrame? SelectedFrame;
+        public event DelegateFrame SelectedFrame;
 
         /// <summary>
         ///     Occurs when [selected point].
         /// </summary>
-        public event DelegatePoint? SelectedPoint;
+        public event DelegatePoint SelectedPoint;
 
         /// <summary>
         ///     Called when [selection tool changed].
@@ -633,11 +633,7 @@ namespace Common.Images
                 case ImageZoomTools.Move:
                     break;
                 case ImageZoomTools.Trace:
-                    if (SelectionAdorner != null)
-                    {
-                        SelectionAdorner.IsTracing = true;
-                    }
-
+                    SelectionAdorner.IsTracing = true;
                     break;
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:

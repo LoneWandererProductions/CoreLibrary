@@ -101,10 +101,13 @@ namespace ViewModel
         /// <returns>True if the command can execute, otherwise false.</returns>
         public bool CanExecute(object parameter)
         {
+            if (!IsValidParameter(parameter, out var validParam))
+                return false;
+
             // The command CANNOT execute if it is already running
             if (_isExecuting) return false;
 
-            return _canExecute?.Invoke((T)parameter) ?? true;
+            return _canExecute?.Invoke(validParam) ?? true;
         }
 
         /// <summary>

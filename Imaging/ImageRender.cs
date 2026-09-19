@@ -59,7 +59,7 @@ namespace Imaging
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException"></exception>
-        public Bitmap? GetBitmapFile(string path)
+        public Bitmap? GetBitmapFile(string? path)
         {
             return ImageStream.LoadBitmapFromFile(path);
         }
@@ -75,7 +75,7 @@ namespace Imaging
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public Bitmap GetOriginalBitmap(string path)
+        public Bitmap? GetOriginalBitmap(string? path)
         {
             return ImageStream.GetOriginalBitmap(path);
         }
@@ -295,7 +295,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        public BitmapImage GetBitmapImage(string path)
+        public BitmapImage GetBitmapImage(string? path)
         {
             return ImageStreamMedia.GetBitmapImage(path);
         }
@@ -316,7 +316,7 @@ namespace Imaging
         /// <exception cref="UriFormatException"></exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        public BitmapImage GetBitmapImage(string path, int width, int height)
+        public BitmapImage GetBitmapImage(string? path, int width, int height)
         {
             return ImageStreamMedia.GetBitmapImage(path, width, height);
         }
@@ -333,7 +333,7 @@ namespace Imaging
         /// <exception cref="IOException">Error while we try to access the File</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        public BitmapImage? GetBitmapImageFileStream(string path)
+        public BitmapImage? GetBitmapImageFileStream(string? path)
         {
             return ImageStreamMedia.GetBitmapImageFileStream(path);
         }
@@ -354,7 +354,7 @@ namespace Imaging
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Error while we try to access the File</exception>
-        public BitmapImage? GetBitmapImageFileStream(string path, int width, int height)
+        public BitmapImage? GetBitmapImageFileStream(string? path, int width, int height)
         {
             return ImageStreamMedia.GetBitmapImageFileStream(path, width, height);
         }
@@ -368,7 +368,7 @@ namespace Imaging
         /// The Image as <see cref="BitmapImage" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public BitmapImage BitmapToBitmapImage(Bitmap? image)
+        public BitmapImage? BitmapToBitmapImage(Bitmap? image)
         {
             return ImageStreamMedia.BitmapToBitmapImage(image);
         }
@@ -426,7 +426,7 @@ namespace Imaging
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         /// <exception cref="IOException">File already exists</exception>
         /// <exception cref="ExternalException">Errors with the Path</exception>
-        public void SaveBitmap(Bitmap? image, string path, ImageFormat format)
+        public void SaveBitmap(Bitmap? image, string? path, ImageFormat? format)
         {
             ImageStream.SaveBitmap(image, path, format);
         }
@@ -453,7 +453,7 @@ namespace Imaging
         /// <returns>
         ///     Pixelated Image
         /// </returns>
-        public Bitmap Pixelate(Bitmap? image, int stepWidth = 2)
+        public Bitmap? Pixelate(Bitmap? image, int stepWidth = 2)
         {
             return FiltersStream.Pixelate(image, stepWidth);
         }
@@ -778,7 +778,7 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The full path to the GIF file.</param>
         /// <returns>A list of Bitmaps representing the frames.</returns>
-        public Task<List<Bitmap>> SplitGif(string path)
+        public Task<List<Bitmap?>> SplitGif(string path)
         {
             // Delegates to the static handler
             return ImageGifHandler.SplitGifAsync(path);

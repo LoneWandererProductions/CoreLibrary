@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Common.Images
  * FILE:        BusyIndicator.xaml.cs
@@ -17,14 +17,14 @@ using System.Windows.Media.Animation;
 
 namespace Common.Images
 {
-    /// <inheritdoc cref="UserControl" />
+    /// <inheritdoc />
     /// <summary>
     ///     A minimal activity indicator: a steady green dot while idle, a pulsing amber dot while
     ///     work is going on in the background. Replaces the previous static red/green icon-swap,
     ///     which was easy to miss at a glance - the blink is what actually draws the eye.
     /// </summary>
     /// <seealso cref="UserControl" />
-    public sealed partial class BusyIndicator
+    public sealed partial class BusyIndicator : UserControl
     {
         /// <summary>
         ///     Identifies the <see cref="IsBusy" /> dependency property.
@@ -48,9 +48,8 @@ namespace Common.Images
         /// </summary>
         private readonly Storyboard _blink;
 
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:Common.Images.BusyIndicator" /> class.
+        ///     Initializes a new instance of the <see cref="BusyIndicator" /> class.
         /// </summary>
         public BusyIndicator()
         {

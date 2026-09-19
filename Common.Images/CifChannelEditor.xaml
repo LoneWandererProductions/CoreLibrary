@@ -60,6 +60,8 @@
 
                         <TextBlock Text="Image Colors Palette:" Margin="0,0,0,4" />
                         <ListBox x:Name="PaletteListBox" Height="150"
+                                 ItemsSource="{Binding Path=PaletteItems, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 SelectedItem="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
                                  SelectionChanged="PaletteListBox_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

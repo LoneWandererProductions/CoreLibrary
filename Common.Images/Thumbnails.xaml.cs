@@ -486,7 +486,7 @@ namespace Common.Images
         private async Task OnItemsSourceChanged()
         {
             // 1. Signal cancellation to the PREVIOUS run
-            await _loadingCts?.CancelAsync();
+            _loadingCts?.Cancel();
 
             // 2. WAIT for the previous run to finish or acknowledge cancellation
             // This prevents "Double-Loading" and collection collisions
@@ -560,7 +560,7 @@ namespace Common.Images
             if (ItemsSource?.Any() != true) return;
 
             // 1. Manage the internal CTS
-            await _cancellationTokenSource?.CancelAsync();
+            _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -646,18 +646,21 @@ namespace Common.Images
                 // ImageStream.GetBitmapImageFileStreamAsync, which now does its file read with
                 // ReadAllBytesAsync instead of a blocking File.ReadAllBytes, so each occupied
                 // thread is held only for the actual decode, not the disk wait too.
-                await Parallel.ForEachAsync(pics,
-                    new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = token }, async (kv, ct) =>
+                await Parallel.ForEachAsync(pics, new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = 4,
+                    CancellationToken = token
+                }, async (kv, ct) =>
+                {
+                    try
                     {
-                        try
-                        {
-                            await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
-                        }
-                    });
+                        await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
+                    }
+                });
 
                 ImageLoaded?.Invoke();
             }

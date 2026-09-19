@@ -268,7 +268,7 @@ namespace Imaging.Helpers
         /// <param name="image">The input image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Image? image, int stepWidth)
+        internal static Bitmap? Pixelate(Image? image, int stepWidth)
         {
             if (image == null)
             {

@@ -44,7 +44,7 @@ namespace Common.Images
         /// <summary>
         ///     The color Dictionary.
         /// </summary>
-        private Dictionary<string, Color>? _colorDct;
+        private Dictionary<string, Color> _colorDct;
 
         /// <inheritdoc />
         /// <summary>
@@ -79,7 +79,7 @@ namespace Common.Images
         /// <summary>
         ///     Gets the color palette.
         /// </summary>
-        public List<string>? ColorPalette { get; private set; }
+        public List<string> ColorPalette { get; private set; }
 
         /// <summary>
         ///     Handles the Loaded event of the UserControl ColorSelection.
@@ -94,7 +94,7 @@ namespace Common.Images
         /// <summary>
         ///     Occurs when [color changed].
         /// </summary>
-        public event EventHandler<string>? ColorChanged;
+        public event EventHandler<string> ColorChanged;
 
         /// <summary>
         ///     The initiate.
