@@ -465,14 +465,14 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color GetPixel(int x, int y)
         {
-            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
+            var p = DirectBitmapCore.GetPixel(Bits, Width, x, y);
             return Color.FromArgb(p.A, p.R, p.G, p.B);
         }
 
         /// <inheritdoc />
         public Pixel32 GetPixel32(int x, int y)
         {
-            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
+            var p = DirectBitmapCore.GetPixel(Bits, Width, x, y);
             return new Pixel32(p.R, p.G, p.B, p.A);
         }
 

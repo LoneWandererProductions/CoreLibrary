@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System.Runtime.InteropServices;
 
 namespace Imaging
@@ -61,10 +63,10 @@ namespace Imaging
             => (uint)(A << 24 | R << 16 | G << 8 | B);
 
         /// <summary>
-        /// Froms the packed.
+        /// Pixel32 Pixel Information from packed.
         /// </summary>
         /// <param name="packed">The packed.</param>
-        /// <returns></returns>
+        /// <returns>Pixel32 Pixel Information.</returns>
         public static Pixel32 FromPacked(uint packed)
             => new Pixel32(
                 (byte)(packed >> 16),

@@ -92,7 +92,7 @@ namespace Imaging.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"Fehler beim Laden von '{filePath}':");
+                    Trace.WriteLine($"Error loading from '{filePath}':");
                     Trace.WriteLine(ex.ToString());
                     return null;
                 }
@@ -995,7 +995,7 @@ namespace Imaging.Helpers
 
             // Resize or save directly depending on thumbnail sizing strategy
             // For thumbnails, saving as PNG into a memory stream is a reliable bridge to WPF
-            gdiBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            gdiBitmap.Save(ms, ImageFormat.Png);
             ms.Position = 0;
 
             var bitmapImage = new BitmapImage();

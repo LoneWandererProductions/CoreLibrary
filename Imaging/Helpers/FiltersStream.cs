@@ -234,7 +234,7 @@ namespace Imaging.Helpers
                             var ix = x + (fx - filterOffset);
                             var iy = y + (fy - filterOffset);
 
-                            var (r, g, b, a) = source.GetPixel(ix, iy);
+                            var (r, g, b, _) = source.GetPixel(ix, iy);
 
                             blue += b * filterMatrix[fy, fx];
                             green += g * filterMatrix[fy, fx];

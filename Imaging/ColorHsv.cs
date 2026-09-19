@@ -224,6 +224,7 @@ namespace Imaging
             return System.Drawing.Color.FromArgb(A, R, G, B);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
@@ -231,9 +232,8 @@ namespace Imaging
         /// <returns>
         ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
         /// </returns>
-        public bool Equals(ColorHsv other)
-            => other is not null &&
-               R == other.R && G == other.G && B == other.B && A == other.A;
+        public bool Equals(ColorHsv? other)
+            => R == other?.R && G == other.G && B == other.B && A == other.A;
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
@@ -242,7 +242,7 @@ namespace Imaging
         /// <returns>
         ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is ColorHsv c && Equals(c);
 
         /// <summary>
