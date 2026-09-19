@@ -14,11 +14,6 @@ namespace FileHandler
     internal static class FileHandlerResources
     {
         /// <summary>
-        ///     The star dot (const). Value: "*.".
-        /// </summary>
-        internal const string StarDot = "*.";
-
-        /// <summary>
         ///     The dot (const). Value: ".".
         /// </summary>
         internal const string Dot = ".";

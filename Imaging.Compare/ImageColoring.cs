@@ -82,6 +82,8 @@ namespace Imaging.Compare
             {
                 try
                 {
+                    if (path == null) continue;
+
                     using var btm = new Bitmap(path);
                     var dup = AnalysisProcessing.GenerateData(btm, path);
                     imagePathsAndGrayValues.Add(dup);

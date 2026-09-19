@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        CsvHelper.cs
+ * FILE:        DataFormatter/CsvHelper.cs
  * PURPOSE:     Shared Helper functions that will be inlined anyways
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -16,28 +16,25 @@ using System.Text;
 
 namespace DataFormatter
 {
-    /// <summary>
-    /// Helper class for CSV file operations, including reading, writing, and splitting lines.
-    /// </summary>
     internal static class CsvHelper
     {
         /// <summary>
         ///     Shared method to read file content
         /// </summary>
-        /// <param name="filePath">The file path.</param>
+        /// <param name="filepath">The filepath.</param>
         /// <returns>Content of File</returns>
-        /// <exception cref="ArgumentException">File path is empty - file path</exception>
+        /// <exception cref="ArgumentException">File path is empty - filepath</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static List<string>? ReadFileContent(string filePath)
+        internal static List<string>? ReadFileContent(string filepath)
         {
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(filepath))
             {
-                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filePath));
+                throw new ArgumentException(DataFormatterResources.ThrowFileEmpty, nameof(filepath));
             }
 
             try
             {
-                return ReadText.ReadFile(filePath);
+                return ReadText.ReadFile(filepath);
             }
             catch (Exception ex)
             {
@@ -76,14 +73,14 @@ namespace DataFormatter
         /// <summary>
         ///     Shared method to write content to file
         /// </summary>
-        /// <param name="filePath">The file path.</param>
+        /// <param name="filepath">The filepath.</param>
         /// <param name="content">The content.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void WriteContentToFile(string filePath, StringBuilder content)
+        internal static void WriteContentToFile(string filepath, StringBuilder content)
         {
             try
             {
-                File.WriteAllText(filePath, content.ToString());
+                File.WriteAllText(filepath, content.ToString());
             }
             catch (Exception ex)
             {

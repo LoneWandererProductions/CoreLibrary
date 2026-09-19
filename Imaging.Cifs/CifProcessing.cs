@@ -138,7 +138,7 @@ namespace Imaging.Cifs
         /// <param name="imageFormat">The image format.</param>
         /// <returns>Cif Format ready to be saved as csv.</returns>
         internal static List<List<string>> GenerateCsv(int imageHeight, int imageWidth,
-            Dictionary<Color, SortedSet<int>> imageFormat)
+            Dictionary<Color, SortedSet<int>>? imageFormat)
         {
             var master = new List<List<string>>();
             //first line is size of the image, compression, Number of Ids, used for checking and lines and number of Colors, added later

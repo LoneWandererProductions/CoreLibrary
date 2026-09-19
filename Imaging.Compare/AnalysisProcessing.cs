@@ -200,7 +200,7 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Image Data</returns>
-        internal static ImageData? GetImageDetails(Bitmap? image)
+        internal static ImageData GetImageDetails(Bitmap? image)
         {
             var color = GenerateData(image, string.Empty);
 

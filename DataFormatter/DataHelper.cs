@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        DataHelper.cs
+ * FILE:        DataFormatter/DataHelper.cs
  * PURPOSE:     Basic stuff shared over all operations
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -27,7 +27,7 @@ namespace DataFormatter
         /// <returns>split Parts</returns>
         internal static List<string> GetParts(string str, char separator)
         {
-            return string.IsNullOrEmpty(str) ? new List<string>() : str.Split(separator).ToList();
+            return str.Split(separator).ToList();
         }
 
         /// <summary>
@@ -37,47 +37,38 @@ namespace DataFormatter
         /// <returns>Type of Encoding</returns>
         internal static Encoding GetFileEncoding(string filePath)
         {
-            // Use FileShare.Read to avoid locking the file unnecessarily
-            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            // Read the first few bytes to detect the encoding
             var buffer = new byte[5];
             var bytesRead = fs.Read(buffer, 0, 5);
 
+            // Check if the file is smaller than the BOM sizes we are checking
             if (bytesRead < 2)
             {
-                return Encoding.Default;
+                return Encoding.Default; // Default ANSI code page if not enough bytes for BOM
             }
 
-            // Check for UTF-32 LE (FF FE 00 00) - MUST be checked before UTF-16 LE
-            if (bytesRead >= 4 && buffer[0] == 0xff && buffer[1] == 0xfe && buffer[2] == 0x00 && buffer[3] == 0x00)
-            {
-                return Encoding.UTF32;
-            }
-
-            // Check for UTF-32 BE (00 00 FE FF) - MUST be checked before UTF-16 BE (rare collision, but safe practice)
-            if (bytesRead >= 4 && buffer[0] == 0x00 && buffer[1] == 0x00 && buffer[2] == 0xfe && buffer[3] == 0xff)
-            {
-                // Assuming "utf-32BE" is the resource string, or use explicit encoding:
-                return new UTF32Encoding(bigEndian: true, byteOrderMark: true);
-            }
-
-            // Now check for the shorter BOMs
             switch (buffer[0])
             {
-                // UTF-8 (EF BB BF)
-                case 0xef when bytesRead >= 3 && buffer[1] == 0xbb && buffer[2] == 0xbf:
+                // Check for UTF-8 BOM
+                // Check for UTF-16 LE BOM
+                case 0xef when buffer[1] == 0xbb && buffer[2] == 0xbf:
                     return Encoding.UTF8;
-
-                // UTF-16 LE (FF FE)
+                // Check for UTF-16 BE BOM
                 case 0xff when buffer[1] == 0xfe:
-                    return Encoding.Unicode;
-
-                // UTF-16 BE (FE FF)
+                    return Encoding.Unicode; // UTF-16 LE
+                // Check for UTF-32 LE BOM
                 case 0xfe when buffer[1] == 0xff:
-                    return Encoding.BigEndianUnicode;
+                    return Encoding.BigEndianUnicode; // UTF-16 BE
+                // Check for UTF-32 BE BOM
+                case 0xff when buffer[1] == 0xfe && buffer[2] == 0x00 && buffer[3] == 0x00:
+                    return Encoding.UTF32; // UTF-32 LE
+                case 0x00 when buffer[1] == 0x00 && buffer[2] == 0xfe && buffer[3] == 0xff:
+                    return Encoding.GetEncoding(DataFormatterResources.EncodingUtf32); // UTF-32 BE
 
                 default:
-                    return Encoding.Default;
+                    // Default encoding (change this as per your requirements)
+                    return Encoding.Default; // Default ANSI code page
             }
         }
     }

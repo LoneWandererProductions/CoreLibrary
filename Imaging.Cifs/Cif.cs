@@ -24,12 +24,12 @@ namespace Imaging.Cifs
         /// <summary>
         ///     The cif image
         /// </summary>
-        private Dictionary<Color, SortedSet<int>> _cifImage =  [];
+        private Dictionary<Color, SortedSet<int>>? _cifImage =  [];
 
         /// <summary>
         ///     The cif sorted
         /// </summary>
-        private Dictionary<Color, SortedSet<int>> _cifSorted =  [];
+        private Dictionary<Color, SortedSet<int>>? _cifSorted =  [];
 
         /// <summary>
         ///     The sort required
@@ -71,7 +71,7 @@ namespace Imaging.Cifs
         /// <param name="image">The image.</param>
         /// <param name="imageFormat">The custom image format.</param>
         /// <exception cref="ArgumentNullException">Image was null. - image</exception>
-        public Cif(Bitmap? image, ICustomImageFormat imageFormat = null)
+        public Cif(Bitmap? image, ICustomImageFormat? imageFormat = null)
         {
             if (image == null)
             {
@@ -87,7 +87,7 @@ namespace Imaging.Cifs
             Width = image.Width;
             Compressed = false;
 
-            Dictionary<Color, SortedSet<int>> cif;
+            Dictionary<Color, SortedSet<int>>? cif;
 
             if (imageFormat == null)
             {
@@ -106,7 +106,7 @@ namespace Imaging.Cifs
         ///     Initializes a new instance of the <see cref="Cif" /> class.
         /// </summary>
         /// <param name="imageFormat">The custom image format.</param>
-        public Cif(ICustomImageFormat imageFormat = null)
+        public Cif(ICustomImageFormat? imageFormat = null)
         {
             if (imageFormat != null)
             {
@@ -130,12 +130,12 @@ namespace Imaging.Cifs
         /// <value>
         ///     The image format.
         /// </value>
-        public ICustomImageFormat ImageFormat { get; private set; }
+        public ICustomImageFormat? ImageFormat { get; private set; }
 
         /// <summary>
         ///     The cif image
         /// </summary>
-        public Dictionary<Color, SortedSet<int>> CifImage
+        public Dictionary<Color, SortedSet<int>>? CifImage
         {
             get => _cifImage;
             set
@@ -430,7 +430,7 @@ namespace Imaging.Cifs
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Sorted Dictionary from biggest Count to lowest</returns>
-        private static Dictionary<Color, SortedSet<int>> SortDct(Dictionary<Color, SortedSet<int>> value)
+        private static Dictionary<Color, SortedSet<int>>? SortDct(Dictionary<Color, SortedSet<int>>? value)
         {
             return value.OrderByDescending(kv => kv.Value.Count)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);

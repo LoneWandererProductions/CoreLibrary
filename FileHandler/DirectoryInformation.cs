@@ -33,7 +33,7 @@ namespace FileHandler
         /// <param name="level">Levels to go up</param>
         /// <returns>Parent directory path</returns>
         /// <exception cref="FileHandlerException"></exception>
-        public static string? GetParentDirectoryFromPath(string? startPath, int level)
+        public static string GetParentDirectoryFromPath(string? startPath, int level)
         {
             if (string.IsNullOrEmpty(startPath))
                 throw new FileHandlerException($"{FileHandlerResources.ErrorGetParentDirectory}: startPath was empty");

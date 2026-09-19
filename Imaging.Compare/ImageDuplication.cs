@@ -114,34 +114,37 @@ namespace Imaging.Compare
             var imagePathsAndGrayValues = new ConcurrentBag<ImageDuplicate>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
+            if (Translator != null)
             {
-                var (key, value) = pathImage;
-                try
+                Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
                 {
-                    if (value == null) return;
+                    var (key, value) = pathImage;
+                    try
+                    {
+                        if (value == null) return;
 
-                    using var btm = new Bitmap(value);
-                    var dup = GenerateData(btm, key);
-                    imagePathsAndGrayValues.Add(dup);
-                }
-                catch (ArgumentException ex)
-                {
-                    Trace.WriteLine(ex);
-                }
-                catch (OutOfMemoryException ex)
-                {
-                    // Skip this one file rather than aborting the whole scan - losing
-                    // everything processed so far over one oversized/corrupt image is
-                    // exactly the failure mode a bulk duplicate scan needs to avoid.
-                    var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
-                    Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    Trace.WriteLine(ex);
-                }
-            });
+                        using var btm = new Bitmap(value);
+                        var dup = GenerateData(btm, key);
+                        imagePathsAndGrayValues.Add(dup);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Trace.WriteLine(ex);
+                    }
+                    catch (OutOfMemoryException ex)
+                    {
+                        // Skip this one file rather than aborting the whole scan - losing
+                        // everything processed so far over one oversized/corrupt image is
+                        // exactly the failure mode a bulk duplicate scan needs to avoid.
+                        var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
+                        Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Trace.WriteLine(ex);
+                    }
+                });
+            }
 
             return imagePathsAndGrayValues.ToList();
         }

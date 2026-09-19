@@ -170,7 +170,7 @@ namespace Imaging.Gifs
 
                     b.Dispose();
                     return bi;
-                }).Cast<BitmapSource>().ToList();
+                }).ToList();
 
                 if (token.IsCancellationRequested || _frames.Count == 0)
                     return;

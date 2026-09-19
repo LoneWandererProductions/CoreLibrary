@@ -132,7 +132,7 @@ namespace FileHandler
             if (targetFiles == null)
                 return null;
 
-            List<string?> intersect = sourceFiles.Intersect(targetFiles).ToList();
+            List<string> intersect = sourceFiles.Intersect(targetFiles).ToList();
             var except = sourceFiles.Except(targetFiles).ToList();
 
             if (intersect.Count == 0)

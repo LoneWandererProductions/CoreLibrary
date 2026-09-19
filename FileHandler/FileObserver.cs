@@ -8,6 +8,8 @@
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Concurrent;
@@ -16,6 +18,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+
 
 namespace FileHandler
 {
