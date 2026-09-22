@@ -40,7 +40,7 @@ namespace Imaging.Plugins.Interface
         ///     plugin's extensions - so a format that's write-only (or read+write)
         ///     still shows up everywhere Appendix drives the UI.
         /// </summary>
-        IReadOnlyCollection<string> SupportedExtensions { get; }
+        IReadOnlyCollection<string?> SupportedExtensions { get; }
 
         /// <summary>
         ///     Encode <paramref name="bitmap" /> and write it to <paramref name="path" />.
@@ -51,6 +51,6 @@ namespace Imaging.Plugins.Interface
         ///     Throw on failure rather than returning a bool - the caller logs and
         ///     handles it exactly like a built-in encode failure.
         /// </exception>
-        void Encode(Bitmap bitmap, string path);
+        void Encode(Bitmap? bitmap, string? path);
     }
 }

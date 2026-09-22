@@ -6,10 +6,13 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedType.Global
-// ReSharper disable MemberCanBePrivate.Global
-
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,17 +21,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Common.Dialogs;
 using Imaging.Cifs;
-using System;
+using Image = System.Windows.Controls.Image;
 using SystemDrawingColor = System.Drawing.Color;
 
 namespace Common.Images
 {
     /// <summary>
-    /// Custom Control for Color Channel manipulation.
+    /// Cif Channel Editor Control.
     /// </summary>
     /// <seealso cref="System.Windows.Controls.UserControl" />
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
-    public partial class CifChannelEditor : UserControl
+    public partial class CifChannelEditor
     {
         /// <summary>
         /// The writeable bitmap
@@ -51,8 +54,11 @@ namespace Common.Images
         private readonly CustomImageFormat _customFormat = new();
 
         /// <summary>
-        /// The collection of unique colors found in the loaded CIF image.
+        /// Gets the palette items.
         /// </summary>
+        /// <value>
+        /// The palette items.
+        /// </value>
         public ObservableCollection<CifColorItem> PaletteItems { get; } = new();
 
         /// <summary>
@@ -61,7 +67,7 @@ namespace Common.Images
         public CifChannelEditor()
         {
             InitializeComponent();
-            Name = "Root"; // Required for XAML ElementName bindings
+            Name = "Root";
         }
 
         #region Dependency Properties
@@ -95,7 +101,7 @@ namespace Common.Images
             new PropertyMetadata(0, OnChannelOffsetChanged));
 
         /// <summary>
-        /// The isolation enabled property
+        /// The is isolation enabled property
         /// </summary>
         public static readonly DependencyProperty IsIsolationEnabledProperty = DependencyProperty.Register(
             nameof(IsIsolationEnabled), typeof(bool), typeof(CifChannelEditor),
@@ -157,10 +163,10 @@ namespace Common.Images
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether color isolation is enabled.
+        /// Gets or sets a value indicating whether this instance is isolation enabled.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if isolation is enabled; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is isolation enabled; otherwise, <c>false</c>.
         /// </value>
         public bool IsIsolationEnabled
         {
@@ -169,7 +175,7 @@ namespace Common.Images
         }
 
         /// <summary>
-        /// Gets or sets the currently selected color item for isolation mapping.
+        /// Gets or sets the selected palette item.
         /// </summary>
         /// <value>
         /// The selected palette item.
@@ -178,19 +184,6 @@ namespace Common.Images
         {
             get => (CifColorItem?)GetValue(SelectedPaletteItemProperty);
             set => SetValue(SelectedPaletteItemProperty, value);
-        }
-
-
-        /// <summary>
-        /// Resets the palette and channel offsets. Can be called from XAML button clicks.
-        /// </summary>
-        public void ResetPalette()
-        {
-            RedOffset = 0;
-            GreenOffset = 0;
-            BlueOffset = 0;
-            IsIsolationEnabled = false;
-            SelectedPaletteItem = null;
         }
 
         #endregion
@@ -213,38 +206,86 @@ namespace Common.Images
         /// Called when [channel offset changed].
         /// </summary>
         /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
         private static void OnChannelOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CifChannelEditor editor && editor.CifSource != null)
+            if (d is CifChannelEditor { CifSource: { } } editor)
             {
                 editor.RequestRender();
             }
         }
 
         /// <summary>
-        /// Called when [render state changed] (Isolation or Palette Selection).
+        /// Called when [render state changed].
         /// </summary>
         /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
         private static void OnRenderStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CifChannelEditor editor && editor.CifSource != null)
+            if (d is CifChannelEditor { CifSource: { } } editor)
             {
                 editor.RequestRender();
             }
         }
 
         /// <summary>
-        /// Populates the color palette collection based on the loaded CIF keys.
+        /// Populates the palette.
         /// </summary>
         /// <param name="cif">The cif.</param>
         private void PopulatePalette(Cif cif)
         {
+            // Unsubscribe from previous items
+            foreach (var item in PaletteItems)
+            {
+                item.PropertyChanged -= ColorItem_PropertyChanged;
+            }
+
             PaletteItems.Clear();
+
+            var index = 0;
             foreach (var colorKey in cif.CifImage.Keys)
             {
-                PaletteItems.Add(new CifColorItem(colorKey));
+                var newItem = new CifColorItem(colorKey, index++);
+                newItem.PropertyChanged += ColorItem_PropertyChanged;
+                PaletteItems.Add(newItem);
+            }
+        }
+
+        /// <summary>
+        /// Colors the item property changed.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
+        private void ColorItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // Re-render when R, G, or B sliders are moved
+            if (e.PropertyName is nameof(CifColorItem.R) or nameof(CifColorItem.G) or nameof(CifColorItem.B))
+            {
+                RequestRender();
+                CheckForColorMerge(sender as CifColorItem);
+            }
+        }
+
+        private void CheckForColorMerge(CifColorItem? changedItem)
+        {
+            if (changedItem == null || CifSource == null) return;
+
+            // Check if the newly changed color exactly matches another existing visible color
+            var match = PaletteItems.FirstOrDefault(p =>
+                p.IsVisible &&
+                p != changedItem &&
+                p.R == changedItem.R &&
+                p.G == changedItem.G &&
+                p.B == changedItem.B);
+
+            if (match != null)
+            {
+                // Note: To implement a full merge, you would need a method in your Cif class
+                // that remaps the pixel indices from changedItem.SourceColor to match.SourceColor.
+                // activeCif.RemapPixelIndex(changedItem.SourceColor, match.SourceColor);
+
+                changedItem.IsVisible = false;
+                SelectedPaletteItem = match; // Shift selection to the merged target
             }
         }
 
@@ -254,11 +295,8 @@ namespace Common.Images
         /// <param name="cif">The cif.</param>
         private void InitializeViewport(Cif cif)
         {
-            // Bgra32 is highly optimized for WPF rendering
             _writeableBitmap = new WriteableBitmap(cif.Width, cif.Height, 96, 96, PixelFormats.Bgra32, null);
 
-            // Note: Update this to match your actual XAML Image control Name
-            // If your Image is named Viewport, this works perfectly.
             if (FindName("Viewport") is Image viewport)
             {
                 viewport.Source = _writeableBitmap;
@@ -274,7 +312,6 @@ namespace Common.Images
         {
             if (CifSource == null || _writeableBitmap == null) return;
 
-            // Cancel any pending render operations to prevent UI thread thrashing
             _renderTokenSource?.Cancel();
             _renderTokenSource = new CancellationTokenSource();
             var token = _renderTokenSource.Token;
@@ -284,26 +321,24 @@ namespace Common.Images
             var bOffset = BlueOffset;
             var cif = CifSource;
             var isIsolationEnabled = IsIsolationEnabled;
-            var selectedColor = SelectedPaletteItem?.SourceColor;
+            var selectedItem = SelectedPaletteItem;
+
+            // Snapshot the current UI palette colors for thread safety
+            var activePalette = PaletteItems.ToDictionary(p => p.SourceColor, p => p.CurrentDrawingColor);
 
             try
             {
-                // Offload dictionary iteration and array mapping to a background thread
-                var pixelData =
-                    await Task.Run(
-                        () => GeneratePixelData(cif, rOffset, gOffset, bOffset, isIsolationEnabled, selectedColor,
-                            token), token);
+                var pixelData = await Task.Run(() => GeneratePixelData(
+                    cif, rOffset, gOffset, bOffset, isIsolationEnabled, selectedItem, activePalette, token), token);
 
                 if (token.IsCancellationRequested || pixelData == null) return;
 
-                // Push the calculated array directly to the back buffer
                 var rect = new Int32Rect(0, 0, cif.Width, cif.Height);
-                var stride = cif.Width * 4; // 4 bytes per pixel (Bgra32)
+                var stride = cif.Width * 4;
                 _writeableBitmap.WritePixels(rect, pixelData, stride, 0);
             }
             catch (TaskCanceledException)
             {
-                // Expected when slider moves rapidly
             }
         }
 
@@ -315,57 +350,55 @@ namespace Common.Images
         /// <param name="gOffset">The g offset.</param>
         /// <param name="bOffset">The b offset.</param>
         /// <param name="isIsolationEnabled">if set to <c>true</c> [is isolation enabled].</param>
-        /// <param name="isolatedColor">The active isolated color to map.</param>
+        /// <param name="isolatedItem">The isolated item.</param>
+        /// <param name="activePalette">The active palette.</param>
         /// <param name="token">The token.</param>
-        /// <returns>Set of Pixel Data for image Display.</returns>
+        /// <returns>Array of Pixel data.</returns>
         private static int[]? GeneratePixelData(
             Cif cif,
             int rOffset,
             int gOffset,
             int bOffset,
             bool isIsolationEnabled,
-            SystemDrawingColor? isolatedColor,
+            CifColorItem? isolatedItem,
+            IReadOnlyDictionary<SystemDrawingColor, SystemDrawingColor> activePalette,
             CancellationToken token)
         {
             var totalPixels = cif.PixelCount;
             var buffer = new int[totalPixels];
 
-            foreach (var kvp in cif.CifImage)
+            foreach (var (originalColor, value) in cif.CifImage)
             {
                 if (token.IsCancellationRequested) return null;
 
-                var originalColor = kvp.Key;
+                // Use the edited UI color if it exists, otherwise fall back to original
+                var baseColor = activePalette.TryGetValue(originalColor, out var uiColor) ? uiColor : originalColor;
                 int pixelInt;
 
-                if (isIsolationEnabled && isolatedColor.HasValue)
+                if (isIsolationEnabled && isolatedItem != null)
                 {
-                    if (originalColor.ToArgb() == isolatedColor.Value.ToArgb())
+                    if (originalColor.ToArgb() == isolatedItem.SourceColor.ToArgb())
                     {
-                        // Render isolated color directly with offset calculations
-                        var newR = Math.Clamp(originalColor.R + rOffset, 0, 255);
-                        var newG = Math.Clamp(originalColor.G + gOffset, 0, 255);
-                        var newB = Math.Clamp(originalColor.B + bOffset, 0, 255);
-                        pixelInt = (originalColor.A << 24) | (newR << 16) | (newG << 8) | newB;
+                        var newR = Math.Clamp(baseColor.R + rOffset, 0, 255);
+                        var newG = Math.Clamp(baseColor.G + gOffset, 0, 255);
+                        var newB = Math.Clamp(baseColor.B + bOffset, 0, 255);
+                        pixelInt = (baseColor.A << 24) | (newR << 16) | (newG << 8) | newB;
                     }
                     else
                     {
-                        // Convert non-isolated colors to grayscale preview
-                        var gray = (int)(originalColor.R * 0.299 + originalColor.G * 0.587 + originalColor.B * 0.114);
-                        pixelInt = (originalColor.A << 24) | (gray << 16) | (gray << 8) | gray;
+                        var gray = (int)(baseColor.R * 0.299 + baseColor.G * 0.587 + baseColor.B * 0.114);
+                        pixelInt = (baseColor.A << 24) | (gray << 16) | (gray << 8) | gray;
                     }
                 }
                 else
                 {
-                    // Regular channel offset calculation across all palette keys
-                    var newR = Math.Clamp(originalColor.R + rOffset, 0, 255);
-                    var newG = Math.Clamp(originalColor.G + gOffset, 0, 255);
-                    var newB = Math.Clamp(originalColor.B + bOffset, 0, 255);
-
-                    // Construct Bgra32 integer (Little Endian: A R G B)
-                    pixelInt = (originalColor.A << 24) | (newR << 16) | (newG << 8) | newB;
+                    var newR = Math.Clamp(baseColor.R + rOffset, 0, 255);
+                    var newG = Math.Clamp(baseColor.G + gOffset, 0, 255);
+                    var newB = Math.Clamp(baseColor.B + bOffset, 0, 255);
+                    pixelInt = (baseColor.A << 24) | (newR << 16) | (newG << 8) | newB;
                 }
 
-                foreach (var id in kvp.Value)
+                foreach (var id in value)
                 {
                     buffer[id] = pixelInt;
                 }
@@ -392,19 +425,11 @@ namespace Common.Images
         private void LoadCif_Click(object sender, RoutedEventArgs e)
         {
             var target = DialogHandler.HandleFileOpen(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath))
-            {
-                return;
-            }
+            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
 
-            // Load CIF structure directly via your custom format
             var cif = _customFormat.GetCif(target.FilePath);
-            if (cif == null)
-            {
-                return;
-            }
+            if (cif == null) return;
 
-            // Assign directly to the instance property
             CifSource = cif;
         }
 
@@ -415,32 +440,51 @@ namespace Common.Images
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void ExportCif_Click(object sender, RoutedEventArgs e)
         {
-            // Access property directly on the current instance
-            var activeCif = CifSource;
-            if (activeCif == null)
-            {
-                return;
-            }
+            if (CifSource == null) return;
 
             var target = DialogHandler.HandleFileSave(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath))
-            {
-                return;
-            }
+            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
 
-            // Export active Cif back out to disk
-            using var bitmap = activeCif.GetImage();
+            using var bitmap = CifSource.GetImage();
             if (bitmap != null)
             {
-                if (activeCif.Compressed)
-                {
+                if (CifSource.Compressed)
                     _customFormat.GenerateCifCompressedFromBitmap(bitmap, target.FilePath);
-                }
                 else
-                {
                     _customFormat.GenerateBitmapToCifFile(bitmap, target.FilePath);
-                }
             }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ExportEditedCif control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void ExportEditedCif_Click(object sender, RoutedEventArgs e)
+        {
+            // Exports the modified visual state.
+            // In a production environment, you might update the CifSource dictionary directly,
+            // but saving the active WriteableBitmap handles the combined offsets + palette edits.
+            if (CifSource == null || _writeableBitmap == null) return;
+
+            var target = DialogHandler.HandleFileSave(CifFilter);
+            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
+
+            var dir = Path.GetDirectoryName(target.FilePath) ?? string.Empty;
+            var file = Path.GetFileNameWithoutExtension(target.FilePath);
+            var newPath = Path.Combine(dir, $"{file}_edited.cif");
+
+            // Convert WriteableBitmap back to standard Bitmap for custom format pipeline
+            using var outStream = new MemoryStream();
+            BitmapEncoder enc = new PngBitmapEncoder();
+            enc.Frames.Add(BitmapFrame.Create(_writeableBitmap));
+            enc.Save(outStream);
+            using var bitmap = new Bitmap(outStream);
+
+            if (CifSource.Compressed)
+                _customFormat.GenerateCifCompressedFromBitmap(bitmap, newPath);
+            else
+                _customFormat.GenerateBitmapToCifFile(bitmap, newPath);
         }
 
         /// <summary>
@@ -468,6 +512,16 @@ namespace Common.Images
             BlueOffset = 0;
             IsolateCheckBox.IsChecked = false;
             PaletteListBox.UnselectAll();
+
+            // Reset all local color edits
+            foreach (var item in PaletteItems)
+            {
+                item.R = item.SourceColor.R;
+                item.G = item.SourceColor.G;
+                item.B = item.SourceColor.B;
+                item.IsVisible = true;
+            }
+
             RequestRender();
         }
     }

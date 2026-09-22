@@ -25,6 +25,7 @@ using Imaging.Gifs;
 using Imaging.Helpers;
 using Imaging.Interfaces;
 using Color = System.Drawing.Color;
+using ImageConverter = Imaging.Helpers.ImageConverter;
 
 namespace Imaging
 {
@@ -843,7 +844,7 @@ namespace Imaging
         /// </returns>
         public string BitmapToBase64(Bitmap bitmap)
         {
-            return Helpers.ImageConverter.BitmapToBase64(bitmap);
+            return ImageConverter.BitmapToBase64(bitmap);
         }
 
         /// <inheritdoc />
@@ -856,7 +857,7 @@ namespace Imaging
         /// </returns>
         public string BitmapImageToBase64(BitmapImage bitmapImage)
         {
-            return Helpers.ImageConverter.BitmapImageToBase64(bitmapImage);
+            return ImageConverter.BitmapImageToBase64(bitmapImage);
         }
     }
 }

@@ -8,8 +8,8 @@
 
 // ReSharper disable MemberCanBeInternal
 
-using Imaging.Objects;
 using System.Drawing;
+using Imaging.Objects;
 
 namespace Imaging.Compare
 {
@@ -35,7 +35,7 @@ namespace Imaging.Compare
         /// <exception cref="ArgumentException">Argument Exception</exception>
         /// <exception cref="InvalidOperationException">Invalid Operation</exception>
         public List<string?>? FindImagesInColorRange(int r, int g, int b, int range, string? folderPath,
-            bool checkSubfolders, IEnumerable<string> extensions)
+            bool checkSubfolders, IEnumerable<string?> extensions)
         {
             return ImageColoring.GetSimilarColors(r, g, b, range, folderPath, checkSubfolders, extensions);
         }

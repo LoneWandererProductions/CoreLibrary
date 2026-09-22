@@ -11,9 +11,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable MissingSpace
 
-using Extended.Extensions;
-using Imaging.Enums;
-using Mathematics.Constants;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +22,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Extended.Extensions;
+using Imaging.Enums;
+using Mathematics.Constants;
 
 namespace Imaging.Helpers
 {

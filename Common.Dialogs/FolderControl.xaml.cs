@@ -10,6 +10,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Common.Dialogs
 {
@@ -80,7 +81,7 @@ namespace Common.Dialogs
                 PathEntry.Focus();
                 Keyboard.Focus(PathEntry);
                 PathEntry.SelectAll();
-            }), System.Windows.Threading.DispatcherPriority.Input);
+            }), DispatcherPriority.Input);
         }
 
         /// <summary>

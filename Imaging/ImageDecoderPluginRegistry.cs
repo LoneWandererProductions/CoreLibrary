@@ -6,14 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Helpers;
-using Imaging.Plugins.Interface;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Imaging.Helpers;
+using Imaging.Plugins.Interface;
 
 namespace Imaging
 {
@@ -269,7 +269,7 @@ namespace Imaging
                         TargetInvocationException)
                 {
                     Trace.WriteLine(
-                        $"[ImageDecoderPluginRegistry] " +
+                        "[ImageDecoderPluginRegistry] " +
                         $"Failed to construct '{type.FullName}': {ex}");
                 }
             }

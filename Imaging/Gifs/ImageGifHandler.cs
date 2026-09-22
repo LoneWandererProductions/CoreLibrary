@@ -12,7 +12,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using Imaging.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,7 +21,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using Imaging.Helpers;
+using Color = System.Drawing.Color;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Imaging.Gifs
 {
@@ -86,10 +87,10 @@ namespace Imaging.Gifs
 
                     // Add 'using' so the master canvas is destroyed when we are done
                     using var masterCanvas =
-                        new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                        new Bitmap(width, height, PixelFormat.Format32bppArgb);
                     using var g = Graphics.FromImage(masterCanvas);
 
-                    g.Clear(System.Drawing.Color.Gray);
+                    g.Clear(Color.Gray);
 
                     var disposalProperty = gifImage.GetPropertyItem(0x5100);
 
@@ -107,7 +108,7 @@ namespace Imaging.Gifs
 
                         if (disposalMethod == 2)
                         {
-                            g.Clear(System.Drawing.Color.Gray);
+                            g.Clear(Color.Gray);
                         }
 
                         g.DrawImage(gifImage, new Rectangle(0, 0, width, height));
@@ -338,7 +339,7 @@ namespace Imaging.Gifs
                 var bmpData = img.LockBits(
                     new Rectangle(0, 0, img.Width, img.Height),
                     ImageLockMode.ReadOnly,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    PixelFormat.Format32bppArgb);
 
                 try
                 {

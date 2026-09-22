@@ -14,11 +14,11 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
-using Imaging.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -26,8 +26,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Color = System.Drawing.Color;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Imaging.Interfaces;
 
 namespace Imaging
 {
@@ -260,7 +259,7 @@ namespace Imaging
 
             // Lock source bits
             var rect = new Rectangle(0, 0, btm.Width, btm.Height);
-            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+            var srcData = btm.LockBits(rect, ImageLockMode.ReadOnly,
                 PixelFormat.Format32bppArgb);
 
             try

@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -33,7 +34,7 @@ namespace Common.Images
         private bool _isDragging;
 
         // Internal state
-        private double _h = 0;
+        private double _h;
         private double _s = 1;
         private double _v = 1;
         private int _alpha = 255;
@@ -647,7 +648,7 @@ namespace Common.Images
         /// <returns>Field name</returns>
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
-            if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(field, value)) return false;
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
 
             field = value;
             OnPropertyChanged(propertyName);

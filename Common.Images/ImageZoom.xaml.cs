@@ -57,18 +57,18 @@
  * [ ] Add double-buffering or DrawingVisual for smoother overlay drawing (optional)
  *
  *
- * 5. IMAGE OPERATIONS (COMPLETED / INTEGRATED)
+* 5. IMAGE OPERATIONS (COMPLETED / INTEGRATED)
  * --------------------------------------------
  * [x] Integrate DirectBitmapImage operations (Done via ImageProcessor & ImageView)
  * [x] Add selection commit logic (Done via SelectionAdorner.CaptureAndClear & Canvas_MouseUp)
  * [x] Support FreeForm Polygon filling (Done via auto-close logic in CaptureAndClear)
  * [ ] Add support for brush size/hardness visualization in the Adorner
- * [ ] Add pixel-snapping modes (whole pixel alignment when zoomed)
+ * [x] Add pixel-snapping modes (whole pixel alignment when zoomed)
  *
- *
- * 6. EXTENDED TOOLSET (FUTURE)
- * ----------------------------
- * [ ] Polygonal lasso tool (Click-to-add-point)
+ * 6. EXTENDED TOOLSET
+ * -------------------
+ * [x] Polygonal lasso tool (Click-to-add-point multi-frame support)
+ * [ ] Magic-wand / flood-fill selection
  * [ ] Magic-wand / flood-fill selection (using existing flood-fill helper)
  * [ ] Text tool (typed overlay rendered to bitmap)
  * [ ] Stamp/cloning tool
@@ -77,7 +77,7 @@
  *
  * 7. PERFORMANCE & ARCHITECTURE
  * ------------------------------
- * [ ] Add invalidate throttling (Redraw only when needed)
+ * [x] Add invalidate throttling (Redraw only when needed)
  * [x] Clear "Ghost Frames" immediately after drawing (Done via CaptureAndClear)
  * [ ] Add high-DPI support for Zoom + PixelGrid alignment
  * [ ] Allow async pixel operations for large fills
@@ -124,7 +124,7 @@ namespace Common.Images
         /// <summary>
         /// Occurs when [selected multi frames].
         /// </summary>
-        public event DelegateMultiFrame SelectedMultiFrames;
+        public event DelegateMultiFrame? SelectedMultiFrames;
 
         /// <summary>
         /// The universal image path property (handles both static and animated images).
@@ -338,6 +338,19 @@ namespace Common.Images
         /// </summary>
         private Point _startPoint;
 
+        /// <summary>
+        ///     Pan-drag origin, captured in <see cref="MainCanvas" /> coordinates (the same space
+        ///     the render-transform's OffsetX/OffsetY live in). Kept separate from
+        ///     <see cref="_startPoint" />, which is deliberately captured in <see cref="BtmImage" />
+        ///     - i.e. unscaled, image-local - coordinates for the drawing tools (Rectangle,
+        ///     Ellipse, FreeForm, Dot). Panning used to reuse <see cref="_startPoint" /> for this,
+        ///     which mixed unscaled image-space coordinates with scaled canvas-space coordinates
+        ///     in the same subtraction - correct only at exactly 100% zoom, and increasingly wrong
+        ///     (erratic drag speed/direction, worse right at the pannable edges where the clamp
+        ///     then fights the miscalculated delta) the further zoom moved from 1.0.
+        /// </summary>
+        private Point _panStartPoint;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="Window" /> class.
@@ -357,7 +370,7 @@ namespace Common.Images
         /// <summary>
         ///     The selection adorner
         /// </summary>
-        private SelectionAdorner SelectionAdorner { get; set; }
+        private SelectionAdorner? SelectionAdorner { get; set; }
 
         /// <summary>
         ///     Gets or sets the image clicked command.
@@ -465,12 +478,12 @@ namespace Common.Images
         /// <summary>
         ///     Occurs when [selected frame] was changed
         /// </summary>
-        public event DelegateFrame SelectedFrame;
+        public event DelegateFrame? SelectedFrame;
 
         /// <summary>
         ///     Occurs when [selected point].
         /// </summary>
-        public event DelegatePoint SelectedPoint;
+        public event DelegatePoint? SelectedPoint;
 
         /// <summary>
         ///     Called when [selection tool changed].
@@ -605,45 +618,30 @@ namespace Common.Images
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Capture and track the mouse.
             _mouseDown = true;
             _ = MainCanvas.CaptureMouse();
-
-            // Get the mouse position relative to the image (consistent with panning logic)
-            //var rawPoint = e.GetPosition(BtmImage);
-
-            //_startPoint = e.GetPosition(MainCanvas);
             _startPoint = e.GetPosition(BtmImage);
-
-            // Capture the mouse
-            _ = MainCanvas.CaptureMouse();
 
             AttachAdorner(SelectionTool);
 
-            // If this is a pan start, capture origin offsets (in image transform space)
             if (SelectionTool == ImageZoomTools.Move)
             {
-                // Capture the current image transform offset as the origin for panning
+                _panStartPoint = e.GetPosition(MainCanvas);
                 var matrix = BtmImage.RenderTransform.Value;
                 _originPoint = new Point(matrix.OffsetX, matrix.OffsetY);
             }
 
             switch (SelectionTool)
             {
-                case ImageZoomTools.Move:
-                    break;
                 case ImageZoomTools.Trace:
-                    SelectionAdorner.IsTracing = true;
+                    if (SelectionAdorner != null) SelectionAdorner.IsTracing = true;
                     break;
-                case ImageZoomTools.Rectangle:
-                case ImageZoomTools.Ellipse:
-                case ImageZoomTools.FreeForm:
+                case ImageZoomTools.Polygon:
+                    SelectionAdorner?.AddFreeFormPoint(_startPoint);
                     break;
                 case ImageZoomTools.Dot:
                     SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
                     break;
-                default:
-                    return;
             }
         }
 
@@ -673,10 +671,7 @@ namespace Common.Images
 
             // 2. Identify "Immediate Action" tools (Shapes, Frames)
             // 🔴 REMOVED 'ImageZoomTools.Dot' from this list
-            var isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
-                                SelectionTool == ImageZoomTools.Ellipse ||
-                                SelectionTool == ImageZoomTools.FreeForm ||
-                                SelectionTool == ImageZoomTools.Trace;
+            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.FreeForm or ImageZoomTools.Trace;
 
             if (isDrawingTool)
             {
@@ -721,9 +716,14 @@ namespace Common.Images
                     var transform = (MatrixTransform)BtmImage.RenderTransform;
                     var matrix = transform.Matrix;
 
-                    // 1. Calculate intended new offsets
-                    var newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
-                    var newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
+                    // 1. Calculate intended new offsets. Both sides of each subtraction must be
+                    // in the same coordinate space - currentCanvasPos is in Canvas (scaled)
+                    // space, so the drag origin has to be too (_panStartPoint), not _startPoint
+                    // (image-local/unscaled space, used by the drawing tools instead). Mixing the
+                    // two here used to make panning feel erratic and made it worse the further
+                    // zoom was from 100%.
+                    var newX = _originPoint.X + (currentCanvasPos.X - _panStartPoint.X);
+                    var newY = _originPoint.Y + (currentCanvasPos.Y - _panStartPoint.Y);
 
                     // 2. Boundary Checks
                     var viewWidth = ScrollView.ActualWidth;
@@ -805,37 +805,28 @@ namespace Common.Images
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            // 1. If we are currently dragging (Mouse Left is Down), cancel the current shape
+            // 1. If currently dragging (Mouse Left is Down), cancel current action
             if (_mouseDown)
             {
                 _mouseDown = false;
                 MainCanvas.ReleaseMouseCapture();
-                // Optional: reset current points in Adorner without committing
-                // SelectionAdorner.ResetCurrent();
                 return;
             }
 
-            // 2. If we are idle, Right Click means "I am finished selecting"
+            // 2. Idle Right-Click completes multi-frame selection
             if (SelectionAdorner != null)
             {
-                // Get all collected frames
                 var frames = SelectionAdorner.GetCommittedFrames();
 
                 if (frames.Count > 0)
                 {
-                    // Fire event with list of frames
                     SelectedMultiFrames?.Invoke(frames);
-                    // Execute command if you have a List version of the command
-                    // SafeExecuteCommand(SelectedMultiFramesCommand, frames);
+                    SafeExecuteCommand(SelectedMultiFramesCommand, frames);
                 }
 
-                // Cleanup
                 var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
                 adornerLayer?.Remove(SelectionAdorner);
                 SelectionAdorner = null;
-
-                // Optional: Reset tool to Move automatically?
-                // SelectionTool = ImageZoomTools.Move;
             }
         }
 
@@ -932,7 +923,7 @@ namespace Common.Images
                         try
                         {
                             var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-                            adornerLayer?.Remove(SelectionAdorner);
+                            if (SelectionAdorner != null) adornerLayer?.Remove(SelectionAdorner);
                         }
                         catch
                         {

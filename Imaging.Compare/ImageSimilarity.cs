@@ -37,7 +37,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             return folderPath == null
                 ? null
@@ -58,7 +58,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetSimilarImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
@@ -144,36 +144,33 @@ namespace Imaging.Compare
             var imagePathsAndGrayValues = new ConcurrentBag<ImageSimilar>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            if (Translator != null)
+            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
             {
-                Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
+                var (key, value) = pathImage;
+                try
                 {
-                    var (key, value) = pathImage;
-                    try
-                    {
-                        if (value == null) return;
+                    if (value == null) return;
 
-                        using var btm = new Bitmap(value);
-                        var dup = ImageProcessing.GenerateData(btm, key);
-                        imagePathsAndGrayValues.Add(dup);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-                    catch (OutOfMemoryException ex)
-                    {
-                        // Skip this one file rather than aborting the whole scan - see
-                        // the identical fix in ImageDuplication.GetSortedGrayScaleValues.
-                        var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
-                        Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-                });
-            }
+                    using var btm = new Bitmap(value);
+                    var dup = ImageProcessing.GenerateData(btm, key);
+                    imagePathsAndGrayValues.Add(dup);
+                }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+                catch (OutOfMemoryException ex)
+                {
+                    // Skip this one file rather than aborting the whole scan - see
+                    // the identical fix in ImageDuplication.GetSortedGrayScaleValues.
+                    var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
+                    Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+            });
 
             Trace.WriteLine(nameof(GetSortedGrayScaleValues));
             Trace.WriteLine(imagePathsAndGrayValues.Count);

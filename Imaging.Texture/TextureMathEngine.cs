@@ -1015,8 +1015,8 @@ namespace Imaging.Texture
                     {
                         for (var checkX = startX; checkX <= endX; checkX++)
                         {
-                            double dx = (x + warpX) - featurePointsX[checkX, checkY];
-                            double dy = (y + warpY) - featurePointsY[checkX, checkY];
+                            var dx = (x + warpX) - featurePointsX[checkX, checkY];
+                            var dy = (y + warpY) - featurePointsY[checkX, checkY];
 
                             var leafShapeDist = Math.Sqrt(dx * dx * 1.8 + dy * dy * 0.8) + Math.Abs(dx) * 0.5;
 
@@ -1209,7 +1209,7 @@ namespace Imaging.Texture
             if (noiseGen == null) return buffer;
 
             // 1. Get stone heights (0.0 is mortar, 1.0 is peak rock)
-            var heightMap = noiseGen.GenerateVoronoiMap(gridCells, TextureConstants.DefaultSeed);
+            var heightMap = noiseGen.GenerateVoronoiMap(gridCells);
 
             // Lighting vector (Top-Left, pointing down at the surface)
             double lx = -1.0, ly = -1.0, lz = 1.5;
@@ -1485,8 +1485,8 @@ namespace Imaging.Texture
                     {
                         for (var checkX = startX; checkX <= endX; checkX++)
                         {
-                            double dx = sampleX - featurePointsX[checkX, checkY];
-                            double dy = sampleY - featurePointsY[checkX, checkY];
+                            var dx = sampleX - featurePointsX[checkX, checkY];
+                            var dy = sampleY - featurePointsY[checkX, checkY];
                             var dist = Math.Sqrt(dx * dx + dy * dy);
 
                             if (dist < dist1)

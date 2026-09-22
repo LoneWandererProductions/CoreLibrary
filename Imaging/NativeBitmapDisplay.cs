@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
 namespace Imaging
 {
@@ -138,7 +139,7 @@ namespace Imaging
         {
             if (_pictureBox.InvokeRequired)
             {
-                _pictureBox.Invoke(new System.Windows.Forms.MethodInvoker(() => _pictureBox.Invalidate()));
+                _pictureBox.Invoke(new MethodInvoker(() => _pictureBox.Invalidate()));
             }
             else
             {

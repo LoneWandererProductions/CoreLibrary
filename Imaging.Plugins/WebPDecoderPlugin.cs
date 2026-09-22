@@ -21,7 +21,7 @@ namespace Imaging.Plugins
         public string Name => "WebP Decoder";
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> SupportedExtensions { get; } = new[] { ".webp" };
+        public IReadOnlyCollection<string?> SupportedExtensions { get; } = new[] { ".webp" };
 
         /// <inheritdoc />
         public bool CanDecode(byte[] header)
@@ -48,7 +48,7 @@ namespace Imaging.Plugins
         }
 
         /// <inheritdoc />
-        public Bitmap Decode(byte[] data)
+        public Bitmap? Decode(byte[] data)
         {
             var decoder = new SimpleDecoder();
             return decoder.DecodeFromBytes(data, data.Length);

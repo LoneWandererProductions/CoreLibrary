@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
@@ -38,7 +39,7 @@ namespace Imaging
             {
                 fixed (byte* pSource = source.PixelData)
                 {
-                    System.Buffer.MemoryCopy(pSource, (void*)data.Scan0, source.Length, source.Length);
+                    Buffer.MemoryCopy(pSource, (void*)data.Scan0, source.Length, source.Length);
                 }
             }
             finally

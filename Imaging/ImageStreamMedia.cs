@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imaging.Helpers;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Imaging
 {
@@ -154,7 +155,7 @@ namespace Imaging
             var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var rect = new Rectangle(0, 0, width, height);
             var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                PixelFormat.Format32bppArgb);
 
             wbmp.Lock();
             unsafe
@@ -201,7 +202,7 @@ namespace Imaging
             // 1. Lock GDI+ bits
             var rect = new Rectangle(0, 0, width, height);
             var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                PixelFormat.Format32bppArgb);
 
             try
             {

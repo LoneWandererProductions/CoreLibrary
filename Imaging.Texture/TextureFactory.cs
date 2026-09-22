@@ -36,8 +36,7 @@ namespace Imaging.Texture
                 height,
                 noiseGenInstance,
                 activeConfig.RgbRamp,
-                activeConfig.TurbulenceSize,
-                255);
+                activeConfig.TurbulenceSize);
         }
 
         /// <summary>
@@ -83,8 +82,7 @@ namespace Imaging.Texture
                 height,
                 noiseGenInstance,
                 activeConfig.RgbRamp,
-                activeConfig.TurbulenceSize,
-                255);
+                activeConfig.TurbulenceSize);
         }
 
         /// <summary>
@@ -122,7 +120,7 @@ namespace Imaging.Texture
             // Calls the engine method containing the warping math
             return TextureMathEngine.GenerateWarpedMapped(
                 width, height, noiseGen, activeConfig.RgbRamp,
-                activeConfig.TurbulenceSize, activeConfig.WarpScale, activeConfig.WarpStrength, 255);
+                activeConfig.TurbulenceSize, activeConfig.WarpScale, activeConfig.WarpStrength);
         }
 
         /// <summary>
@@ -142,7 +140,7 @@ namespace Imaging.Texture
             // Calls the engine method containing the ridged math
             return TextureMathEngine.GenerateRidgedMapped(
                 width, height, noiseGen, activeConfig.RgbRamp,
-                activeConfig.TurbulenceSize, activeConfig.Octaves, activeConfig.Persistence, 255);
+                activeConfig.TurbulenceSize, activeConfig.Octaves, activeConfig.Persistence);
         }
 
         /// <summary>

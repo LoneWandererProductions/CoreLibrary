@@ -10,11 +10,11 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Plugins.Interface;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
+using Imaging.Plugins.Interface;
 
 namespace Imaging.Plugins
 {
@@ -33,7 +33,7 @@ namespace Imaging.Plugins
         public string Name => "PPM (Netpbm P6) decoder";
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> SupportedExtensions { get; } = new[] { ".ppm" };
+        public IReadOnlyCollection<string?> SupportedExtensions { get; } = new[] { ".ppm" };
 
         /// <inheritdoc />
         public bool CanDecode(byte[] header)
@@ -51,7 +51,7 @@ namespace Imaging.Plugins
         }
 
         /// <inheritdoc />
-        public Bitmap Decode(byte[] data)
+        public Bitmap? Decode(byte[] data)
         {
             using var stream = new MemoryStream(data);
 
@@ -96,7 +96,7 @@ namespace Imaging.Plugins
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Normal Bitmap</returns>
-        private static Bitmap ToBitmap(byte[] rgb, int width, int height)
+        private static Bitmap? ToBitmap(byte[] rgb, int width, int height)
         {
             var bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
             var bits = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly,

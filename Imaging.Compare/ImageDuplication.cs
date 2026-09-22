@@ -45,7 +45,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions)
+            IEnumerable<string?> extensions)
         {
             return folderPath == null
                 ? null
@@ -65,7 +65,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetDuplicateImages(IEnumerable<string?> folderPaths,
-            bool checkSubfolders, IEnumerable<string> extensions)
+            bool checkSubfolders, IEnumerable<string?> extensions)
         {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
@@ -114,37 +114,34 @@ namespace Imaging.Compare
             var imagePathsAndGrayValues = new ConcurrentBag<ImageDuplicate>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            if (Translator != null)
+            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
             {
-                Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
+                var (key, value) = pathImage;
+                try
                 {
-                    var (key, value) = pathImage;
-                    try
-                    {
-                        if (value == null) return;
+                    if (value == null) return;
 
-                        using var btm = new Bitmap(value);
-                        var dup = GenerateData(btm, key);
-                        imagePathsAndGrayValues.Add(dup);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-                    catch (OutOfMemoryException ex)
-                    {
-                        // Skip this one file rather than aborting the whole scan - losing
-                        // everything processed so far over one oversized/corrupt image is
-                        // exactly the failure mode a bulk duplicate scan needs to avoid.
-                        var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
-                        Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
-                });
-            }
+                    using var btm = new Bitmap(value);
+                    var dup = GenerateData(btm, key);
+                    imagePathsAndGrayValues.Add(dup);
+                }
+                catch (ArgumentException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+                catch (OutOfMemoryException ex)
+                {
+                    // Skip this one file rather than aborting the whole scan - losing
+                    // everything processed so far over one oversized/corrupt image is
+                    // exactly the failure mode a bulk duplicate scan needs to avoid.
+                    var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
+                    Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Trace.WriteLine(ex);
+                }
+            });
 
             return imagePathsAndGrayValues.ToList();
         }

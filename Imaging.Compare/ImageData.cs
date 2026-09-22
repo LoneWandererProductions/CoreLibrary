@@ -27,7 +27,7 @@ namespace Imaging.Compare
         /// <value>
         ///     The image path.
         /// </value>
-        public string? ImagePath { get; init; }
+        public string ImagePath { get; init; }
 
         /// <summary>
         ///     Gets or sets the name of the image.
@@ -35,7 +35,7 @@ namespace Imaging.Compare
         /// <value>
         ///     The name of the image.
         /// </value>
-        public string? ImageName { get; init; }
+        public string ImageName { get; init; }
 
         /// <summary>
         ///     Gets or sets the r.
@@ -99,7 +99,7 @@ namespace Imaging.Compare
         /// <value>
         ///     The extension.
         /// </value>
-        public string? Extension { get; init; }
+        public string Extension { get; init; }
 
         /// <summary>
         ///     Gets the details.

@@ -308,9 +308,9 @@ namespace Imaging.Texture
         public static TextureConfig GetCustomLatexConfig(byte r, byte g, byte b)
         {
             // Lighten base color for sheen specular tinting
-            byte sheenR = (byte)Math.Min(255, r + 100);
-            byte sheenG = (byte)Math.Min(255, g + 100);
-            byte sheenB = (byte)Math.Min(255, b + 100);
+            var sheenR = (byte)Math.Min(255, r + 100);
+            var sheenG = (byte)Math.Min(255, g + 100);
+            var sheenB = (byte)Math.Min(255, b + 100);
 
             return new TextureConfig
             {
@@ -332,9 +332,9 @@ namespace Imaging.Texture
         public static TextureConfig GetCustomLeatherConfig(byte r, byte g, byte b, double shadowFactor = 0.35)
         {
             // Darken base color to create realistic crease depth
-            byte poreR = (byte)(r * shadowFactor);
-            byte poreG = (byte)(g * shadowFactor);
-            byte poreB = (byte)(b * shadowFactor);
+            var poreR = (byte)(r * shadowFactor);
+            var poreG = (byte)(g * shadowFactor);
+            var poreB = (byte)(b * shadowFactor);
 
             return new TextureConfig
             {

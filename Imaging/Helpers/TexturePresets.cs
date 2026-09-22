@@ -6,8 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Enums;
 using System.Drawing;
+using Imaging.Enums;
 
 namespace Imaging.Helpers
 {
@@ -87,7 +87,7 @@ namespace Imaging.Helpers
             {
                 TurbulenceSize = 128.0,
                 // Color mapping: Deep Void -> Cyan -> Bright Magic Purple -> White
-                ColorRamp = new Color[]
+                ColorRamp = new[]
                 {
                     Color.FromArgb(5, 5, 20), Color.FromArgb(0, 150, 200), Color.FromArgb(180, 50, 255), Color.White
                 }
@@ -104,7 +104,7 @@ namespace Imaging.Helpers
             {
                 TurbulenceSize = 32.0,
                 // Color mapping: Hardened Magma -> Deep Red -> Bright Orange -> Yellow Hot
-                ColorRamp = new Color[]
+                ColorRamp = new[]
                 {
                     Color.FromArgb(40, 10, 10), Color.FromArgb(180, 20, 0), Color.FromArgb(255, 120, 0),
                     Color.FromArgb(255, 220, 50)

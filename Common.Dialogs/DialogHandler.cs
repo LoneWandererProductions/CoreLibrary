@@ -82,7 +82,7 @@ namespace Common.Dialogs
         /// <param name="source">The originating component or method.</param>
         /// <param name="details">Extended stack trace or detail logs.</param>
         /// <param name="title">The window title.</param>
-        public static void ErrorDialog(string message, string source = "", string details = "", string title = "Error")
+        public static void ErrorDialog(string message, string? source = "", string details = "", string title = "Error")
         {
             var dispatcher = Application.Current?.Dispatcher;
 
@@ -156,7 +156,11 @@ namespace Common.Dialogs
                 folder = Directory.GetCurrentDirectory();
             }
 
-            var openFile = new OpenFileDialog { Filter = NormalizeFilter(appendage), InitialDirectory = folder };
+            var openFile = new OpenFileDialog
+            {
+                Filter = NormalizeFilter(appendage),
+                InitialDirectory = folder
+            };
 
             if (openFile.ShowDialog() != true)
             {
@@ -181,7 +185,9 @@ namespace Common.Dialogs
 
             var openFile = new OpenFileDialog
             {
-                Filter = NormalizeFilter(appendage), InitialDirectory = folder, Multiselect = true
+                Filter = NormalizeFilter(appendage),
+                InitialDirectory = folder,
+                Multiselect = true
             };
 
             if (openFile.ShowDialog() != true)
@@ -209,7 +215,9 @@ namespace Common.Dialogs
 
             var saveFile = new SaveFileDialog
             {
-                Filter = NormalizeFilter(appendage), InitialDirectory = folder, OverwritePrompt = true
+                Filter = NormalizeFilter(appendage),
+                InitialDirectory = folder,
+                OverwritePrompt = true
             };
 
             if (saveFile.ShowDialog() != true)

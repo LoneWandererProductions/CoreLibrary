@@ -24,6 +24,6 @@ namespace Common.Images
         /// <summary>
         /// The Identifier of the Thumbnails control instance (e.g., "Group_0").
         /// </summary>
-        public string SenderTag { get; internal init; }
+        public string? SenderTag { get; internal init; }
     }
 }

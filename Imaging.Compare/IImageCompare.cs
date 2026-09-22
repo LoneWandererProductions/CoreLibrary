@@ -8,7 +8,6 @@
  */
 
 // ReSharper disable UnusedMemberInSuper.Global
-// ReSharper disable UnusedMember.Global
 
 namespace Imaging.Compare
 {
@@ -28,7 +27,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold);
+            IEnumerable<string?> extensions, float threshold);
 
         /// <summary>
         ///     Find all similar images across one or more folders (and possibly their
@@ -42,7 +41,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         List<List<string>>? GetSimilarImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold);
+            IEnumerable<string?> extensions, float threshold);
 
         /// <summary>
         ///     Find all duplicate images in a folder, and possibly subfolders
@@ -54,7 +53,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions);
+            IEnumerable<string?> extensions);
 
         /// <summary>
         ///     Find all duplicate images across one or more folders (and possibly their
@@ -67,6 +66,6 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         List<List<string>>? GetDuplicateImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
-            IEnumerable<string> extensions);
+            IEnumerable<string?> extensions);
     }
 }

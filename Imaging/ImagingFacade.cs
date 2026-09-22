@@ -10,8 +10,6 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-using Imaging.Enums;
-using Imaging.Gifs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,6 +18,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Enums;
+using Imaging.Gifs;
+using Color = System.Drawing.Color;
 
 namespace Imaging
 {
@@ -254,7 +255,7 @@ namespace Imaging
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
         /// <returns>The <see cref="System.Drawing.Color"/> of the pixel.</returns>
-        public static System.Drawing.Color GetPixel(Bitmap? image, Point p)
+        public static Color GetPixel(Bitmap? image, Point p)
             => RenderEngine.GetPixel(image, p);
 
         /// <summary>
@@ -263,7 +264,7 @@ namespace Imaging
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
         /// <param name="color">The color to set.</param>
-        public static void SetPixel(Bitmap? image, Point p, System.Drawing.Color color)
+        public static void SetPixel(Bitmap? image, Point p, Color color)
             => RenderEngine.SetPixel(image, p, color);
 
         /// <summary>
@@ -273,7 +274,7 @@ namespace Imaging
         /// <param name="x">X-coordinate of start point.</param>
         /// <param name="y">Y-coordinate of start point.</param>
         /// <param name="newColor">The fill color.</param>
-        public static void FloodFill(Bitmap? image, int x, int y, System.Drawing.Color newColor)
+        public static void FloodFill(Bitmap? image, int x, int y, Color newColor)
             => RenderEngine.FloodFillScanLineStack(image, x, y, newColor);
 
         #endregion

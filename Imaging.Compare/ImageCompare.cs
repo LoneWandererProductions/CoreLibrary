@@ -28,7 +28,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         public List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             return ImageSimilarity.GetSimilarImages(folderPath, checkSubfolders, extensions, threshold);
         }
@@ -46,7 +46,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         public List<List<string>>? GetSimilarImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             return ImageSimilarity.GetSimilarImages(folderPaths, checkSubfolders, extensions, threshold);
         }
@@ -62,7 +62,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         public List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions)
+            IEnumerable<string?> extensions)
         {
             return ImageDuplication.GetDuplicateImages(folderPath, checkSubfolders, extensions);
         }
@@ -79,7 +79,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         public List<List<string>>? GetDuplicateImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
-            IEnumerable<string> extensions)
+            IEnumerable<string?> extensions)
         {
             return ImageDuplication.GetDuplicateImages(folderPaths, checkSubfolders, extensions);
         }

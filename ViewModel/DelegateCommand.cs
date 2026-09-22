@@ -25,7 +25,7 @@ namespace ViewModel
         /// <summary>
         ///     The predicate to determine if the command can execute.
         /// </summary>
-        private readonly Predicate<object?>? _canExecute;
+        private readonly Predicate<T?>? _canExecute;
 
         /// <summary>
         /// The execute command.
@@ -39,9 +39,8 @@ namespace ViewModel
         /// <param name="canExecute">A predicate to determine if the command can execute. If null, the command is always
         /// executable.</param>
         /// <exception cref="System.ArgumentNullException">execute</exception>
-        public DelegateCommand(Action<T?> execute, Predicate<object?>? canExecute = null)
+        public DelegateCommand(Action<T?> execute, Predicate<T?>? canExecute = null)
         {
-            // Added the ArgumentNullException throw that was documented in your XML comments
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
@@ -61,7 +60,14 @@ namespace ViewModel
         /// <param name="parameter">The parameter for the predicate.</param>
         /// <returns>True if the command can execute, otherwise false.</returns>
         public bool CanExecute(object? parameter)
-            => _canExecute?.Invoke((parameter is T t) ? t : default) ?? true;
+        {
+            if (_canExecute == null) return true;
+
+            if (parameter is T typedParam)
+                return _canExecute(typedParam);
+
+            return parameter == null && _canExecute(default);
+        }
 
         /// <summary>
         ///     Raises the <see cref="CanExecuteChanged"/> event to force WPF to re-query CanExecute.

@@ -16,7 +16,8 @@
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 using System;
-using System.Windows.Media;
+using System.Drawing;
+using ColorConverter = System.Windows.Media.ColorConverter;
 
 namespace Imaging
 {
@@ -180,7 +181,7 @@ namespace Imaging
             if (string.IsNullOrWhiteSpace(hex))
                 throw new ArgumentException("Hex string cannot be null or empty.");
 
-            var color = (Color)ColorConverter.ConvertFromString(hex);
+            var color = (System.Windows.Media.Color)ColorConverter.ConvertFromString(hex);
 
             return FromRgb(color.R, color.G, color.B, a);
         }
@@ -208,20 +209,20 @@ namespace Imaging
         /// <param name="b">The b.</param>
         /// <param name="a">a.</param>
         /// <returns>Color Object from drawing.</returns>
-        public static System.Drawing.Color GetDrawingColor(int r, int g, int b, int a = 255)
+        public static Color GetDrawingColor(int r, int g, int b, int a = 255)
         {
             ValidateRgb(r, g, b, a);
-            return System.Drawing.Color.FromArgb(a, r, g, b);
+            return Color.FromArgb(a, r, g, b);
         }
 
         /// <summary>
         /// Gets the color of the drawing.
         /// </summary>
         /// <returns>Color Object from drawing.</returns>
-        public System.Drawing.Color GetDrawingColor()
+        public Color GetDrawingColor()
         {
             ValidateRgb(R, G, B, A);
-            return System.Drawing.Color.FromArgb(A, R, G, B);
+            return Color.FromArgb(A, R, G, B);
         }
 
         /// <inheritdoc />
