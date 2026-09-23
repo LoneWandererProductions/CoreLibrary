@@ -39,6 +39,11 @@ namespace Common.Images
         private byte _b;
 
         /// <summary>
+        /// Gets the number of pixels using this color.
+        /// </summary>
+        public int PixelCount { get; }
+
+        /// <summary>
         /// The is visible
         /// </summary>
         private bool _isVisible = true;
@@ -65,14 +70,16 @@ namespace Common.Images
         public int OriginalIndex { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CifColorItem"/> class.
+        /// Initializes a new instance of the <see cref="CifColorItem" /> class.
         /// </summary>
         /// <param name="originalColor">Color of the original.</param>
         /// <param name="originalIndex">Index of the original.</param>
-        public CifColorItem(SystemDrawingColor originalColor, int originalIndex = 0)
+        /// <param name="pixelCount">The pixel count.</param>
+        public CifColorItem(SystemDrawingColor originalColor, int originalIndex = 0, int pixelCount = 0)
         {
             SourceColor = originalColor;
             OriginalIndex = originalIndex;
+            PixelCount = pixelCount;
             _r = originalColor.R;
             _g = originalColor.G;
             _b = originalColor.B;

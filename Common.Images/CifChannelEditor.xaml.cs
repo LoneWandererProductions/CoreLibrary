@@ -54,6 +54,11 @@ namespace Common.Images
         private readonly CustomImageFormat _customFormat = new();
 
         /// <summary>
+        /// The is syncing multiselect
+        /// </summary>
+        private bool _isSyncingMultiselect;
+
+        /// <summary>
         /// Gets the palette items.
         /// </summary>
         /// <value>
@@ -258,9 +263,23 @@ namespace Common.Images
         /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
         private void ColorItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            // Re-render when R, G, or B sliders are moved
             if (e.PropertyName is nameof(CifColorItem.R) or nameof(CifColorItem.G) or nameof(CifColorItem.B))
             {
+                // Sync the R, G, or B value to all other selected items in the ListBox
+                if (!_isSyncingMultiselect && sender is CifColorItem changedItem && PaletteListBox?.SelectedItems.Contains(changedItem) == true)
+                {
+                    _isSyncingMultiselect = true;
+                    foreach (CifColorItem item in PaletteListBox.SelectedItems)
+                    {
+                        if (item == changedItem) continue;
+
+                        if (e.PropertyName == nameof(CifColorItem.R)) item.R = changedItem.R;
+                        else if (e.PropertyName == nameof(CifColorItem.G)) item.G = changedItem.G;
+                        else if (e.PropertyName == nameof(CifColorItem.B)) item.B = changedItem.B;
+                    }
+                    _isSyncingMultiselect = false;
+                }
+
                 RequestRender();
                 CheckForColorMerge(sender as CifColorItem);
             }
@@ -321,7 +340,10 @@ namespace Common.Images
             var bOffset = BlueOffset;
             var cif = CifSource;
             var isIsolationEnabled = IsIsolationEnabled;
-            var selectedItem = SelectedPaletteItem;
+            var isolatedColorArgb = PaletteListBox.SelectedItems
+                .Cast<CifColorItem>()
+                .Select(i => i.SourceColor.ToArgb())
+                .ToHashSet();
 
             // Snapshot the current UI palette colors for thread safety
             var activePalette = PaletteItems.ToDictionary(p => p.SourceColor, p => p.CurrentDrawingColor);
@@ -329,7 +351,7 @@ namespace Common.Images
             try
             {
                 var pixelData = await Task.Run(() => GeneratePixelData(
-                    cif, rOffset, gOffset, bOffset, isIsolationEnabled, selectedItem, activePalette, token), token);
+                    cif, rOffset, gOffset, bOffset, isIsolationEnabled, isolatedColorArgb, activePalette, token), token);
 
                 if (token.IsCancellationRequested || pixelData == null) return;
 
@@ -350,34 +372,37 @@ namespace Common.Images
         /// <param name="gOffset">The g offset.</param>
         /// <param name="bOffset">The b offset.</param>
         /// <param name="isIsolationEnabled">if set to <c>true</c> [is isolation enabled].</param>
-        /// <param name="isolatedItem">The isolated item.</param>
+        /// <param name="isolatedColorArgb">The isolated color ARGB.</param>
         /// <param name="activePalette">The active palette.</param>
         /// <param name="token">The token.</param>
-        /// <returns>Array of Pixel data.</returns>
+        /// <returns>
+        /// Array of Pixel data.
+        /// </returns>
         private static int[]? GeneratePixelData(
             Cif cif,
             int rOffset,
             int gOffset,
             int bOffset,
             bool isIsolationEnabled,
-            CifColorItem? isolatedItem,
+            HashSet<int> isolatedColorArgb,
             IReadOnlyDictionary<SystemDrawingColor, SystemDrawingColor> activePalette,
             CancellationToken token)
         {
+            if(cif == null || cif.CifImage == null) return null;
+
             var totalPixels = cif.PixelCount;
             var buffer = new int[totalPixels];
 
             foreach (var (originalColor, value) in cif.CifImage)
             {
                 if (token.IsCancellationRequested) return null;
-
-                // Use the edited UI color if it exists, otherwise fall back to original
                 var baseColor = activePalette.TryGetValue(originalColor, out var uiColor) ? uiColor : originalColor;
                 int pixelInt;
 
-                if (isIsolationEnabled && isolatedItem != null)
+                // Updated isolation check to support multiple selected colors
+                if (isIsolationEnabled && isolatedColorArgb.Count > 0)
                 {
-                    if (originalColor.ToArgb() == isolatedItem.SourceColor.ToArgb())
+                    if (isolatedColorArgb.Contains(originalColor.ToArgb()))
                     {
                         var newR = Math.Clamp(baseColor.R + rOffset, 0, 255);
                         var newG = Math.Clamp(baseColor.G + gOffset, 0, 255);
@@ -405,16 +430,6 @@ namespace Common.Images
             }
 
             return buffer;
-        }
-
-        /// <summary>
-        /// Called when [isolation mode changed].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void OnIsolationModeChanged(object sender, RoutedEventArgs e)
-        {
-            RequestRender();
         }
 
         /// <summary>

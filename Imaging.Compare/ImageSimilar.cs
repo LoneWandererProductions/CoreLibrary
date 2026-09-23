@@ -44,12 +44,12 @@ namespace Imaging.Compare
         }
 
         /// <summary>
-        ///     Gets the image Color Values.
+        /// Gets the image Color Values.
         /// </summary>
         /// <value>
-        ///     The image.
+        /// The image.
         /// </value>
-        internal byte[,] Image { get; init; }
+        internal byte[] Image { get; init; }
 
         /// <summary>
         ///     Gets the average Red Values.
@@ -91,7 +91,7 @@ namespace Imaging.Compare
         /// <returns>
         ///     True if this Object is equal to <paramref name="other" /> else false"/>.
         /// </returns>
-        public bool Equals(ImageSimilar other)
+        public bool Equals(in ImageSimilar other)
         {
             return other.R.Interval(R, ImageResources.ColorThreshold) &&
                    other.G.Interval(G, ImageResources.ColorThreshold) &&

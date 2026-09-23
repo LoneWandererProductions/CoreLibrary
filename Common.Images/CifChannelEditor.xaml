@@ -9,7 +9,7 @@
              Foreground="{DynamicResource TextPrimaryBrush}">
     <UserControl.Resources>
         <ResourceDictionary>
-        <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <!-- Inverse of the above: shows the "load a file" hint exactly while no CIF is loaded. -->
             <converter:NullToVisibilityConverter x:Key="VisibleWhenNullConverter" Invert="True" />
 
@@ -102,7 +102,7 @@
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Red Offset"
                                        Foreground="#FFE06C6C" FontWeight="SemiBold" />
                             <Slider Grid.Row="1" Grid.Column="0" x:Name="RedSlider" Minimum="-255" Maximum="255"
-                                Value="{Binding Path=RedOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Value="{Binding Path=RedOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     MouseDoubleClick="OffsetSlider_MouseDoubleClick"
                                     ToolTip="Drag to adjust; double-click to reset to 0" Margin="0,2,8,0" />
                             <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
@@ -124,7 +124,7 @@
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Green Offset"
                                        Foreground="#FF7CC47C" FontWeight="SemiBold" />
                             <Slider Grid.Row="1" Grid.Column="0" x:Name="GreenSlider" Minimum="-255" Maximum="255"
-                                Value="{Binding Path=GreenOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Value="{Binding Path=GreenOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     MouseDoubleClick="OffsetSlider_MouseDoubleClick"
                                     ToolTip="Drag to adjust; double-click to reset to 0" Margin="0,2,8,0" />
                             <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
@@ -146,7 +146,7 @@
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Blue Offset"
                                        Foreground="#FF6C9CE0" FontWeight="SemiBold" />
                             <Slider Grid.Row="1" Grid.Column="0" x:Name="BlueSlider" Minimum="-255" Maximum="255"
-                                Value="{Binding Path=BlueOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Value="{Binding Path=BlueOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     MouseDoubleClick="OffsetSlider_MouseDoubleClick"
                                     ToolTip="Drag to adjust; double-click to reset to 0" Margin="0,2,8,0" />
                             <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
@@ -181,11 +181,12 @@
                                  Foreground="{StaticResource TextMutedBrush}" />
                         </TextBlock>
                         <ListBox x:Name="PaletteListBox" Height="150"
-                                 Background="{StaticResource InputBrush}"
-                                 BorderBrush="{StaticResource BorderSubtleBrush}"
-                                 ItemsSource="{Binding Path=PaletteItems, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 SelectedItem="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                                 SelectionChanged="PaletteListBox_SelectionChanged">
+                             SelectionMode="Extended"
+                             Background="{StaticResource InputBrush}"
+                             BorderBrush="{StaticResource BorderSubtleBrush}"
+                             ItemsSource="{Binding Path=PaletteItems, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             SelectedItem="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                             SelectionChanged="PaletteListBox_SelectionChanged">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -207,6 +208,7 @@
                                         </Border>
                                         <TextBlock Text="{Binding HexValue}" VerticalAlignment="Center" Width="60"
                                                    FontFamily="Consolas" />
+                                        <TextBlock Text="{Binding PixelCount, StringFormat='({0} px)'}" Foreground="{StaticResource TextMutedBrush}"/>
                                         <TextBlock Text="{Binding R, StringFormat=R:{0:D3}}" Foreground="#FFE06C6C"
                                                    Margin="5,0" />
                                         <TextBlock Text="{Binding G, StringFormat=G:{0:D3}}" Foreground="#FF7CC47C"

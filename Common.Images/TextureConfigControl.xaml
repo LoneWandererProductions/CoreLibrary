@@ -69,14 +69,14 @@
                         <StackPanel>
                             <!-- Min Value -->
                             <Grid Margin="0,0,0,6" Visibility="{Binding IsMinValueActive, Converter={StaticResource CollapseIfInactiveConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
                                 <TextBlock Text="Min Value" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Minimum intensity or brightness boundary for noise generation" />
+                                         ToolTip="Minimum intensity or brightness boundary for noise generation" />
                             </Grid>
 
                             <!-- Max Value -->
@@ -88,7 +88,7 @@
                                 <TextBlock Text="Max Value" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Maximum intensity or brightness boundary for noise generation" />
+                                         ToolTip="Maximum intensity or brightness boundary for noise generation" />
                             </Grid>
 
                             <!-- Alpha -->
@@ -100,7 +100,7 @@
                                 <TextBlock Text="Alpha" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Overall opacity channel value for the generated texture (0.0 to 1.0)" />
+                                         ToolTip="Overall opacity channel value for the generated texture (0.0 to 1.0)" />
                             </Grid>
 
                             <!-- X Period -->
@@ -112,7 +112,7 @@
                                 <TextBlock Text="X Period" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding XPeriod, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Horizontal repetition frequency rate for wave/pattern generation" />
+                                         ToolTip="Horizontal repetition frequency rate for wave/pattern generation" />
                             </Grid>
 
                             <!-- Y Period -->
@@ -124,7 +124,7 @@
                                 <TextBlock Text="Y Period" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding YPeriod, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Vertical repetition frequency rate for wave/pattern generation" />
+                                         ToolTip="Vertical repetition frequency rate for wave/pattern generation" />
                             </Grid>
 
                             <!-- XY Period -->
@@ -136,7 +136,7 @@
                                 <TextBlock Text="XY Period" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding XyPeriod, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Combined diagonal repetition period factor" />
+                                         ToolTip="Combined diagonal repetition period factor" />
                             </Grid>
 
                             <!-- Turbulence Power -->
@@ -149,7 +149,7 @@
                                            TextWrapping="Wrap" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding TurbulencePower, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Distortion intensity multiplier applied to noise patterns" />
+                                         ToolTip="Distortion intensity multiplier applied to noise patterns" />
                             </Grid>
 
                             <!-- Turbulence Size -->
@@ -162,7 +162,7 @@
                                            TextWrapping="Wrap" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding TurbulenceSize, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Scale factor for noise distortion features" />
+                                         ToolTip="Scale factor for noise distortion features" />
                             </Grid>
 
                             <!-- Base Color -->
@@ -173,9 +173,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Base Color" Style="{StaticResource ParameterLabelStyle}" />
                                 <images:ColorSelection Grid.Column="1"
-                                                   StartColor="{Binding BaseColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                                   IsEnabled="{Binding IsBaseColorActive}"
-                                                   ToolTip="Primary base background color for texture rendering" />
+                                                       StartColor="{Binding BaseColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Primary base background color for texture rendering" />
                             </Grid>
 
                             <!-- Is Monochrome -->
@@ -187,7 +186,7 @@
                                 <TextBlock Text="Is Monochrome" Style="{StaticResource ParameterLabelStyle}" />
                                 <CheckBox Grid.Column="1" VerticalAlignment="Center"
                                           IsChecked="{Binding IsMonochrome}"
-                                      ToolTip="Restrict texture output strictly to grayscale shades" />
+                                          ToolTip="Restrict texture output strictly to grayscale shades" />
                             </Grid>
 
                             <!-- Is Tiled -->
@@ -199,7 +198,7 @@
                                 <TextBlock Text="Is Tiled" Style="{StaticResource ParameterLabelStyle}" />
                                 <CheckBox Grid.Column="1" VerticalAlignment="Center"
                                           IsChecked="{Binding IsTiled}"
-                                      ToolTip="Ensure pattern edges wrap seamlessly for seamless tiling" />
+                                          ToolTip="Ensure pattern edges wrap seamlessly for seamless tiling" />
                             </Grid>
 
                             <!-- Use Smooth Noise -->
@@ -212,7 +211,7 @@
                                            TextWrapping="Wrap" />
                                 <CheckBox Grid.Column="1" VerticalAlignment="Center"
                                           IsChecked="{Binding UseSmoothNoise}"
-                                      ToolTip="Enable smooth linear interpolation for noise gradients" />
+                                          ToolTip="Enable smooth linear interpolation for noise gradients" />
                             </Grid>
 
                             <!-- Use Turbulence -->
@@ -225,9 +224,9 @@
                                            TextWrapping="Wrap" />
                                 <CheckBox Grid.Column="1" VerticalAlignment="Center"
                                           IsChecked="{Binding UseTurbulence}"
-                                      ToolTip="Apply multi-octave fractal turbulence overlay to pattern" />
-                        </Grid>
-                    </StackPanel>
+                                          ToolTip="Apply multi-octave fractal turbulence overlay to pattern" />
+                            </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -239,14 +238,14 @@
                         <StackPanel>
                             <!-- Line Spacing -->
                             <Grid Margin="0,0,0,6" Visibility="{Binding IsLineSpacingActive, Converter={StaticResource CollapseIfInactiveConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
                                 <TextBlock Text="Line Spacing" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding LineSpacing, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Distance in pixels between adjacent hatch lines" />
+                                         ToolTip="Distance in pixels between adjacent hatch lines" />
                             </Grid>
 
                             <!-- Line Color -->
@@ -257,9 +256,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Line Color" Style="{StaticResource ParameterLabelStyle}" />
                                 <images:ColorSelection Grid.Column="1"
-                                                   StartColor="{Binding LineColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                                   IsEnabled="{Binding IsLineColorActive}"
-                                                   ToolTip="Color used to draw hatch strokes" />
+                                                       StartColor="{Binding LineColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Color used to draw hatch strokes" />
                             </Grid>
 
                             <!-- Line Thickness -->
@@ -271,7 +269,7 @@
                                 <TextBlock Text="Line Thickness" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding LineThickness, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Stroke width in pixels for hatch lines" />
+                                         ToolTip="Stroke width in pixels for hatch lines" />
                             </Grid>
 
                             <!-- Angle Primary -->
@@ -283,7 +281,7 @@
                                 <TextBlock Text="Angle Primary" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding AnglePrimary, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Primary directional stroke angle in degrees (e.g. 45°)" />
+                                         ToolTip="Primary directional stroke angle in degrees (e.g. 45°)" />
                             </Grid>
 
                             <!-- Angle Secondary -->
@@ -295,9 +293,9 @@
                                 <TextBlock Text="Angle Secondary" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding AngleSecondary, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Secondary cross-directional stroke angle in degrees (e.g. -45°)" />
-                        </Grid>
-                    </StackPanel>
+                                         ToolTip="Secondary cross-directional stroke angle in degrees (e.g. -45°)" />
+                            </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -310,14 +308,14 @@
                         <StackPanel>
                             <!-- Cell Size -->
                             <Grid Margin="0,0,0,6" Visibility="{Binding IsCellSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
                                 <TextBlock Text="Cell Size" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding CellSize, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Average diameter in pixels for Voronoi/Cellular nodes" />
+                                         ToolTip="Average diameter in pixels for Voronoi/Cellular nodes" />
                             </Grid>
 
                             <!-- Center Color -->
@@ -328,9 +326,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Center Color" Style="{StaticResource ParameterLabelStyle}" />
                                 <images:ColorSelection Grid.Column="1"
-                                                   StartColor="{Binding CenterColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                                   IsEnabled="{Binding IsCenterColorActive}"
-                                                   ToolTip="Color at the focal center point of cellular nodes" />
+                                                       StartColor="{Binding CenterColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Color at the focal center point of cellular nodes" />
                             </Grid>
 
                             <!-- Edge Color -->
@@ -341,9 +338,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Edge Color" Style="{StaticResource ParameterLabelStyle}" />
                                 <images:ColorSelection Grid.Column="1"
-                                                   StartColor="{Binding EdgeColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                                   IsEnabled="{Binding IsEdgeColorActive}"
-                                                   ToolTip="Color along the outer border boundaries of cellular nodes" />
+                                                       StartColor="{Binding EdgeColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Color along the outer border boundaries of cellular nodes" />
                             </Grid>
 
                             <!-- Color Ramp -->
@@ -354,9 +350,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Color Ramp" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
-                                     Text="{Binding ColorRampText, UpdateSourceTrigger=PropertyChanged}"
-                                     IsEnabled="{Binding IsColorRampActive}"
-                                     ToolTip="Comma-separated hex colors for gradient mapping (e.g. #FFFF4400, #FFFFCC00)" />
+                                         Text="{Binding ColorRampText, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Comma-separated hex colors for gradient mapping (e.g. #FFFF4400, #FFFFCC00)" />
                             </Grid>
 
                             <!-- Secondary Color -->
@@ -367,11 +362,10 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Secondary Color" Style="{StaticResource ParameterLabelStyle}" />
                                 <images:ColorSelection Grid.Column="1"
-                                                   StartColor="{Binding SecondaryColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
-                                                   IsEnabled="{Binding IsSecondaryColorActive}"
-                                                   ToolTip="Secondary accent color for color-mapped textures" />
-                        </Grid>
-                    </StackPanel>
+                                                       StartColor="{Binding SecondaryColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Secondary accent color for color-mapped textures" />
+                            </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -384,14 +378,14 @@
                         <StackPanel>
                             <!-- Wave Frequency -->
                             <Grid Margin="0,0,0,6" Visibility="{Binding IsWaveFrequencyActive, Converter={StaticResource CollapseIfInactiveConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
                                 <TextBlock Text="Wave Frequency" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding WaveFrequency, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Oscillation frequency rate for sinusoidal wave distortion" />
+                                         ToolTip="Oscillation frequency rate for sinusoidal wave distortion" />
                             </Grid>
 
                             <!-- Wave Amplitude -->
@@ -403,7 +397,7 @@
                                 <TextBlock Text="Wave Amplitude" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding WaveAmplitude, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Height displacement amplitude for wave distortion" />
+                                         ToolTip="Height displacement amplitude for wave distortion" />
                             </Grid>
 
                             <!-- Randomization -->
@@ -415,7 +409,7 @@
                                 <TextBlock Text="Randomization" Style="{StaticResource ParameterLabelStyle}" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding RandomizationFactor, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Random seed variation factor for unique texture generations" />
+                                         ToolTip="Random seed variation factor for unique texture generations" />
                             </Grid>
 
                             <!-- Edge Jaggedness Limit -->
@@ -428,7 +422,7 @@
                                            TextWrapping="Wrap" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding EdgeJaggednessLimit, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Maximum boundary cap for edge roughness displacement" />
+                                         ToolTip="Maximum boundary cap for edge roughness displacement" />
                             </Grid>
 
                             <!-- Jaggedness Threshold -->
@@ -441,9 +435,9 @@
                                            TextWrapping="Wrap" />
                                 <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                          Text="{Binding JaggednessThreshold, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                     ToolTip="Sensitivity cut-off value for applying edge roughening" />
-                        </Grid>
-                    </StackPanel>
+                                         ToolTip="Sensitivity cut-off value for applying edge roughening" />
+                            </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 

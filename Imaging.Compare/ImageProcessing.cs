@@ -6,8 +6,9 @@
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
-using System.Drawing;
 using Extended.Extensions;
+using System.Collections.Concurrent;
+using System.Drawing;
 
 namespace Imaging.Compare
 {
@@ -30,50 +31,52 @@ namespace Imaging.Compare
         internal static ImageSimilar GenerateData(Bitmap? bitmap, int id)
         {
             using var scaled = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
-            using var dbm = DirectBitmap.GetInstance(scaled);
 
-            // Initialize variables for average color value
-            var r = 0.0; // Use double for precision
-            var g = 0.0;
-            var b = 0.0;
+            int size = ImageResources.DuplicateSize;
+            int totalPixels = size * size;
+            var imageBytes = new byte[totalPixels];
 
-            // Create arrays for image and hash
-            var image = new byte[ImageResources.DuplicateSize, ImageResources.DuplicateSize];
+            var rect = new Rectangle(0, 0, size, size);
+            var bmpData = scaled.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            // Get total pixels
-            const int totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
+            double rSum = 0, gSum = 0, bSum = 0;
 
-            for (var y = 0; y < ImageResources.DuplicateSize; y++)
-            for (var x = 0; x < ImageResources.DuplicateSize; x++)
+            unsafe
             {
-                var pixel = dbm.GetPixel(x, y);
+                byte* ptr = (byte*)bmpData.Scan0;
+                int stride = bmpData.Stride;
 
-                // Calculate grayscale value
-                var grayValue = (byte)(pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114);
-                image[x, y] = grayValue; // Store grayscale value
+                for (int y = 0; y < size; y++)
+                {
+                    byte* row = ptr + (y * stride);
+                    for (int x = 0; x < size; x++)
+                    {
+                        int pixelIdx = x * 4;
+                        byte b = row[pixelIdx];
+                        byte g = row[pixelIdx + 1];
+                        byte r = row[pixelIdx + 2];
 
-                // Accumulate RGB values based on grayscale contribution
-                r += pixel.R * 0.299;
-                g += pixel.G * 0.587;
-                b += pixel.B * 0.114;
+                        byte gray = (byte)(r * 0.299 + g * 0.587 + b * 0.114);
+                        imageBytes[y * size + x] = gray;
+
+                        rSum += r * 0.299;
+                        gSum += g * 0.587;
+                        bSum += b * 0.114;
+                    }
+                }
             }
 
-            // Calculate average color values
-            r /= totalPixels;
-            g /= totalPixels;
-            b /= totalPixels;
+            scaled.UnlockBits(bmpData);
 
-            // Return the ImageSimilar object
             return new ImageSimilar
             {
-                R = (byte)r, // Cast back to byte
-                G = (byte)g,
-                B = (byte)b,
+                R = (byte)(rSum / totalPixels),
+                G = (byte)(gSum / totalPixels),
+                B = (byte)(bSum / totalPixels),
                 Id = id,
-                Image = image
+                Image = imageBytes
             };
         }
-
 
         /// <summary>
         ///     Gets the percentage difference.
@@ -81,31 +84,78 @@ namespace Imaging.Compare
         /// <param name="imageToCompareTo">The image to compare to.</param>
         /// <param name="targetBitmap">The target bitmap.</param>
         /// <returns>Difference in Percentage</returns>
-        internal static float GetPercentageDifference(ImageSimilar imageToCompareTo, ImageSimilar targetBitmap)
+        internal static float GetPercentageDifference(in ImageSimilar imageToCompareTo, in ImageSimilar targetBitmap)
         {
-            var diff = 0;
-
-            for (var y = 0; y < ImageResources.SimilarSize; y++)
-            for (var x = 0; x < ImageResources.SimilarSize; x++)
+            if (imageToCompareTo.Image == null || targetBitmap.Image == null)
             {
-                int one = imageToCompareTo.Image[x, y];
-                int two = targetBitmap.Image[x, y];
+                return 0f;
+            }
 
-                if (one.Interval(two, ImageResources.ColorThreshold))
+            ReadOnlySpan<byte> img1 = imageToCompareTo.Image;
+            ReadOnlySpan<byte> img2 = targetBitmap.Image;
+            int threshold = ImageResources.ColorThreshold;
+            int diff = 0;
+
+            int length = Math.Min(img1.Length, img2.Length);
+
+            for (int i = 0; i < length; i++)
+            {
+                if (Math.Abs(img1[i] - img2[i]) <= threshold)
                 {
                     diff++;
                 }
             }
 
-            var pixel = (float)diff / ImageResources.MaxPixel * 100;
+            float pixel = (float)diff / ImageResources.MaxPixel * 100f;
 
-            var color = (float)
-                ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / ImageResources.MaxColor +
-                 (ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / ImageResources.MaxColor +
-                 (ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
-                 ImageResources.MaxColor) / 3 * 100;
+            float color = ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / (float)ImageResources.MaxColor +
+                           (ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / (float)ImageResources.MaxColor +
+                           (ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) / (float)ImageResources.MaxColor) / 3f * 100f;
 
-            return (pixel + color) / 2;
+            return (pixel + color) / 2f;
+        }
+
+        /// <summary>
+        ///     Find all duplicate images from in list
+        /// </summary>
+        /// <param name="imageToCompareTo">The path of image to compare to.</param>
+        /// <param name="images">The paths to the images to check for duplicates</param>
+        /// <param name="maximumDifferenceInPercentage">The maximum difference in percentage.</param>
+        /// <returns>
+        ///     A list of paths to all the duplicates found.
+        /// </returns>
+        internal static List<ImageSimilar>? FindSimilarImages(
+            ImageSimilar imageToCompareTo,
+            IReadOnlyList<ImageSimilar> images,
+            float maximumDifferenceInPercentage)
+        {
+            var similarImagesFound = new List<ImageSimilar>();
+
+            // Process sequentially when candidate list is small to prevent thread contention
+            if (images.Count < 64)
+            {
+                for (int i = 0; i < images.Count; i++)
+                {
+                    if (GetPercentageDifference(images[i], imageToCompareTo) >= maximumDifferenceInPercentage)
+                    {
+                        similarImagesFound.Add(images[i]);
+                    }
+                }
+            }
+            else
+            {
+                var bag = new ConcurrentBag<ImageSimilar>();
+                Parallel.For(0, images.Count, i =>
+                {
+                    if (GetPercentageDifference(images[i], imageToCompareTo) >= maximumDifferenceInPercentage)
+                    {
+                        bag.Add(images[i]);
+                    }
+                });
+                similarImagesFound = bag.ToList();
+            }
+
+            return similarImagesFound.Count <= 1 ? null : similarImagesFound;
         }
     }
 }
