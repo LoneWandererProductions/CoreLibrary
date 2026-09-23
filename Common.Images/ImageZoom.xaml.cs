@@ -57,18 +57,18 @@
  * [ ] Add double-buffering or DrawingVisual for smoother overlay drawing (optional)
  *
  *
- * 5. IMAGE OPERATIONS (COMPLETED / INTEGRATED)
+* 5. IMAGE OPERATIONS (COMPLETED / INTEGRATED)
  * --------------------------------------------
  * [x] Integrate DirectBitmapImage operations (Done via ImageProcessor & ImageView)
  * [x] Add selection commit logic (Done via SelectionAdorner.CaptureAndClear & Canvas_MouseUp)
  * [x] Support FreeForm Polygon filling (Done via auto-close logic in CaptureAndClear)
  * [ ] Add support for brush size/hardness visualization in the Adorner
- * [ ] Add pixel-snapping modes (whole pixel alignment when zoomed)
+ * [x] Add pixel-snapping modes (whole pixel alignment when zoomed)
  *
- *
- * 6. EXTENDED TOOLSET (FUTURE)
- * ----------------------------
- * [ ] Polygonal lasso tool (Click-to-add-point)
+ * 6. EXTENDED TOOLSET
+ * -------------------
+ * [x] Polygonal lasso tool (Click-to-add-point multi-frame support)
+ * [ ] Magic-wand / flood-fill selection
  * [ ] Magic-wand / flood-fill selection (using existing flood-fill helper)
  * [ ] Text tool (typed overlay rendered to bitmap)
  * [ ] Stamp/cloning tool
@@ -77,7 +77,7 @@
  *
  * 7. PERFORMANCE & ARCHITECTURE
  * ------------------------------
- * [ ] Add invalidate throttling (Redraw only when needed)
+ * [x] Add invalidate throttling (Redraw only when needed)
  * [x] Clear "Ghost Frames" immediately after drawing (Done via CaptureAndClear)
  * [ ] Add high-DPI support for Zoom + PixelGrid alignment
  * [ ] Allow async pixel operations for large fills
@@ -618,7 +618,6 @@ namespace Common.Images
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Capture and track the mouse.
             _mouseDown = true;
             _ = MainCanvas.CaptureMouse();
 
@@ -626,12 +625,8 @@ namespace Common.Images
             // which all work in image pixel coordinates.
             _startPoint = e.GetPosition(BtmImage);
 
-            // Capture the mouse
-            _ = MainCanvas.CaptureMouse();
-
             AttachAdorner(SelectionTool);
 
-            // If this is a pan start, capture origin offsets (in image transform space)
             if (SelectionTool == ImageZoomTools.Move)
             {
                 // Separate drag-origin point in Canvas (scaled) space - see _panStartPoint's
@@ -645,8 +640,6 @@ namespace Common.Images
 
             switch (SelectionTool)
             {
-                case ImageZoomTools.Move:
-                    break;
                 case ImageZoomTools.Trace:
                     if (SelectionAdorner != null) SelectionAdorner.IsTracing = true;
                     break;
@@ -658,8 +651,6 @@ namespace Common.Images
                 case ImageZoomTools.Dot:
                     SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
                     break;
-                default:
-                    return;
             }
         }
 
@@ -823,37 +814,28 @@ namespace Common.Images
         /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
         private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            // 1. If we are currently dragging (Mouse Left is Down), cancel the current shape
+            // 1. If currently dragging (Mouse Left is Down), cancel current action
             if (_mouseDown)
             {
                 _mouseDown = false;
                 MainCanvas.ReleaseMouseCapture();
-                // Optional: reset current points in Adorner without committing
-                // SelectionAdorner.ResetCurrent();
                 return;
             }
 
-            // 2. If we are idle, Right Click means "I am finished selecting"
+            // 2. Idle Right-Click completes multi-frame selection
             if (SelectionAdorner != null)
             {
-                // Get all collected frames
                 var frames = SelectionAdorner.GetCommittedFrames();
 
                 if (frames.Count > 0)
                 {
-                    // Fire event with list of frames
                     SelectedMultiFrames?.Invoke(frames);
-                    // Execute command if you have a List version of the command
-                    // SafeExecuteCommand(SelectedMultiFramesCommand, frames);
+                    SafeExecuteCommand(SelectedMultiFramesCommand, frames);
                 }
 
-                // Cleanup
                 var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
                 adornerLayer?.Remove(SelectionAdorner);
                 SelectionAdorner = null;
-
-                // Optional: Reset tool to Move automatically?
-                // SelectionTool = ImageZoomTools.Move;
             }
         }
 

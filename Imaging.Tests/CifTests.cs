@@ -114,8 +114,8 @@ namespace Imaging.Tests
         {
             using var bitmap = new Bitmap(2, 2);
             for (var x = 0; x < 2; x++)
-                for (var y = 0; y < 2; y++)
-                    bitmap.SetPixel(x, y, Color.Red);
+            for (var y = 0; y < 2; y++)
+                bitmap.SetPixel(x, y, Color.Red);
 
             var cif = new Cif(bitmap);
 

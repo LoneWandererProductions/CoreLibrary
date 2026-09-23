@@ -156,7 +156,7 @@ namespace SQLiteGui
         /// <returns>
         ///     <c>true</c> if this instance [can execute command] the specified selected table; otherwise, <c>false</c>.
         /// </returns>
-        private bool CanExecuteCommand(TableDetails selectedTable)
+        private bool CanExecuteCommand(TableDetails? selectedTable)
         {
             return selectedTable != null;
         }

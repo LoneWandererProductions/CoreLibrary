@@ -408,6 +408,16 @@ namespace Common.Images
         }
 
         /// <summary>
+        /// Called when [isolation mode changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void OnIsolationModeChanged(object sender, RoutedEventArgs e)
+        {
+            RequestRender();
+        }
+
+        /// <summary>
         /// Handles the Click event of the LoadCif control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>

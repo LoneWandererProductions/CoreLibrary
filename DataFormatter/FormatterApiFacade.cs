@@ -43,7 +43,7 @@ namespace DataFormatter
         /// <param name="file">The file.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of our special format file</returns>
-        public static List<string> ReadCsvWithLayers(string file, string layerKeyword)
+        public static List<string>? ReadCsvWithLayers(string file, string layerKeyword)
             => SegmentedCsvHandler.ReadCsvWithLayerKeywords(file, layerKeyword);
 
         /// <summary>

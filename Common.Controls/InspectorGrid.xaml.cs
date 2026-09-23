@@ -9,7 +9,9 @@
 // ReSharper disable UnusedType.Global
 
 using System;
+using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -113,7 +115,7 @@ namespace Common.Controls
 
                 // Label (with DisplayName/DataAnnotations support)
                 var displayName = prop.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName
-                                  ?? prop.GetCustomAttribute<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+                                  ?? prop.GetCustomAttribute<DisplayAttribute>()
                                       ?.Name
                                   ?? prop.Name;
 
@@ -130,14 +132,14 @@ namespace Common.Controls
                 // Determine property characteristics
                 var isInitOnly = !prop.CanWrite;
                 var isReadOnlyAttr = prop.GetCustomAttribute<ReadOnlyAttribute>()?.IsReadOnly ?? false;
-                var isCollection = typeof(System.Collections.IEnumerable).IsAssignableFrom(prop.PropertyType)
+                var isCollection = typeof(IEnumerable).IsAssignableFrom(prop.PropertyType)
                                    && prop.PropertyType != typeof(string);
 
                 FrameworkElement editor;
 
                 if (isCollection)
                 {
-                    var value = prop.GetValue(SelectedObject) as System.Collections.IEnumerable;
+                    var value = prop.GetValue(SelectedObject) as IEnumerable;
                     var count = value?.Cast<object>().Count() ?? 0;
                     var typeName = prop.PropertyType.IsGenericType
                         ? prop.PropertyType.GetGenericArguments().First().Name

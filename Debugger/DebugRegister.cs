@@ -45,7 +45,7 @@ namespace Debugger
         /// <summary>
         ///     Get the Path to the Debug File
         /// </summary>
-        internal static string DebugPath { get; set; }
+        internal static string? DebugPath { get; set; }
 
         /// <summary>
         ///     Is dump active.
@@ -125,7 +125,7 @@ namespace Debugger
         ///     Gets or sets the config.
         ///     This object will be saved in the file
         /// </summary>
-        internal static ConfigExtended Config { get; private set; }
+        internal static ConfigExtended? Config { get; private set; }
 
         /// <summary>
         ///     Gets the color options.
@@ -133,7 +133,7 @@ namespace Debugger
         /// <value>
         ///     The color options.
         /// </value>
-        internal static List<ColorOption> ColorOptions { get; set; }
+        internal static List<ColorOption>? ColorOptions { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is verbose.
@@ -189,8 +189,10 @@ namespace Debugger
         ///     Apply the configuration values from the loaded config.
         /// </summary>
         /// <param name="config">The config object containing the settings.</param>
-        private static void ApplyConfig(ConfigExtended config)
+        private static void ApplyConfig(Config? config)
         {
+            if (config == null) return;
+
             DebugPath = config.DebugPath;
             SecondsTick = config.SecondsTick;
             MinutesTick = config.MinutesTick;
@@ -227,7 +229,7 @@ namespace Debugger
         /// <typeparam name="T">Generic Type</typeparam>
         /// <param name="serializeObject">Target Object</param>
         /// <param name="options">The options.</param>
-        internal static void XmlSerializerObject<T>(T serializeObject, List<ColorOption> options)
+        internal static void XmlSerializerObject<T>(T serializeObject, List<ColorOption>? options)
         {
             if (serializeObject is not ConfigExtended data || options == null)
             {

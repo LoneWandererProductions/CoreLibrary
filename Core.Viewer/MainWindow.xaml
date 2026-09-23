@@ -67,7 +67,7 @@
                     <GridViewColumn Header="Status" Width="50">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Diagnostic.SeveritySymbol}"
+                                <TextBlock Text="{Binding SeveritySymbol}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            FontFamily="Segoe UI Emoji"
@@ -75,31 +75,13 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Diagnostic.Level}" />
-                    <GridViewColumn Header="Analyzer" DisplayMemberBinding="{Binding Diagnostic.Name}" />
-                    <GridViewColumn Header="File" DisplayMemberBinding="{Binding Diagnostic.FileName}" />
-                    <GridViewColumn Header="FilePath" DisplayMemberBinding="{Binding Diagnostic.FilePath}" />
-                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Diagnostic.Message}" />
-                    <GridViewColumn Header="LineNumber" DisplayMemberBinding="{Binding Diagnostic.LineNumber}" />
-                    <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Diagnostic.Source}" />
-                    <GridViewColumn Header="Actions" Width="200">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="Open File"
-                                            Command="{Binding OpenFileCommand}"
-                                            Margin="2" />
-                                    <Button Content="Fix"
-                                            Command="{Binding FixCommand}"
-                                            Visibility="{Binding CanFix, Converter={StaticResource BoolToVisibility}}"
-                                            Margin="2" />
-                                    <Button Content="Ignore"
-                                            Command="{Binding IgnoreCommand}"
-                                            Margin="2" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" />
+                    <GridViewColumn Header="Analyzer" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="File" DisplayMemberBinding="{Binding FileName}" />
+                    <GridViewColumn Header="FilePath" DisplayMemberBinding="{Binding FilePath}" />
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" />
+                    <GridViewColumn Header="LineNumber" DisplayMemberBinding="{Binding LineNumber}" />
+                    <GridViewColumn Header="Source" DisplayMemberBinding="{Binding Source}" />
                 </GridView>
             </ListView.View>
         </ListView>

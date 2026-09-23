@@ -1,10 +1,12 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        CsvColumnAttribute.cs
+ * FILE:        DataFormatter/CsvColumnAttribute.cs
  * PURPOSE:     Helper for csv, Helps converter
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
+
+// ReSharper disable UnusedType.Global
 
 using System;
 

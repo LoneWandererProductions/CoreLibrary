@@ -41,7 +41,7 @@ namespace Debugger
         ///     Sets the start value.
         /// </summary>
         /// <param name="colorOptions">The color options.</param>
-        public void AddItemColors(IEnumerable<ColorOption> colorOptions)
+        public void AddItemColors(IEnumerable<ColorOption>? colorOptions)
         {
             InitializeComponent();
             View.Reference = this;
@@ -83,7 +83,7 @@ namespace Debugger
         ///     Gets the color options.
         /// </summary>
         /// <returns>List of Color Options</returns>
-        internal List<ColorOption> GetColorOptions()
+        internal List<ColorOption>? GetColorOptions()
         {
             return _filterOption.Values.Select(option => option.GetOption()).ToList();
         }
@@ -92,7 +92,7 @@ namespace Debugger
         ///     Adds the filter.
         /// </summary>
         /// <param name="colorOptions">The filter option.</param>
-        private void AddFilter(IEnumerable<ColorOption> colorOptions)
+        private void AddFilter(IEnumerable<ColorOption>? colorOptions)
         {
             // 1. Guard against null only
             if (colorOptions == null) return;

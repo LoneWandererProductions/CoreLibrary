@@ -1231,6 +1231,8 @@ namespace Common.Images
         private int GetCurrentIndex(string name)
         {
             // Find the index of the selected border
+            if (Border == null) return -1;
+
             return Border
                 .Where(pair => pair.Value.Name == name)
                 .Select(pair => pair.Key)
@@ -1243,6 +1245,8 @@ namespace Common.Images
         /// <param name="index">The index.</param>
         private void SelectImageAtIndex(int index)
         {
+            if (Border == null) return;
+
             if (index < 0 || index >= Border.Count || !Border.TryGetValue(index, out var border))
             {
                 return;

@@ -742,7 +742,7 @@ namespace CommonLibrary.Tests
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Compress");
 
             // Await the cleanup so we don't race the OS file system locks
-            var isClean = await FileHandleDelete.DeleteCompleteFolder(path);
+            _ = await FileHandleDelete.DeleteCompleteFolder(path);
 
             // Recreate the directory since we just wiped it out
             Directory.CreateDirectory(path);

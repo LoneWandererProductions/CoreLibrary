@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        ObjFile.cs
+ * FILE:        DataFormatter/ObjFile.cs
  * PURPOSE:     Basic Object for Blender File
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  * NOTE:        Blender Files don't start counting at 0! So add +1 offset.
@@ -26,7 +26,7 @@ namespace DataFormatter
         /// <value>
         ///     The vectors.
         /// </value>
-        public List<TertiaryVector> Vectors { get; init; }
+        public List<TertiaryVector>? Vectors { get; init; }
 
         /// <summary>
         ///     Gets the face to combine the Vectors
@@ -34,7 +34,7 @@ namespace DataFormatter
         /// <value>
         ///     The face.
         /// </value>
-        public List<TertiaryFace> Face { get; init; }
+        public List<TertiaryFace>? Face { get; init; }
 
         /// <summary>
         ///     Gets the other Information.
@@ -43,6 +43,6 @@ namespace DataFormatter
         /// <value>
         ///     The other Information.
         /// </value>
-        public List<string> Other { get; init; }
+        public List<string>? Other { get; init; }
     }
 }

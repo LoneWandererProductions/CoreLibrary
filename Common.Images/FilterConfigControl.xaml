@@ -69,14 +69,14 @@
 
                     <!-- Factor -->
                     <Grid Margin="0,0,0,8" Visibility="{Binding IsFactorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Factor" Style="{StaticResource ParameterLabelStyle}" />
                         <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                  Text="{Binding Factor, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                 ToolTip="The multiplier applied to the pixel values" />
+                             ToolTip="The multiplier applied to the pixel values" />
                     </Grid>
 
                     <!-- Bias -->
@@ -88,7 +88,7 @@
                         <TextBlock Grid.Column="0" Text="Bias" Style="{StaticResource ParameterLabelStyle}" />
                         <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                  Text="{Binding Bias, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                 ToolTip="The offset added to the pixel values (Brightness shift)" />
+                             ToolTip="The offset added to the pixel values (Brightness shift)" />
                     </Grid>
 
                     <!-- Sigma -->
@@ -100,7 +100,7 @@
                         <TextBlock Grid.Column="0" Text="Sigma" Style="{StaticResource ParameterLabelStyle}" />
                         <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                  Text="{Binding Sigma, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                 ToolTip="Standard deviation for blur kernels (Gaussian)" />
+                             ToolTip="Standard deviation for blur kernels (Gaussian)" />
                     </Grid>
 
                     <!-- Base Window Size -->
@@ -113,7 +113,7 @@
                                    TextWrapping="Wrap" />
                         <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                  Text="{Binding BaseWindowSize, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                 ToolTip="The area of effect for the filter (Kernel Size)" />
+                             ToolTip="The area of effect for the filter (Kernel Size)" />
                     </Grid>
 
                     <!-- Scale -->
@@ -125,8 +125,8 @@
                         <TextBlock Grid.Column="0" Text="Scale" Style="{StaticResource ParameterLabelStyle}" />
                         <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
                                  Text="{Binding Scale, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
-                                 ToolTip="Final normalization factor" />
-                    </Grid>
+                             ToolTip="Final normalization factor" />
+                </Grid>
                 </StackPanel>
             </ScrollViewer>
         </Border>

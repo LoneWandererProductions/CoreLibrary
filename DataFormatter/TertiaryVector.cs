@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        TertiaryVector.cs
+ * FILE:        DataFormatter/TertiaryVector.cs
  * PURPOSE:     A really basic obj that holds three double values, needed for obj Files
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -16,7 +16,7 @@ namespace DataFormatter
     /// <summary>
     ///     Three Numbers, here it will describe a 3dimensional Vector
     /// </summary>
-    public readonly struct TertiaryVector
+    public sealed class TertiaryVector
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="TertiaryVector" /> class.
@@ -29,6 +29,13 @@ namespace DataFormatter
             X = x;
             Y = y;
             Z = z;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="TertiaryVector" /> class.
+        /// </summary>
+        public TertiaryVector()
+        {
         }
 
         /// <summary>

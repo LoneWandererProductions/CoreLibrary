@@ -1,7 +1,7 @@
 ﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     DataFormatter
- * FILE:        TertiaryFace.cs
+ * FILE:        DataFormatter/TertiaryFace.cs
  * PURPOSE:     Basic Object that holds three int values, used for obj File
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
@@ -16,7 +16,7 @@ namespace DataFormatter
     /// <summary>
     ///     Plot file for the vectors
     /// </summary>
-    public readonly struct TertiaryFace
+    public sealed class TertiaryFace
     {
         /// <summary>
         ///     Gets the x.
