@@ -6,280 +6,296 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable BadBracesSpaces
-// ReSharper disable MissingSpace
+// ReSharper disable MemberCanBePrivate.Global
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Common.Images
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Adorner for ImageZoom
+    /// Adorner for ImageZoom tool selection overlay.
+    /// Handles rendering and logic for bounding boxes, free-form paths, polygons, and point selections.
     /// </summary>
-    /// <seealso cref="T:System.Windows.Documents.Adorner" />
     internal sealed class SelectionAdorner : Adorner
     {
         /// <summary>
-        ///     The end point
+        /// The starting point of the mouse selection in image coordinates.
+        /// </summary>
+        private Point? _startPoint;
+
+        /// <summary>
+        /// The ending/current point of the mouse selection in image coordinates.
         /// </summary>
         private Point? _endPoint;
 
         /// <summary>
-        ///     The image transform
-        ///     Store the transform applied to the image
+        /// The active image transformation matrix used for converting between visual UI element space and image space.
         /// </summary>
-        private Transform _imageTransform;
+        private Transform _imageTransform = Transform.Identity;
 
         /// <summary>
-        ///     The start point
+        /// The committed frames
         /// </summary>
-        private Point? _startPoint;
-
-        // NEW: Store completed frames here
         private readonly List<SelectionFrame> _committedFrames = new();
 
-        // NEW: Store completed FreeForm paths here
-        private readonly List<List<Point>> _committedFreeForms = new();
-
-        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="T:CommonControls.SelectionAdorner" /> class.
+        /// Initializes a new instance of the <see cref="SelectionAdorner"/> class.
         /// </summary>
-        /// <param name="adornedElement">The adorned element.</param>
-        /// <param name="tool">The tool.</param>
-        /// <param name="transform">The transform.</param>
-        public SelectionAdorner(UIElement adornedElement, ImageZoomTools tool, Transform transform = null)
+        /// <param name="adornedElement">The element to bind this adorner to.</param>
+        /// <param name="tool">The active selection tool mode.</param>
+        /// <param name="transform">Optional image transform matrix applied to the adorned element.</param>
+        public SelectionAdorner(UIElement adornedElement, ImageZoomTools tool, Transform? transform = null)
             : base(adornedElement)
         {
             Tool = tool;
-            _imageTransform =
-                transform ?? Transform.Identity; // Use the provided transform, or default to Identity if none provided
+            _imageTransform = transform ?? Transform.Identity;
+            IsTracing = tool == ImageZoomTools.Trace;
         }
 
         /// <summary>
-        ///     The free form points
-        /// </summary>
-        public List<Point> FreeFormPoints { get; set; } = new();
-
-        /// <summary>
-        ///     The is tracing
+        /// Gets or sets a value indicating whether active point tracing is enabled.
         /// </summary>
         public bool IsTracing { get; set; }
 
         /// <summary>
-        ///     Gets the current selection frame.
+        /// Gets or sets the collection of points defining a free-form, trace, or polygon selection.
         /// </summary>
-        /// <value>
-        ///     The current selection frame.
-        /// </value>
-        public SelectionFrame CurrentSelectionFrame { get; private set; } = new();
+        public List<Point> FreeFormPoints { get; set; } = new();
 
         /// <summary>
-        ///     Gets or sets the tool.
+        /// Gets the active selection tool mode.
         /// </summary>
-        /// <value>
-        ///     The tool.
-        /// </value>
         public ImageZoomTools Tool { get; internal set; }
 
         /// <summary>
-        ///     Gets a list of all frames committed during this session.
+        /// Gets the current selection frame data containing bounding parameters and shape coordinates.
         /// </summary>
-        public List<SelectionFrame> GetCommittedFrames()
-        {
-            return new List<SelectionFrame>(_committedFrames);
-        }
+        public SelectionFrame CurrentSelectionFrame { get; private set; } = new();
 
         /// <summary>
-        ///     Updates the selection for rectangle and ellipse tools.
+        /// Updates the bounding selection box with new start and end mouse points.
         /// </summary>
-        /// <param name="start">The start point.</param>
-        /// <param name="end">The end point.</param>
+        /// <param name="start">The raw mouse starting position in visual coordinates.</param>
+        /// <param name="end">The raw mouse ending position in visual coordinates.</param>
         public void UpdateSelection(Point start, Point end)
         {
-            // Apply transformation to the start and end points if necessary
             _startPoint = TransformMousePosition(start);
             _endPoint = TransformMousePosition(end);
-
+            UpdateCurrentSelectionFrame();
             InvalidateVisual();
         }
 
         /// <summary>
-        ///     Adds a point for the free form tool.
+        /// Adds a point to the free-form/polygon point collection and updates the visual state.
         /// </summary>
-        /// <param name="point">The free form point.</param>
+        /// <param name="point">The raw mouse position to add in visual coordinates.</param>
         public void AddFreeFormPoint(Point point)
         {
-            // Use TransformMousePosition (Inverse) to store the point in Logic/Image space
             FreeFormPoints.Add(TransformMousePosition(point));
+            UpdateCurrentSelectionFrame();
             InvalidateVisual();
         }
 
         /// <summary>
-        ///     Clears the free form points.
+        /// Clears all free-form/polygon points and updates the visual state.
         /// </summary>
         public void ClearFreeFormPoints()
         {
             FreeFormPoints.Clear();
+            UpdateCurrentSelectionFrame();
             InvalidateVisual();
         }
 
         /// <summary>
-        ///     Updates the image transform when the image is resized or cropped.
+        /// Updates the image transform matrix applied to mouse coordinates and triggers a re-render.
         /// </summary>
-        /// <param name="transform">The new transform to apply.</param>
-        public void UpdateImageTransform(Transform transform)
+        /// <param name="transform">The new transformation matrix to apply.</param>
+        public void UpdateImageTransform(Transform? transform)
         {
             _imageTransform = transform ?? Transform.Identity;
             InvalidateVisual();
         }
 
         /// <summary>
-        ///     Commits the current shape to the internal list and clears the temporary drawing data.
+        /// Captures the current selection frame and resets active drawing state.
         /// </summary>
-        public void CommitCurrentShape()
+        /// <returns>The captured <see cref="SelectionFrame"/> representation.</returns>
+        public SelectionFrame CaptureAndClear()
         {
-            if (Tool == ImageZoomTools.FreeForm)
+            var frame = CurrentSelectionFrame;
+
+            // Reset active drawing state
+            FreeFormPoints.Clear();
+            _startPoint = null;
+            _endPoint = null;
+            IsTracing = false;
+            CurrentSelectionFrame = new SelectionFrame();
+
+            InvalidateVisual();
+            return frame;
+        }
+
+        /// <summary>
+        /// Returns all committed selection frames (including any uncommitted active shape) and resets internal state.
+        /// </summary>
+        public List<SelectionFrame> GetCommittedFrames()
+        {
+            if (FreeFormPoints.Count > 0 || (_startPoint.HasValue && _endPoint.HasValue))
             {
-                if (FreeFormPoints.Count > 1)
-                {
-                    // Clone points to a new list
-                    _committedFreeForms.Add(new List<Point>(FreeFormPoints));
-
-                    // Add to frames list for data export (bounding box of the freeform)
-                    // Logic to calculate bounding box of freeform can go here if needed
-                }
-
-                FreeFormPoints.Clear();
-            }
-            else if (_startPoint.HasValue && _endPoint.HasValue)
-            {
-                var selectionRect = new Rect(_startPoint.Value, _endPoint.Value);
-
-                var frame = new SelectionFrame
-                {
-                    X = (int)selectionRect.X,
-                    Y = (int)selectionRect.Y,
-                    Width = (int)selectionRect.Width,
-                    Height = (int)selectionRect.Height,
-                    Tool = Tool
-                };
-
-                _committedFrames.Add(frame);
-
-                // Reset current points
-                _startPoint = null;
-                _endPoint = null;
+                CommitCurrentFrame();
             }
 
+            var frames = new List<SelectionFrame>(_committedFrames);
+            _committedFrames.Clear();
+            return frames;
+        }
+
+        /// <summary>
+        /// Commits the active selection frame into the committed frames buffer and resets active drawing state.
+        /// </summary>
+        public void CommitCurrentFrame()
+        {
+            if ((CurrentSelectionFrame.Width > 0 && CurrentSelectionFrame.Height > 0) ||
+                CurrentSelectionFrame.Points is { Count: > 0 })
+            {
+                _committedFrames.Add(CurrentSelectionFrame);
+            }
+
+            FreeFormPoints.Clear();
+            _startPoint = null;
+            _endPoint = null;
+            CurrentSelectionFrame = new SelectionFrame();
             InvalidateVisual();
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Called when [mouse down].
+        /// Renders the active selection shape based on current coordinates and active tool mode.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        /// <param name="drawingContext">The drawing instructions for a rendering pass.</param>
+        protected override void OnRender(DrawingContext drawingContext)
         {
-            var transformedPoint = TransformMousePosition(e.GetPosition(this));
+            base.OnRender(drawingContext);
 
-            if (Tool == ImageZoomTools.Trace && e.LeftButton == MouseButtonState.Pressed)
+            var activePen = new Pen(Brushes.Red, 2) { DashStyle = new DashStyle(new double[] { 2, 2 }, 0) };
+            var fillBrush = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
+
+            // Render committed polygon / selection frames
+            foreach (var frame in _committedFrames)
             {
-                IsTracing = true;
-                FreeFormPoints.Clear(); // Clear existing points for a new trace
-                FreeFormPoints.Add(transformedPoint);
-                CaptureMouse(); // Ensure we capture all mouse events
+                if (frame.Points is { Count: > 1 })
+                {
+                    var committedGeo = new StreamGeometry();
+                    using (var ctx = committedGeo.Open())
+                    {
+                        var p0 = _imageTransform.Transform(frame.Points[0]);
+                        ctx.BeginFigure(p0, isClosed: frame.Tool == ImageZoomTools.Polygon,
+                            isFilled: frame.Tool == ImageZoomTools.Polygon);
+                        var pts = frame.Points.Skip(1).Select(p => _imageTransform.Transform(p)).ToArray();
+                        ctx.PolyLineTo(pts, true, false);
+                    }
+
+                    drawingContext.DrawGeometry(frame.Tool == ImageZoomTools.Polygon ? fillBrush : null, activePen,
+                        committedGeo);
+                }
+                else if (frame.Width > 0 || frame.Height > 0)
+                {
+                    var vStart = _imageTransform.Transform(new Point(frame.X, frame.Y));
+                    var vEnd = _imageTransform.Transform(new Point(frame.X + frame.Width, frame.Y + frame.Height));
+                    drawingContext.DrawRectangle(fillBrush, activePen, new Rect(vStart, vEnd));
+                }
+            }
+
+            // Render active shape being drawn
+            if (_startPoint.HasValue && _endPoint.HasValue)
+            {
+                var vStart = _imageTransform.Transform(_startPoint.Value);
+                var vEnd = _imageTransform.Transform(_endPoint.Value);
+                var selectionRect = new Rect(vStart, vEnd);
+
+                switch (Tool)
+                {
+                    case ImageZoomTools.Rectangle:
+                        drawingContext.DrawRectangle(fillBrush, activePen, selectionRect);
+                        break;
+
+                    case ImageZoomTools.Ellipse:
+                        var center = new Point(selectionRect.Left + selectionRect.Width / 2,
+                            selectionRect.Top + selectionRect.Height / 2);
+                        drawingContext.DrawEllipse(fillBrush, activePen, center, selectionRect.Width / 2,
+                            selectionRect.Height / 2);
+                        break;
+
+                    case ImageZoomTools.Dot:
+                        drawingContext.DrawRectangle(Brushes.Red, activePen, new Rect(vStart, new Size(2, 2)));
+                        break;
+                }
+            }
+
+            if (Tool is ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon &&
+                FreeFormPoints.Count > 0)
+            {
+                var geometry = new StreamGeometry();
+                using (var ctx = geometry.Open())
+                {
+                    var p0 = _imageTransform.Transform(FreeFormPoints[0]);
+                    var isClosed = Tool == ImageZoomTools.Polygon;
+                    ctx.BeginFigure(p0, isClosed, isClosed);
+
+                    if (FreeFormPoints.Count > 1)
+                    {
+                        var transformedPoints =
+                            FreeFormPoints.Skip(1).Select(p => _imageTransform.Transform(p)).ToArray();
+                        ctx.PolyLineTo(transformedPoints, true, false);
+                    }
+                }
+
+                drawingContext.DrawGeometry(Tool == ImageZoomTools.Polygon ? fillBrush : null, activePen, geometry);
             }
         }
 
         /// <summary>
-        ///     Called when [mouse move].
+        /// Transforms raw visual mouse coordinates back into unscaled image coordinates using the inverse transform.
         /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseEventArgs" /> instance containing the event data.</param>
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            if (IsTracing && e.LeftButton == MouseButtonState.Pressed)
-            {
-                var currentPoint = TransformMousePosition(e.GetPosition(this));
-                FreeFormPoints.Add(currentPoint);
-                InvalidateVisual(); // Redraw to show the updated trace
-            }
-        }
-
-        /// <summary>
-        ///     Called when [mouse up].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-        private void OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (IsTracing && e.LeftButton == MouseButtonState.Released)
-            {
-                IsTracing = false;
-                ReleaseMouseCapture(); // Release mouse capture
-            }
-        }
-
-        /// <summary>
-        ///     Transforms the mouse position.
-        /// </summary>
-        /// <param name="mousePosition">The mouse position.</param>
-        /// <returns>Transformed Point.</returns>
+        /// <param name="mousePosition">The raw mouse position relative to the visual container.</param>
+        /// <returns>The transformed mouse position in image space.</returns>
         private Point TransformMousePosition(Point mousePosition)
         {
-            if (_imageTransform == null)
-            {
-                return mousePosition;
-            }
+            if (_imageTransform.Inverse == null) return mousePosition;
 
-            return _imageTransform.Inverse.Transform(mousePosition);
+            var transformed = _imageTransform.Inverse.Transform(mousePosition);
+            return new Point(Math.Round(transformed.X), Math.Round(transformed.Y));
         }
 
         /// <summary>
-        /// Captures the current shape data, returns it, and immediately clears the visual drawing.
+        /// Recalculates bounding coordinates and builds the current <see cref="SelectionFrame"/> state.
         /// </summary>
-        /// <summary>
-        /// Captures the current shape data, returns it, and immediately clears the visual drawing.
-        /// </summary>
-        public SelectionFrame CaptureAndClear()
+        private void UpdateCurrentSelectionFrame()
         {
-            // 1. Prepare data variables
             int x = 0, y = 0, width = 0, height = 0;
             var points = new List<Point>();
 
-            // 2. Calculate based on Tool Type
-            if (Tool == ImageZoomTools.FreeForm || Tool == ImageZoomTools.Trace)
+            if (Tool is ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon)
             {
                 if (FreeFormPoints.Count > 0)
                 {
-                    // Copy existing points
                     points = new List<Point>(FreeFormPoints);
 
-                    // --- FIX: AUTO-CLOSE THE SHAPE ---
-                    // If we have a valid shape (>2 points) and it isn't closed, close it.
-                    // This ensures the "Fill" algorithm knows where the boundary is.
-                    if (points.Count > 2)
+                    // Ensure closed loops for multi-point polygon shapes
+                    if (points.Count > 2 && Tool is ImageZoomTools.Polygon or ImageZoomTools.FreeForm)
                     {
-                        var start = points[0];
-                        var end = points[points.Count - 1];
-
-                        // Simple check: if start != end, add start to the end
-                        if (start != end)
+                        if (points[0] != points[^1])
                         {
-                            points.Add(start);
+                            points.Add(points[0]);
                         }
                     }
-                    // ---------------------------------
 
-                    // Calculate Bounding Box (after closing)
                     var minX = points.Min(p => p.X);
                     var minY = points.Min(p => p.Y);
                     var maxX = points.Max(p => p.X);
@@ -293,7 +309,6 @@ namespace Common.Images
             }
             else if (_startPoint.HasValue && _endPoint.HasValue)
             {
-                // Rectangle / Ellipse
                 var selectionRect = new Rect(_startPoint.Value, _endPoint.Value);
                 x = (int)selectionRect.X;
                 y = (int)selectionRect.Y;
@@ -302,16 +317,13 @@ namespace Common.Images
             }
             else if (Tool == ImageZoomTools.Dot && _startPoint.HasValue)
             {
-                // Dot
                 x = (int)_startPoint.Value.X;
                 y = (int)_startPoint.Value.Y;
                 width = 1;
                 height = 1;
             }
 
-            // 3. Create the Frame
-            // We use 'points' (which now includes the closing point)
-            var frame = new SelectionFrame
+            CurrentSelectionFrame = new SelectionFrame
             {
                 Tool = Tool,
                 X = x,
@@ -320,114 +332,6 @@ namespace Common.Images
                 Height = height,
                 Points = points
             };
-
-            // 4. Cleanup
-            _committedFrames.Clear();
-            _committedFreeForms.Clear();
-            FreeFormPoints.Clear();
-            _startPoint = null;
-            _endPoint = null;
-
-            InvalidateVisual();
-
-            return frame;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     When overridden in a derived class, participates in rendering operations that are directed by the layout system.
-        ///     The rendering instructions for this element are not used directly when this method is invoked, and are instead
-        ///     preserved for later asynchronous use by layout and drawing.
-        /// </summary>
-        /// <param name="drawingContext">
-        ///     The drawing instructions for a specific element. This context is provided to the layout
-        ///     system.
-        /// </param>
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            // Define Pens
-            var activePen = new Pen(Brushes.Red, 2) { DashStyle = new DashStyle(new double[] { 2, 2 }, 0) };
-            var committedPen = new Pen(Brushes.Blue, 1); // Solid line for finished shapes
-            var committedBrush = new SolidColorBrush(Color.FromArgb(30, 0, 0, 255)); // Faint fill
-
-            // 1. Draw Committed (Past) Shapes
-            foreach (var frame in _committedFrames)
-            {
-                // We must apply the current transform to the saved raw coordinates to ensure they zoom/pan correctly
-                var p1 = _imageTransform.Transform(new Point(frame.X, frame.Y));
-                var p2 = _imageTransform.Transform(new Point(frame.X + frame.Width, frame.Y + frame.Height));
-                var rect = new Rect(p1, p2);
-
-                if (frame.Tool == ImageZoomTools.Ellipse)
-                    drawingContext.DrawEllipse(committedBrush, committedPen,
-                        new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2), rect.Width / 2, rect.Height / 2);
-                else
-                    drawingContext.DrawRectangle(committedBrush, committedPen, rect);
-            }
-
-            // 1b. Draw Committed FreeForms
-            foreach (var points in _committedFreeForms)
-            {
-                if (points.Count <= 1) continue;
-
-                var geometry = new StreamGeometry();
-                using (var ctx = geometry.Open())
-                {
-                    // Transform points back to visual space
-                    var p0 = _imageTransform.Transform(points[0]);
-                    ctx.BeginFigure(p0, false, false);
-                    var transformedPoints = points.Select(p => _imageTransform.Transform(p)).ToList();
-                    ctx.PolyLineTo(transformedPoints.Skip(1).ToArray(), true, false);
-                }
-
-                drawingContext.DrawGeometry(null, committedPen, geometry);
-            }
-
-            // 2. Draw Current (Active) Shape (Existing Logic)
-            if (_startPoint.HasValue && _endPoint.HasValue)
-            {
-                Rect selectionRect = new(_startPoint.Value, _endPoint.Value);
-
-                // ... [Update CurrentSelectionFrame logic here from original code] ...
-
-                switch (Tool)
-                {
-                    case ImageZoomTools.Rectangle:
-                        drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)), activePen,
-                            selectionRect);
-                        break;
-                    case ImageZoomTools.Ellipse:
-                        var center = new Point(selectionRect.Left + selectionRect.Width / 2,
-                            selectionRect.Top + selectionRect.Height / 2);
-                        drawingContext.DrawEllipse(null, activePen, center, selectionRect.Width / 2,
-                            selectionRect.Height / 2);
-                        break;
-                    case ImageZoomTools.Dot:
-                        drawingContext.DrawRectangle(Brushes.Red, activePen,
-                            new Rect(_startPoint.Value, new Size(1, 1)));
-                        break;
-                }
-            }
-
-            // 3. Draw Current FreeForm
-            if (Tool == ImageZoomTools.FreeForm && FreeFormPoints.Count > 1)
-            {
-                var geometry = new StreamGeometry();
-                using (var ctx = geometry.Open())
-                {
-                    // Current FreeFormPoints are already in View Coordinates (handled in OnMouseMove or AddFreeFormPoint logic)
-                    // Note: Check if your AddFreeFormPoint stores Transformed or View points.
-                    // Based on your original code: AddFreeFormPoint stores transformed (Logic Coordinates).
-                    // So we must Inverse Transform them for display.
-
-                    var p0 = _imageTransform.Transform(FreeFormPoints[0]);
-                    ctx.BeginFigure(p0, false, false);
-                    var transformedPoints = FreeFormPoints.Select(p => _imageTransform.Transform(p)).ToList();
-                    ctx.PolyLineTo(transformedPoints.Skip(1).ToArray(), true, false);
-                }
-
-                drawingContext.DrawGeometry(null, activePen, geometry);
-            }
         }
     }
 }

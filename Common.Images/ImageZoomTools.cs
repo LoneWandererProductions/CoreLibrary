@@ -48,6 +48,11 @@ namespace Common.Images
         /// <summary>
         ///     The free form selection tool
         /// </summary>
-        FreeForm = 5
+        FreeForm = 5,
+
+        /// <summary>
+        /// The polygon
+        /// </summary>
+        Polygon = 6
     }
 }

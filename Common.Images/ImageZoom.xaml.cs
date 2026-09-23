@@ -124,7 +124,7 @@ namespace Common.Images
         /// <summary>
         /// Occurs when [selected multi frames].
         /// </summary>
-        public event DelegateMultiFrame SelectedMultiFrames;
+        public event DelegateMultiFrame? SelectedMultiFrames;
 
         /// <summary>
         /// The universal image path property (handles both static and animated images).
@@ -338,6 +338,19 @@ namespace Common.Images
         /// </summary>
         private Point _startPoint;
 
+        /// <summary>
+        ///     Pan-drag origin, captured in <see cref="MainCanvas" /> coordinates (the same space
+        ///     the render-transform's OffsetX/OffsetY live in). Kept separate from
+        ///     <see cref="_startPoint" />, which is deliberately captured in <see cref="BtmImage" />
+        ///     - i.e. unscaled, image-local - coordinates for the drawing tools (Rectangle,
+        ///     Ellipse, FreeForm, Dot). Panning used to reuse <see cref="_startPoint" /> for this,
+        ///     which mixed unscaled image-space coordinates with scaled canvas-space coordinates
+        ///     in the same subtraction - correct only at exactly 100% zoom, and increasingly wrong
+        ///     (erratic drag speed/direction, worse right at the pannable edges where the clamp
+        ///     then fights the miscalculated delta) the further zoom moved from 1.0.
+        /// </summary>
+        private Point _panStartPoint;
+
         /// <inheritdoc />
         /// <summary>
         ///     Initializes a new instance of the <see cref="Window" /> class.
@@ -357,7 +370,7 @@ namespace Common.Images
         /// <summary>
         ///     The selection adorner
         /// </summary>
-        private SelectionAdorner SelectionAdorner { get; set; }
+        private SelectionAdorner? SelectionAdorner { get; set; }
 
         /// <summary>
         ///     Gets or sets the image clicked command.
@@ -465,12 +478,12 @@ namespace Common.Images
         /// <summary>
         ///     Occurs when [selected frame] was changed
         /// </summary>
-        public event DelegateFrame SelectedFrame;
+        public event DelegateFrame? SelectedFrame;
 
         /// <summary>
         ///     Occurs when [selected point].
         /// </summary>
-        public event DelegatePoint SelectedPoint;
+        public event DelegatePoint? SelectedPoint;
 
         /// <summary>
         ///     Called when [selection tool changed].
@@ -520,7 +533,7 @@ namespace Common.Images
             // Pass the path to ImageGif. It will automatically figure out if it's a GIF or a static image.
             BtmImage.GifSource = ImagePath;
 
-            // Note: SelectionAdorner and Canvas sizing will be updated automatically 
+            // Note: SelectionAdorner and Canvas sizing will be updated automatically
             // when BtmImage_ImageLoaded fires!
         }
 
@@ -609,10 +622,8 @@ namespace Common.Images
             _mouseDown = true;
             _ = MainCanvas.CaptureMouse();
 
-            // Get the mouse position relative to the image (consistent with panning logic)
-            //var rawPoint = e.GetPosition(BtmImage);
-
-            //_startPoint = e.GetPosition(MainCanvas);
+            // Mouse position in image-local (unscaled) space - used by the drawing tools below,
+            // which all work in image pixel coordinates.
             _startPoint = e.GetPosition(BtmImage);
 
             // Capture the mouse
@@ -623,6 +634,10 @@ namespace Common.Images
             // If this is a pan start, capture origin offsets (in image transform space)
             if (SelectionTool == ImageZoomTools.Move)
             {
+                // Separate drag-origin point in Canvas (scaled) space - see _panStartPoint's
+                // doc comment for why this can't just reuse _startPoint above.
+                _panStartPoint = e.GetPosition(MainCanvas);
+
                 // Capture the current image transform offset as the origin for panning
                 var matrix = BtmImage.RenderTransform.Value;
                 _originPoint = new Point(matrix.OffsetX, matrix.OffsetY);
@@ -633,11 +648,12 @@ namespace Common.Images
                 case ImageZoomTools.Move:
                     break;
                 case ImageZoomTools.Trace:
-                    SelectionAdorner.IsTracing = true;
+                    if (SelectionAdorner != null) SelectionAdorner.IsTracing = true;
                     break;
                 case ImageZoomTools.Rectangle:
                 case ImageZoomTools.Ellipse:
                 case ImageZoomTools.FreeForm:
+                case ImageZoomTools.Polygon:
                     break;
                 case ImageZoomTools.Dot:
                     SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
@@ -672,11 +688,7 @@ namespace Common.Images
             }
 
             // 2. Identify "Immediate Action" tools (Shapes, Frames)
-            // 🔴 REMOVED 'ImageZoomTools.Dot' from this list
-            var isDrawingTool = SelectionTool == ImageZoomTools.Rectangle ||
-                                SelectionTool == ImageZoomTools.Ellipse ||
-                                SelectionTool == ImageZoomTools.FreeForm ||
-                                SelectionTool == ImageZoomTools.Trace;
+            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon;
 
             if (isDrawingTool)
             {
@@ -721,9 +733,14 @@ namespace Common.Images
                     var transform = (MatrixTransform)BtmImage.RenderTransform;
                     var matrix = transform.Matrix;
 
-                    // 1. Calculate intended new offsets
-                    var newX = _originPoint.X + (currentCanvasPos.X - _startPoint.X);
-                    var newY = _originPoint.Y + (currentCanvasPos.Y - _startPoint.Y);
+                    // 1. Calculate intended new offsets. Both sides of each subtraction must be
+                    // in the same coordinate space - currentCanvasPos is in Canvas (scaled)
+                    // space, so the drag origin has to be too (_panStartPoint), not _startPoint
+                    // (image-local/unscaled space, used by the drawing tools instead). Mixing the
+                    // two here used to make panning feel erratic and made it worse the further
+                    // zoom was from 100%.
+                    var newX = _originPoint.X + (currentCanvasPos.X - _panStartPoint.X);
+                    var newY = _originPoint.Y + (currentCanvasPos.Y - _panStartPoint.Y);
 
                     // 2. Boundary Checks
                     var viewWidth = ScrollView.ActualWidth;
@@ -748,6 +765,7 @@ namespace Common.Images
                     break;
 
                 case ImageZoomTools.FreeForm:
+                case ImageZoomTools.Polygon:
                     SelectionAdorner?.AddFreeFormPoint(mousePos);
                     break;
             }
@@ -932,7 +950,7 @@ namespace Common.Images
                         try
                         {
                             var adornerLayer = AdornerLayer.GetAdornerLayer(BtmImage);
-                            adornerLayer?.Remove(SelectionAdorner);
+                            if (SelectionAdorner != null) adornerLayer?.Remove(SelectionAdorner);
                         }
                         catch
                         {

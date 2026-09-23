@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Gifs
  * FILE:        FrameInfo.cs
- * PURPOSE:     Class Container that holds all informations about the frames of the gif in question.
+ * PURPOSE:     Class Container that holds all Information about the frames of the gif in question.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -40,6 +40,6 @@ namespace Imaging.Gifs
         /// <value>
         ///     The image.
         /// </value>
-        public Bitmap Image { get; set; } // Image of the frame
+        public Bitmap? Image { get; set; } // Image of the frame
     }
 }

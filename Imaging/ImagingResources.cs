@@ -212,7 +212,7 @@ namespace Imaging
         /// <summary>
         ///     The jpg Extension (const). Value: ".jpg"
         /// </summary>
-        public const string JpgExt = ".jpg";
+        public const string? JpgExt = ".jpg";
 
         /// <summary>
         ///     The jpeg Extension (const). Value: ".jpeg"
@@ -222,7 +222,7 @@ namespace Imaging
         /// <summary>
         ///     The png Extension (const). Value: ".png"
         /// </summary>
-        public const string PngExt = ".png";
+        public const string? PngExt = ".png";
 
         /// <summary>
         ///     The Bmp Extension (const). Value: ".Bmp"
@@ -353,7 +353,7 @@ namespace Imaging
         ///     to actually notice when it changes. A plain List gives no such notification, so a
         ///     ComboBox already bound to it before a plugin registers would just silently go stale.
         /// </summary>
-        public static readonly ObservableCollection<string> Appendix =
+        public static readonly ObservableCollection<string?> Appendix = 
 
         [
             JpgExt,

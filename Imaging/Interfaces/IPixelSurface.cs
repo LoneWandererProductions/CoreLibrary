@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Imaging.Interfaces
 {
@@ -51,13 +52,13 @@ namespace Imaging.Interfaces
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="color">The color.</param>
-        void SetPixel(int x, int y, System.Drawing.Color color);
+        void SetPixel(int x, int y, Color color);
 
         /// <summary>
         /// Sets the pixels.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
-        void SetPixels(IEnumerable<(int x, int y, System.Drawing.Color color)> pixels);
+        void SetPixels(IEnumerable<(int x, int y, Color color)>? pixels);
 
         /// <summary>
         /// Blends the int.

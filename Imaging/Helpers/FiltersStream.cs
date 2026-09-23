@@ -206,7 +206,7 @@ namespace Imaging.Helpers
         ///     Optional bias added to filtered value (default 0.0).
         /// </param>
         /// <returns>A new Bitmap containing the filtered image.</returns>
-        private static Bitmap? ApplyFilter(Image? sourceBitmap, double[,]? filterMatrix, double factor = 1.0,
+        private static Bitmap ApplyFilter(Image? sourceBitmap, double[,]? filterMatrix, double factor = 1.0,
             double bias = 0.0)
         {
             // Convert source to unmanaged buffer for fast pixel access
@@ -234,7 +234,7 @@ namespace Imaging.Helpers
                             var ix = x + (fx - filterOffset);
                             var iy = y + (fy - filterOffset);
 
-                            var (r, g, b, a) = source.GetPixel(ix, iy);
+                            var (r, g, b, _) = source.GetPixel(ix, iy);
 
                             blue += b * filterMatrix[fy, fx];
                             green += g * filterMatrix[fy, fx];
@@ -268,7 +268,7 @@ namespace Imaging.Helpers
         /// <param name="image">The input image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Image? image, int stepWidth)
+        internal static Bitmap? Pixelate(Image? image, int stepWidth)
         {
             if (image == null)
             {
@@ -330,7 +330,7 @@ namespace Imaging.Helpers
                     {
                         for (var i = -1; i <= 1; i++)
                         {
-                            var (r, g, b, a) = sourceBuffer.GetPixel(x + i, y + j);
+                            var (r, _, _, _) = sourceBuffer.GetPixel(x + i, y + j);
 
                             int grayValue = r; // grayscale
 

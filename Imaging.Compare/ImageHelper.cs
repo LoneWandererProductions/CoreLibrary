@@ -30,8 +30,8 @@ namespace Imaging.Compare
             return new ImageCompareData
             {
                 Similarity = ImageProcessing.GetPercentageDifference(oneSimilar, twoSimilar),
-                ImageOne = AnalysisProcessing.GetImageDetails(first)!.GetDetailsSimple(),
-                ImageTwo = AnalysisProcessing.GetImageDetails(second)!.GetDetailsSimple()
+                ImageOne = AnalysisProcessing.GetImageDetails(first).GetDetailsSimple(),
+                ImageTwo = AnalysisProcessing.GetImageDetails(second).GetDetailsSimple()
             };
         }
 
@@ -86,12 +86,14 @@ namespace Imaging.Compare
                 return colorCount;
             }
 
+            using var dbm = DirectBitmap.GetInstance(image);
+
             // 2. Iterate through every pixel in the bitmap
-            for (var x = 0; x < image.Width; x++)
+            for (var x = 0; x < dbm.Width; x++)
             {
-                for (var y = 0; y < image.Height; y++)
+                for (var y = 0; y < dbm.Height; y++)
                 {
-                    var color = image.GetPixel(x, y);
+                    var color = dbm.GetPixel(x, y);
 
                     // Increment the count for this color
                     colorCount[color] = colorCount.GetValueOrDefault(color) + 1;

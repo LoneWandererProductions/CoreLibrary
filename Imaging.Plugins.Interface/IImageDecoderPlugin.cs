@@ -40,7 +40,7 @@ namespace Imaging.Plugins.Interface
         ///     app - file dialogs, folder scans, the converter tool, thumbnail
         ///     generation - picks the format up automatically without changes.
         /// </summary>
-        IReadOnlyCollection<string> SupportedExtensions { get; }
+        IReadOnlyCollection<string?> SupportedExtensions { get; }
 
         /// <summary>
         ///     Decode already-read file bytes into a fully independent Bitmap (no
@@ -57,7 +57,7 @@ namespace Imaging.Plugins.Interface
         ///     Throw on failure rather than returning null - the caller logs and
         ///     handles it exactly like a native decode failure.
         /// </exception>
-        Bitmap Decode(byte[] data);
+        Bitmap? Decode(byte[] data);
 
         /// <summary>
         /// Determines whether this instance can decode the specified header.

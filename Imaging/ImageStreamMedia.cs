@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Imaging.Helpers;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Imaging
 {
@@ -37,7 +38,7 @@ namespace Imaging
         /// <returns>
         /// A <see cref="BitmapImage" />.
         /// </returns>
-        public static BitmapImage GetBitmapImage(string path, int width = 0, int height = 0)
+        public static BitmapImage GetBitmapImage(string? path, int width = 0, int height = 0)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -80,7 +81,7 @@ namespace Imaging
         /// <param name="width">Target width (optional).</param>
         /// <param name="height">Target height (optional).</param>
         /// <returns>A <see cref="BitmapImage"/> or null if the format is invalid.</returns>
-        public static BitmapImage? GetBitmapImageFileStream(string path, int width = 0, int height = 0)
+        public static BitmapImage? GetBitmapImageFileStream(string? path, int width = 0, int height = 0)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -143,7 +144,7 @@ namespace Imaging
         /// <param name="bitmap">The source bitmap.</param>
         /// <returns>A <see cref="BitmapImage"/>.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static BitmapImage BitmapToBitmapImage(Bitmap? bitmap)
+        internal static BitmapImage? BitmapToBitmapImage(Bitmap? bitmap)
         {
             ImageHelper.ValidateImage(nameof(BitmapToBitmapImage), bitmap);
 
@@ -154,7 +155,7 @@ namespace Imaging
             var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var rect = new Rectangle(0, 0, width, height);
             var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                PixelFormat.Format32bppArgb);
 
             wbmp.Lock();
             unsafe
@@ -201,7 +202,7 @@ namespace Imaging
             // 1. Lock GDI+ bits
             var rect = new Rectangle(0, 0, width, height);
             var bmpData = bitmap.LockBits(rect, ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                PixelFormat.Format32bppArgb);
 
             try
             {

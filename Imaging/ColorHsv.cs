@@ -16,7 +16,8 @@
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 using System;
-using System.Windows.Media;
+using System.Drawing;
+using ColorConverter = System.Windows.Media.ColorConverter;
 
 namespace Imaging
 {
@@ -180,7 +181,7 @@ namespace Imaging
             if (string.IsNullOrWhiteSpace(hex))
                 throw new ArgumentException("Hex string cannot be null or empty.");
 
-            var color = (Color)ColorConverter.ConvertFromString(hex);
+            var color = (System.Windows.Media.Color)ColorConverter.ConvertFromString(hex);
 
             return FromRgb(color.R, color.G, color.B, a);
         }
@@ -208,22 +209,23 @@ namespace Imaging
         /// <param name="b">The b.</param>
         /// <param name="a">a.</param>
         /// <returns>Color Object from drawing.</returns>
-        public static System.Drawing.Color GetDrawingColor(int r, int g, int b, int a = 255)
+        public static Color GetDrawingColor(int r, int g, int b, int a = 255)
         {
             ValidateRgb(r, g, b, a);
-            return System.Drawing.Color.FromArgb(a, r, g, b);
+            return Color.FromArgb(a, r, g, b);
         }
 
         /// <summary>
         /// Gets the color of the drawing.
         /// </summary>
         /// <returns>Color Object from drawing.</returns>
-        public System.Drawing.Color GetDrawingColor()
+        public Color GetDrawingColor()
         {
             ValidateRgb(R, G, B, A);
-            return System.Drawing.Color.FromArgb(A, R, G, B);
+            return Color.FromArgb(A, R, G, B);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
@@ -231,9 +233,8 @@ namespace Imaging
         /// <returns>
         ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
         /// </returns>
-        public bool Equals(ColorHsv other)
-            => other is not null &&
-               R == other.R && G == other.G && B == other.B && A == other.A;
+        public bool Equals(ColorHsv? other)
+            => R == other?.R && G == other.G && B == other.B && A == other.A;
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
@@ -242,7 +243,7 @@ namespace Imaging
         /// <returns>
         ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is ColorHsv c && Equals(c);
 
         /// <summary>
@@ -277,7 +278,7 @@ namespace Imaging
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator ==(ColorHsv? a, ColorHsv b) => Equals(a, b);
+        public static bool operator ==(ColorHsv? a, ColorHsv? b) => Equals(a, b);
 
         /// <summary>
         /// Implements the operator !=.

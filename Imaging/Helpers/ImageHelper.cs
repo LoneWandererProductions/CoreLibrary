@@ -326,7 +326,7 @@ namespace Imaging.Helpers
         /// <param name="path">The path.</param>
         /// <exception cref="IOException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ValidateFilePath(string path)
+        internal static void ValidateFilePath(string? path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {

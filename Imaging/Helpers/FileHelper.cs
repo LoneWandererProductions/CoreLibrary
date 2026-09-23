@@ -33,7 +33,7 @@ namespace Imaging.Helpers
         /// <returns>List of files with certain extensions.</returns>
         internal static List<string> GetFilesByExtensionFullPath(
             string path,
-            IEnumerable<string> extensions)
+            IEnumerable<string?> extensions)
         {
             if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
                 return new List<string>();

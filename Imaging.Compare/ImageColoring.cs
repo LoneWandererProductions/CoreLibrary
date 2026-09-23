@@ -35,7 +35,7 @@ namespace Imaging.Compare
         /// <param name="extensions">The extensions.</param>
         /// <returns>List of Images with similar Color range</returns>
         internal static List<string?>? GetSimilarColors(int r, int g, int b, int range, string? folderPath,
-            bool checkSubfolders, IEnumerable<string> extensions)
+            bool checkSubfolders, IEnumerable<string?> extensions)
         {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));

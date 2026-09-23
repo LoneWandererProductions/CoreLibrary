@@ -71,7 +71,7 @@ namespace Common.Images
         /// <summary>
         ///     An Image was clicked <see cref="DelegateColor" />.
         /// </summary>
-        public event DelegateColor ColorChanged;
+        public event DelegateColor? ColorChanged;
 
         /// <summary>
         ///     Set Colors.

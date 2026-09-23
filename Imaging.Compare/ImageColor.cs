@@ -48,7 +48,7 @@ namespace Imaging.Compare
         /// </returns>
         public override string ToString()
         {
-            return string.Concat(R, ImageResources.Separator, G, ImageResources.Separator, G);
+            return string.Concat(R, ImageResources.Separator, G, ImageResources.Separator, B);
         }
 
         /// <summary>

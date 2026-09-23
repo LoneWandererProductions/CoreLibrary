@@ -12,7 +12,6 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using Imaging.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,7 +21,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using Imaging.Helpers;
+using Color = System.Drawing.Color;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Imaging.Gifs
 {
@@ -66,14 +67,14 @@ namespace Imaging.Gifs
         /// List of Images from gif
         /// </returns>
         /// <exception cref="System.IO.IOException">File not found: {path}</exception>
-        internal static async Task<List<Bitmap>> SplitGifAsync(string path)
+        internal static async Task<List<Bitmap?>> SplitGifAsync(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
                 throw new IOException($"File not found: {path}");
 
             return await Task.Run(() =>
             {
-                var frames = new List<Bitmap>();
+                var frames = new List<Bitmap?>();
 
                 try
                 {
@@ -85,14 +86,16 @@ namespace Imaging.Gifs
                     var height = gifImage.Height;
 
                     // Add 'using' so the master canvas is destroyed when we are done
-                    using var masterCanvas = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    using var masterCanvas =
+                        new Bitmap(width, height, PixelFormat.Format32bppArgb);
                     using var g = Graphics.FromImage(masterCanvas);
 
-                    g.Clear(System.Drawing.Color.Gray);
+                    g.Clear(Color.Gray);
 
                     var disposalProperty = gifImage.GetPropertyItem(0x5100);
 
-                    if(disposalProperty == null || disposalProperty.Value == null || disposalProperty.Value.Length < frameCount * 4)
+                    if (disposalProperty == null || disposalProperty.Value == null ||
+                        disposalProperty.Value.Length < frameCount * 4)
                     {
                         throw new InvalidDataException("GIF does not contain valid disposal method data.");
                     }
@@ -105,7 +108,7 @@ namespace Imaging.Gifs
 
                         if (disposalMethod == 2)
                         {
-                            g.Clear(System.Drawing.Color.Gray);
+                            g.Clear(Color.Gray);
                         }
 
                         g.DrawImage(gifImage, new Rectangle(0, 0, width, height));
@@ -123,6 +126,7 @@ namespace Imaging.Gifs
                     {
                         frame?.Dispose();
                     }
+
                     frames.Clear();
 
                     Trace.WriteLine($"Error splitting GIF: {ex.Message}");
@@ -335,7 +339,7 @@ namespace Imaging.Gifs
                 var bmpData = img.LockBits(
                     new Rectangle(0, 0, img.Width, img.Height),
                     ImageLockMode.ReadOnly,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    PixelFormat.Format32bppArgb);
 
                 try
                 {

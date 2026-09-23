@@ -18,7 +18,7 @@ using System.Windows.Threading;
 
 namespace Imaging.Gifs
 {
-    /// <inheritdoc cref="Image" />
+    /// <inheritdoc cref="System.Windows.Controls.Image" />
     /// <summary>
     /// Image control capable of playing animated GIFs in a self-contained way.
     /// Switching GIF → non-GIF will always clear old frames and stop timers.
@@ -170,7 +170,7 @@ namespace Imaging.Gifs
 
                     b.Dispose();
                     return bi;
-                }).Cast<BitmapSource>().ToList();
+                }).ToList();
 
                 if (token.IsCancellationRequested || _frames.Count == 0)
                     return;

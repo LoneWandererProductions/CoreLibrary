@@ -44,11 +44,10 @@ namespace Imaging
         /// </summary>
         /// <param name="bits">The bits.</param>
         /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <returns>Pixel32 Struct for the Coordinate.</returns>
-        internal static Pixel32 GetPixel(Pixel32[] bits, int width, int height, int x, int y)
+        internal static Pixel32 GetPixel(Pixel32[] bits, int width, int x, int y)
         {
             var index = x + y * width;
             return bits[index];

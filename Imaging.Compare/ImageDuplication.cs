@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ImageCompare.Compare
  * FILE:        ImageDuplication.cs
@@ -31,6 +31,17 @@ namespace Imaging.Compare
         private static readonly ImageRender Render = new();
 
         /// <summary>
+        ///     Caps how many images we decode at once. Parallel.ForEach with no explicit
+        ///     MaxDegreeOfParallelism lets the ThreadPool grow past the core count over time
+        ///     (its hill-climbing heuristic keeps adding workers when tasks look "stalled",
+        ///     which file I/O + Bitmap decode does) - so a big folder can end up with far more
+        ///     full-resolution Bitmaps alive in memory at once than the hardware benefits from.
+        ///     Capping it gives a predictable ceiling instead.
+        /// </summary>
+        private static readonly ParallelOptions DecodeParallelOptions =
+            new() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+
+        /// <summary>
         ///     The Temp path dictionary
         /// </summary>
         private static Dictionary<int, string?>? Translator { get; set; }
@@ -45,7 +56,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetDuplicateImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions)
+            IEnumerable<string?> extensions)
         {
             return folderPath == null
                 ? null
@@ -65,7 +76,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetDuplicateImages(IEnumerable<string?> folderPaths,
-            bool checkSubfolders, IEnumerable<string> extensions)
+            bool checkSubfolders, IEnumerable<string?> extensions)
         {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
@@ -114,41 +125,46 @@ namespace Imaging.Compare
             var imagePathsAndGrayValues = new ConcurrentBag<ImageDuplicate>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
-            {
-                var (key, value) = pathImage;
-                try
+            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), DecodeParallelOptions,
+                pathImage =>
                 {
-                    if (value == null) return;
+                    var (key, value) = pathImage;
+                    try
+                    {
+                        if (value == null) return;
 
-                    using var btm = new Bitmap(value);
-                    var dup = GenerateData(btm, key);
-                    imagePathsAndGrayValues.Add(dup);
-                }
-                catch (ArgumentException ex)
-                {
-                    Trace.WriteLine(ex);
-                }
-                catch (OutOfMemoryException ex)
-                {
-                    // Skip this one file rather than aborting the whole scan - losing
-                    // everything processed so far over one oversized/corrupt image is
-                    // exactly the failure mode a bulk duplicate scan needs to avoid.
-                    var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
-                    Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    Trace.WriteLine(ex);
-                }
-            });
+                        using var btm = new Bitmap(value);
+                        var dup = GenerateData(btm, key);
+                        imagePathsAndGrayValues.Add(dup);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Trace.WriteLine(ex);
+                    }
+                    catch (OutOfMemoryException ex)
+                    {
+                        // Skip this one file rather than aborting the whole scan - losing
+                        // everything processed so far over one oversized/corrupt image is
+                        // exactly the failure mode a bulk duplicate scan needs to avoid.
+                        var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
+                        Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Trace.WriteLine(ex);
+                    }
+                });
 
             return imagePathsAndGrayValues.ToList();
         }
 
         /// <summary>
-        ///     Gets the duplicate groups.
-        ///     Only finds pairs
+        ///     Gets the duplicate groups by scanning the sorted list for consecutive runs of
+        ///     exactly-equal images. Because <see cref="ImageDuplicate.CompareTo" /> sorts by the
+        ///     raw grayscale pixel array, every image that is exactly equal (per
+        ///     <see cref="ImageDuplicate.Equals(ImageDuplicate)" />) to a given one is guaranteed
+        ///     to land adjacent to it after sorting - so a single linear pass over the sorted
+        ///     list finds every run, of any size, not just pairs.
         /// </summary>
         /// <param name="imagePathsAndGrayValues">The image paths and gray values.</param>
         /// <returns>Group of Duplicates</returns>
@@ -256,7 +272,7 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="duplicateGroups">The duplicate groups.</param>
         /// <returns>List of Similar Images</returns>
-        private static List<List<string>> Translate(IEnumerable<List<ImageDuplicate>> duplicateGroups)
+        private static List<List<string?>> Translate(IEnumerable<List<ImageDuplicate>> duplicateGroups)
         {
             return duplicateGroups.Select(group =>
                     (from element in @group where Translator[element.Id] != null select Translator[element.Id])

@@ -1,0 +1,300 @@
+﻿<UserControl x:Class="Common.Images.CifChannelEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converter="clr-namespace:Common.Converter;assembly=Common.Converter"
+             mc:Ignorable="d"
+             Background="{DynamicResource WindowBackgroundBrush}"
+             Foreground="{DynamicResource TextPrimaryBrush}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <!-- Inverse of the above: shows the "load a file" hint exactly while no CIF is loaded. -->
+            <converter:NullToVisibilityConverter x:Key="VisibleWhenNullConverter" Invert="True" />
+
+            <ResourceDictionary.MergedDictionaries>
+                <!--
+                    Wasn't merged before, which is why this panel's colors (menu bar, borders)
+                    were hand-picked hex values instead of the app's actual theme brushes - the
+                    one thing most responsible for it feeling like a bolted-on extra rather than
+                    part of SlimViewer.
+                -->
+                <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="320" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Header Title - matches TextureConfigControl / FilterConfigControl -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="🎨" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="CIF Channel Editor" Style="{StaticResource SidePanelTitleStyle}" />
+        </StackPanel>
+
+        <!--
+            Slim icon+text toolbar in place of the previous full dropdown Menu. A File menu with
+            one submenu holding three items didn't need a menu bar's worth of chrome, especially
+            squeezed into a 320px-wide side panel - three buttons say the same thing more plainly
+            and match the rest of the app's action-button footers.
+        -->
+        <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource SidePanelCardStyle}"
+                Padding="8" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="📂 Load CIF..." Padding="8,4" Margin="0,0,6,0" Click="LoadCif_Click"
+                        ToolTip="Load a Custom Image Format (CIF) file to edit" />
+                <Button Content="💾 Export CIF..." Padding="8,4" Margin="0,0,6,0" Click="ExportCif_Click"
+                        ToolTip="Export the original, unedited colormap" />
+                <Button Content="✳️ Export Edited..." Padding="8,4" Click="ExportEditedCif_Click"
+                        ToolTip="Export the current channel offsets and palette edits as a new CIF" />
+            </StackPanel>
+        </Border>
+
+        <!-- Image Viewport -->
+        <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource SidePanelCardStyle}" Margin="0,0,8,0"
+                Padding="0" ClipToBounds="True">
+            <Grid>
+                <Image x:Name="Viewport" RenderOptions.BitmapScalingMode="NearestNeighbor" Stretch="Uniform" />
+
+                <!-- Empty state: previously just a blank pane until something was loaded. -->
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Visibility="{Binding CifSource, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource VisibleWhenNullConverter}}">
+                    <TextBlock Text="🎨" FontSize="28" HorizontalAlignment="Center" Opacity="0.5" Margin="0,0,0,8" />
+                    <TextBlock Text="No CIF file loaded" HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextSecondaryBrush}" />
+                    <TextBlock Text="Use Load CIF... above to begin" HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,2,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Control Panel -->
+        <ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!-- Global Channel Adjustments -->
+                <Border Style="{StaticResource SidePanelCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Global Channel Offsets" Style="{StaticResource SidePanelSectionHeaderStyle}" />
+                        <TextBlock Text="Applied to the whole image, or only the isolated color below."
+                                   Foreground="{StaticResource TextMutedBrush}" FontSize="11" TextWrapping="Wrap"
+                                   Margin="0,0,0,10" />
+
+                        <!-- Red -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="48" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Red Offset"
+                                       Foreground="#FFE06C6C" FontWeight="SemiBold" />
+                            <Slider Grid.Row="1" Grid.Column="0" x:Name="RedSlider" Minimum="-255" Maximum="255"
+                                    Value="{Binding Path=RedOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    MouseDoubleClick="OffsetSlider_MouseDoubleClick"
+                                    ToolTip="Drag to adjust; double-click to reset to 0" Margin="0,2,8,0" />
+                            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                                     Text="{Binding Path=RedOffset, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                     Style="{StaticResource ParameterTextBoxStyle}"
+                                     ToolTip="Type an exact offset (-255 to 255)" />
+                        </Grid>
+
+                        <!-- Green -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="48" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Green Offset"
+                                       Foreground="#FF7CC47C" FontWeight="SemiBold" />
+                            <Slider Grid.Row="1" Grid.Column="0" x:Name="GreenSlider" Minimum="-255" Maximum="255"
+                                    Value="{Binding Path=GreenOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    MouseDoubleClick="OffsetSlider_MouseDoubleClick"
+                                    ToolTip="Drag to adjust; double-click to reset to 0" Margin="0,2,8,0" />
+                            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                                     Text="{Binding Path=GreenOffset, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                     Style="{StaticResource ParameterTextBoxStyle}"
+                                     ToolTip="Type an exact offset (-255 to 255)" />
+                        </Grid>
+
+                        <!-- Blue -->
+                        <Grid Margin="0,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="48" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Blue Offset"
+                                       Foreground="#FF6C9CE0" FontWeight="SemiBold" />
+                            <Slider Grid.Row="1" Grid.Column="0" x:Name="BlueSlider" Minimum="-255" Maximum="255"
+                                    Value="{Binding Path=BlueOffset, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    MouseDoubleClick="OffsetSlider_MouseDoubleClick"
+                                    ToolTip="Drag to adjust; double-click to reset to 0" Margin="0,2,8,0" />
+                            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                                     Text="{Binding Path=BlueOffset, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                     Style="{StaticResource ParameterTextBoxStyle}"
+                                     ToolTip="Type an exact offset (-255 to 255)" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Color Isolation & Remapping -->
+                <Border Style="{StaticResource SidePanelCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Palette Isolation &amp; Remap" Style="{StaticResource SidePanelSectionHeaderStyle}" />
+
+                        <!--
+                            Was bound to nothing: this checkbox's Checked/Unchecked handlers used
+                            to just call RequestRender() directly, without ever touching the
+                            IsIsolationEnabled property that RequestRender actually reads - so
+                            isolation mode's grayscale-the-rest effect never actually turned on,
+                            no matter how "checked" the box looked. Binding it directly closes
+                            that gap.
+                        -->
+                        <CheckBox x:Name="IsolateCheckBox" Content="Enable Color Isolation Mode"
+                                  IsChecked="{Binding Path=IsIsolationEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                  Margin="0,0,0,8"
+                                  ToolTip="When on, everything except the selected color below is shown in grayscale" />
+
+                        <TextBlock Margin="0,0,0,4">
+                            <Run Text="Image Colors Palette" Foreground="{StaticResource TextSecondaryBrush}" />
+                            <Run Text="{Binding PaletteItems.Count, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay, StringFormat=' ({0})'}"
+                                 Foreground="{StaticResource TextMutedBrush}" />
+                        </TextBlock>
+                        <ListBox x:Name="PaletteListBox" Height="150"
+                                 Background="{StaticResource InputBrush}"
+                                 BorderBrush="{StaticResource BorderSubtleBrush}"
+                                 ItemsSource="{Binding Path=PaletteItems, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 SelectedItem="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                 SelectionChanged="PaletteListBox_SelectionChanged">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                        <Border Width="16" Height="16" BorderBrush="{StaticResource BorderBrush}"
+                                                BorderThickness="1" Margin="0,0,6,0">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="{Binding DisplayColor}" />
+                                            </Border.Background>
+                                        </Border>
+                                        <TextBlock Text="{Binding HexValue}" VerticalAlignment="Center" Width="60"
+                                                   FontFamily="Consolas" />
+                                        <TextBlock Text="{Binding R, StringFormat=R:{0:D3}}" Foreground="#FFE06C6C"
+                                                   Margin="5,0" />
+                                        <TextBlock Text="{Binding G, StringFormat=G:{0:D3}}" Foreground="#FF7CC47C"
+                                                   Margin="5,0" />
+                                        <TextBlock Text="{Binding B, StringFormat=B:{0:D3}}" Foreground="#FF6C9CE0"
+                                                   Margin="5,0" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <!-- Selected Color Editor -->
+                        <Border Margin="0,10,0,0" Padding="8" BorderThickness="1"
+                                BorderBrush="{StaticResource BorderSubtleBrush}"
+                                Background="{StaticResource InputBrush}" CornerRadius="4"
+                                Visibility="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel
+                                DataContext="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Edit Selected Color" FontWeight="SemiBold"
+                                               VerticalAlignment="Center" />
+                                    <!-- Live preview of the color as edited, not just three separate numbers. -->
+                                    <Border Grid.Column="1" Width="24" Height="24" CornerRadius="3"
+                                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding DisplayColor}" />
+                                        </Border.Background>
+                                    </Border>
+                                </Grid>
+
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="32" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="R" Foreground="#FFE06C6C"
+                                               VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
+                                            Value="{Binding R, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                                            Margin="6,0" />
+                                    <TextBlock Grid.Column="2" Text="{Binding R}" VerticalAlignment="Center"
+                                               FontFamily="Consolas" />
+                                </Grid>
+
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="32" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="G" Foreground="#FF7CC47C"
+                                               VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
+                                            Value="{Binding G, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                                            Margin="6,0" />
+                                    <TextBlock Grid.Column="2" Text="{Binding G}" VerticalAlignment="Center"
+                                               FontFamily="Consolas" />
+                                </Grid>
+
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="32" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="B" Foreground="#FF6C9CE0"
+                                               VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
+                                            Value="{Binding B, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                                            Margin="6,0" />
+                                    <TextBlock Grid.Column="2" Text="{Binding B}" VerticalAlignment="Center"
+                                               FontFamily="Consolas" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Button Content="🔄 Reset Image" Click="ResetPalette_Click" Margin="0,10,0,0"
+                                Padding="10,6" HorizontalAlignment="Stretch"
+                                ToolTip="Clear all offsets and palette edits, and turn off isolation mode" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

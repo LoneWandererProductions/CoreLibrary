@@ -6,7 +6,6 @@
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
-using System.Collections.Concurrent;
 using System.Drawing;
 using Extended.Extensions;
 
@@ -21,39 +20,6 @@ namespace Imaging.Compare
         ///     The Image render
         /// </summary>
         private static readonly ImageRender Render = new();
-
-        /// <summary>
-        ///     Find all duplicate images from in list
-        /// </summary>
-        /// <param name="imageToCompareTo">The path of image to compare to.</param>
-        /// <param name="images">The paths to the images to check for duplicates</param>
-        /// <param name="maximumDifferenceInPercentage">The maximum difference in percentage.</param>
-        /// <returns>
-        ///     A list of paths to all the duplicates found.
-        /// </returns>
-        internal static List<ImageSimilar>? FindSimilarImages(ImageSimilar imageToCompareTo,
-            IEnumerable<ImageSimilar> images,
-            float maximumDifferenceInPercentage)
-        {
-            var similarImagesFound = new ConcurrentBag<ImageSimilar>();
-
-            _ = Parallel.ForEach(images, image =>
-            {
-                var percentageDiff =
-                    GetPercentageDifference(image, imageToCompareTo);
-                if (percentageDiff >= maximumDifferenceInPercentage)
-                {
-                    similarImagesFound.Add(image);
-                }
-            });
-
-            if (similarImagesFound.IsEmpty)
-            {
-                return null;
-            }
-
-            return similarImagesFound.Count == 1 ? null : similarImagesFound.ToList();
-        }
 
         /// <summary>
         ///     Generates the data. No need to resize! Only Change to  Greyscale.
@@ -73,7 +39,6 @@ namespace Imaging.Compare
 
             // Create arrays for image and hash
             var image = new byte[ImageResources.DuplicateSize, ImageResources.DuplicateSize];
-            var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
 
             // Get total pixels
             const int totalPixels = ImageResources.DuplicateSize * ImageResources.DuplicateSize;
@@ -86,7 +51,6 @@ namespace Imaging.Compare
                 // Calculate grayscale value
                 var grayValue = (byte)(pixel.R * 0.299 + pixel.G * 0.587 + pixel.B * 0.114);
                 image[x, y] = grayValue; // Store grayscale value
-                hash[y * ImageResources.DuplicateSize + x] = grayValue; // Store grayscale value for hash
 
                 // Accumulate RGB values based on grayscale contribution
                 r += pixel.R * 0.299;
@@ -106,8 +70,7 @@ namespace Imaging.Compare
                 G = (byte)g,
                 B = (byte)b,
                 Id = id,
-                Image = image,
-                Hash = hash // Add the hash to the return value if needed
+                Image = image
             };
         }
 

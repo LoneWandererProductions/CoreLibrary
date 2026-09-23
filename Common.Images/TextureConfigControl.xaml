@@ -1,0 +1,455 @@
+<UserControl x:Class="Common.Images.TextureConfigControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Common.Converter;assembly=Common.Converter"
+             xmlns:images="clr-namespace:Common.Images"
+             mc:Ignorable="d"
+             Background="{DynamicResource WindowBackgroundBrush}"
+             Foreground="{DynamicResource TextPrimaryBrush}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:ColorToNameConverter x:Key="ColorToNameConverter" />
+            <!--
+                Collapse=True: an inactive parameter row disappears entirely (and frees its
+                space) rather than just greying out. With 25 parameters spread across 4 cards but
+                only ever a handful active for any one texture type, this is what turns "a wall
+                of mostly-disabled fields" into "just the fields this texture actually uses".
+            -->
+            <converters:BooleanToVisibilityConverter x:Key="CollapseIfInactiveConverter" Collapse="True" />
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SlimViewer;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="🧱" FontSize="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Text="Texture Pattern Generator Settings" Style="{StaticResource SidePanelTitleStyle}" />
+        </StackPanel>
+
+        <!-- Top Texture Selector Card -->
+        <Border Grid.Row="1" Style="{StaticResource SidePanelCardStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Texture Type" Style="{StaticResource SidePanelSectionHeaderStyle}"
+                           Margin="0" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="1" Height="28" VerticalContentAlignment="Center"
+                          ItemsSource="{Binding TextureOptions}"
+                          SelectedItem="{Binding SelectedTexture, UpdateSourceTrigger=PropertyChanged}"
+                          ToolTip="Select the pattern algorithm to configure" />
+            </Grid>
+        </Border>
+
+        <!-- Scrollable Settings Container -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,6,0">
+
+                <!-- 1. GENERAL SETTINGS CARD -->
+                <Border Style="{StaticResource SidePanelCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="⚙️ General Settings" Style="{StaticResource SidePanelSectionHeaderStyle}" />
+
+                        <StackPanel>
+                            <!-- Min Value -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsMinValueActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Min Value" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Minimum intensity or brightness boundary for noise generation" />
+                            </Grid>
+
+                            <!-- Max Value -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsMaxValueActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Max Value" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Maximum intensity or brightness boundary for noise generation" />
+                            </Grid>
+
+                            <!-- Alpha -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsAlphaActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Alpha" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Overall opacity channel value for the generated texture (0.0 to 1.0)" />
+                            </Grid>
+
+                            <!-- X Period -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsXPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="X Period" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding XPeriod, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Horizontal repetition frequency rate for wave/pattern generation" />
+                            </Grid>
+
+                            <!-- Y Period -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsYPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Y Period" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding YPeriod, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Vertical repetition frequency rate for wave/pattern generation" />
+                            </Grid>
+
+                            <!-- XY Period -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsXyPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="XY Period" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding XyPeriod, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Combined diagonal repetition period factor" />
+                            </Grid>
+
+                            <!-- Turbulence Power -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsTurbulencePowerActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Turbulence Power" Style="{StaticResource ParameterLabelStyle}"
+                                           TextWrapping="Wrap" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding TurbulencePower, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Distortion intensity multiplier applied to noise patterns" />
+                            </Grid>
+
+                            <!-- Turbulence Size -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsTurbulenceSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Turbulence Size" Style="{StaticResource ParameterLabelStyle}"
+                                           TextWrapping="Wrap" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding TurbulenceSize, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Scale factor for noise distortion features" />
+                            </Grid>
+
+                            <!-- Base Color -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsBaseColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Base Color" Style="{StaticResource ParameterLabelStyle}" />
+                                <images:ColorSelection Grid.Column="1"
+                                                       StartColor="{Binding BaseColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Primary base background color for texture rendering" />
+                            </Grid>
+
+                            <!-- Is Monochrome -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsMonochromeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Is Monochrome" Style="{StaticResource ParameterLabelStyle}" />
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center"
+                                          IsChecked="{Binding IsMonochrome}"
+                                          ToolTip="Restrict texture output strictly to grayscale shades" />
+                            </Grid>
+
+                            <!-- Is Tiled -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsTiledActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Is Tiled" Style="{StaticResource ParameterLabelStyle}" />
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center"
+                                          IsChecked="{Binding IsTiled}"
+                                          ToolTip="Ensure pattern edges wrap seamlessly for seamless tiling" />
+                            </Grid>
+
+                            <!-- Use Smooth Noise -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsUseSmoothNoiseActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Use Smooth Noise" Style="{StaticResource ParameterLabelStyle}"
+                                           TextWrapping="Wrap" />
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center"
+                                          IsChecked="{Binding UseSmoothNoise}"
+                                          ToolTip="Enable smooth linear interpolation for noise gradients" />
+                            </Grid>
+
+                            <!-- Use Turbulence -->
+                            <Grid Margin="0,0,0,0" Visibility="{Binding IsUseTurbulenceActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Use Turbulence" Style="{StaticResource ParameterLabelStyle}"
+                                           TextWrapping="Wrap" />
+                                <CheckBox Grid.Column="1" VerticalAlignment="Center"
+                                          IsChecked="{Binding UseTurbulence}"
+                                          ToolTip="Apply multi-octave fractal turbulence overlay to pattern" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. CROSSHATCH SETTINGS CARD -->
+                <Border Style="{StaticResource SidePanelCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="📐 Crosshatch Settings" Style="{StaticResource SidePanelSectionHeaderStyle}" />
+
+                        <StackPanel>
+                            <!-- Line Spacing -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsLineSpacingActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Line Spacing" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding LineSpacing, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Distance in pixels between adjacent hatch lines" />
+                            </Grid>
+
+                            <!-- Line Color -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsLineColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Line Color" Style="{StaticResource ParameterLabelStyle}" />
+                                <images:ColorSelection Grid.Column="1"
+                                                       StartColor="{Binding LineColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Color used to draw hatch strokes" />
+                            </Grid>
+
+                            <!-- Line Thickness -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsLineThicknessActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Line Thickness" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding LineThickness, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Stroke width in pixels for hatch lines" />
+                            </Grid>
+
+                            <!-- Angle Primary -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsAnglePrimaryActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Angle Primary" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding AnglePrimary, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Primary directional stroke angle in degrees (e.g. 45°)" />
+                            </Grid>
+
+                            <!-- Angle Secondary -->
+                            <Grid Margin="0,0,0,0" Visibility="{Binding IsAngleSecondaryActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Angle Secondary" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding AngleSecondary, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Secondary cross-directional stroke angle in degrees (e.g. -45°)" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. CELLULAR / COLOR-MAPPED SETTINGS CARD -->
+                <Border Style="{StaticResource SidePanelCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="🧫 Cellular / Color-Mapped Settings"
+                                   Style="{StaticResource SidePanelSectionHeaderStyle}" />
+
+                        <StackPanel>
+                            <!-- Cell Size -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsCellSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Cell Size" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding CellSize, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Average diameter in pixels for Voronoi/Cellular nodes" />
+                            </Grid>
+
+                            <!-- Center Color -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsCenterColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Center Color" Style="{StaticResource ParameterLabelStyle}" />
+                                <images:ColorSelection Grid.Column="1"
+                                                       StartColor="{Binding CenterColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Color at the focal center point of cellular nodes" />
+                            </Grid>
+
+                            <!-- Edge Color -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsEdgeColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Edge Color" Style="{StaticResource ParameterLabelStyle}" />
+                                <images:ColorSelection Grid.Column="1"
+                                                       StartColor="{Binding EdgeColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Color along the outer border boundaries of cellular nodes" />
+                            </Grid>
+
+                            <!-- Color Ramp -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsColorRampActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Color Ramp" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding ColorRampText, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Comma-separated hex colors for gradient mapping (e.g. #FFFF4400, #FFFFCC00)" />
+                            </Grid>
+
+                            <!-- Secondary Color -->
+                            <Grid Margin="0,0,0,0" Visibility="{Binding IsSecondaryColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Secondary Color" Style="{StaticResource ParameterLabelStyle}" />
+                                <images:ColorSelection Grid.Column="1"
+                                                       StartColor="{Binding SecondaryColor, Converter={StaticResource ColorToNameConverter}, Mode=TwoWay}"
+                                                       ToolTip="Secondary accent color for color-mapped textures" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. ADVANCED TEXTURE SETTINGS CARD -->
+                <Border Style="{StaticResource SidePanelCardStyle}" Margin="0">
+                    <StackPanel>
+                        <TextBlock Text="🌊 Advanced Texture Settings"
+                                   Style="{StaticResource SidePanelSectionHeaderStyle}" />
+
+                        <StackPanel>
+                            <!-- Wave Frequency -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsWaveFrequencyActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Wave Frequency" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding WaveFrequency, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Oscillation frequency rate for sinusoidal wave distortion" />
+                            </Grid>
+
+                            <!-- Wave Amplitude -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsWaveAmplitudeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Wave Amplitude" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding WaveAmplitude, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Height displacement amplitude for wave distortion" />
+                            </Grid>
+
+                            <!-- Randomization -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsRandomizationFactorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Randomization" Style="{StaticResource ParameterLabelStyle}" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding RandomizationFactor, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Random seed variation factor for unique texture generations" />
+                            </Grid>
+
+                            <!-- Edge Jaggedness Limit -->
+                            <Grid Margin="0,0,0,6" Visibility="{Binding IsEdgeJaggednessLimitActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Edge Jaggedness Limit" Style="{StaticResource ParameterLabelStyle}"
+                                           TextWrapping="Wrap" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding EdgeJaggednessLimit, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Maximum boundary cap for edge roughness displacement" />
+                            </Grid>
+
+                            <!-- Jaggedness Threshold -->
+                            <Grid Margin="0,0,0,0" Visibility="{Binding IsJaggednessThresholdActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Jaggedness Threshold" Style="{StaticResource ParameterLabelStyle}"
+                                           TextWrapping="Wrap" />
+                                <TextBox Grid.Column="1" Style="{StaticResource ParameterTextBoxStyle}"
+                                         Text="{Binding JaggednessThreshold, ValidatesOnExceptions=True, NotifyOnValidationError=True}"
+                                         ToolTip="Sensitivity cut-off value for applying edge roughening" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer Action Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="💾 Save" Height="30" Width="85" Margin="0,0,6,0" FontWeight="SemiBold"
+                    Command="{Binding SaveCommand}" ToolTip="Save texture configuration changes" />
+            <Button Content="🔄 Reset" Height="30" Width="85" Margin="0,0,6,0"
+                    Command="{Binding ResetCommand}" ToolTip="Reset all fields to default values" />
+        </StackPanel>
+    </Grid>
+</UserControl>

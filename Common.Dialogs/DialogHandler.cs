@@ -58,6 +58,7 @@ namespace Common.Dialogs
             }
 
             var browser = new FolderBrowser(folder);
+            browser.Topmost = true;
             _ = browser.ShowDialog();
 
             return browser.Root;
@@ -82,7 +83,7 @@ namespace Common.Dialogs
         /// <param name="source">The originating component or method.</param>
         /// <param name="details">Extended stack trace or detail logs.</param>
         /// <param name="title">The window title.</param>
-        public static void ErrorDialog(string message, string source = "", string details = "", string title = "Error")
+        public static void ErrorDialog(string message, string? source = "", string details = "", string title = "Error")
         {
             var dispatcher = Application.Current?.Dispatcher;
 
@@ -114,7 +115,8 @@ namespace Common.Dialogs
                 catch
                 {
                     // Fallback to native MessageBox if custom XAML or resource initialization fails
-                    MessageBox.Show($"{safeMessage}\n\n{safeDetails}", safeTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"{safeMessage}\n\n{safeDetails}", safeTitle, MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
 

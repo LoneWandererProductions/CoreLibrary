@@ -17,14 +17,14 @@ using System.Windows.Media.Animation;
 
 namespace Common.Images
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="UserControl" />
     /// <summary>
     ///     A minimal activity indicator: a steady green dot while idle, a pulsing amber dot while
     ///     work is going on in the background. Replaces the previous static red/green icon-swap,
     ///     which was easy to miss at a glance - the blink is what actually draws the eye.
     /// </summary>
     /// <seealso cref="UserControl" />
-    public sealed partial class BusyIndicator : UserControl
+    public sealed partial class BusyIndicator
     {
         /// <summary>
         ///     Identifies the <see cref="IsBusy" /> dependency property.

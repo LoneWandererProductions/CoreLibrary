@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
@@ -38,7 +39,7 @@ namespace Imaging
             {
                 fixed (byte* pSource = source.PixelData)
                 {
-                    System.Buffer.MemoryCopy(pSource, (void*)data.Scan0, source.Length, source.Length);
+                    Buffer.MemoryCopy(pSource, (void*)data.Scan0, source.Length, source.Length);
                 }
             }
             finally
@@ -57,7 +58,7 @@ namespace Imaging
         /// <returns>
         /// A BitmapImage
         /// </returns>
-        public static BitmapImage ToBitmapImage(this Bitmap? bmp)
+        public static BitmapImage? ToBitmapImage(this Bitmap? bmp)
         {
             return ImageStreamMedia.BitmapToBitmapImage(bmp);
         }
@@ -94,7 +95,7 @@ namespace Imaging
         /// <returns>
         ///     A BitmapImage
         /// </returns>
-        public static BitmapImage ToBitmapImage(this Image image)
+        public static BitmapImage? ToBitmapImage(this Image image)
         {
             var bitmap = new Bitmap(image);
             return bitmap.ToBitmapImage();

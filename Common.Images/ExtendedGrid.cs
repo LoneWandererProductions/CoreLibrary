@@ -101,7 +101,7 @@ namespace Common.Images
         /// <param name="rowHeights">Custom row heights if any, null otherwise.</param>
         /// <returns>A <see cref="Grid" /> configured with the specified parameters.</returns>
         private static Grid InitializeGridBase(bool gridLines, int width, int height,
-            IReadOnlyCollection<int> columnWidths, IReadOnlyCollection<int> rowHeights)
+            IReadOnlyCollection<int>? columnWidths, IReadOnlyCollection<int>? rowHeights)
         {
             var dynamicGrid = new Grid
             {

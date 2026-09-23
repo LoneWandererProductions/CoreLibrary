@@ -11,6 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
+    <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
+    <ProjectReference Include="..\Imaging.Cifs\Imaging.Cifs.csproj" />
     <ProjectReference Include="..\Imaging\Imaging.csproj" />
   </ItemGroup>
 

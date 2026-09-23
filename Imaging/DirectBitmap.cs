@@ -14,11 +14,11 @@
 // ReSharper disable MemberCanBeInternal
 // ReSharper disable UnusedMember.Global
 
-using Imaging.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -26,8 +26,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Color = System.Drawing.Color;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Imaging.Interfaces;
 
 namespace Imaging
 {
@@ -143,7 +142,7 @@ namespace Imaging
         /// <value>
         ///     The bitmap.
         /// </value>
-        public Bitmap UnsafeBitmap { get; private set; }
+        public Bitmap? UnsafeBitmap { get; private set; }
 
         /// <summary>
         /// Creates a standalone, managed copy of the current state of this bitmap.
@@ -258,30 +257,61 @@ namespace Imaging
 
             var dbm = new DirectBitmap(btm.Width, btm.Height);
 
-            // Lock source bits
+            if (dbm.Bits == null || dbm.Bits.Length < btm.Width * btm.Height)
+            {
+                throw new InvalidOperationException("DirectBitmap destination array is null or insufficiently sized.");
+            }
+
             var rect = new Rectangle(0, 0, btm.Width, btm.Height);
-            var srcData = btm.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
-                PixelFormat.Format32bppArgb);
+            var srcData = btm.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             try
             {
-                // We can copy directly into our Bits array since it's pinned
                 unsafe
                 {
+                    var pSrc = (byte*)srcData.Scan0;
+                    if (pSrc == null)
+                    {
+                        throw new InvalidOperationException("Failed to retrieve valid Scan0 pointer from Bitmap.");
+                    }
+
                     fixed (Pixel32* pDest = dbm.Bits)
                     {
-                        Buffer.MemoryCopy(
-                            (void*)srcData.Scan0,
-                            pDest,
-                            dbm.Bits!.Length * 4,
-                            dbm.Bits.Length * 4
-                        );
+                        var pDestByte = (byte*)pDest;
+                        var rowBytes = btm.Width * 4;
+                        var stride = srcData.Stride;
+
+                        // Fast path: contiguous memory (stride matches exact row byte size)
+                        if (stride == rowBytes)
+                        {
+                            Buffer.MemoryCopy(
+                                pSrc,
+                                pDestByte,
+                                (long)dbm.Bits.Length * 4,
+                                (long)rowBytes * btm.Height
+                            );
+                        }
+                        else
+                        {
+                            // Safe path: copy row-by-row to handle stride padding correctly
+                            for (var y = 0; y < btm.Height; y++)
+                            {
+                                var currentSrc = pSrc + (y * stride);
+                                var currentDest = pDestByte + (y * rowBytes);
+
+                                Buffer.MemoryCopy(
+                                    currentSrc,
+                                    currentDest,
+                                    rowBytes,
+                                    rowBytes
+                                );
+                            }
+                        }
                     }
                 }
             }
             finally
             {
-                // Guaranteed to run, preventing the image from being permanently locked
                 btm.UnlockBits(srcData);
             }
 
@@ -330,7 +360,7 @@ namespace Imaging
                 var rowStart = y * Width;
                 for (var i = x; i < endX; i++)
                 {
-                    Bits[rowStart + i] = colorPixel;
+                    if (Bits != null) Bits[rowStart + i] = colorPixel;
                 }
             }
         }
@@ -356,7 +386,7 @@ namespace Imaging
 
                     for (var x = x1; x < x1 + width && x < Width; x++)
                     {
-                        Bits[rowStart + x] = colorPixel;
+                        if (Bits != null) Bits[rowStart + x] = colorPixel;
                     }
                 }
             }
@@ -406,7 +436,7 @@ namespace Imaging
         }
 
         /// <inheritdoc />
-        public void SetPixels(IEnumerable<(int x, int y, Color color)> pixels)
+        public void SetPixels(IEnumerable<(int x, int y, Color color)>? pixels)
         {
             if (pixels == null) return;
 
@@ -465,14 +495,14 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color GetPixel(int x, int y)
         {
-            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
+            var p = DirectBitmapCore.GetPixel(Bits, Width, x, y);
             return Color.FromArgb(p.A, p.R, p.G, p.B);
         }
 
         /// <inheritdoc />
         public Pixel32 GetPixel32(int x, int y)
         {
-            var p = DirectBitmapCore.GetPixel(Bits, Width, Height, x, y);
+            var p = DirectBitmapCore.GetPixel(Bits, Width, x, y);
             return new Pixel32(p.R, p.G, p.B, p.A);
         }
 
@@ -541,7 +571,7 @@ namespace Imaging
         ///     Converts the Bits into bitmapImage.
         /// </summary>
         /// <returns>BitmapImage image data</returns>
-        public BitmapImage ToBitmapImage()
+        public BitmapImage? ToBitmapImage()
         {
             return UnsafeBitmap.ToBitmapImage();
         }
@@ -614,7 +644,7 @@ namespace Imaging
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         /// <returns>Conveteed Coordinates into Pixel32</returns>
-        private static IEnumerable<PixelData> Convert(IEnumerable<(int x, int y, Color color)> pixels)
+        private static IEnumerable<PixelData> Convert(IEnumerable<(int x, int y, Color color)>? pixels)
         {
             foreach (var p in pixels)
                 yield return new PixelData(p.x, p.y, p.color.R, p.color.G, p.color.B, p.color.A);
@@ -634,7 +664,7 @@ namespace Imaging
             if (disposing)
             {
                 // Managed resources (objects that implement IDisposable)
-                UnsafeBitmap?.Dispose();
+                UnsafeBitmap.Dispose();
             }
 
             // Unmanaged resources/Handles (Free these always)

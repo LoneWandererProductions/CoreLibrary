@@ -105,10 +105,10 @@ namespace Imaging.Compare
             _render = new ImageRender();
 
             //resize
-            bitmap = _render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
+            using var scaled = _render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             //use our new Format
-            using var scaled = DirectBitmap.GetInstance(bitmap);
+            using var dbm = DirectBitmap.GetInstance(scaled);
 
             //get the average Color Value
             var r = 0;
@@ -118,40 +118,17 @@ namespace Imaging.Compare
             for (var y = 0; y < ImageResources.DuplicateSize; y++)
             for (var x = 0; x < ImageResources.DuplicateSize; x++)
             {
-                r += scaled.GetPixel(x, y).R;
-                b += scaled.GetPixel(x, y).B;
-                g += scaled.GetPixel(x, y).G;
+                r += dbm.GetPixel(x, y).R;
+                b += dbm.GetPixel(x, y).B;
+                g += dbm.GetPixel(x, y).G;
             }
 
             r /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
             b /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
             g /= ImageResources.DuplicateSize * ImageResources.DuplicateSize;
 
-            var image = new byte[ImageResources.DuplicateSize, ImageResources.DuplicateSize];
-            var hash = new byte[ImageResources.DuplicateSize * ImageResources.DuplicateSize];
-
             //get greyscale
-            bitmap = _render.FilterImage(bitmap, FiltersType.GrayScale);
-
-            //Get array Map for comparison
-            using var dbm = DirectBitmap.GetInstance(bitmap);
-
-            try
-            {
-                var i = -1;
-                for (var y = 0; y < ImageResources.DuplicateSize; y++)
-                for (var x = 0; x < ImageResources.DuplicateSize; x++)
-                {
-                    i++;
-                    var cache = dbm.GetPixel(x, y).R;
-                    image[x, y] = cache;
-                    hash[i] = cache;
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                Trace.WriteLine(ex);
-            }
+            using var filtered = _render.FilterImage(bitmap, FiltersType.GrayScale);
 
             return new ImageColor { R = r, G = g, B = b, Path = path };
         }
@@ -200,7 +177,7 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="image">The image.</param>
         /// <returns>Image Data</returns>
-        internal static ImageData? GetImageDetails(Bitmap? image)
+        internal static ImageData GetImageDetails(Bitmap? image)
         {
             var color = GenerateData(image, string.Empty);
 

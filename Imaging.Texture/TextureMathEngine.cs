@@ -29,7 +29,7 @@ namespace Imaging.Texture
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>RawTextureBuffer containing the generated noise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateNoise(int width,
+        public static RawTextureBuffer GenerateNoise(int width,
             int height,
             object noiseGenInstance, // Pass your custom NoiseGenerator wrapper
             int minValue = 0,
@@ -83,7 +83,7 @@ namespace Imaging.Texture
         /// <param name="baseB">The base b.</param>
         /// <returns>RawTextureBuffer containing the generated wood texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateWood(int width,
+        public static RawTextureBuffer GenerateWood(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -143,7 +143,7 @@ namespace Imaging.Texture
         /// <param name="bgA">The bg a.</param>
         /// <returns>RawTextureBuffer containing the generated crosshatch texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateCrosshatch(int width,
+        public static RawTextureBuffer GenerateCrosshatch(int width,
             int height,
             int lineSpacing = 50,
             int lineThickness = 1,
@@ -226,7 +226,7 @@ namespace Imaging.Texture
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>A raw texture buffer containing the generated concrete texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateConcrete(int width,
+        public static RawTextureBuffer GenerateConcrete(int width,
             int height,
             object noiseGenInstance,
             int minValue = 50,
@@ -284,7 +284,7 @@ namespace Imaging.Texture
         /// <param name="bgA">The bg a.</param>
         /// <returns>A raw texture buffer containing the generated canvas texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateCanvas(int width,
+        public static RawTextureBuffer GenerateCanvas(int width,
             int height,
             int lineSpacing = 8,
             int lineThickness = 1,
@@ -393,7 +393,7 @@ namespace Imaging.Texture
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>Texture buffer with clouds pattern.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateClouds(int width,
+        public static RawTextureBuffer GenerateClouds(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -440,7 +440,7 @@ namespace Imaging.Texture
         /// <param name="baseB">The base b.</param>
         /// <returns>Texture buffer with marble pattern.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateMarble(int width,
+        public static RawTextureBuffer GenerateMarble(int width,
             int height,
             object noiseGenInstance,
             double xPeriod = 5.0,
@@ -489,7 +489,7 @@ namespace Imaging.Texture
         /// <param name="turbulenceSize">Size of the turbulence.</param>
         /// <returns>Texture buffer with wave pattern.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateWave(int width,
+        public static RawTextureBuffer GenerateWave(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -537,22 +537,9 @@ namespace Imaging.Texture
         /// <summary>
         /// Generates Cellular (Voronoi/Worley) noise. Perfect for cobblestone, dragon scales, or cracked earth.
         /// </summary>
-        /// <remarks>
-        /// The distance field now comes from <see cref="NoiseGenerator.GenerateVoronoiMap" /> instead of a
-        /// second, independent feature-point implementation. That fixes two real defects the old inline
-        /// version had: it clamped at grid edges (so output didn't tile, despite this being used for
-        /// texture types that promise <c>IsTiled</c> support), and it always used a hardcoded seed of
-        /// 12345 regardless of any caller preference. <paramref name="seed" /> defaults to that same
-        /// 12345 so existing callers see pixel-identical output unless they opt into a different seed;
-        /// the tiling fix applies either way since it's a change to how edges are handled, not to the
-        /// random sequence itself. Only the flat center/edge two-color blend stays local to this method -
-        /// <see cref="GenerateDirectionalStone" /> layers a heavier, lit four-color look on the same kind
-        /// of height field for the Stone preset, which is a deliberately different visual style, not a
-        /// duplicate of this one.
-        /// </remarks>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        /// <param name="cellSize">Size of the cell, in pixels.</param>
+        /// <param name="cellSize">Size of the cell.</param>
         /// <param name="alpha">The alpha.</param>
         /// <param name="centerR">The center r.</param>
         /// <param name="centerG">The center g.</param>
@@ -560,13 +547,9 @@ namespace Imaging.Texture
         /// <param name="edgeR">The edge r.</param>
         /// <param name="edgeG">The edge g.</param>
         /// <param name="edgeB">The edge b.</param>
-        /// <param name="seed">
-        /// Seed for feature-point placement. Defaults to the value this method always used internally
-        /// before, so default output is unchanged; pass a different value to get a different pattern.
-        /// </param>
         /// <returns>The generated texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateCellular(int width,
+        public static RawTextureBuffer GenerateCellular(int width,
             int height,
             int cellSize = 32,
             int alpha = 255,
@@ -575,28 +558,57 @@ namespace Imaging.Texture
             byte centerB = 100,
             byte edgeR = 20,
             byte edgeG = 20,
-            byte edgeB = 20,
-            int seed = 12345)
+            byte edgeB = 20)
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            var rand = new Random(12345); // Fixed seed for stable feature points
 
-            // gridCells is a cell *count*, cellSize a cell *size in pixels* - derived from width, so this
-            // assumes a roughly square buffer. GenerateVoronoiMap applies one count to both axes, so a
-            // strongly non-square width/height will give rectangular rather than square cells.
-            var gridCells = Math.Max(1, width / cellSize);
-            var noiseGen = new NoiseGenerator(width, height);
-            var heightMap = noiseGen.GenerateVoronoiMap(gridCells, seed);
+            // Precompute feature points for each grid cell to speed up rendering
+            var gridCols = (width / cellSize) + 2;
+            var gridRows = (height / cellSize) + 2;
+            var featurePointsX = new int[gridCols, gridRows];
+            var featurePointsY = new int[gridCols, gridRows];
+
+            for (var y = 0; y < gridRows; y++)
+            {
+                for (var x = 0; x < gridCols; x++)
+                {
+                    featurePointsX[x, y] = (x * cellSize) + rand.Next(0, cellSize);
+                    featurePointsY[x, y] = (y * cellSize) + rand.Next(0, cellSize);
+                }
+            }
 
             var idx = 0;
+            var maxDist = cellSize * 1.2; // Approximate max distance for normalization
 
             for (var y = 0; y < height; y++)
             {
                 for (var x = 0; x < width; x++)
                 {
-                    // GenerateVoronoiMap returns 1.0 at the feature point and 0.0 at the far edge;
-                    // the center/edge blend below expects the opposite direction (0 = center).
-                    var factor = 1.0 - heightMap[y, x];
+                    var cellX = x / cellSize;
+                    var cellY = y / cellSize;
+
+                    var minDist = double.MaxValue;
+
+                    // Check surrounding 3x3 cells for the closest feature point
+                    for (var offsetY = -1; offsetY <= 1; offsetY++)
+                    {
+                        for (var offsetX = -1; offsetX <= 1; offsetX++)
+                        {
+                            var checkX = Math.Clamp(cellX + offsetX, 0, gridCols - 1);
+                            var checkY = Math.Clamp(cellY + offsetY, 0, gridRows - 1);
+
+                            double distX = x - featurePointsX[checkX, checkY];
+                            double distY = y - featurePointsY[checkX, checkY];
+                            var dist = Math.Sqrt(distX * distX + distY * distY);
+
+                            if (dist < minDist) minDist = dist;
+                        }
+                    }
+
+                    // Normalize distance and interpolate between center and edge color
+                    var factor = Math.Clamp(minDist / maxDist, 0.0, 1.0);
 
                     span[idx++] = (byte)(centerB + (edgeB - centerB) * factor); // B
                     span[idx++] = (byte)(centerG + (edgeG - centerG) * factor); // G
@@ -620,7 +632,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateColorMapped(int width,
+        public static RawTextureBuffer GenerateColorMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb, // Format: [R1,G1,B1, R2,G2,B2, ...]
@@ -679,7 +691,7 @@ namespace Imaging.Texture
         /// <param name="edgeRgb">The edge RGB.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer? GenerateAdvancedCellular(int width,
+        internal static RawTextureBuffer GenerateAdvancedCellular(int width,
             int height,
             int cellSize,
             int alpha,
@@ -778,7 +790,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer? GenerateWarpedMapped(int width,
+        internal static RawTextureBuffer GenerateWarpedMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb,
@@ -844,7 +856,7 @@ namespace Imaging.Texture
         /// <param name="alpha">The alpha.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer? GenerateRidgedMapped(int width,
+        internal static RawTextureBuffer GenerateRidgedMapped(int width,
             int height,
             object noiseGenInstance,
             byte[] colorRampRgb,
@@ -933,6 +945,7 @@ namespace Imaging.Texture
         /// </summary>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
         /// <param name="leafSize">Size of the leaf.</param>
         /// <param name="alpha">The alpha.</param>
         /// <param name="leafR">The leaf r.</param>
@@ -941,9 +954,11 @@ namespace Imaging.Texture
         /// <param name="shadowR">The shadow r.</param>
         /// <param name="shadowG">The shadow g.</param>
         /// <param name="shadowB">The shadow b.</param>
-        /// <returns>The generated raw texture buffer.</returns>
+        /// <returns>
+        /// The generated raw texture buffer.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer? GenerateFoliage(int width,
+        internal static RawTextureBuffer GenerateFoliage(int width,
             int height,
             object noiseGenInstance,
             int leafSize = 40,
@@ -1000,8 +1015,8 @@ namespace Imaging.Texture
                     {
                         for (var checkX = startX; checkX <= endX; checkX++)
                         {
-                            double dx = (x + warpX) - featurePointsX[checkX, checkY];
-                            double dy = (y + warpY) - featurePointsY[checkX, checkY];
+                            var dx = (x + warpX) - featurePointsX[checkX, checkY];
+                            var dy = (y + warpY) - featurePointsY[checkX, checkY];
 
                             var leafShapeDist = Math.Sqrt(dx * dx * 1.8 + dy * dy * 0.8) + Math.Abs(dx) * 0.5;
 
@@ -1054,7 +1069,7 @@ namespace Imaging.Texture
         /// <param name="woodB">The wood b.</param>
         /// <returns>The generated raw texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer? GenerateTreeBark(int width,
+        internal static RawTextureBuffer GenerateTreeBark(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -1119,7 +1134,7 @@ namespace Imaging.Texture
         /// <param name="grainB">The grain b.</param>
         /// <returns>The generated raw texture buffer containing the wooden plank texture.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        internal static RawTextureBuffer? GenerateWoodPlank(int width,
+        internal static RawTextureBuffer GenerateWoodPlank(int width,
             int height,
             object noiseGenInstance,
             int alpha = 255,
@@ -1180,7 +1195,7 @@ namespace Imaging.Texture
         /// <param name="fillArea">If true, fills mortar with color. If false, mortar is transparent.</param>
         /// <returns>The generated texture buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer? GenerateDirectionalStone(
+        public static RawTextureBuffer GenerateDirectionalStone(
             int width,
             int height,
             object noiseGenInstance,
@@ -1194,7 +1209,7 @@ namespace Imaging.Texture
             if (noiseGen == null) return buffer;
 
             // 1. Get stone heights (0.0 is mortar, 1.0 is peak rock)
-            var heightMap = noiseGen.GenerateVoronoiMap(gridCells, TextureConstants.DefaultSeed);
+            var heightMap = noiseGen.GenerateVoronoiMap(gridCells);
 
             // Lighting vector (Top-Left, pointing down at the surface)
             double lx = -1.0, ly = -1.0, lz = 1.5;
@@ -1285,6 +1300,270 @@ namespace Imaging.Texture
                     pixels[index + 1] = g; // Green
                     pixels[index + 2] = r; // Red
                     pixels[index + 3] = alpha; // Alpha
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a brushed steel texture with directional linear grain and micro-scratches.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="grainStretchY">The grain stretch y.</param>
+        /// <param name="grainFrequencyX">The grain frequency x.</param>
+        /// <param name="baseR">The base r.</param>
+        /// <param name="baseG">The base g.</param>
+        /// <param name="baseB">The base b.</param>
+        /// <param name="highlightR">The highlight r.</param>
+        /// <param name="highlightG">The highlight g.</param>
+        /// <param name="highlightB">The highlight b.</param>
+        /// <returns>The generated texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateBrushedSteel(int width,
+            int height,
+            object noiseGenInstance,
+            int alpha = 255,
+            double grainStretchY = 80.0,
+            double grainFrequencyX = 2.0,
+            byte baseR = 180, byte baseG = 185, byte baseB = 190,
+            byte highlightR = 230, byte highlightG = 235, byte highlightB = 240)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // Anisotropic stretching: squashed on X, stretched high on Y
+                    var freqX = x / grainFrequencyX;
+                    var freqY = y / grainStretchY;
+
+                    var directionalNoise = (double)noiseGen.SmoothNoise(freqX, freqY);
+                    var microScratch = (double)noiseGen.GetNoise(x, y) * 0.15; // High-frequency specular grit
+
+                    var steelFactor = Math.Clamp(directionalNoise + microScratch, 0.0, 1.0);
+
+                    span[idx++] = (byte)(baseB + (highlightB - baseB) * steelFactor); // B
+                    span[idx++] = (byte)(baseG + (highlightG - baseG) * steelFactor); // G
+                    span[idx++] = (byte)(baseR + (highlightR - baseR) * steelFactor); // R
+                    span[idx++] = (byte)alpha; // A
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a latex/rubber texture characterized by smooth surface sheen and steep specular highlights.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="turbulenceSize">Size of the turbulence.</param>
+        /// <param name="specularExponent">The specular exponent.</param>
+        /// <param name="baseR">The base r.</param>
+        /// <param name="baseG">The base g.</param>
+        /// <param name="baseB">The base b.</param>
+        /// <param name="sheenR">The sheen r.</param>
+        /// <param name="sheenG">The sheen g.</param>
+        /// <param name="sheenB">The sheen b.</param>
+        /// <returns>The generated texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateLatex(int width,
+            int height,
+            object noiseGenInstance,
+            int alpha = 255,
+            double turbulenceSize = 64.0,
+            double specularExponent = 18.0,
+            byte baseR = 20, byte baseG = 20, byte baseB = 25,
+            byte sheenR = 200, byte sheenG = 210, byte sheenB = 230)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var noiseVal = (double)noiseGen.SmoothNoise(x / turbulenceSize, y / turbulenceSize);
+
+                    // Tight specular curve for glossy falloff
+                    var specular = Math.Pow(noiseVal, specularExponent);
+
+                    // Extreme power curve forces pinpoint pure-white reflections at light peaks
+                    var hotspot = Math.Pow(noiseVal, specularExponent * 2.5) * 255.0;
+
+                    span[idx++] = (byte)Math.Clamp(baseB + (sheenB - baseB) * specular + hotspot, 0, 255);
+                    span[idx++] = (byte)Math.Clamp(baseG + (sheenG - baseG) * specular + hotspot, 0, 255);
+                    span[idx++] = (byte)Math.Clamp(baseR + (sheenR - baseR) * specular + hotspot, 0, 255);
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates an organic leather texture featuring pebbled cellular skin pores and domain-warped wrinkles.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="cellSize">Size of the cell.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="warpStrength">The warp strength.</param>
+        /// <param name="poreR">The pore r.</param>
+        /// <param name="poreG">The pore g.</param>
+        /// <param name="poreB">The pore b.</param>
+        /// <param name="skinR">The skin r.</param>
+        /// <param name="skinG">The skin g.</param>
+        /// <param name="skinB">The skin b.</param>
+        /// <returns>The generated texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateLeather(int width,
+            int height,
+            object noiseGenInstance,
+            int cellSize = 16,
+            int alpha = 255,
+            double warpStrength = 8.0,
+            byte poreR = 35, byte poreG = 22, byte poreB = 14, // Crease shadow
+            byte skinR = 120, byte skinG = 75, byte skinB = 42) // Raised skin face
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            var rand = new Random(12345);
+            dynamic noiseGen = noiseGenInstance;
+
+            var gridCols = (width / cellSize) + 2;
+            var gridRows = (height / cellSize) + 2;
+            var featurePointsX = new int[gridCols, gridRows];
+            var featurePointsY = new int[gridCols, gridRows];
+
+            for (var y = 0; y < gridRows; y++)
+            {
+                for (var x = 0; x < gridCols; x++)
+                {
+                    featurePointsX[x, y] = (x * cellSize) + rand.Next(0, cellSize);
+                    featurePointsY[x, y] = (y * cellSize) + rand.Next(0, cellSize);
+                }
+            }
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // Organic domain warping for irregular skin stretching
+                    var warpX = ((double)noiseGen.SmoothNoise(x / 40.0, y / 40.0) - 0.5) * warpStrength;
+                    var warpY = ((double)noiseGen.SmoothNoise((x + 100) / 40.0, (y + 100) / 40.0) - 0.5) * warpStrength;
+
+                    var sampleX = x + warpX;
+                    var sampleY = y + warpY;
+
+                    var cellX = (int)sampleX / cellSize;
+                    var cellY = (int)sampleY / cellSize;
+
+                    var dist1 = double.MaxValue; // Closest point (F1)
+                    var dist2 = double.MaxValue; // Second closest point (F2)
+
+                    var startX = Math.Max(0, cellX - 1);
+                    var endX = Math.Min(gridCols - 1, cellX + 1);
+                    var startY = Math.Max(0, cellY - 1);
+                    var endY = Math.Min(gridRows - 1, cellY + 1);
+
+                    for (var checkY = startY; checkY <= endY; checkY++)
+                    {
+                        for (var checkX = startX; checkX <= endX; checkX++)
+                        {
+                            var dx = sampleX - featurePointsX[checkX, checkY];
+                            var dy = sampleY - featurePointsY[checkX, checkY];
+                            var dist = Math.Sqrt(dx * dx + dy * dy);
+
+                            if (dist < dist1)
+                            {
+                                dist2 = dist1;
+                                dist1 = dist;
+                            }
+                            else if (dist < dist2)
+                            {
+                                dist2 = dist;
+                            }
+                        }
+                    }
+
+                    // F2 - F1 yields small values at borders (creases) and large values inside cell pads
+                    var boundary = (dist2 - dist1) / (cellSize * 0.5);
+                    var leatherFactor = Math.Clamp(boundary, 0.0, 1.0);
+
+                    // Subtle surface noise overlay on raised skin
+                    var microPores = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.08;
+                    leatherFactor = Math.Clamp(leatherFactor + microPores, 0.0, 1.0);
+
+                    span[idx++] = (byte)(poreB + (skinB - poreB) * leatherFactor);
+                    span[idx++] = (byte)(poreG + (skinG - poreG) * leatherFactor);
+                    span[idx++] = (byte)(poreR + (skinR - poreR) * leatherFactor);
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a high polished steel/chrome texture with environment reflection bands and sharp specular highlights.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="reflectionBands">The reflection bands.</param>
+        /// <param name="warpScale">The warp scale.</param>
+        /// <param name="warpStrength">The warp strength.</param>
+        /// <returns>The generated texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GeneratePolishedSteel(int width,
+            int height,
+            object noiseGenInstance,
+            int alpha = 255,
+            double reflectionBands = 2.0,
+            double warpScale = 48.0,
+            double warpStrength = 22.0)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // Multi-octave domain warp bends reflection bands smoothly
+                    var primaryWarp = ((double)noiseGen.SmoothNoise(x / warpScale, y / warpScale) - 0.5) * warpStrength;
+                    var microWarp = ((double)noiseGen.SmoothNoise(x / 16.0, y / 16.0) - 0.5) * 4.0;
+
+                    var sampleY = (y + primaryWarp + microWarp) / height;
+
+                    // Smoother cosine wave instead of sharp exponential power
+                    var bandValue = 0.5 + 0.5 * Math.Cos(sampleY * Math.PI * reflectionBands * 2.0);
+
+                    // Softened floor (80) and ceiling (235) prevents stark black/white bands
+                    var val = (byte)Math.Clamp(80 + (int)(155.0 * bandValue), 0, 255);
+
+                    span[idx++] = (byte)Math.Clamp(val + 8, 0, 255); // Subtle cool metallic blue tint
+                    span[idx++] = val;
+                    span[idx++] = val;
+                    span[idx++] = (byte)alpha;
                 }
             }
 

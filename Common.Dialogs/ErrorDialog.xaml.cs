@@ -84,7 +84,8 @@ namespace Common.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, $"Failed to copy to clipboard: {ex.Message}", "Clipboard Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(this, $"Failed to copy to clipboard: {ex.Message}", "Clipboard Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

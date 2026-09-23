@@ -6,6 +6,8 @@
  * AUTHOR:      Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace Imaging.Texture
 {
     /// <summary>

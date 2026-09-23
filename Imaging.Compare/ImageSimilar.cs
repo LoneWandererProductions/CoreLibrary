@@ -84,14 +84,6 @@ namespace Imaging.Compare
         internal int Id { get; init; }
 
         /// <summary>
-        ///     Gets the hash.
-        /// </summary>
-        /// <value>
-        ///     The hash.
-        /// </value>
-        public byte[] Hash { get; init; }
-
-        /// <summary>
         ///     Checks if Image is equal to another
         ///     Here we only check the Color values
         /// </summary>
@@ -101,11 +93,6 @@ namespace Imaging.Compare
         /// </returns>
         public bool Equals(ImageSimilar other)
         {
-            //if (Hash == null || other.Hash == null)
-            //{
-            //    return false;
-            //}
-
             return other.R.Interval(R, ImageResources.ColorThreshold) &&
                    other.G.Interval(G, ImageResources.ColorThreshold) &&
                    other.B.Interval(B, ImageResources.ColorThreshold);

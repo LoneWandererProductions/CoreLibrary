@@ -6,8 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Texture;
 using System.Drawing;
+using Imaging.Texture;
 
 // ReSharper disable UnusedMember.Local
 

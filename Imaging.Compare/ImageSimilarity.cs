@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ImageCompare.Compare
  * FILE:        ImageSimilarity.cs
@@ -19,8 +19,21 @@ using FileHandler;
 
 namespace Imaging.Compare
 {
+    /// <summary>
+    /// Compares images if they are similar enough.
+    /// </summary>
     internal static class ImageSimilarity
     {
+        /// <summary>
+        ///     Caps how many images we decode at once. See the identical field on
+        ///     <see cref="ImageDuplication" /> for why this matters: an unbounded
+        ///     Parallel.ForEach can let the ThreadPool grow past the core count under
+        ///     sustained I/O + decode work, holding more full-resolution Bitmaps in memory
+        ///     at once than the hardware actually benefits from.
+        /// </summary>
+        private static readonly ParallelOptions DecodeParallelOptions =
+            new() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+
         /// <summary>
         ///     The Temp path dictionary
         /// </summary>
@@ -37,7 +50,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetSimilarImages(string? folderPath, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             return folderPath == null
                 ? null
@@ -58,7 +71,7 @@ namespace Imaging.Compare
         ///     A list of all the duplicates found, collected in separate Lists (one for each distinct image found)
         /// </returns>
         internal static List<List<string>>? GetSimilarImages(IEnumerable<string?> folderPaths, bool checkSubfolders,
-            IEnumerable<string> extensions, float threshold)
+            IEnumerable<string?> extensions, float threshold)
         {
             var localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
@@ -102,15 +115,44 @@ namespace Imaging.Compare
 
             var groups = new List<List<ImageSimilar>>();
 
+            // Refine each coarse color-bucket group into the final sub-groups using the
+            // caller's threshold (this is a different, finer check than the ColorThreshold
+            // bucketing above - see GetPercentageDifference).
+            //
+            // This used to walk the *original* duplicates list as pivots while checking
+            // against a shrinking 'pool' list - so an image already placed into an earlier
+            // sub-group kept getting used as a pivot for another full scan even though it
+            // could no longer match anything new. Walking the actual remaining pool avoids
+            // that wasted work.
+            //
+            // It also used to call ImageProcessing.FindSimilarImages, which runs its own
+            // Parallel.ForEach, once per pivot - so a pool of size k paid full parallel
+            // scheduling/partitioning overhead k times over. By this point the pool is
+            // already small (pre-filtered by the bucket step above), so a plain sequential
+            // scan - see FindSimilarInPool below - is comparing at most a few hundred bytes
+            // per candidate and is very likely faster than repeatedly spinning up parallel
+            // work to do it.
             foreach (var duplicates in duplicateGroups)
             {
-                var dup = new List<ImageSimilar>(duplicates);
+                var pool = new List<ImageSimilar>(duplicates);
 
-                foreach (var cache in duplicates.Select(item => ImageProcessing.FindSimilarImages(item, dup, threshold))
-                             .Where(cache => cache != null))
+                while (pool.Count > 1)
                 {
-                    dup = dup.Except(cache).ToList();
-                    groups.Add(cache);
+                    var pivot = pool[0];
+                    var matches = FindSimilarInPool(pivot, pool, threshold);
+
+                    if (matches == null)
+                    {
+                        // Nothing else in the pool matches this pivot closely enough -
+                        // it isn't part of any similarity group, drop it and move on.
+                        pool.RemoveAt(0);
+                        continue;
+                    }
+
+                    groups.Add(matches);
+
+                    var matchedIds = new HashSet<int>(matches.Select(m => m.Id));
+                    pool = pool.Where(p => !matchedIds.Contains(p.Id)).ToList();
                 }
             }
 
@@ -131,6 +173,34 @@ namespace Imaging.Compare
         }
 
         /// <summary>
+        ///     Finds every image in <paramref name="pool" /> within <paramref name="threshold" />
+        ///     similarity of <paramref name="pivot" /> (the pivot itself included, matching the
+        ///     behavior of the helper this replaces).
+        /// </summary>
+        /// <param name="pivot">The image to compare the rest of the pool against.</param>
+        /// <param name="pool">The candidate pool (already pre-filtered by color bucket).</param>
+        /// <param name="threshold">The Value of differences allowed.</param>
+        /// <returns>The matching images, or null if only the pivot itself qualifies.</returns>
+        private static List<ImageSimilar>? FindSimilarInPool(ImageSimilar pivot, List<ImageSimilar> pool,
+            float threshold)
+        {
+            List<ImageSimilar>? matches = null;
+
+            foreach (var candidate in pool)
+            {
+                if (ImageProcessing.GetPercentageDifference(pivot, candidate) < threshold)
+                {
+                    continue;
+                }
+
+                matches ??= new List<ImageSimilar>();
+                matches.Add(candidate);
+            }
+
+            return matches is { Count: > 1 } ? matches : null;
+        }
+
+        /// <summary>
         ///     Gets the sorted gray scale values.
         /// </summary>
         /// <returns>
@@ -144,33 +214,34 @@ namespace Imaging.Compare
             var imagePathsAndGrayValues = new ConcurrentBag<ImageSimilar>();
 
             //with sanity check in Case one file went missing, we won't have to stop everything
-            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), pathImage =>
-            {
-                var (key, value) = pathImage;
-                try
+            Parallel.ForEach(Translator.Where(pathImage => File.Exists(pathImage.Value)), DecodeParallelOptions,
+                pathImage =>
                 {
-                    if (value == null) return;
+                    var (key, value) = pathImage;
+                    try
+                    {
+                        if (value == null) return;
 
-                    using var btm = new Bitmap(value);
-                    var dup = ImageProcessing.GenerateData(btm, key);
-                    imagePathsAndGrayValues.Add(dup);
-                }
-                catch (ArgumentException ex)
-                {
-                    Trace.WriteLine(ex);
-                }
-                catch (OutOfMemoryException ex)
-                {
-                    // Skip this one file rather than aborting the whole scan - see
-                    // the identical fix in ImageDuplication.GetSortedGrayScaleValues.
-                    var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
-                    Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    Trace.WriteLine(ex);
-                }
-            });
+                        using var btm = new Bitmap(value);
+                        var dup = ImageProcessing.GenerateData(btm, key);
+                        imagePathsAndGrayValues.Add(dup);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Trace.WriteLine(ex);
+                    }
+                    catch (OutOfMemoryException ex)
+                    {
+                        // Skip this one file rather than aborting the whole scan - see
+                        // the identical fix in ImageDuplication.GetSortedGrayScaleValues.
+                        var memory = Process.GetCurrentProcess().VirtualMemorySize64.ToString();
+                        Trace.WriteLine($"{ex} (VirtualMemorySize64={memory})");
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Trace.WriteLine(ex);
+                    }
+                });
 
             Trace.WriteLine(nameof(GetSortedGrayScaleValues));
             Trace.WriteLine(imagePathsAndGrayValues.Count);
@@ -256,6 +327,7 @@ namespace Imaging.Compare
                         // j <= i: every unordered pair is only ever checked once,
                         // from whichever side visits it second.
                         if (j <= i) continue;
+
                         if (items[i].Equals(items[j])) Union(i, j);
                     }
                 }
@@ -286,7 +358,7 @@ namespace Imaging.Compare
         /// </summary>
         /// <param name="duplicateGroups">The duplicate groups.</param>
         /// <returns>List of Similar Images</returns>
-        private static List<List<string>> Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
+        private static List<List<string?>> Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
         {
             return duplicateGroups.Select(group =>
                     (from element in @group where Translator[element.Id] != null select Translator[element.Id])

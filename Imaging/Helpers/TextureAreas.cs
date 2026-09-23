@@ -116,7 +116,7 @@ namespace Imaging.Helpers
                 MaskShape.Circle => ImageMask.ApplyCircleMask(textureBitmap, width, height),
 
                 MaskShape.Polygon when shapeParams is Point[] points => ImageMask.ApplyPolygonMask(textureBitmap,
-                    points),
+                    TranslatePoints(points, x, y)),
 
                 MaskShape.Polygon => throw new ArgumentException(ImagingResources.InvalidPolygonParams,
                     nameof(shapeParams)),
@@ -126,6 +126,30 @@ namespace Imaging.Helpers
 
             //if we have an input Image, Combine original and filtered images
             return image == null ? textureBitmap : ImageStream.CombineBitmap(image, textureBitmap, x, y);
+        }
+
+        /// <summary>
+        ///     Shifts absolute image-space points into the local (0,0-based) coordinate
+        ///     space of a bitmap that was generated at just the selection's bounding-box
+        ///     size (<paramref name="x" />/<paramref name="y" /> being that box's top-left
+        ///     corner in the original image). Without this, a polygon/freeform texture
+        ///     selection is masked against coordinates that fall outside the small
+        ///     texture bitmap entirely, so the visible selection and the actually
+        ///     textured area end up in different places (or the mask paints nothing).
+        /// </summary>
+        /// <param name="points">The absolute image-space polygon points.</param>
+        /// <param name="x">The selection bounding box's left offset in the source image.</param>
+        /// <param name="y">The selection bounding box's top offset in the source image.</param>
+        /// <returns>The same points, translated to be relative to (x, y).</returns>
+        private static Point[] TranslatePoints(Point[] points, int x, int y)
+        {
+            var translated = new Point[points.Length];
+            for (var i = 0; i < points.Length; i++)
+            {
+                translated[i] = new Point(points[i].X - x, points[i].Y - y);
+            }
+
+            return translated;
         }
     }
 }

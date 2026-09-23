@@ -8,9 +8,8 @@
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
 
-using Imaging.Enums;
-using Imaging.Gifs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,6 +18,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Imaging.Enums;
+using Imaging.Gifs;
+using Color = System.Drawing.Color;
 
 namespace Imaging
 {
@@ -53,20 +55,20 @@ namespace Imaging
         /// <param name="filter">The filter type.</param>
         /// <param name="config">The new filter configuration.</param>
         public static void SetFilterSettings(FiltersType filter, FilterConfiguration config) =>
-            Register.SetSettings(filter, config);
+            Register?.SetSettings(filter, config);
 
         /// <summary>
         /// Retrieves all available filters.
         /// </summary>
         /// <returns>An enumerable of available <see cref="FiltersType"/>.</returns>
-        public static IEnumerable<FiltersType> GetAvailableFilters() => Register.GetAvailableFilters();
+        public static IEnumerable<FiltersType> GetAvailableFilters() => Register?.GetAvailableFilters();
 
         /// <summary>
         /// Gets the property names used by a specific filter type.
         /// </summary>
         /// <param name="filter">The filter type.</param>
         /// <returns>A set of property names relevant to the filter.</returns>
-        public static HashSet<string> GetFilterProperties(FiltersType filter) => Register.GetUsedProperties(filter);
+        public static HashSet<string> GetFilterProperties(FiltersType filter) => Register?.GetUsedProperties(filter);
 
         /// <summary>
         /// Retrieves the configuration for a specific texture type.
@@ -137,7 +139,7 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>A <see cref="BitmapImage"/> representing the loaded image.</returns>
-        public static BitmapImage LoadBitmapImage(string path)
+        public static BitmapImage? LoadBitmapImage(string? path)
             => RenderEngine.GetBitmapImageFileStream(path);
 
 
@@ -146,7 +148,7 @@ namespace Imaging
         /// </summary>
         /// <param name="path">The file path to the image.</param>
         /// <returns>A <see cref="Bitmap"/> representing the loaded image.</returns>
-        public static Bitmap LoadBitmap(string path)
+        public static Bitmap? LoadBitmap(string? path)
             => RenderEngine.GetOriginalBitmap(path);
 
         /// <summary>
@@ -155,7 +157,7 @@ namespace Imaging
         /// <param name="bitmap">The bitmap to save.</param>
         /// <param name="path">The target file path.</param>
         /// <param name="format">The <see cref="ImageFormat"/> to save as.</param>
-        public static void Save(Bitmap? bitmap, string path, ImageFormat format)
+        public static void Save(Bitmap? bitmap, string? path, ImageFormat? format)
             => RenderEngine.SaveBitmap(bitmap, path, format);
 
         #endregion
@@ -167,7 +169,7 @@ namespace Imaging
         /// </summary>
         /// <param name="bitmap">The source bitmap.</param>
         /// <returns>The converted <see cref="BitmapImage"/>.</returns>
-        public static BitmapImage ToBitmapImage(Bitmap? bitmap)
+        public static BitmapImage? ToBitmapImage(Bitmap? bitmap)
             => RenderEngine.BitmapToBitmapImage(bitmap);
 
         /// <summary>
@@ -252,8 +254,8 @@ namespace Imaging
         /// </summary>
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
-        /// <returns>The <see cref="Color"/> of the pixel.</returns>
-        public static System.Drawing.Color GetPixel(Bitmap? image, Point p)
+        /// <returns>The <see cref="System.Drawing.Color"/> of the pixel.</returns>
+        public static Color GetPixel(Bitmap? image, Point p)
             => RenderEngine.GetPixel(image, p);
 
         /// <summary>
@@ -262,7 +264,7 @@ namespace Imaging
         /// <param name="image">The bitmap.</param>
         /// <param name="p">The pixel location.</param>
         /// <param name="color">The color to set.</param>
-        public static void SetPixel(Bitmap? image, Point p, System.Drawing.Color color)
+        public static void SetPixel(Bitmap? image, Point p, Color color)
             => RenderEngine.SetPixel(image, p, color);
 
         /// <summary>
@@ -272,7 +274,7 @@ namespace Imaging
         /// <param name="x">X-coordinate of start point.</param>
         /// <param name="y">Y-coordinate of start point.</param>
         /// <param name="newColor">The fill color.</param>
-        public static void FloodFill(Bitmap? image, int x, int y, System.Drawing.Color newColor)
+        public static void FloodFill(Bitmap? image, int x, int y, Color newColor)
             => RenderEngine.FloodFillScanLineStack(image, x, y, newColor);
 
         #endregion
@@ -361,7 +363,7 @@ namespace Imaging
         /// <param name="path">The full path to the GIF file.</param>
         /// <returns>A list of System.Drawing.Bitmap objects.</returns>
         /// <exception cref="IOException">Could not find the File</exception>
-        public static Task<List<Bitmap>> SplitGifAsync(string path)
+        public static Task<List<Bitmap?>> SplitGifAsync(string path)
         {
             // Delegates to internal handler
             return ImageGifHandler.SplitGifAsync(path);
@@ -427,9 +429,9 @@ namespace Imaging
         /// <returns>
         /// The generated texture as a <see cref="Bitmap" />.
         /// </returns>
-        public static Bitmap? GenerateTextureOverlay(Bitmap image, TextureType type, MaskShape shape,
+        public static Bitmap? GenerateTextureOverlay(Bitmap? image, TextureType type, MaskShape shape,
             object? shapeParams = null, Point? startPoint = null)
-            => TextureEngine.GenerateTextureOverlay(image, image.Width, image.Height, type, shape, startPoint,
+            => TextureEngine.GenerateTextureOverlay(image, image!.Width, image.Height, type, shape, startPoint,
                 shapeParams);
 
         /// <summary>

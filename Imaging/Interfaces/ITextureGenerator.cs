@@ -62,7 +62,7 @@ namespace Imaging.Interfaces
         ///     or
         ///     shape - null
         /// </exception>
-        Bitmap? GenerateTextureOverlay(Bitmap image, int width, int height, TextureType filter, MaskShape shape,
+        Bitmap? GenerateTextureOverlay(Bitmap? image, int width, int height, TextureType filter, MaskShape shape,
             Point? startPoint = null,
             object? shapeParams = null);
     }

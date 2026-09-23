@@ -9,12 +9,12 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
+using Imaging.Objects;
 using Imaging.Texture;
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Imaging.Objects;
 
 namespace RenderEngine
 {
@@ -62,7 +62,7 @@ namespace RenderEngine
         /// <summary>
         /// The lazy noise gen
         /// </summary>
-        private object _lazyNoiseGen;
+        private object? _lazyNoiseGen;
 
         /// <summary>
         /// The proc width
@@ -88,6 +88,9 @@ namespace RenderEngine
         /// Immutable structural menu catalog outlining every procedural texture type
         /// available for generation, mapped by its high-range safe identity key.
         /// </summary>
+        /// <value>
+        /// The procedural catalogue.
+        /// </value>
         public static IReadOnlyDictionary<int, (string Name, string Description)> ProceduralCatalogue { get; } =
             new Dictionary<int, (string Name, string Description)>
             {
@@ -101,9 +104,19 @@ namespace RenderEngine
                 { 10007, ("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.") },
                 { 10008, ("TreeBark", "Anisotropic domain-warped vertical furrowed bark grain.") },
                 { 10009, ("Foliage", "Dense organic canopy composed of distance-pinched leaf profiles.") },
-                { 10010, ("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.") }
+                { 10010, ("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.") },
+                { 10011, ("Cobblestone", "Voronoi cellular paving stone grid texture.") },
+                { 10012, ("Stone", "Directional shaded stone surface with mortar joints.") },
+                { 10013, ("LavaPool", "Molten lava pool with turbulent color ramp mapping.") },
+                { 10014, ("MagicalEther", "Ethereal magical aura flow texture.") },
+                { 10015, ("CrackedIce", "Cellular cracked ice crystal structure.") },
+                { 10016, ("MagicPortal", "Domain-warped swirling portal energy texture.") },
+                { 10017, ("PlasmaArc", "Ridged multifractal plasma energy arc.") },
+                { 10018, ("Steel", "Directional brushed steel metal surface with specular grit.") },
+                { 10019, ("Latex", "Glossy latex surface with steep specular falloff.") },
+                { 10020, ("Leather", "Pebbled organic skin pores and warped wrinkles.") },
+                { 10021, ("PolishedSteel", "High-gloss chrome reflective steel surface.") }
             };
-
         // --- PROCEDURAL LAZY LOADING INTEGRATION PASS ---
 
         /// <summary>
@@ -112,7 +125,7 @@ namespace RenderEngine
         /// <param name="defaultWidth">Default pixel width for generated textures.</param>
         /// <param name="defaultHeight">Default pixel height for generated textures.</param>
         /// <param name="noiseGeneratorInstance">An initialized instance of your custom NoiseGenerator class.</param>
-        public void ConfigureLazyBaking(int defaultWidth, int defaultHeight, object noiseGeneratorInstance)
+        public void ConfigureLazyBaking(int defaultWidth, int defaultHeight, object? noiseGeneratorInstance)
         {
             _procWidth = defaultWidth;
             _procHeight = defaultHeight;
@@ -186,15 +199,23 @@ namespace RenderEngine
                 10002 => TextureMathEngine.GenerateMarble(_procWidth, _procHeight, _lazyNoiseGen),
                 10003 => TextureMathEngine.GenerateWood(_procWidth, _procHeight, _lazyNoiseGen),
                 10004 => TextureMathEngine.GenerateWave(_procWidth, _procHeight, _lazyNoiseGen),
-                10005 => TextureMathEngine.GenerateCrosshatch(_procWidth, _procHeight, lineSpacing: 32,
-                    lineThickness: 2),
+                10005 => TextureMathEngine.GenerateCrosshatch(_procWidth, _procHeight, lineSpacing: 32, lineThickness: 2),
                 10006 => TextureMathEngine.GenerateConcrete(_procWidth, _procHeight, _lazyNoiseGen),
                 10007 => TextureMathEngine.GenerateCanvas(_procWidth, _procHeight, lineSpacing: 8, lineThickness: 1),
                 10008 => TextureFactory.GenerateTreeBark(_procWidth, _procHeight, _lazyNoiseGen),
                 10009 => TextureFactory.GenerateFoliage(_procWidth, _procHeight, _lazyNoiseGen),
                 10010 => TextureFactory.GenerateWoodPlank(_procWidth, _procHeight, _lazyNoiseGen),
                 10011 => TextureFactory.GenerateCobblestone(_procWidth, _procHeight),
-                1012 => TextureFactory.GenerateStoneTexture(_procWidth, _procHeight, _lazyNoiseGen),
+                10012 => TextureFactory.GenerateStoneTexture(_procWidth, _procHeight, _lazyNoiseGen),
+                10013 => TextureFactory.GenerateLavaPool(_procWidth, _procHeight, _lazyNoiseGen),
+                10014 => TextureFactory.GenerateMagicalEther(_procWidth, _procHeight, _lazyNoiseGen),
+                10015 => TextureFactory.GenerateCrackedIce(_procWidth, _procHeight),
+                10016 => TextureFactory.GenerateMagicPortal(_procWidth, _procHeight, _lazyNoiseGen),
+                10017 => TextureFactory.GeneratePlasmaArc(_procWidth, _procHeight, _lazyNoiseGen),
+                10018 => TextureFactory.GenerateSteel(_procWidth, _procHeight, _lazyNoiseGen),
+                10019 => TextureFactory.GenerateLatex(_procWidth, _procHeight, _lazyNoiseGen),
+                10020 => TextureFactory.GenerateLeather(_procWidth, _procHeight, _lazyNoiseGen),
+                10021 => TextureFactory.GeneratePolishedSteel(_procWidth, _procHeight, _lazyNoiseGen),
                 _ => null
             };
 

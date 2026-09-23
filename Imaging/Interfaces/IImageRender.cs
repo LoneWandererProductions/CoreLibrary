@@ -38,7 +38,7 @@ namespace Imaging.Interfaces
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException"></exception>
-        Bitmap? GetBitmapFile(string path);
+        Bitmap? GetBitmapFile(string? path);
 
         /// <summary>
         ///     Gets the original bitmap file.
@@ -50,7 +50,7 @@ namespace Imaging.Interfaces
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        Bitmap GetOriginalBitmap(string path);
+        Bitmap? GetOriginalBitmap(string? path);
 
         /// <summary>
         ///     Resizes an image
@@ -205,7 +205,7 @@ namespace Imaging.Interfaces
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        BitmapImage GetBitmapImage(string path);
+        BitmapImage GetBitmapImage(string? path);
 
         /// <summary>
         ///     Loads File one Time
@@ -222,7 +222,7 @@ namespace Imaging.Interfaces
         /// <exception cref="UriFormatException"></exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
-        BitmapImage GetBitmapImage(string path, int width, int height);
+        BitmapImage GetBitmapImage(string? path, int width, int height);
 
         /// <summary>
         ///     Loads File in a Stream
@@ -235,7 +235,7 @@ namespace Imaging.Interfaces
         /// <exception cref="IOException">Error while we try to access the File</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Could not find the File</exception>
-        BitmapImage? GetBitmapImageFileStream(string path);
+        BitmapImage? GetBitmapImageFileStream(string? path);
 
         /// <summary>
         ///     Loads File in a Stream
@@ -252,7 +252,7 @@ namespace Imaging.Interfaces
         /// <exception cref="NotSupportedException">File Type provided was not supported</exception>
         /// <exception cref="InvalidOperationException">Could not get correct access to the Object</exception>
         /// <exception cref="IOException">Error while we try to access the File</exception>
-        BitmapImage? GetBitmapImageFileStream(string path, int width, int height);
+        BitmapImage? GetBitmapImageFileStream(string? path, int width, int height);
 
         /// <summary>
         /// Bitmaps to bitmap image.
@@ -304,7 +304,7 @@ namespace Imaging.Interfaces
         /// <exception cref="ArgumentNullException">Wrong parameters</exception>
         /// <exception cref="IOException">File already exists</exception>
         /// <exception cref="ExternalException">Errors with the Path</exception>
-        void SaveBitmap(Bitmap? image, string path, ImageFormat format);
+        void SaveBitmap(Bitmap? image, string? path, ImageFormat? format);
 
         /// <summary>
         ///     Converts White to Transparent.
@@ -321,7 +321,7 @@ namespace Imaging.Interfaces
         /// <param name="image">The image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        Bitmap Pixelate(Bitmap? image, int stepWidth = 2);
+        Bitmap? Pixelate(Bitmap? image, int stepWidth = 2);
 
         /// <summary>
         ///     Gets the pixel.
@@ -532,7 +532,7 @@ namespace Imaging.Interfaces
         /// <param name="path">The path.</param>
         /// <returns>List of Images from gif</returns>
         /// <exception cref="IOException">Could not find the File</exception>
-        Task<List<Bitmap>> SplitGif(string path);
+        Task<List<Bitmap?>> SplitGif(string path);
 
         /// <summary>
         ///     Loads the GIF.

@@ -13,7 +13,6 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-using Imaging.Helpers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,6 +26,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Imaging.Helpers;
 
 namespace Common.Images
 {
@@ -189,6 +189,15 @@ namespace Common.Images
         ///     The selection
         /// </summary>
         private int _selection;
+
+        /// <summary>
+        ///     The currently active search/filter predicate, if any. Remembered so that thumbnails
+        ///     which finish loading *after* the filter was applied (loading is async and
+        ///     out-of-order) get filtered too, instead of always showing up regardless of whether
+        ///     they match - which is why non-matching thumbnails used to stick around until the
+        ///     next keystroke re-ran the filter.
+        /// </summary>
+        private Func<string, bool>? _activeFilter;
 
         /// <inheritdoc />
         /// <summary>
@@ -544,6 +553,20 @@ namespace Common.Images
         }
 
         /// <summary>
+        ///     Cancels any in-flight thumbnail decoding when this control leaves the visual tree
+        ///     (e.g. a Compare page being navigated away from, or a group card being removed).
+        ///     Without this, LoadImages keeps decoding in the background - up to 4 images at a
+        ///     time per still-running instance - and that work piles up behind whatever the next
+        ///     page/group starts loading, which is a big part of why Compare could feel like it
+        ///     "takes forever" to rebuild with many groups or large images.
+        /// </summary>
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _loadingCts?.Cancel();
+            _cancellationTokenSource?.Cancel();
+        }
+
+        /// <summary>
         /// Fire-and-forget wrapper to call your async method
         /// Loads the items asynchronous.
         /// </summary>
@@ -662,6 +685,14 @@ namespace Common.Images
                     }
                 });
 
+                // Re-pack once every thumbnail is in: individual late arrivals were already hidden
+                // above as they loaded, but only a full pass over the finished set can move the
+                // remaining visible ones back into one contiguous block.
+                if (_activeFilter != null)
+                {
+                    await Dispatcher.InvokeAsync(() => ApplyFilter(_activeFilter));
+                }
+
                 ImageLoaded?.Invoke();
             }
             catch (OperationCanceledException)
@@ -767,6 +798,14 @@ namespace Common.Images
                 Grid.SetRow(cellContainer, key / thumbWidth);
                 Grid.SetColumn(cellContainer, key % thumbWidth);
                 exGrid.Children.Add(cellContainer);
+
+                // Loading is async and out-of-order, so a thumbnail can land here well after a
+                // search/filter was applied. Without this, it always shows up regardless of
+                // whether it matches, which is what made non-matching thumbnails "stick around".
+                if (_activeFilter != null && !_activeFilter(filePath))
+                {
+                    cellContainer.Visibility = Visibility.Collapsed;
+                }
 
                 images.MouseDown += ImageClick_MouseDown;
             }, DispatcherPriority.Normal);
@@ -901,31 +940,65 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
-        ///     on a predicate over each item's file path, without touching <see cref="ItemsSource" />
-        ///     or re-decoding/reloading anything - this is deliberately just a Visibility toggle on
-        ///     cells that already exist, so it stays cheap even on every keystroke.
-        ///     Note: cells live in a fixed Grid with an explicit Row/Column per id (not a reflowing
-        ///     panel like WrapPanel), so hiding a cell leaves a gap at its original position rather
-        ///     than repacking the grid - a filtered view will look sparse rather than tightly packed.
+        /// Explorer-style live quick-filter: shows/hides already-rendered thumbnail cells based
+        /// on a predicate over each item's file path, without touching <see cref="ItemsSource" />
+        /// or re-decoding/reloading anything - this is deliberately just a Visibility toggle on
+        /// cells that already exist, so it stays cheap even on every keystroke.
+        /// Note: cells live in a fixed Grid with an explicit Row/Column per id (not a reflowing
+        /// panel like WrapPanel), so hiding a cell leaves a gap at its original position rather
+        /// than repacking the grid - a filtered view will look sparse rather than tightly packed.
         /// </summary>
-        /// <param name="predicate">
-        ///     Called with each item's file path; return <c>true</c> to keep it visible. Pass
-        ///     <c>null</c> to clear the filter and show everything again.
-        /// </param>
+        /// <param name="predicate">Called with each item's file path; return <c>true</c> to keep it visible. Pass
+        /// <c>null</c> to clear the filter and show everything again.</param>
+        /// <returns></returns>
         public void ApplyFilter(Func<string, bool>? predicate)
         {
+            // Remember this so LoadSingleImage can apply it to thumbnails that are still in
+            // flight, and so a load that finishes later can re-run it once everything is in.
+            _activeFilter = predicate;
+
             if (Border == null || ItemsSource == null) return;
 
-            foreach (var (id, border) in Border)
+            // Same column count the grid was originally built with (see LoadSingleImage's own
+            // Grid.SetRow(cellContainer, key / thumbWidth) / SetColumn(... key % thumbWidth)) -
+            // reusing it here keeps a reflowed filtered view laid out exactly like the original.
+            var totalColumns = Thb.Children.OfType<Grid>().FirstOrDefault()?.ColumnDefinitions.Count ?? 0;
+
+            // Stable original order (ids were assigned sequentially when the grid was built).
+            var orderedIds = Border.Keys.OrderBy(id => id).ToList();
+
+            var visibleIds = predicate == null
+                ? orderedIds
+                : orderedIds.Where(id =>
+                    ItemsSource.TryGetValue(id, out var path) &&
+                    !string.IsNullOrEmpty(path) &&
+                    predicate(path)).ToList();
+
+            var visibleSet = new HashSet<int>(visibleIds);
+            var position = 0;
+
+            foreach (var id in orderedIds)
             {
-                if (border?.Parent is not UIElement cellContainer) continue;
+                if (!Border.TryGetValue(id, out var border) || border?.Parent is not UIElement cellContainer)
+                {
+                    continue;
+                }
 
-                var isVisible = predicate == null ||
-                                 (ItemsSource.TryGetValue(id, out var path) &&
-                                  !string.IsNullOrEmpty(path) && predicate(path));
+                if (!visibleSet.Contains(id))
+                {
+                    cellContainer.Visibility = Visibility.Collapsed;
+                    continue;
+                }
 
-                cellContainer.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+                cellContainer.Visibility = Visibility.Visible;
+
+                if (totalColumns > 0)
+                {
+                    Grid.SetRow(cellContainer, position / totalColumns);
+                    Grid.SetColumn(cellContainer, position % totalColumns);
+                }
+
+                position++;
             }
         }
 
@@ -937,7 +1010,9 @@ namespace Common.Images
         /// </summary>
         public List<int> GetVisibleIds()
         {
-            if (Border == null) return [];
+            if (Border == null) return
+            []
+            ;
 
             return Border
                 .Where(kvp => kvp.Value?.Parent is UIElement { Visibility: Visibility.Visible })

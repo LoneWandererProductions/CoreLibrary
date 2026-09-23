@@ -6,14 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-using Imaging.Helpers;
-using Imaging.Plugins.Interface;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Imaging.Helpers;
+using Imaging.Plugins.Interface;
 
 namespace Imaging
 {
@@ -49,7 +49,7 @@ namespace Imaging
         /// benefit, since every plugin type here is already being inspected for IImageDecoderPlugin
         /// anyway.
         /// </summary>
-        private readonly Dictionary<string, IImageEncoderPlugin> _encodersByExtension =
+        private readonly Dictionary<string?, IImageEncoderPlugin> _encodersByExtension =
             new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Imaging
         /// <param name="extension">The target file extension (with or without the leading dot).</param>
         /// <param name="plugin">The encoder plugin, if one is registered for this extension.</param>
         /// <returns><c>true</c> if a plugin encoder was found; otherwise, <c>false</c>.</returns>
-        public bool TryGetEncoder(string extension, out IImageEncoderPlugin? plugin)
+        public bool TryGetEncoder(string? extension, out IImageEncoderPlugin? plugin)
         {
             return _encodersByExtension.TryGetValue(NormalizeExtension(extension), out plugin);
         }
@@ -204,8 +204,8 @@ namespace Imaging
             }
             catch (Exception ex) when (
                 ex is BadImageFormatException or
-                FileLoadException or
-                IOException)
+                    FileLoadException or
+                    IOException)
             {
                 Trace.WriteLine(
                     $"[ImageDecoderPluginRegistry] Could not load '{dllPath}': {ex}");
@@ -266,10 +266,10 @@ namespace Imaging
                 }
                 catch (Exception ex) when (
                     ex is MissingMethodException or
-                    TargetInvocationException)
+                        TargetInvocationException)
                 {
                     Trace.WriteLine(
-                        $"[ImageDecoderPluginRegistry] " +
+                        "[ImageDecoderPluginRegistry] " +
                         $"Failed to construct '{type.FullName}': {ex}");
                 }
             }
@@ -280,7 +280,7 @@ namespace Imaging
         /// </summary>
         /// <param name="extension">The extension.</param>
         /// <returns>The normalized extension.</returns>
-        private static string NormalizeExtension(string extension)
+        private static string? NormalizeExtension(string? extension)
         {
             var trimmed = extension.Trim();
             return trimmed.StartsWith('.') ? trimmed.ToLowerInvariant() : "." + trimmed.ToLowerInvariant();

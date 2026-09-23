@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 namespace Imaging.Texture
 {
     /// <summary>
@@ -240,6 +242,122 @@ namespace Imaging.Texture
                 EdgeRgb =  [70,
                 40,
                 20] // Dark grain accent lines
+            };
+        }
+
+        /// <summary>
+        /// Gets the brushed steel configuration.
+        /// </summary>
+        /// <returns>The steel configuration.</returns>
+        public static TextureConfig GetSteelConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 80.0, // Used for Y-grain scale
+                CenterRgb =  [180,
+                185,
+                190], // Base steel tone
+                EdgeRgb =  [230,
+                235,
+                240] // Highlight grain tone
+            };
+        }
+
+        /// <summary>
+        /// Gets the glossy latex configuration.
+        /// </summary>
+        /// <returns>The latex configuration.</returns>
+        public static TextureConfig GetLatexConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 64.0,
+                Persistence = 8.0, // Reused for specular exponent
+                CenterRgb =  [20,
+                20,
+                25], // Deep base material
+                EdgeRgb =  [240,
+                245,
+                255] // Sharp specular sheen
+            };
+        }
+
+        /// <summary>
+        /// Gets the organic leather configuration.
+        /// </summary>
+        /// <returns>The leather configuration.</returns>
+        public static TextureConfig GetLeatherConfig()
+        {
+            return new TextureConfig
+            {
+                CellSize = 12,
+                WarpStrength = 6.0,
+                CenterRgb =  [110,
+                65,
+                35], // Raised leather skin tone
+                EdgeRgb =  [40,
+                25,
+                15] // Deep pore/crease shadow
+            };
+        }
+
+        /// <summary>
+        /// Gets the glossy latex configuration.
+        /// </summary>
+        /// <returns>The latex configuration.</returns>
+        public static TextureConfig GetCustomLatexConfig(byte r, byte g, byte b)
+        {
+            // Lighten base color for sheen specular tinting
+            var sheenR = (byte)Math.Min(255, r + 100);
+            var sheenG = (byte)Math.Min(255, g + 100);
+            var sheenB = (byte)Math.Min(255, b + 100);
+
+            return new TextureConfig
+            {
+                TurbulenceSize = 64.0,
+                Persistence = 8.0,
+                CenterRgb =  [r,
+                g,
+                b],
+                EdgeRgb =  [sheenR,
+                sheenG,
+                sheenB]
+            };
+        }
+
+        /// <summary>
+        /// Gets the organic leather configuration.
+        /// </summary>
+        /// <returns>The leather configuration.</returns>
+        public static TextureConfig GetCustomLeatherConfig(byte r, byte g, byte b, double shadowFactor = 0.35)
+        {
+            // Darken base color to create realistic crease depth
+            var poreR = (byte)(r * shadowFactor);
+            var poreG = (byte)(g * shadowFactor);
+            var poreB = (byte)(b * shadowFactor);
+
+            return new TextureConfig
+            {
+                CellSize = 12,
+                WarpStrength = 6.0,
+                CenterRgb =  [r,
+                g,
+                b],
+                EdgeRgb =  [poreR,
+                poreG,
+                poreB]
+            };
+        }
+
+        /// <summary>
+        /// Gets the high polished chrome steel configuration.
+        /// </summary>
+        /// <returns>The polished steel configuration.</returns>
+        public static TextureConfig GetPolishedSteelConfig()
+        {
+            return new TextureConfig
+            {
+                WarpScale = 64.0, WarpStrength = 16.0, Persistence = 3.0 // Reused for reflection band count
             };
         }
     }
