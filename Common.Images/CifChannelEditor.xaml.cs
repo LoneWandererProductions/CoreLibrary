@@ -266,7 +266,8 @@ namespace Common.Images
             if (e.PropertyName is nameof(CifColorItem.R) or nameof(CifColorItem.G) or nameof(CifColorItem.B))
             {
                 // Sync the R, G, or B value to all other selected items in the ListBox
-                if (!_isSyncingMultiselect && sender is CifColorItem changedItem && PaletteListBox?.SelectedItems.Contains(changedItem) == true)
+                if (!_isSyncingMultiselect && sender is CifColorItem changedItem &&
+                    PaletteListBox?.SelectedItems.Contains(changedItem) == true)
                 {
                     _isSyncingMultiselect = true;
                     foreach (CifColorItem item in PaletteListBox.SelectedItems)
@@ -277,6 +278,7 @@ namespace Common.Images
                         else if (e.PropertyName == nameof(CifColorItem.G)) item.G = changedItem.G;
                         else if (e.PropertyName == nameof(CifColorItem.B)) item.B = changedItem.B;
                     }
+
                     _isSyncingMultiselect = false;
                 }
 
@@ -351,7 +353,8 @@ namespace Common.Images
             try
             {
                 var pixelData = await Task.Run(() => GeneratePixelData(
-                    cif, rOffset, gOffset, bOffset, isIsolationEnabled, isolatedColorArgb, activePalette, token), token);
+                        cif, rOffset, gOffset, bOffset, isIsolationEnabled, isolatedColorArgb, activePalette, token),
+                    token);
 
                 if (token.IsCancellationRequested || pixelData == null) return;
 
@@ -388,7 +391,7 @@ namespace Common.Images
             IReadOnlyDictionary<SystemDrawingColor, SystemDrawingColor> activePalette,
             CancellationToken token)
         {
-            if(cif == null || cif.CifImage == null) return null;
+            if (cif == null || cif.CifImage == null) return null;
 
             var totalPixels = cif.PixelCount;
             var buffer = new int[totalPixels];

@@ -41,13 +41,13 @@ namespace SqliteHelper
         /// <summary>
         ///     Only Used for DataBinding
         /// </summary>
-        public DataView Raw { get; internal set; }
+        public DataView? Raw { get; internal set; }
 
         /// <summary>
         ///     Custom Data View,
         ///     Infos about the Table and the Data it Contains
         /// </summary>
-        public List<TableSet> Row { get; internal init; }
+        public List<TableSet>? Row { get; internal init; }
 
         /// <summary>
         ///     Get a specific Column of the Data set
@@ -56,7 +56,7 @@ namespace SqliteHelper
         /// <returns>
         ///     Specific Column at that position, on Error return null.
         /// </returns>
-        public List<string> Columns(int height)
+        public List<string?> Columns(int height)
         {
             if (height >= Height || height < 0)
             {

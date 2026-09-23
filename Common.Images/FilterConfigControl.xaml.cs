@@ -6,7 +6,6 @@
  * PROGRAMER:   Peter Geinitz (Wayfarer)
  */
 
-using System.Windows.Controls;
 using Imaging.Enums;
 
 namespace Common.Images
@@ -14,7 +13,7 @@ namespace Common.Images
     /// <summary>
     /// Configuration UserControl for Image Filters
     /// </summary>
-    public partial class FilterConfigControl : UserControl
+    public partial class FilterConfigControl
     {
         /// <summary>
         /// The view model

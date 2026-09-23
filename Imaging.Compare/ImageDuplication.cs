@@ -105,7 +105,7 @@ namespace Imaging.Compare
 
             var duplicateGroups = GetDuplicateGroups(images);
 
-            var result = Translate(duplicateGroups);
+            List<List<string>> result = Translate(duplicateGroups);
             localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
             return result;

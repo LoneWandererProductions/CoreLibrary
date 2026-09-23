@@ -61,7 +61,7 @@ namespace Core.Apps.Development
         /// <param name="directoryPath">The directory path.</param>
         /// <param name="includeSubdirectories">if set to <c>true</c> [include subdirectories].</param>
         /// <returns>Files with added headers</returns>
-        public string? ProcessFiles(string? directoryPath, bool includeSubdirectories)
+        public string ProcessFiles(string? directoryPath, bool includeSubdirectories)
         {
             if (string.IsNullOrWhiteSpace(directoryPath) || !Directory.Exists(directoryPath))
                 return "Invalid or missing directory path.";

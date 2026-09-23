@@ -45,12 +45,12 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The db source (const). Value: "Source".
         /// </summary>
-        private const string DbSource = "Source";
+        private const string? DbSource = "Source";
 
         /// <summary>
         ///     The db target (const). Value: "Target".
         /// </summary>
-        private const string DbTarget = "Target";
+        private const string? DbTarget = "Target";
 
         /// <summary>
         ///     The First header (const). Value: "First".
@@ -80,17 +80,17 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The Table name first (const). Value: "Tbl_First".
         /// </summary>
-        private const string TblNameFirst = "Tbl_First";
+        private const string? TblNameFirst = "Tbl_First";
 
         /// <summary>
         ///     The Table name second (const). Value: "Tbl_Second".
         /// </summary>
-        private const string TblNameSecond = "Tbl_Second";
+        private const string? TblNameSecond = "Tbl_Second";
 
         /// <summary>
         ///     The Table name third (const). Value: "Tbl_Third".
         /// </summary>
-        private const string TblNameThird = "Tbl_Third";
+        private const string? TblNameThird = "Tbl_Third";
 
         /// <summary>
         ///     The target (readonly). Value: new SqlLiteDatabase().

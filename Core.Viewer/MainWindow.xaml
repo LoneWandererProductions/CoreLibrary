@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Background="{DynamicResource WindowBackgroundBrush}"
         Foreground="{DynamicResource TextPrimaryBrush}"
-        Title="Analyzer Viewer" 
+        Title="Analyzer Viewer"
         Height="450" Width="950">
 
     <Window.DataContext>
@@ -48,7 +48,7 @@
                            MaxWidth="250"
                            TextTrimming="CharacterEllipsis"
                            VerticalAlignment="Center"
-                           FontSize="11"/>
+                           FontSize="11" />
             </Border>
 
             <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="10,0,2,0" />

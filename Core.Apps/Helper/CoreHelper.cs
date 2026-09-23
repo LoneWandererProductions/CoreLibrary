@@ -92,7 +92,7 @@ namespace Core.Apps.Helper
         /// </summary>
         /// <param name="startPath">The path to start searching from.</param>
         /// <returns>The project root directory.</returns>
-        internal static string? FindProjectRoot(string? startPath)
+        internal static string FindProjectRoot(string? startPath)
         {
             if (File.Exists(startPath))
                 startPath = Path.GetDirectoryName(startPath)!;

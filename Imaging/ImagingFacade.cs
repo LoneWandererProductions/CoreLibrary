@@ -75,7 +75,7 @@ namespace Imaging
         /// </summary>
         /// <param name="texture">The texture type.</param>
         /// <returns>The current <see cref="TextureConfiguration"/> for the texture.</returns>
-        public static TextureConfiguration? GetTextureSettings(TextureType texture) => Register.GetSettings(texture);
+        public static TextureConfiguration GetTextureSettings(TextureType texture) => Register.GetSettings(texture);
 
         /// <summary>
         /// Updates the configuration for a specific texture type.

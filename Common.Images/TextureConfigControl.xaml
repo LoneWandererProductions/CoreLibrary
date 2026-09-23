@@ -68,7 +68,8 @@
 
                         <StackPanel>
                             <!-- Min Value -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsMinValueActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsMinValueActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -80,7 +81,8 @@
                             </Grid>
 
                             <!-- Max Value -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsMaxValueActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsMaxValueActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -92,7 +94,8 @@
                             </Grid>
 
                             <!-- Alpha -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsAlphaActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsAlphaActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -104,7 +107,8 @@
                             </Grid>
 
                             <!-- X Period -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsXPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsXPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -116,7 +120,8 @@
                             </Grid>
 
                             <!-- Y Period -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsYPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsYPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -128,7 +133,8 @@
                             </Grid>
 
                             <!-- XY Period -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsXyPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsXyPeriodActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -140,7 +146,8 @@
                             </Grid>
 
                             <!-- Turbulence Power -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsTurbulencePowerActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsTurbulencePowerActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -153,7 +160,8 @@
                             </Grid>
 
                             <!-- Turbulence Size -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsTurbulenceSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsTurbulenceSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -166,7 +174,8 @@
                             </Grid>
 
                             <!-- Base Color -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsBaseColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsBaseColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -178,7 +187,8 @@
                             </Grid>
 
                             <!-- Is Monochrome -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsMonochromeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsMonochromeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -190,7 +200,8 @@
                             </Grid>
 
                             <!-- Is Tiled -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsTiledActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsTiledActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -202,7 +213,8 @@
                             </Grid>
 
                             <!-- Use Smooth Noise -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsUseSmoothNoiseActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsUseSmoothNoiseActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -215,7 +227,8 @@
                             </Grid>
 
                             <!-- Use Turbulence -->
-                            <Grid Margin="0,0,0,0" Visibility="{Binding IsUseTurbulenceActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,0"
+                                  Visibility="{Binding IsUseTurbulenceActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -237,7 +250,8 @@
 
                         <StackPanel>
                             <!-- Line Spacing -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsLineSpacingActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsLineSpacingActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -249,7 +263,8 @@
                             </Grid>
 
                             <!-- Line Color -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsLineColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsLineColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -261,7 +276,8 @@
                             </Grid>
 
                             <!-- Line Thickness -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsLineThicknessActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsLineThicknessActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -273,7 +289,8 @@
                             </Grid>
 
                             <!-- Angle Primary -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsAnglePrimaryActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsAnglePrimaryActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -285,7 +302,8 @@
                             </Grid>
 
                             <!-- Angle Secondary -->
-                            <Grid Margin="0,0,0,0" Visibility="{Binding IsAngleSecondaryActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,0"
+                                  Visibility="{Binding IsAngleSecondaryActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -307,7 +325,8 @@
 
                         <StackPanel>
                             <!-- Cell Size -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsCellSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsCellSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -319,7 +338,8 @@
                             </Grid>
 
                             <!-- Center Color -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsCenterColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsCenterColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -331,7 +351,8 @@
                             </Grid>
 
                             <!-- Edge Color -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsEdgeColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsEdgeColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -343,7 +364,8 @@
                             </Grid>
 
                             <!-- Color Ramp -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsColorRampActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsColorRampActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -355,7 +377,8 @@
                             </Grid>
 
                             <!-- Secondary Color -->
-                            <Grid Margin="0,0,0,0" Visibility="{Binding IsSecondaryColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,0"
+                                  Visibility="{Binding IsSecondaryColorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -377,7 +400,8 @@
 
                         <StackPanel>
                             <!-- Wave Frequency -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsWaveFrequencyActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsWaveFrequencyActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -389,7 +413,8 @@
                             </Grid>
 
                             <!-- Wave Amplitude -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsWaveAmplitudeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsWaveAmplitudeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -401,7 +426,8 @@
                             </Grid>
 
                             <!-- Randomization -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsRandomizationFactorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsRandomizationFactorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -413,7 +439,8 @@
                             </Grid>
 
                             <!-- Edge Jaggedness Limit -->
-                            <Grid Margin="0,0,0,6" Visibility="{Binding IsEdgeJaggednessLimitActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,6"
+                                  Visibility="{Binding IsEdgeJaggednessLimitActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
@@ -426,7 +453,8 @@
                             </Grid>
 
                             <!-- Jaggedness Threshold -->
-                            <Grid Margin="0,0,0,0" Visibility="{Binding IsJaggednessThresholdActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                            <Grid Margin="0,0,0,0"
+                                  Visibility="{Binding IsJaggednessThresholdActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />

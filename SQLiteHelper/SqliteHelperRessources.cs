@@ -91,7 +91,7 @@ namespace SqliteHelper
         /// <summary>
         ///     The sql select (const). Value: "Select ".
         /// </summary>
-        internal const string SqlSelect = "Select ";
+        internal const string? SqlSelect = "Select ";
 
         /// <summary>
         ///     The sql db ext (const). Value: ".db".
@@ -156,7 +156,7 @@ namespace SqliteHelper
         /// <summary>
         ///     The error check (const). Value: "Error".
         /// </summary>
-        internal const string ErrorCheck = "Error";
+        internal const string? ErrorCheck = "Error";
 
         /// <summary>
         ///     The message initiate (const). Value: "Initiate: ".

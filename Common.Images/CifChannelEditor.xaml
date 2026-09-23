@@ -160,7 +160,8 @@
                 <!-- Color Isolation & Remapping -->
                 <Border Style="{StaticResource SidePanelCardStyle}">
                     <StackPanel>
-                        <TextBlock Text="Palette Isolation &amp; Remap" Style="{StaticResource SidePanelSectionHeaderStyle}" />
+                        <TextBlock Text="Palette Isolation &amp; Remap"
+                                   Style="{StaticResource SidePanelSectionHeaderStyle}" />
 
                         <!--
                             Was bound to nothing: this checkbox's Checked/Unchecked handlers used
@@ -177,16 +178,17 @@
 
                         <TextBlock Margin="0,0,0,4">
                             <Run Text="Image Colors Palette" Foreground="{StaticResource TextSecondaryBrush}" />
-                            <Run Text="{Binding PaletteItems.Count, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay, StringFormat=' ({0})'}"
-                                 Foreground="{StaticResource TextMutedBrush}" />
+                            <Run
+                                Text="{Binding PaletteItems.Count, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay, StringFormat=' ({0})'}"
+                                Foreground="{StaticResource TextMutedBrush}" />
                         </TextBlock>
                         <ListBox x:Name="PaletteListBox" Height="150"
-                             SelectionMode="Extended"
-                             Background="{StaticResource InputBrush}"
-                             BorderBrush="{StaticResource BorderSubtleBrush}"
-                             ItemsSource="{Binding Path=PaletteItems, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                             SelectedItem="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
-                             SelectionChanged="PaletteListBox_SelectionChanged">
+                                 SelectionMode="Extended"
+                                 Background="{StaticResource InputBrush}"
+                                 BorderBrush="{StaticResource BorderSubtleBrush}"
+                                 ItemsSource="{Binding Path=PaletteItems, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 SelectedItem="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                 SelectionChanged="PaletteListBox_SelectionChanged">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -208,7 +210,8 @@
                                         </Border>
                                         <TextBlock Text="{Binding HexValue}" VerticalAlignment="Center" Width="60"
                                                    FontFamily="Consolas" />
-                                        <TextBlock Text="{Binding PixelCount, StringFormat='({0} px)'}" Foreground="{StaticResource TextMutedBrush}"/>
+                                        <TextBlock Text="{Binding PixelCount, StringFormat='({0} px)'}"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
                                         <TextBlock Text="{Binding R, StringFormat=R:{0:D3}}" Foreground="#FFE06C6C"
                                                    Margin="5,0" />
                                         <TextBlock Text="{Binding G, StringFormat=G:{0:D3}}" Foreground="#FF7CC47C"

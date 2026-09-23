@@ -148,7 +148,7 @@ namespace Imaging
         /// Creates a standalone, managed copy of the current state of this bitmap.
         /// This copy survives even after this DirectBitmap is disposed.
         /// </summary>
-        public Bitmap? ToBitmap()
+        public Bitmap ToBitmap()
         {
             if (Disposed) throw new ObjectDisposedException(nameof(DirectBitmap));
 

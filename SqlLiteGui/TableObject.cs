@@ -15,11 +15,11 @@ namespace SQLiteGui
     /// </summary>
     /// <param name="Header">     Gets or sets the header. </param>
     /// <param name="Columns">     Gets or sets the columns. </param>
-    internal sealed record TableObject(string Header, DictionaryTableColumns Columns)
+    internal sealed record TableObject(string? Header, DictionaryTableColumns? Columns)
     {
         /// <summary>
         ///     Gets or sets the columns.
         /// </summary>
-        public DictionaryTableColumns Columns { get; set; } = Columns;
+        public DictionaryTableColumns? Columns { get; set; } = Columns;
     }
 }

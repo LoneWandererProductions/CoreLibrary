@@ -21,32 +21,32 @@ namespace SQLiteGui
         /// <summary>
         ///     The Button add (readonly).
         /// </summary>
-        private readonly string _btnAdd;
+        private readonly string? _btnAdd;
 
         /// <summary>
         ///     The Button cancel (readonly).
         /// </summary>
-        private readonly string _btnCancel;
+        private readonly string? _btnCancel;
 
         /// <summary>
         ///     The Button delete (readonly).
         /// </summary>
-        private readonly string _btnDelete;
+        private readonly string? _btnDelete;
 
         /// <summary>
         ///     The Button execute (readonly).
         /// </summary>
-        private readonly string _btnExecute;
+        private readonly string? _btnExecute;
 
         /// <summary>
         ///     The table name label (readonly).
         /// </summary>
-        private readonly string _tableNameLbl;
+        private readonly string? _tableNameLbl;
 
         /// <summary>
         ///     The title (readonly).
         /// </summary>
-        private readonly string _title;
+        private readonly string? _title;
 
         /// <inheritdoc />
         /// <summary>
@@ -68,8 +68,9 @@ namespace SQLiteGui
         /// <param name="btnCancel">Cancel Button</param>
         /// <param name="btnAdd">Add Button</param>
         /// <param name="btnDelete">Add Delete Button</param>
-        internal AddTableWindow(string title, string tableNameLbl, string btnExecute, string btnCancel, string btnAdd,
-            string btnDelete)
+        internal AddTableWindow(string? title, string? tableNameLbl, string? btnExecute, string? btnCancel,
+            string? btnAdd,
+            string? btnDelete)
         {
             TableElements = new ObservableCollection<TableColumnsExtended>();
             InitializeComponent();

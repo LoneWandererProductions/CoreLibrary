@@ -90,7 +90,7 @@ namespace FileHandler
         /// <param name="path">The path.</param>
         /// <param name="subdirectories">if set to <c>true</c> [subdirectories].</param>
         /// <returns>File by criteria</returns>
-        public static List<string?>? GetAllFiles(string? path, bool subdirectories)
+        public static List<string?> GetAllFiles(string? path, bool subdirectories)
         {
             return FileHandlerProcessing.GetFilesByExtension(path, null, subdirectories) ?? new List<string>();
         }

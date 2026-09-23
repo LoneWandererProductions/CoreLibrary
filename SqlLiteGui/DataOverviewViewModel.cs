@@ -22,12 +22,12 @@ namespace SQLiteGui
         /// <summary>
         ///     The current table
         /// </summary>
-        private string _currentTable;
+        private string? _currentTable;
 
         /// <summary>
         /// The raw
         /// </summary>
-        private DataView _raw;
+        private DataView? _raw;
 
         /// <summary>
         ///     The selected item
@@ -50,7 +50,7 @@ namespace SQLiteGui
         /// <value>
         ///     The raw.
         /// </value>
-        public DataView Raw
+        public DataView? Raw
         {
             get => _raw;
             set
@@ -114,7 +114,7 @@ namespace SQLiteGui
         ///     Change Data.
         /// </summary>
         /// <param name="selectedTable">The selected table.</param>
-        internal void DataChanged(TableDetails selectedTable)
+        internal void DataChanged(TableDetails? selectedTable)
         {
             _currentTable = selectedTable.TableAlias;
 

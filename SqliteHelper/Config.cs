@@ -18,12 +18,12 @@ namespace SqliteHelper
         /// <summary>
         ///     Gets or sets the location.
         /// </summary>
-        public string Location { get; internal init; } = null!;
+        public string? Location { get; internal init; } = null!;
 
         /// <summary>
         ///     Gets or sets the Database name.
         /// </summary>
-        public string DbName { get; internal init; } = null!;
+        public string? DbName { get; internal init; } = null!;
 
         /// <summary>
         ///     Gets or sets the time out.

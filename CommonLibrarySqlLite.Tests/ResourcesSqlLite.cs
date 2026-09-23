@@ -104,7 +104,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database crash.
         /// </value>
-        internal static string? PathDbCrash => Path.Combine(Root, DbCrash);
+        internal static string PathDbCrash => Path.Combine(Root, DbCrash);
 
         /// <summary>
         ///     Gets the path database select.
@@ -112,7 +112,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database select.
         /// </value>
-        internal static string? PathDbSelect => Path.Combine(Root, DbDatabaseSelect);
+        internal static string PathDbSelect => Path.Combine(Root, DbDatabaseSelect);
 
         /// <summary>
         ///     Gets the path copy table.
@@ -120,7 +120,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path copy table.
         /// </value>
-        internal static string? PathCopyTable => Path.Combine(Root, DbCopyTable);
+        internal static string PathCopyTable => Path.Combine(Root, DbCopyTable);
 
         /// <summary>
         ///     Gets the path copy table advanced.
@@ -128,7 +128,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path copy table advanced.
         /// </value>
-        internal static string? PathCopyTableAdvanced => Path.Combine(Root, DbCopyTableAdvanced);
+        internal static string PathCopyTableAdvanced => Path.Combine(Root, DbCopyTableAdvanced);
 
         /// <summary>
         ///     Gets the path database create.
@@ -136,7 +136,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database create.
         /// </value>
-        internal static string? PathDbCreate => Path.Combine(Root, DbDatabaseCreate);
+        internal static string PathDbCreate => Path.Combine(Root, DbDatabaseCreate);
 
         /// <summary>
         ///     Gets the path database row delete.
@@ -144,7 +144,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database row delete.
         /// </value>
-        internal static string? PathDbRowDelete => Path.Combine(Root, DbDeleteRow);
+        internal static string PathDbRowDelete => Path.Combine(Root, DbDeleteRow);
 
         /// <summary>
         ///     Gets the path database create complex.
@@ -152,7 +152,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database create complex.
         /// </value>
-        internal static string? PathDbCreateComplex => Path.Combine(Root, DbComplex);
+        internal static string PathDbCreateComplex => Path.Combine(Root, DbComplex);
 
         /// <summary>
         ///     Gets the path database select in.
@@ -168,7 +168,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path pragma table information.
         /// </value>
-        internal static string? PathPragmaTableInfo => Path.Combine(Root, DbPragmaIndexList);
+        internal static string PathPragmaTableInfo => Path.Combine(Root, DbPragmaIndexList);
 
         /// <summary>
         ///     Gets the path database table status.
@@ -176,7 +176,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database table status.
         /// </value>
-        internal static string? PathDatabaseTableStatus => Path.Combine(Root, DbTableStatus);
+        internal static string PathDatabaseTableStatus => Path.Combine(Root, DbTableStatus);
 
         /// <summary>
         ///     Gets the path database table unique status.
@@ -184,7 +184,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database table unique status.
         /// </value>
-        internal static string? PathDbTableUniqueStatus => Path.Combine(Root, DbUniqueStatus);
+        internal static string PathDbTableUniqueStatus => Path.Combine(Root, DbUniqueStatus);
 
         /// <summary>
         ///     Gets the path database update.
@@ -192,7 +192,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database update.
         /// </value>
-        internal static string? PathDbUpdate => Path.Combine(Root, DbUpdate);
+        internal static string PathDbUpdate => Path.Combine(Root, DbUpdate);
 
         /// <summary>
         ///     Gets the path database advanced select.
@@ -200,7 +200,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database advanced select.
         /// </value>
-        public static string? PathDbAdvancedSelect => Path.Combine(Root, DbAdvancedSelect);
+        public static string PathDbAdvancedSelect => Path.Combine(Root, DbAdvancedSelect);
 
         /// <summary>
         ///     Gets the path database detach.
@@ -208,6 +208,6 @@ namespace CommonLibrarySqlLite.Tests
         /// <value>
         ///     The path database detach.
         /// </value>
-        public static string? PathDbDetach => Path.Combine(Root, DbDetach);
+        public static string PathDbDetach => Path.Combine(Root, DbDetach);
     }
 }

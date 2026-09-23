@@ -192,7 +192,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <param name="tableOne">Table One</param>
         /// <param name="tableTwo">Table Two</param>
         /// <returns>If Tables are equal or not</returns>
-        internal static bool CompareTableMultipleSet(List<TableSet> tableOne, List<TableSet> tableTwo)
+        internal static bool CompareTableMultipleSet(List<TableSet>? tableOne, List<TableSet>? tableTwo)
         {
             if (tableOne.Count != tableTwo.Count)
             {
@@ -218,7 +218,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <param name="pragma">Data we get from the Pragma</param>
         /// <param name="headers">Data we sent</param>
         /// <returns>If Tables are equal or not</returns>
-        internal static bool CheckPragmaTableInfo(DictionaryTableColumns pragma, DictionaryTableColumns headers)
+        internal static bool CheckPragmaTableInfo(DictionaryTableColumns? pragma, DictionaryTableColumns? headers)
         {
             if (pragma.DColumns.Count != headers.DColumns.Count)
             {

@@ -19,7 +19,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The table name (const). Value: "DeleteTest".
         /// </summary>
-        private const string TableName = "DeleteTest";
+        private const string? TableName = "DeleteTest";
 
         /// <summary>
         ///     The checking (const). Value: true.

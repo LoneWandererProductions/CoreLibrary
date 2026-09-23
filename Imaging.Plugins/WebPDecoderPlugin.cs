@@ -15,7 +15,7 @@ namespace Imaging.Plugins
     /// <summary>
     ///     Decodes WebP images using the lightweight Imazen.WebP micro-library.
     /// </summary>
-    public sealed class WebPDecoderPlugin : IImageDecoderPlugin
+    public sealed class WebPDecoderPlugin : IImageDecoderPlugin, IImageEncoderPlugin
     {
         /// <inheritdoc />
         public string Name => "WebP Decoder";
@@ -48,10 +48,29 @@ namespace Imaging.Plugins
         }
 
         /// <inheritdoc />
-        public Bitmap? Decode(byte[] data)
+        public Bitmap Decode(byte[] data)
         {
             var decoder = new SimpleDecoder();
             return decoder.DecodeFromBytes(data, data.Length);
+        }
+
+        /// <inheritdoc />
+        public void Encode(Bitmap? bitmap, string? path)
+        {
+            ArgumentNullException.ThrowIfNull(bitmap);
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("Path cannot be null, empty, or whitespace.", nameof(path));
+            }
+
+            var encoder = new SimpleEncoder();
+            using var stream = File.Create(path);
+
+            // Encode the bitmap to WebP.
+            // Die Qualität kann von 0 (schlechteste) bis 100 (beste, verlustbehaftet) gewählt werden. 
+            // -1 würde "Lossless" (verlustfrei) bedeuten.
+            encoder.Encode(bitmap, stream, 90);
         }
     }
 }

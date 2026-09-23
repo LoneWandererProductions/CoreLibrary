@@ -20,7 +20,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The CSV table
         /// </summary>
-        private const string CsvTable = "Csv";
+        private const string? CsvTable = "Csv";
 
         /// <summary>
         ///     The target (readonly). Value: new SqlLiteDatabase().

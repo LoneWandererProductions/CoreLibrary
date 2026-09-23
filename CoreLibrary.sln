@@ -121,6 +121,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imaging.Plugins.Interface",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imaging.Filter.Tests", "Imaging.Filter.Tests\Imaging.Filter.Tests.csproj", "{0545415A-5D26-FEF8-590F-1A5FD2FD27D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imaging.Plugins", "Imaging.Plugins\Imaging.Plugins.csproj", "{BC9992D8-9736-3F95-836B-E3B3B6CE9648}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -327,6 +329,10 @@ Global
 		{0545415A-5D26-FEF8-590F-1A5FD2FD27D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0545415A-5D26-FEF8-590F-1A5FD2FD27D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0545415A-5D26-FEF8-590F-1A5FD2FD27D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC9992D8-9736-3F95-836B-E3B3B6CE9648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC9992D8-9736-3F95-836B-E3B3B6CE9648}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC9992D8-9736-3F95-836B-E3B3B6CE9648}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC9992D8-9736-3F95-836B-E3B3B6CE9648}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

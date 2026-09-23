@@ -6,7 +6,6 @@
 * PROGRAMMER:  Peter Geinitz (Wayfarer)
 */
 
-using Extended.Extensions;
 using System.Collections.Concurrent;
 using System.Drawing;
 
@@ -32,31 +31,32 @@ namespace Imaging.Compare
         {
             using var scaled = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
-            int size = ImageResources.DuplicateSize;
-            int totalPixels = size * size;
+            var size = ImageResources.DuplicateSize;
+            var totalPixels = size * size;
             var imageBytes = new byte[totalPixels];
 
             var rect = new Rectangle(0, 0, size, size);
-            var bmpData = scaled.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmpData = scaled.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             double rSum = 0, gSum = 0, bSum = 0;
 
             unsafe
             {
-                byte* ptr = (byte*)bmpData.Scan0;
-                int stride = bmpData.Stride;
+                var ptr = (byte*)bmpData.Scan0;
+                var stride = bmpData.Stride;
 
-                for (int y = 0; y < size; y++)
+                for (var y = 0; y < size; y++)
                 {
-                    byte* row = ptr + (y * stride);
-                    for (int x = 0; x < size; x++)
+                    var row = ptr + (y * stride);
+                    for (var x = 0; x < size; x++)
                     {
-                        int pixelIdx = x * 4;
-                        byte b = row[pixelIdx];
-                        byte g = row[pixelIdx + 1];
-                        byte r = row[pixelIdx + 2];
+                        var pixelIdx = x * 4;
+                        var b = row[pixelIdx];
+                        var g = row[pixelIdx + 1];
+                        var r = row[pixelIdx + 2];
 
-                        byte gray = (byte)(r * 0.299 + g * 0.587 + b * 0.114);
+                        var gray = (byte)(r * 0.299 + g * 0.587 + b * 0.114);
                         imageBytes[y * size + x] = gray;
 
                         rSum += r * 0.299;
@@ -93,12 +93,12 @@ namespace Imaging.Compare
 
             ReadOnlySpan<byte> img1 = imageToCompareTo.Image;
             ReadOnlySpan<byte> img2 = targetBitmap.Image;
-            int threshold = ImageResources.ColorThreshold;
-            int diff = 0;
+            var threshold = ImageResources.ColorThreshold;
+            var diff = 0;
 
-            int length = Math.Min(img1.Length, img2.Length);
+            var length = Math.Min(img1.Length, img2.Length);
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 if (Math.Abs(img1[i] - img2[i]) <= threshold)
                 {
@@ -106,11 +106,14 @@ namespace Imaging.Compare
                 }
             }
 
-            float pixel = (float)diff / ImageResources.MaxPixel * 100f;
+            var pixel = (float)diff / ImageResources.MaxPixel * 100f;
 
-            float color = ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) / (float)ImageResources.MaxColor +
-                           (ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) / (float)ImageResources.MaxColor +
-                           (ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) / (float)ImageResources.MaxColor) / 3f * 100f;
+            var color = ((ImageResources.MaxColor - Math.Abs(imageToCompareTo.R - targetBitmap.R)) /
+                         (float)ImageResources.MaxColor +
+                         (ImageResources.MaxColor - Math.Abs(imageToCompareTo.G - targetBitmap.G)) /
+                         (float)ImageResources.MaxColor +
+                         (ImageResources.MaxColor - Math.Abs(imageToCompareTo.B - targetBitmap.B)) /
+                         (float)ImageResources.MaxColor) / 3f * 100f;
 
             return (pixel + color) / 2f;
         }
@@ -134,7 +137,7 @@ namespace Imaging.Compare
             // Process sequentially when candidate list is small to prevent thread contention
             if (images.Count < 64)
             {
-                for (int i = 0; i < images.Count; i++)
+                for (var i = 0; i < images.Count; i++)
                 {
                     if (GetPercentageDifference(images[i], imageToCompareTo) >= maximumDifferenceInPercentage)
                     {

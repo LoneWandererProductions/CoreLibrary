@@ -15,7 +15,7 @@ namespace Common.Images
     /// <summary>
     ///     Texture config Window
     /// </summary>
-    public sealed partial class TextureConfigControl : UserControl
+    public sealed partial class TextureConfigControl
     {
         /// <summary>
         /// The view model

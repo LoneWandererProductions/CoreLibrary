@@ -83,7 +83,7 @@ namespace Debugger
         ///     Gets the color options.
         /// </summary>
         /// <returns>List of Color Options</returns>
-        internal List<ColorOption>? GetColorOptions()
+        internal List<ColorOption> GetColorOptions()
         {
             return _filterOption.Values.Select(option => option.GetOption()).ToList();
         }

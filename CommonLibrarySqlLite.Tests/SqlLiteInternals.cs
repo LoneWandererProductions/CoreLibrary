@@ -20,17 +20,17 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The table one (const). Value: "First".
         /// </summary>
-        private const string TableOne = "First";
+        private const string? TableOne = "First";
 
         /// <summary>
         ///     The table two (const). Value: "Second".
         /// </summary>
-        private const string TableTwo = "Second";
+        private const string? TableTwo = "Second";
 
         /// <summary>
         ///     The table three (const). Value: "Third".
         /// </summary>
-        private const string TableThree = "Third";
+        private const string? TableThree = "Third";
 
         /// <summary>
         ///     The target (readonly). Value: new SqlLiteDatabase().

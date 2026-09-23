@@ -104,7 +104,7 @@ namespace Core.Apps
         /// Gets all analyzers.
         /// </summary>
         /// <returns>All Code Analyzers</returns>
-        public static IReadOnlyList<ICodeAnalyzer>? GetAllAnalyzers()
+        public static IReadOnlyList<ICodeAnalyzer> GetAllAnalyzers()
         {
             ICodeAnalyzer[] modules =
             {

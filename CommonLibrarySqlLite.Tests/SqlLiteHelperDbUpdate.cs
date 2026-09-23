@@ -22,12 +22,12 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The tbl name (const). Value: "newOne".
         /// </summary>
-        private const string TblName = "newOne";
+        private const string? TblName = "newOne";
 
         /// <summary>
         ///     The frst header (const). Value: "First".
         /// </summary>
-        private const string FirstHeader = "First";
+        private const string? FirstHeader = "First";
 
         /// <summary>
         ///     The target (readonly). Value: new SqlLiteDatabase().

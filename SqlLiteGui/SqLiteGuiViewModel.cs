@@ -9,6 +9,7 @@
 // ReSharper disable MemberCanBeInternal
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using DataFormatter;
@@ -47,7 +48,7 @@ namespace SQLiteGui
         /// <value>
         ///     The database information view model.
         /// </value>
-        public DbInfoViewModel DbInfoViewModel { get; }
+        public DbInfoViewModel? DbInfoViewModel { get; }
 
         /// <summary>
         ///     Gets the data overview view model.
@@ -180,12 +181,15 @@ namespace SQLiteGui
 
             try
             {
-                var csvData = CsvHandler.ReadCsv(csvFilePath, ',');
-                if (csvData != null)
+                List<List<string?>>? csvData = CsvHandler.ReadCsv(csvFilePath, ',');
+
+                if (csvData == null)
                 {
-                    var check = SqLiteGuiProcessing.LoadCsv(csvData);
-                    MessageBox.Show(check ? "CSV Imported Successfully!" : "Error Importing CSV.");
+                    return;
                 }
+
+                var check = SqLiteGuiProcessing.LoadCsv(csvData);
+                MessageBox.Show(check ? "CSV Imported Successfully!" : "Error Importing CSV.");
             }
             catch (Exception ex)
             {

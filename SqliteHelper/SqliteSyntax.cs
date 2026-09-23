@@ -20,18 +20,18 @@ namespace SqliteHelper
         /// <summary>
         ///     Send our Message to the Subscribers
         /// </summary>
-        private readonly Action<MessageItem>? _onMessage;
+        private readonly Action<MessageItem?>? _onMessage;
 
         /// <summary>
         ///     Logging of System Messages
         /// </summary>
-        private MessageItem _message;
+        private MessageItem? _message;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SqliteSyntax" /> class.
         /// </summary>
         /// <param name="onMessage">The action to invoke when a message is set.</param>
-        public SqliteSyntax(Action<MessageItem>? onMessage = null)
+        public SqliteSyntax(Action<MessageItem?>? onMessage = null)
         {
             _onMessage = onMessage;
         }
@@ -47,7 +47,7 @@ namespace SqliteHelper
         internal bool AdvancedSyntaxCheck(
             Dictionary<string, TableColumns> tableInfo,
             TableSet row,
-            IEnumerable<TableSet> batch)
+            IEnumerable<TableSet>? batch)
         {
             // Sanity Check: Do the column counts match?
             if (tableInfo.Count != row.Row.Count)
@@ -136,7 +136,7 @@ namespace SqliteHelper
         /// <param name="batch">The full batch of rows.</param>
         /// <returns>True if unique in batch</returns>
         private bool CheckBatchUniqueness(string value, int columnIndex, TableColumns convert,
-            IEnumerable<TableSet> batch)
+            IEnumerable<TableSet>? batch)
         {
             // Only check if it is a Primary Key or explicitly Unique
             if (!convert.PrimaryKey && !convert.Unique)

@@ -28,7 +28,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Name of the Last selected Table
         /// </summary>
-        internal static string TableAlias { get; set; }
+        internal static string? TableAlias { get; set; }
 
         /// <summary>
         ///     Table Details
@@ -38,7 +38,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Provide a Unique Index if we have one
         /// </summary>
-        internal static string PrimaryKey { get; private set; }
+        internal static string? PrimaryKey { get; private set; }
 
         /// <summary>
         ///     Gets or sets the information.
@@ -46,14 +46,14 @@ namespace SQLiteGui
         /// <value>
         ///     The information.
         /// </value>
-        public static DbInfoViewModel Info { get; set; }
+        public static DbInfoViewModel? Info { get; set; }
 
         /// <summary>
         ///     Get Item by Column Header
         /// </summary>
         /// <param name="item">Column Header Name</param>
         /// <returns>Selected Value</returns>
-        public static string PrimaryKeyItem(string item)
+        public static string? PrimaryKeyItem(string item)
         {
             if (TblItem == null)
             {
@@ -80,7 +80,7 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <param name="uniqueIndex">Unique Index if it exists, else empty String</param>
-        internal static void SelectedTable(string tableAlias, string uniqueIndex)
+        internal static void SelectedTable(string? tableAlias, string uniqueIndex)
         {
             PrimaryKey = uniqueIndex;
             TableAlias = tableAlias;

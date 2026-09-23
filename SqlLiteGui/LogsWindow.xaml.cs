@@ -21,17 +21,17 @@ namespace SQLiteGui
         /// <summary>
         ///     The list errors (readonly).
         /// </summary>
-        private readonly List<string> _listErrors;
+        private readonly List<string>? _listErrors;
 
         /// <summary>
         ///     The log file (readonly).
         /// </summary>
-        private readonly List<string> _logFile;
+        private readonly List<string>? _logFile;
 
         /// <summary>
         ///     The title (readonly).
         /// </summary>
-        private readonly string _title;
+        private readonly string? _title;
 
         /// <inheritdoc />
         /// <summary>
@@ -49,7 +49,7 @@ namespace SQLiteGui
         /// <param name="title">The title.</param>
         /// <param name="listErrors">The list Errors.</param>
         /// <param name="logFile">The log File.</param>
-        public LogsWindow(string title, List<string> listErrors, List<string> logFile)
+        public LogsWindow(string? title, List<string>? listErrors, List<string>? logFile)
         {
             InitializeComponent();
             _title = title;

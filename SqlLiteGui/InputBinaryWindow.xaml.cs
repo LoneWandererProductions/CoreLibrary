@@ -29,7 +29,7 @@ namespace SQLiteGui
         /// <summary>
         ///     The first value (readonly).
         /// </summary>
-        private readonly string _firstValue;
+        private readonly string? _firstValue;
 
         /// <summary>
         ///     The second (readonly).
@@ -44,7 +44,7 @@ namespace SQLiteGui
         /// <summary>
         ///     The binary.
         /// </summary>
-        private Binary _binary;
+        private Binary? _binary;
 
         /// <inheritdoc />
         /// <summary>
@@ -82,7 +82,7 @@ namespace SQLiteGui
         /// <param name="first">First Input Label</param>
         /// <param name="second">Second Input Label</param>
         /// <param name="firstValue">Set First Value</param>
-        internal InputBinaryWindow(string title, string description, string first, string second, string firstValue)
+        internal InputBinaryWindow(string title, string description, string first, string second, string? firstValue)
         {
             InitializeComponent();
 

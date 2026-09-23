@@ -32,7 +32,7 @@ namespace Core.Apps.Development
         private readonly IVariableRegistry _variables;
 
         /// <inheritdoc />
-        public string? CurrentRegistryKey => "project_map";
+        public string CurrentRegistryKey => "project_map";
 
         /// <inheritdoc />
         public EnumTypes DataType => EnumTypes.Wobject;

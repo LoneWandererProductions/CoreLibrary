@@ -111,12 +111,13 @@ namespace Imaging.Compare
                     if (visited.Contains(item.Id)) continue;
 
                     var cache = ImageProcessing.FindSimilarImages(item, duplicates, threshold);
-                    if (cache != null && cache.Count > 1)
+                    if (cache is { Count: > 1 })
                     {
                         foreach (var matched in cache)
                         {
                             visited.Add(matched.Id);
                         }
+
                         groups.Add(cache);
                     }
                 }
@@ -254,20 +255,20 @@ namespace Imaging.Compare
             {
                 var (kx, ky, kz) = KeyOf(items[i]);
                 for (var dx = -1; dx <= 1; dx++)
-                    for (var dy = -1; dy <= 1; dy++)
-                        for (var dz = -1; dz <= 1; dz++)
-                        {
-                            if (!buckets.TryGetValue((kx + dx, ky + dy, kz + dz), out var neighborIndices)) continue;
+                for (var dy = -1; dy <= 1; dy++)
+                for (var dz = -1; dz <= 1; dz++)
+                {
+                    if (!buckets.TryGetValue((kx + dx, ky + dy, kz + dz), out var neighborIndices)) continue;
 
-                            foreach (var j in neighborIndices)
-                            {
-                                // j <= i: every unordered pair is only ever checked once,
-                                // from whichever side visits it second.
-                                if (j <= i) continue;
+                    foreach (var j in neighborIndices)
+                    {
+                        // j <= i: every unordered pair is only ever checked once,
+                        // from whichever side visits it second.
+                        if (j <= i) continue;
 
-                                if (items[i].Equals(items[j])) Union(i, j);
-                            }
-                        }
+                        if (items[i].Equals(items[j])) Union(i, j);
+                    }
+                }
             }
 
             var groups = new Dictionary<int, List<ImageSimilar>>();

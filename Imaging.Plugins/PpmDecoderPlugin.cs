@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Plugins
  * FILE:        PpmDecoderPlugin.cs
@@ -27,7 +27,7 @@ namespace Imaging.Plugins
     ///     it - the host already has it loaded), and open a .ppm file. No change
     ///     to SlimViewer itself is needed for that to work.
     /// </remarks>
-    public sealed class PpmDecoderPlugin : IImageDecoderPlugin
+    public sealed class PpmDecoderPlugin : IImageDecoderPlugin, IImageEncoderPlugin
     {
         /// <inheritdoc />
         public string Name => "PPM (Netpbm P6) decoder";
@@ -96,7 +96,7 @@ namespace Imaging.Plugins
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Normal Bitmap</returns>
-        private static Bitmap? ToBitmap(byte[] rgb, int width, int height)
+        private static Bitmap ToBitmap(byte[] rgb, int width, int height)
         {
             var bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
             var bits = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly,
@@ -195,6 +195,60 @@ namespace Imaging.Plugins
             }
 
             return token.ToString();
+        }
+
+        /// <inheritdoc />
+        public void Encode(Bitmap? bitmap, string? path)
+        {
+            ArgumentNullException.ThrowIfNull(bitmap);
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("Path cannot be null, empty, or whitespace.", nameof(path));
+            }
+
+            using var fileStream = File.Create(path);
+
+            // Write Netpbm binary PPM (P6) header: "P6\n<width> <height>\n255\n"
+            var header = $"P6\n{bitmap.Width} {bitmap.Height}\n255\n";
+            var headerBytes = Encoding.ASCII.GetBytes(header);
+            fileStream.Write(headerBytes, 0, headerBytes.Length);
+
+            var width = bitmap.Width;
+            var height = bitmap.Height;
+            var rowBytes = width * 3;
+
+            // Lock bitmap bits into 24bpp RGB format (GDI+ will convert if bitmap is 32bpp, indexed, etc.)
+            var rect = new Rectangle(0, 0, width, height);
+            var bits = bitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+
+            try
+            {
+                var bgrRow = new byte[rowBytes];
+                var rgbRow = new byte[rowBytes];
+
+                for (var y = 0; y < height; y++)
+                {
+                    // Copy one scan line from native memory to managed byte array
+                    var rowPtr = IntPtr.Add(bits.Scan0, y * bits.Stride);
+                    Marshal.Copy(rowPtr, bgrRow, 0, rowBytes);
+
+                    // Swap BGR (GDI+) to RGB (Netpbm standard)
+                    for (var x = 0; x < width; x++)
+                    {
+                        var idx = x * 3;
+                        rgbRow[idx] = bgrRow[idx + 2]; // Red
+                        rgbRow[idx + 1] = bgrRow[idx + 1]; // Green
+                        rgbRow[idx + 2] = bgrRow[idx]; // Blue
+                    }
+
+                    fileStream.Write(rgbRow, 0, rowBytes);
+                }
+            }
+            finally
+            {
+                bitmap.UnlockBits(bits);
+            }
         }
     }
 }

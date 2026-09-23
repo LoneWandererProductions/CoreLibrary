@@ -22,7 +22,7 @@ namespace SqliteHelper
         /// <param name="csv">The CSV.</param>
         /// <param name="headers">if set to <c>true</c> [headers].</param>
         /// <returns>Table Set</returns>
-        public static List<TableSet>? LoadCsv(List<List<string>> csv, bool headers)
+        public static List<TableSet>? LoadCsv(List<List<string?>>? csv, bool headers)
         {
             var cache = new List<List<string>>(csv);
 
@@ -49,7 +49,7 @@ namespace SqliteHelper
         /// <param name="table">The table.</param>
         /// <param name="info">The information.</param>
         /// <returns>Csv ready Format</returns>
-        public static List<List<string>>? ExportCsv(DataSet table, DictionaryTableColumns info)
+        public static List<List<string>>? ExportCsv(DataSet? table, DictionaryTableColumns? info)
         {
             if (table == null)
             {
@@ -72,7 +72,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="table">The table.</param>
         /// <returns>Csv ready Format</returns>
-        internal static List<List<string>>? ExportCsv(DataSet table)
+        internal static List<List<string>>? ExportCsv(DataSet? table)
         {
             return table == null ? null : Converge(table);
         }
@@ -82,7 +82,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="table">The table.</param>
         /// <returns>Read into new Format</returns>
-        private static List<List<string>> Converge(DataSet table)
+        private static List<List<string>> Converge(DataSet? table)
         {
             var lst = new List<List<string>>(table.Row.Count);
             lst.AddRange(table.Row.Select(row => row.Row.ToList()));

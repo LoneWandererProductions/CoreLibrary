@@ -23,7 +23,7 @@ namespace SqliteHelper
         /// </summary>
         public TableSet()
         {
-            Row = new List<string>();
+            Row = new List<string?>();
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace SqliteHelper
         /// <param name="lst">The list.</param>
         public TableSet(IEnumerable<string> lst)
         {
-            Row = new List<string>(lst);
+            Row = new List<string?>(lst);
         }
 
         /// <summary>

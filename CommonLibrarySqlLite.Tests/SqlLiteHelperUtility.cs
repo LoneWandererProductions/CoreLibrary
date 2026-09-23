@@ -173,7 +173,6 @@ namespace CommonLibrarySqlLite.Tests
             var path = Directory.GetCurrentDirectory() + @"\SqlLiteDB.db";
             //cleanup
             SharedHelperClass.CleanUp(path);
-
             var tst = new TstObj();
             var cache = _util.ConvertObjectToTableColumns(tst);
 
@@ -271,7 +270,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <param name="db">Data Table Info</param>
         /// <param name="data">Selected </param>
         /// <returns>The <see cref="bool" />.</returns>
-        private static bool CheckResultsConvertToTableRowOrder(IReadOnlyList<string> db, IReadOnlyList<string> data)
+        private static bool CheckResultsConvertToTableRowOrder(IReadOnlyList<string?> db, IReadOnlyList<string> data)
         {
             Trace.WriteLine("0: " + db[0] + " " + data[0]);
             Trace.WriteLine("1: " + db[1] + " " + data[1]);

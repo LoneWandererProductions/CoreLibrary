@@ -70,19 +70,19 @@ namespace SqliteHelper
         /// <summary>
         ///     Send the Message to the Outside World
         /// </summary>
-        public EventHandler<string> SendMessage { get; set; }
+        public EventHandler<string>? SendMessage { get; set; }
 
         /// <inheritdoc />
         /// <summary>
         ///     Gets the Last Errors.
         /// </summary>
-        public string LastErrors => MessageHandling.LastError;
+        public string? LastErrors => MessageHandling.LastError;
 
         /// <inheritdoc />
         /// <summary>
         ///     Gets the List Errors.
         /// </summary>
-        public List<string> ListErrors => MessageHandling.ListError;
+        public List<string>? ListErrors => MessageHandling.ListError;
 
         /// <inheritdoc />
         /// <summary>
@@ -132,7 +132,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Returns all Activities
         /// </summary>
-        public List<string> LogFile => MessageHandling.LogFile;
+        public List<string>? LogFile => MessageHandling.LogFile;
 
         /// <inheritdoc />
         /// <summary>
@@ -208,7 +208,7 @@ namespace SqliteHelper
         /// <param name="location">local Table</param>
         /// <param name="target">Target Table</param>
         /// <returns>Copies one Table to another</returns>
-        public bool CopyTable(string location, string target)
+        public bool CopyTable(string? location, string? target)
         {
             var set = SimpleSelect(location);
             return CopyTable(location, target, set?.Row);
@@ -225,7 +225,7 @@ namespace SqliteHelper
         /// <param name="target">Target Table</param>
         /// <param name="tableHeaders">Specified sub segment of the data</param>
         /// <returns>Copies one Table to another</returns>
-        public bool CopyTable(string location, string target, List<TableSet> tableHeaders)
+        public bool CopyTable(string? location, string? target, List<TableSet>? tableHeaders)
         {
             var pragma = Pragma_TableInfo(location);
             var check = CreateTable(target, pragma);
@@ -251,7 +251,7 @@ namespace SqliteHelper
         /// <param name="tblName">Name of the database</param>
         /// <param name="tblNameNew">New Name of the Database</param>
         /// <returns>Operation Success</returns>
-        public bool RenameTable(string tblName, string tblNameNew)
+        public bool RenameTable(string? tblName, string? tblNameNew)
         {
             return _execute.RenameTable(tblName, tblNameNew);
         }
@@ -299,7 +299,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Operation Success</returns>
-        public bool CheckIfDatabaseTableExists(string tableAlias)
+        public bool CheckIfDatabaseTableExists(string? tableAlias)
         {
             return _execute.CheckIfDatabaseTableExists(tableAlias);
         }
@@ -310,7 +310,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Operation Success</returns>
-        public bool DropTable(string tableAlias)
+        public bool DropTable(string? tableAlias)
         {
             return _execute.DropTable(tableAlias);
         }
@@ -321,7 +321,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Operation Success</returns>
-        public bool TruncateTable(string tableAlias)
+        public bool TruncateTable(string? tableAlias)
         {
             return _execute.TruncateTable(tableAlias);
         }
@@ -333,7 +333,7 @@ namespace SqliteHelper
         /// <param name="tableAlias">Name of the Table</param>
         /// <param name="tableHeaders">Name of the Table Headers</param>
         /// <returns>Operation Success</returns>
-        public bool CreateTable(string tableAlias, DictionaryTableColumns tableHeaders)
+        public bool CreateTable(string? tableAlias, DictionaryTableColumns? tableHeaders)
         {
             return _execute.CreateTable(tableAlias, tableHeaders);
         }
@@ -349,7 +349,7 @@ namespace SqliteHelper
         /// <param name="value">string value</param>
         /// <param name="obj">Object we want to update</param>
         /// <returns>Count of rows updated</returns>
-        public int UpdateTable(string tableAlias, CompareOperator operators, string where, string value, object obj)
+        public int UpdateTable(string? tableAlias, CompareOperator operators, string? where, string? value, object obj)
         {
             var lst = _util.ConvertObjectToAttributes(obj);
             return _execute.UpdateTable(tableAlias, operators, where, value, lst);
@@ -366,7 +366,7 @@ namespace SqliteHelper
         /// <param name="value">string value</param>
         /// <param name="lst">List of values we want to update</param>
         /// <returns>Count of rows updated</returns>
-        public int UpdateTable(string tableAlias, CompareOperator operators, string where, string value,
+        public int UpdateTable(string? tableAlias, CompareOperator operators, string? where, string? value,
             List<string> lst)
         {
             return _execute.UpdateTable(tableAlias, operators, where, value, lst);
@@ -380,7 +380,7 @@ namespace SqliteHelper
         /// <param name="row">Single Entry</param>
         /// <param name="checking">Shall the Insert be checked</param>
         /// <returns>Operation Success</returns>
-        public bool InsertSingleRow(string tableAlias, TableSet row, bool checking)
+        public bool InsertSingleRow(string? tableAlias, TableSet row, bool checking)
         {
             var table = new List<TableSet> { row };
             return _execute.InsertMultipleRow(tableAlias, table, checking);
@@ -394,7 +394,7 @@ namespace SqliteHelper
         /// <param name="where">Name of the column</param>
         /// <param name="value">Value</param>
         /// <returns>Rows deleted</returns>
-        public int DeleteRows(string tableAlias, string where, string value)
+        public int DeleteRows(string? tableAlias, string? where, string? value)
         {
             return _execute.DeleteRows(tableAlias, where, value);
         }
@@ -407,7 +407,7 @@ namespace SqliteHelper
         /// <param name="rows">Multiple Entries</param>
         /// <param name="checking">Shall the Insert be checked</param>
         /// <returns>Operation Success</returns>
-        public bool InsertMultipleRow(string tableAlias, List<TableSet> rows, bool checking)
+        public bool InsertMultipleRow(string? tableAlias, List<TableSet>? rows, bool checking)
         {
             return _execute.InsertMultipleRow(tableAlias, rows, checking);
         }
@@ -420,7 +420,7 @@ namespace SqliteHelper
         /// <param name="column">Column Name</param>
         /// <param name="indexName">Name of the index</param>
         /// <returns>Operation Success</returns>
-        public bool CreateUniqueIndex(string tableAlias, string column, string indexName)
+        public bool CreateUniqueIndex(string? tableAlias, string column, string indexName)
         {
             return _execute.CreateUniqueIndex(tableAlias, column, indexName);
         }
@@ -442,7 +442,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Dictionary with Name of the Column as Key and all Information about the Column as Value</returns>
-        public DictionaryTableColumns Pragma_TableInfo(string tableAlias)
+        public DictionaryTableColumns Pragma_TableInfo(string? tableAlias)
         {
             return _execute.PragmaTable_Info(tableAlias);
         }
@@ -453,7 +453,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>List of Columns that are PrimaryKey</returns>
-        public List<string> Primary_Key_list(string tableAlias)
+        public List<string> Primary_Key_list(string? tableAlias)
         {
             var dct = _execute.PragmaTable_Info(tableAlias);
 
@@ -466,7 +466,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>List of Names of all Table Headers with the Unique Property</returns>
-        public List<string>? Pragma_index_list(string tableAlias)
+        public List<string>? Pragma_index_list(string? tableAlias)
         {
             return _execute.Pragma_index_list(tableAlias);
         }
@@ -476,7 +476,7 @@ namespace SqliteHelper
         ///     Returns a List of Table Names
         /// </summary>
         /// <returns>Name of all Tables</returns>
-        public List<string> GetTables()
+        public List<string>? GetTables()
         {
             return _execute.GetTables();
         }
@@ -487,7 +487,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Must Name of Table</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        public DataSet SimpleSelect(string tableAlias)
+        public DataSet? SimpleSelect(string? tableAlias)
         {
             return _execute.SimpleSelect(tableAlias);
         }
@@ -499,7 +499,7 @@ namespace SqliteHelper
         /// <param name="tableAlias">Must Name of Table</param>
         /// <param name="headers">Optional, select over specific headers</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        public DataSet SimpleSelect(string tableAlias, List<string> headers)
+        public DataSet? SimpleSelect(string? tableAlias, List<string>? headers)
         {
             return _execute.SimpleSelect(headers, tableAlias);
         }
@@ -513,7 +513,7 @@ namespace SqliteHelper
         /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
         /// <param name="whereValue">Compare to</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        public DataSet SimpleSelect(string tableAlias, string where, CompareOperator operators, string whereValue)
+        public DataSet? SimpleSelect(string? tableAlias, string? where, CompareOperator operators, string? whereValue)
         {
             return _execute.SimpleSelect(tableAlias, where, operators, whereValue);
         }
@@ -528,8 +528,8 @@ namespace SqliteHelper
         /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
         /// <param name="whereValue">Compare to</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        public DataSet SimpleSelect(string tableAlias, List<string> headers,
-            string where, CompareOperator operators, string whereValue)
+        public DataSet? SimpleSelect(string? tableAlias, List<string>? headers,
+            string? where, CompareOperator operators, string? whereValue)
         {
             return _execute.SimpleSelect(headers, tableAlias, where, operators, whereValue);
         }
@@ -545,8 +545,8 @@ namespace SqliteHelper
         /// <param name="whereValue">Compare to</param>
         /// <param name="oderBy">Optional, order by header</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        public DataSet SimpleSelect(string tableAlias, List<string> headers,
-            string where, CompareOperator operators, string whereValue, string oderBy)
+        public DataSet? SimpleSelect(string? tableAlias, List<string>? headers,
+            string? where, CompareOperator operators, string? whereValue, string oderBy)
         {
             return _execute.SimpleSelect(headers, tableAlias, oderBy, where, operators, whereValue);
         }
@@ -559,7 +559,7 @@ namespace SqliteHelper
         /// <param name="whereValue">Optional, where by table row</param>
         /// <param name="inClause">All in specifics</param>
         /// <returns>v, results as string</returns>
-        public DataSet SelectIn(string tableAlias, string whereValue, List<string> inClause)
+        public DataSet? SelectIn(string? tableAlias, string? whereValue, List<string> inClause)
         {
             return _execute.SelectIn(tableAlias, null, whereValue, inClause, null);
         }
@@ -573,7 +573,7 @@ namespace SqliteHelper
         /// <param name="whereValue">Optional, where by table row</param>
         /// <param name="inClause">All in specifics</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        public DataSet SelectIn(string tableAlias, List<string> headers, string whereValue, List<string> inClause)
+        public DataSet? SelectIn(string? tableAlias, List<string>? headers, string? whereValue, List<string> inClause)
         {
             return _execute.SelectIn(tableAlias, headers, whereValue, inClause, null);
         }
@@ -588,8 +588,8 @@ namespace SqliteHelper
         /// <param name="inClause">All in specifics</param>
         /// <param name="oderBy">Optional, order by header</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        public DataSet SelectIn(string tableAlias, List<string> headers, string whereValue, List<string> inClause,
-            string oderBy)
+        public DataSet? SelectIn(string? tableAlias, List<string>? headers, string? whereValue, List<string> inClause,
+            string? oderBy)
         {
             return _execute.SelectIn(tableAlias, headers, whereValue, inClause, oderBy);
         }
@@ -606,7 +606,7 @@ namespace SqliteHelper
         /// <returns>
         ///     Loads the csv File into an existing Database
         /// </returns>
-        public bool LoadCsv(string tableAlias, DictionaryTableColumns tableHeaders, List<List<string>> csv,
+        public bool LoadCsv(string? tableAlias, DictionaryTableColumns? tableHeaders, List<List<string>>? csv,
             bool headers)
         {
             if (csv == null || csv.Count == 0)
@@ -634,7 +634,7 @@ namespace SqliteHelper
         /// <returns>
         ///     Loads the csv File into an existing Database
         /// </returns>
-        public bool LoadCsv(string tableAlias, List<List<string>> csv, bool headers)
+        public bool LoadCsv(string? tableAlias, List<List<string?>>? csv, bool headers)
         {
             if (csv == null || csv.Count == 0)
             {
@@ -643,11 +643,6 @@ namespace SqliteHelper
             }
 
             var tableHeaders = CreateTableHeaders(csv, headers);
-            if (tableHeaders == null)
-            {
-                // Log or handle failure in creating headers
-                return false;
-            }
 
             // Create the table based on inferred headers
             var tableCreated = _execute.CreateTable(tableAlias, tableHeaders);
@@ -671,7 +666,7 @@ namespace SqliteHelper
         /// <returns>
         ///     List of Lines, that should be converted into a csv
         /// </returns>
-        public List<List<string>>? ExportCvs(string tableAlias, bool headers)
+        public List<List<string>>? ExportCvs(string? tableAlias, bool headers)
         {
             var table = _execute.SimpleSelect(tableAlias);
             var info = _execute.PragmaTable_Info(tableAlias);
@@ -715,7 +710,7 @@ namespace SqliteHelper
         /// <param name="csv">The CSV.</param>
         /// <param name="headers">if set to <c>true</c> [headers].</param>
         /// <returns>DictionaryTableColumns extraction.</returns>
-        private static DictionaryTableColumns CreateTableHeaders(IList<List<string>> csv, bool headers)
+        private static DictionaryTableColumns CreateTableHeaders(IList<List<string?>>? csv, bool headers)
         {
             var tableHeaders = new DictionaryTableColumns();
 

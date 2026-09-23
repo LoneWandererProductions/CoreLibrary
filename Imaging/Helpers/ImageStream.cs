@@ -108,7 +108,7 @@ namespace Imaging.Helpers
         ///     The Image as <see cref="Bitmap" />.
         /// </returns>
         /// <exception cref="IOException">File not Found</exception>
-        internal static Bitmap? LoadBitmapFromFile(string? path)
+        internal static Bitmap LoadBitmapFromFile(string? path)
         {
             ImageHelper.ValidateFilePath(path);
 
@@ -178,7 +178,7 @@ namespace Imaging.Helpers
         /// <exception cref="ArgumentNullException">if Image is null</exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InsufficientMemoryException"></exception>
-        internal static Bitmap? BitmapScaling(Bitmap? image, int width, int height)
+        internal static Bitmap BitmapScaling(Bitmap? image, int width, int height)
         {
             ImageHelper.ValidateImage(nameof(BitmapScaling), image);
 
@@ -357,7 +357,7 @@ namespace Imaging.Helpers
         /// <param name="width">The width.</param>
         /// <returns>The cut Image</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        internal static Bitmap? CutBitmap(Bitmap? image, int x, int y, int height, int width)
+        internal static Bitmap CutBitmap(Bitmap? image, int x, int y, int height, int width)
         {
             ImageHelper.ValidateImage(nameof(CutBitmap), image);
 
@@ -776,7 +776,7 @@ namespace Imaging.Helpers
         /// <param name="radius">The radius.</param>
         /// <returns>The Changed Image</returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        internal static Bitmap? SetPixel(Bitmap? image, Point point, Color color, int radius)
+        internal static Bitmap SetPixel(Bitmap? image, Point point, Color color, int radius)
         {
             ImageHelper.ValidateImage(nameof(SetPixel), image);
 

@@ -669,21 +669,18 @@ namespace Common.Images
                 // ImageStream.GetBitmapImageFileStreamAsync, which now does its file read with
                 // ReadAllBytesAsync instead of a blocking File.ReadAllBytes, so each occupied
                 // thread is held only for the actual decode, not the disk wait too.
-                await Parallel.ForEachAsync(pics, new ParallelOptions
-                {
-                    MaxDegreeOfParallelism = 4,
-                    CancellationToken = token
-                }, async (kv, ct) =>
-                {
-                    try
+                await Parallel.ForEachAsync(pics,
+                    new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = token }, async (kv, ct) =>
                     {
-                        await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
-                    }
-                });
+                        try
+                        {
+                            await LoadSingleImage(kv.Key, kv.Value, exGrid, ct, cellSize, thumbWidth);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            // Silently handle cancellations bubbling up from Dispatcher.InvokeAsync
+                        }
+                    });
 
                 // Re-pack once every thumbnail is in: individual late arrivals were already hidden
                 // above as they loaded, but only a full pass over the finished set can move the

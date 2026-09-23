@@ -19,17 +19,17 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The Table name (const). Value: "First_Select".
         /// </summary>
-        private const string TblName = "First_Select";
+        private const string? TblName = "First_Select";
 
         /// <summary>
         ///     The Table name renamed (const). Value: "Second_Select".
         /// </summary>
-        private const string TblNameRenamed = "Second_Select";
+        private const string? TblNameRenamed = "Second_Select";
 
         /// <summary>
         ///     The First header (const). Value: "First".
         /// </summary>
-        private const string FrstHeader = "First";
+        private const string? FrstHeader = "First";
 
         /// <summary>
         ///     The Second header (const). Value: "Second".
@@ -91,7 +91,7 @@ namespace CommonLibrarySqlLite.Tests
             Assert.IsTrue(check, "Test not passed Select Compare: " + _target.LastErrors);
 
             //select only specific headers
-            var lst = new List<string> { FrstHeader };
+            var lst = new List<string?> { FrstHeader };
             cache = _target.SimpleSelect(TblName, lst);
 
             Assert.AreEqual(1, cache.Width,
@@ -160,7 +160,7 @@ namespace CommonLibrarySqlLite.Tests
             Assert.AreEqual("39", item, "Test not passed Get Value of Cell: " + item);
 
             //now for the real deal multiple where Clause
-            var lst = new List<string> { FrstHeader };
+            var lst = new List<string?> { FrstHeader };
             cache = _target.SimpleSelect(TblName, lst, FrstHeader, CompareOperator.Equal, "0");
             Assert.AreEqual(1, cache.Height, "Test not passed Get Dimension Height: " + cache.Height);
             Assert.AreEqual(1, cache.Width, "Test not passed Get Dimension Width: " + cache.Width);
@@ -209,7 +209,7 @@ namespace CommonLibrarySqlLite.Tests
             //check our custom Object
             var lst = new List<string> { "0" };
 
-            var headers = new List<string> { FrstHeader, ScdHeader };
+            var headers = new List<string?> { FrstHeader, ScdHeader };
 
             //test 1
             var cache = _target.SelectIn(TblName, FrstHeader, lst);

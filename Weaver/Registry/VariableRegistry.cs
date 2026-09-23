@@ -379,7 +379,7 @@ namespace Weaver.Registry
         }
 
         /// <inheritdoc cref="IVariableRegistry" />
-        public override string? ToString()
+        public override string ToString()
         {
             if (_registry.Count == 0) return "Registry is empty.";
 

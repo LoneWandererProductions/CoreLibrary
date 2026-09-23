@@ -19,7 +19,7 @@ namespace CommonLibrarySqlLite.Tests
         /// <summary>
         ///     The table name (const). Value: "bogus".
         /// </summary>
-        private const string TableName = "bogus";
+        private const string? TableName = "bogus";
 
         /// <summary>
         ///     The header first (const). Value: "First".

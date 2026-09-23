@@ -688,7 +688,8 @@ namespace Common.Images
             }
 
             // 2. Identify "Immediate Action" tools (Shapes, Frames)
-            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse or ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon;
+            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse
+                or ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon;
 
             if (isDrawingTool)
             {

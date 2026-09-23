@@ -27,7 +27,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="obj">Generic Object</param>
         /// <returns>Table Suggestion</returns>
-        public DictionaryTableColumns? ConvertObjectToTableColumns(object obj)
+        public DictionaryTableColumns? ConvertObjectToTableColumns(object? obj)
         {
             if (obj == null)
             {
@@ -66,7 +66,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="obj">Generic Object</param>
         /// <returns>List of Attribute as String, can return null.</returns>
-        public List<string>? ConvertObjectToAttributes(object obj)
+        public List<string>? ConvertObjectToAttributes(object? obj)
         {
             if (obj == null)
             {
@@ -91,7 +91,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>TableSet of Attribute, can return null.</returns>
-        public TableSet? ConvertObjectToTableSet(object obj)
+        public TableSet? ConvertObjectToTableSet(object? obj)
         {
             if (obj == null)
             {
@@ -120,7 +120,7 @@ namespace SqliteHelper
         /// <param name="attributes">Dictionary of Attribute Names and Values</param>
         /// <param name="obj">Object to be filled</param>
         /// <returns>Filled Object</returns>
-        public object? FillObjectFromAttributes(List<string> attributes, object obj)
+        public object? FillObjectFromAttributes(List<string>? attributes, object? obj)
         {
             if (attributes == null || obj == null || attributes.Count != obj.GetType().GetProperties().Length)
             {

@@ -68,7 +68,8 @@
                     -->
 
                     <!-- Factor -->
-                    <Grid Margin="0,0,0,8" Visibility="{Binding IsFactorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                    <Grid Margin="0,0,0,8"
+                          Visibility="{Binding IsFactorActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120" />
                             <ColumnDefinition Width="*" />
@@ -80,7 +81,8 @@
                     </Grid>
 
                     <!-- Bias -->
-                    <Grid Margin="0,0,0,8" Visibility="{Binding IsBiasActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                    <Grid Margin="0,0,0,8"
+                          Visibility="{Binding IsBiasActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120" />
                             <ColumnDefinition Width="*" />
@@ -92,7 +94,8 @@
                     </Grid>
 
                     <!-- Sigma -->
-                    <Grid Margin="0,0,0,8" Visibility="{Binding IsSigmaActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                    <Grid Margin="0,0,0,8"
+                          Visibility="{Binding IsSigmaActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120" />
                             <ColumnDefinition Width="*" />
@@ -104,7 +107,8 @@
                     </Grid>
 
                     <!-- Base Window Size -->
-                    <Grid Margin="0,0,0,8" Visibility="{Binding IsBaseWindowSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                    <Grid Margin="0,0,0,8"
+                          Visibility="{Binding IsBaseWindowSizeActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120" />
                             <ColumnDefinition Width="*" />
@@ -117,7 +121,8 @@
                     </Grid>
 
                     <!-- Scale -->
-                    <Grid Margin="0,0,0,0" Visibility="{Binding IsScaleActive, Converter={StaticResource CollapseIfInactiveConverter}}">
+                    <Grid Margin="0,0,0,0"
+                          Visibility="{Binding IsScaleActive, Converter={StaticResource CollapseIfInactiveConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120" />
                             <ColumnDefinition Width="*" />

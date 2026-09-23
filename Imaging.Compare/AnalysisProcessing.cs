@@ -105,7 +105,8 @@ namespace Imaging.Compare
             _render = new ImageRender();
 
             //resize
-            using var scaled = _render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
+            using var scaled =
+                _render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             //use our new Format
             using var dbm = DirectBitmap.GetInstance(scaled);

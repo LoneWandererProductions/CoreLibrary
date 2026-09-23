@@ -35,7 +35,7 @@ namespace Contracts
         /// <summary>
         ///     Gets the version. This field is optional.
         /// </summary>
-        Version Version { get; }
+        Version? Version { get; }
 
         /// <summary>
         ///     Executes this instance. Absolute necessary.

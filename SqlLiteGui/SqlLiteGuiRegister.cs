@@ -22,7 +22,7 @@ namespace SQLiteGui
         ///     Name of the Table
         ///     Public although Class is internal, don't ask
         /// </summary>
-        public string TableAlias { get; internal set; }
+        public string? TableAlias { get; internal set; }
     }
 
     /// <inheritdoc />
@@ -34,17 +34,17 @@ namespace SQLiteGui
         /// <summary>
         ///     The value.
         /// </summary>
-        private string _value;
+        private string? _value;
 
         /// <summary>
         ///     The where.
         /// </summary>
-        private string _where;
+        private string? _where;
 
         /// <summary>
         ///     Gets or sets the where.
         /// </summary>
-        public string Where
+        public string? Where
         {
             get => _where;
             set
@@ -57,7 +57,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Gets or sets the value.
         /// </summary>
-        public string Value
+        public string? Value
         {
             get => _value;
             set
@@ -77,12 +77,12 @@ namespace SQLiteGui
         /// <summary>
         ///     The value.
         /// </summary>
-        private string _value;
+        private string? _value;
 
         /// <summary>
         ///     Gets or sets the header name.
         /// </summary>
-        public string HeaderName { get; internal init; }
+        public string? HeaderName { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the data type.
@@ -92,7 +92,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Gets or sets the value.
         /// </summary>
-        public string Value
+        public string? Value
         {
             get => _value;
             set
@@ -118,7 +118,7 @@ namespace SQLiteGui
         /// <summary>
         ///     The header.
         /// </summary>
-        private string _header;
+        private string? _header;
 
         /// <summary>
         ///     Is it not null.
@@ -138,7 +138,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Must be Unique, will be checked at Runtime
         /// </summary>
-        public string Header
+        public string? Header
         {
             get => _header;
             set

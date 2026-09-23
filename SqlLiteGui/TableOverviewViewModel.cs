@@ -25,12 +25,12 @@ namespace SQLiteGui
         /// <summary>
         ///     The selected table
         /// </summary>
-        private TableDetails _selectedTable;
+        private TableDetails? _selectedTable;
 
         /// <summary>
         ///     The tables
         /// </summary>
-        private ObservableCollection<TableDetails> _tables;
+        private ObservableCollection<TableDetails>? _tables;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TableOverviewViewModel" /> class.
@@ -65,7 +65,7 @@ namespace SQLiteGui
         /// <value>
         ///     The tables.
         /// </value>
-        public ObservableCollection<TableDetails> Tables
+        public ObservableCollection<TableDetails>? Tables
         {
             get => _tables;
             set
@@ -81,9 +81,12 @@ namespace SQLiteGui
         }
 
         /// <summary>
-        ///     Gets or sets the selected table.
+        /// Gets or sets the selected table.
         /// </summary>
-        public TableDetails SelectedTable
+        /// <value>
+        /// The selected table.
+        /// </value>
+        public TableDetails? SelectedTable
         {
             get => _selectedTable;
             set
@@ -143,7 +146,7 @@ namespace SQLiteGui
         ///     Sets the tables.
         /// </summary>
         /// <param name="tables">The tables.</param>
-        internal void SetTables(IEnumerable<TableDetails> tables)
+        internal void SetTables(IEnumerable<TableDetails>? tables)
         {
             Tables = new ObservableCollection<TableDetails>(tables);
         }

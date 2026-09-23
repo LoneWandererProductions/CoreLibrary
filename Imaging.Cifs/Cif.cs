@@ -430,7 +430,7 @@ namespace Imaging.Cifs
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>Sorted Dictionary from biggest Count to lowest</returns>
-        private static Dictionary<Color, SortedSet<int>>? SortDct(Dictionary<Color, SortedSet<int>>? value)
+        private static Dictionary<Color, SortedSet<int>> SortDct(Dictionary<Color, SortedSet<int>>? value)
         {
             return value.OrderByDescending(kv => kv.Value.Count)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);

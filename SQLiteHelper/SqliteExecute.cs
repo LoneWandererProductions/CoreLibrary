@@ -18,6 +18,7 @@ using System.Linq;
 
 namespace SqliteHelper
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Just execute our queries here
     /// </summary>
@@ -26,12 +27,12 @@ namespace SqliteHelper
         /// <summary>
         ///     Logging of System Messages
         /// </summary>
-        private MessageItem _message;
+        private MessageItem? _message;
 
         /// <summary>
         ///     Send our Message to the Subscribers
         /// </summary>
-        public event EventHandler<MessageItem>? SetMessage;
+        public event EventHandler<MessageItem?>? SetMessage;
 
         /// <summary>
         /// The disposed
@@ -145,7 +146,7 @@ namespace SqliteHelper
         /// <param name="tblName">Name of the database</param>
         /// <param name="tblNameNew">New Name of the Database</param>
         /// <returns>Operation Success</returns>
-        internal bool RenameTable(string tblName, string tblNameNew)
+        internal bool RenameTable(string? tblName, string? tblNameNew)
         {
             if (!CheckIfDatabaseTableExists(tblName))
             {
@@ -227,7 +228,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Operation Success</returns>
-        internal bool CheckIfDatabaseTableExists(string tableAlias)
+        internal bool CheckIfDatabaseTableExists(string? tableAlias)
         {
             var sqlQuery = SqliteQueryConst.SelectTable(tableAlias);
             return ExecuteNonQuery(sqlQuery, SqliteHelperResources.SuppressError);
@@ -238,7 +239,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Operation Success</returns>
-        internal bool DropTable(string tableAlias)
+        internal bool DropTable(string? tableAlias)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -257,7 +258,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Operation Success</returns>
-        internal bool TruncateTable(string tableAlias)
+        internal bool TruncateTable(string? tableAlias)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -276,7 +277,7 @@ namespace SqliteHelper
         /// <param name="tableAlias">Name of the Table</param>
         /// <param name="tableHeaders">Name of the Table Headers</param>
         /// <returns>Operation Success</returns>
-        internal bool CreateTable(string tableAlias, DictionaryTableColumns tableHeaders)
+        internal bool CreateTable(string? tableAlias, DictionaryTableColumns? tableHeaders)
         {
             if (CheckIfDatabaseTableExists(tableAlias))
             {
@@ -305,7 +306,7 @@ namespace SqliteHelper
         /// <param name="table">Multiple Entries</param>
         /// <param name="checking">Shall the Insert be checked</param>
         /// <returns>Operation Success</returns>
-        internal bool InsertMultipleRow(string tableAlias, List<TableSet> table, bool checking)
+        internal bool InsertMultipleRow(string? tableAlias, List<TableSet>? table, bool checking)
         {
             var tableInfo = InternalPragmaTableInfo(tableAlias);
 
@@ -351,7 +352,7 @@ namespace SqliteHelper
         /// <param name="where">Name of the column</param>
         /// <param name="value">Value</param>
         /// <returns>Rows deleted</returns>
-        internal int DeleteRows(string tableAlias, string where, string value)
+        internal int DeleteRows(string? tableAlias, string? where, string? value)
         {
             var sqlQuery = SqliteQueryConst.DeleteRows(tableAlias, where, value);
 
@@ -379,7 +380,7 @@ namespace SqliteHelper
         /// <param name="value">string value</param>
         /// <param name="lst">Values as string in order</param>
         /// <returns>Count of rows updated</returns>
-        internal int UpdateTable(string tableAlias, CompareOperator operators, string where, string value,
+        internal int UpdateTable(string? tableAlias, CompareOperator operators, string? where, string? value,
             IReadOnlyList<string> lst)
         {
             var tableInfo = InternalPragmaTableInfo(tableAlias);
@@ -418,7 +419,7 @@ namespace SqliteHelper
         /// <param name="column">Column Name</param>
         /// <param name="indexName">Name of the Index</param>
         /// <returns>Operation Success</returns>
-        internal bool CreateUniqueIndex(string tableAlias, string column, string indexName)
+        internal bool CreateUniqueIndex(string? tableAlias, string column, string indexName)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -467,7 +468,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Converted Object for external Access</returns>
-        internal DictionaryTableColumns PragmaTable_Info(string tableAlias)
+        internal DictionaryTableColumns PragmaTable_Info(string? tableAlias)
         {
             return new DictionaryTableColumns { DColumns = InternalPragmaTableInfo(tableAlias) };
         }
@@ -480,7 +481,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>List of Names of all Table Headers with the Unique Property</returns>
-        internal List<string>? Pragma_index_list(string tableAlias)
+        internal List<string>? Pragma_index_list(string? tableAlias)
         {
             var uniqueColumnsList = new List<string>();
 
@@ -558,7 +559,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Must Name of Table</param>
         /// <returns>Result Set</returns>
-        internal DataSet? SimpleSelect(string tableAlias)
+        internal DataSet? SimpleSelect(string? tableAlias)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -582,7 +583,7 @@ namespace SqliteHelper
         /// <param name="header">Optional, select over specific headers</param>
         /// <param name="tableAlias">Must Name of Table</param>
         /// <returns>Result Set</returns>
-        internal DataSet? SimpleSelect(List<string> header, string tableAlias)
+        internal DataSet? SimpleSelect(List<string>? header, string? tableAlias)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -609,8 +610,8 @@ namespace SqliteHelper
         /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
         /// <param name="whereValue">Compare to</param>
         /// <returns>Result Set as TableSet</returns>
-        internal DataSet? SimpleSelect(List<string> header, string tableAlias,
-            string where, CompareOperator operators, string whereValue)
+        internal DataSet? SimpleSelect(List<string>? header, string? tableAlias,
+            string? where, CompareOperator operators, string? whereValue)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -636,8 +637,8 @@ namespace SqliteHelper
         /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
         /// <param name="whereValue">Compare to</param>
         /// <returns>Result Set as TableSet</returns>
-        internal DataSet? SimpleSelect(string tableAlias, string where, CompareOperator operators,
-            string whereValue)
+        internal DataSet? SimpleSelect(string? tableAlias, string? where, CompareOperator operators,
+            string? whereValue)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -665,8 +666,8 @@ namespace SqliteHelper
         /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
         /// <param name="whereValue">Compare to</param>
         /// <returns>Result Set as TableSet</returns>
-        internal DataSet? SimpleSelect(List<string> header, string tableAlias, string oderBy,
-            string where, CompareOperator operators, string whereValue)
+        internal DataSet? SimpleSelect(List<string>? header, string? tableAlias, string oderBy,
+            string? where, CompareOperator operators, string? whereValue)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -692,8 +693,8 @@ namespace SqliteHelper
         /// <param name="inClause">All in specifics</param>
         /// <param name="oderBy">Optional, order by header</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        internal DataSet? SelectIn(string tableAlias, List<string> headers, string whereValue, List<string> inClause,
-            string oderBy)
+        internal DataSet? SelectIn(string? tableAlias, List<string>? headers, string? whereValue, List<string> inClause,
+            string? oderBy)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -713,7 +714,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="sqlQuery">Generated Query</param>
         /// <returns>Result Set as TableSet</returns>
-        private DataSet? ExecSelect(string sqlQuery)
+        private DataSet? ExecSelect(string? sqlQuery)
         {
             if (sqlQuery == SqliteHelperResources.ErrorCheck)
             {
@@ -789,7 +790,7 @@ namespace SqliteHelper
         /// <param name="sqlQuery">Query Text</param>
         /// <param name="suppress">Suppress Error</param>
         /// <returns>Operation Success</returns>
-        private bool ExecuteNonQuery(string sqlQuery, bool suppress)
+        private bool ExecuteNonQuery(string? sqlQuery, bool suppress)
         {
             //establish Connection
             using var conn = GetConn();
@@ -838,7 +839,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="sqlQuery">Query Text</param>
         /// <returns>Result Table</returns>
-        private DataTable? SelectDataTable(string sqlQuery)
+        private DataTable? SelectDataTable(string? sqlQuery)
         {
             DataTable dt = new();
 
@@ -888,7 +889,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="sqlQuery">Query Text</param>
         /// <returns>Result Table</returns>
-        private DataSet? SelectMultipleDataTable(string sqlQuery)
+        private DataSet? SelectMultipleDataTable(string? sqlQuery)
         {
             var dt = SelectDataTable(sqlQuery);
             if (dt == null || dt.Rows.Count == 0)
@@ -922,8 +923,8 @@ namespace SqliteHelper
         /// <param name="checking">Shall we check the input</param>
         /// <returns>Success Status</returns>
         private bool ExecuteInsertQuery(
-            string sqlQuery,
-            IReadOnlyCollection<TableSet> table,
+            string? sqlQuery,
+            IReadOnlyCollection<TableSet>? table,
             Dictionary<string, TableColumns> tableInfo,
             bool checking)
         {
@@ -1015,7 +1016,7 @@ namespace SqliteHelper
         /// <returns>
         ///     Count of rows
         /// </returns>
-        private int ExecuteUpdateQuery(string sqlQuery, IReadOnlyList<string> lst)
+        private int ExecuteUpdateQuery(string? sqlQuery, IReadOnlyList<string> lst)
         {
             var affectedRows = -1;
 
@@ -1078,7 +1079,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="sqlQuery">Query Text</param>
         /// <returns>Count of rows</returns>
-        private int ExecuteDeleteQuery(string sqlQuery)
+        private int ExecuteDeleteQuery(string? sqlQuery)
         {
             var affectedRows = -1;
 
@@ -1131,8 +1132,8 @@ namespace SqliteHelper
         /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
         /// <param name="whereValue">Compare to</param>
         /// <returns>TableMultipleSet, results as string</returns>
-        private string? Select(IReadOnlyCollection<string> headers, string tableAlias, string oderBy,
-            string where, CompareOperator operators, string whereValue)
+        private string? Select(IReadOnlyCollection<string>? headers, string? tableAlias, string oderBy,
+            string? where, CompareOperator operators, string? whereValue)
         {
             var tableInfo = InternalPragmaTableInfo(tableAlias);
 
@@ -1167,8 +1168,8 @@ namespace SqliteHelper
         /// <param name="inClause">In values</param>
         /// <param name="oderBy">Optional, order by header</param>
         /// <returns>Completed Sql Query</returns>
-        private static string SelectInClause(string sqlQuery, string whereValue, IReadOnlyList<string> inClause,
-            string oderBy)
+        private static string SelectInClause(string sqlQuery, string? whereValue, IReadOnlyList<string> inClause,
+            string? oderBy)
         {
             sqlQuery = string.Concat(sqlQuery,
                 SqliteHelperResources.Spacing,
@@ -1219,7 +1220,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="dt">Data Table of the select Statement</param>
         /// <returns>List of Names of all Table Headers</returns>
-        private static List<string?> GetTableHeaders(DataTable dt)
+        private static List<string> GetTableHeaders(DataTable dt)
         {
             return (from DataRow row in dt.Rows select row[0].ToString()).ToList();
         }
@@ -1230,7 +1231,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Headers, Data Type and Constraints of the table</returns>
-        private Dictionary<string, TableColumns>? InternalPragmaTableInfo(string tableAlias)
+        private Dictionary<string, TableColumns>? InternalPragmaTableInfo(string? tableAlias)
         {
             if (!CheckIfDatabaseTableExists(tableAlias))
             {
@@ -1366,7 +1367,7 @@ namespace SqliteHelper
         ///     Inform Subscribers about the News
         /// </summary>
         /// <param name="dbMessage">Message</param>
-        private void OnError(MessageItem dbMessage)
+        private void OnError(MessageItem? dbMessage)
         {
             SetMessage?.Invoke(this, dbMessage);
         }

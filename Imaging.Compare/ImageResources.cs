@@ -19,11 +19,6 @@ namespace Imaging.Compare
         internal const int DuplicateSize = 16;
 
         /// <summary>
-        ///     The Similar Size (const). Value: "16"
-        /// </summary>
-        internal const int SimilarSize = 16;
-
-        /// <summary>
         ///     The Color Threshold (const). Value: "3"
         /// </summary>
         internal const int ColorThreshold = 3;

@@ -22,7 +22,7 @@ namespace FileHandler
         /// </summary>
         /// <param name="level">Levels to go up</param>
         /// <returns>Parent directory path</returns>
-        public static string? GetParentDirectory(int level)
+        public static string GetParentDirectory(int level)
             => GetParentDirectoryFromPath(Directory.GetCurrentDirectory(), level);
 
         /// <summary>

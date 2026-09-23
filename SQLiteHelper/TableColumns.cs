@@ -83,12 +83,12 @@ namespace SqliteHelper
         /// </summary>
         public DictionaryTableColumns()
         {
-            DColumns = new Dictionary<string, TableColumns>();
+            DColumns = new Dictionary<string?, TableColumns>();
         }
 
         /// <summary>
         ///     Gets or sets the DColumns.
         /// </summary>
-        public Dictionary<string, TableColumns> DColumns { get; internal init; }
+        public Dictionary<string?, TableColumns> DColumns { get; internal init; }
     }
 }

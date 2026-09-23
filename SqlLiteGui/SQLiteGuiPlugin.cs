@@ -65,7 +65,7 @@ namespace SQLiteGui
         /// <value>
         ///     The version.
         /// </value>
-        public Version Version { get; } = GetVersion();
+        public Version? Version { get; } = GetVersion();
 
         /// <inheritdoc />
         /// <summary>
@@ -83,7 +83,7 @@ namespace SQLiteGui
         ///     Gets the version.
         /// </summary>
         /// <returns>The Current Version</returns>
-        private static Version GetVersion()
+        private static Version? GetVersion()
         {
             var assembly = typeof(SqliteUtility).Assembly;
             var assemblyName = assembly.GetName();

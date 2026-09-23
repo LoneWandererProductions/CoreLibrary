@@ -24,12 +24,12 @@ namespace SQLiteGui
         /// <summary>
         ///     Database Handler
         /// </summary>
-        private static ISqliteDatabase _db;
+        private static ISqliteDatabase? _db;
 
         /// <summary>
         ///     Where Clause for the Statements
         /// </summary>
-        private static Binary _paramsClause;
+        private static Binary? _paramsClause;
 
         /// <summary>
         ///     Create a Database
@@ -52,7 +52,7 @@ namespace SQLiteGui
                     return;
                 }
 
-                var check = _db.CreateDatabase(location, dbName, true);
+                var check = _db?.CreateDatabase(location, dbName, true) == true;
                 Register.Info.AppendInfo(check ? SqLiteGuiResource.InfoCreateDb : SqLiteGuiResource.ErrorCreateDb);
             }
             catch (Exception ex)
@@ -80,18 +80,18 @@ namespace SQLiteGui
 
             _db = new SqliteDatabase(location, dbName);
 
-            Register.Info?.AppendInfo(_db.GetDatabaseInfos());
+            Register.Info.AppendInfo(_db.GetDatabaseInfos());
         }
 
         /// <summary>
         ///     Gets the table details.
         /// </summary>
         /// <returns>List of tables</returns>
-        internal static IEnumerable<TableDetails> GetTableDetails()
+        internal static IEnumerable<TableDetails>? GetTableDetails()
         {
             if (_db == null)
             {
-                Register.Info?.AppendInfo("No Database Connection provided.");
+                Register.Info.AppendInfo("No Database Connection provided.");
 
                 return null;
             }
@@ -137,9 +137,9 @@ namespace SQLiteGui
         ///     Select a Table
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
-        internal static DataView SelectTable(string tableAlias)
+        internal static DataView? SelectTable(string? tableAlias)
         {
-            if (tableAlias.Length == 0)
+            if (tableAlias is { Length: 0 })
             {
                 Register.Info.AppendInfo(SqLiteGuiResource.ErrorNoValidTableName);
             }
@@ -182,13 +182,13 @@ namespace SQLiteGui
             Register.SelectedTable(tableAlias, uniqueIndex);
 
 
-            if (db == null)
+            if (db != null)
             {
-                Register.Info.AppendInfo("Table was empty.");
-                return null;
+                return db.Raw;
             }
 
-            return db.Raw;
+            Register.Info.AppendInfo("Table was empty.");
+            return null;
         }
 
         /// <summary>
@@ -276,11 +276,11 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
-        internal static bool TruncateTable(string tableAlias)
+        internal static bool TruncateTable(string? tableAlias)
         {
             Register.TableAlias = tableAlias;
 
-            if (Register.TableAlias.Length != 0)
+            if (!string.IsNullOrEmpty(Register.TableAlias))
             {
                 return _db.TruncateTable(tableAlias);
             }
@@ -295,11 +295,11 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
-        internal static bool DropTable(string tableAlias)
+        internal static bool DropTable(string? tableAlias)
         {
             Register.TableAlias = tableAlias;
 
-            if (Register.TableAlias.Length != 0)
+            if (!string.IsNullOrEmpty(Register.TableAlias))
             {
                 return _db.DropTable(tableAlias);
             }
@@ -313,7 +313,7 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
-        internal static bool CopyTable(string tableAlias)
+        internal static bool CopyTable(string? tableAlias)
         {
             Register.TableAlias = tableAlias;
 
@@ -328,7 +328,7 @@ namespace SQLiteGui
 
             _ = inputWin.ShowDialog();
 
-            return InputBinaryWindow.ParamsClause != null &&
+            return _db != null && InputBinaryWindow.ParamsClause != null &&
                    _db.CopyTable(InputBinaryWindow.ParamsClause.Where, InputBinaryWindow.ParamsClause.Value);
         }
 
@@ -337,7 +337,7 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="tableAlias">The table alias.</param>
         /// <returns>Success Status</returns>
-        internal static bool RenameTable(string tableAlias)
+        internal static bool RenameTable(string? tableAlias)
         {
             Register.TableAlias = tableAlias;
 
@@ -352,7 +352,7 @@ namespace SQLiteGui
 
             _ = inputWin.ShowDialog();
 
-            return InputBinaryWindow.ParamsClause != null &&
+            return _db != null && InputBinaryWindow.ParamsClause != null &&
                    _db.RenameTable(InputBinaryWindow.ParamsClause.Where, InputBinaryWindow.ParamsClause.Value);
         }
 
@@ -378,8 +378,8 @@ namespace SQLiteGui
             );
             _ = addTable.ShowDialog();
 
-            return AddTableWindow.TableInfos != null &&
-                   _db.CreateTable(AddTableWindow.TableInfos.Header, AddTableWindow.TableInfos.Columns);
+            return _db != null && AddTableWindow.TableInfos != null && _db.CreateTable(AddTableWindow.TableInfos.Header,
+                AddTableWindow.TableInfos.Columns);
         }
 
         /// <summary>
@@ -398,7 +398,7 @@ namespace SQLiteGui
         /// <returns>
         ///     Item we will Replace
         /// </returns>
-        private static IEnumerable<UpdateItem> GenerateUpdateItem(DataSet tableSet, DictionaryTableColumns pragma)
+        private static IEnumerable<UpdateItem> GenerateUpdateItem(DataSet tableSet, DictionaryTableColumns? pragma)
         {
             var lst = GenerateUpdateItem(pragma);
 
@@ -417,7 +417,7 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="pragma">Table Info</param>
         /// <returns>Item we will Add</returns>
-        private static List<UpdateItem> GenerateUpdateItem(DictionaryTableColumns pragma)
+        private static List<UpdateItem> GenerateUpdateItem(DictionaryTableColumns? pragma)
         {
             return pragma.DColumns.Select(
                     item =>
@@ -491,18 +491,18 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="csvData">The CSV data.</param>
         /// <returns>Success Status.</returns>
-        internal static bool LoadCsv(List<List<string>> csvData)
+        internal static bool LoadCsv(List<List<string?>>? csvData)
         {
-            return _db.LoadCsv(Register.TableAlias, csvData, true);
+            return _db?.LoadCsv(Register.TableAlias, csvData, true) == true;
         }
 
         /// <summary>
         ///     Exports the CVS.
         /// </summary>
         /// <returns>The table Data in our csv format</returns>
-        internal static List<List<string>> ExportCvs()
+        internal static List<List<string>>? ExportCvs()
         {
-            return _db.ExportCvs(Register.TableAlias, true);
+            return _db?.ExportCvs(Register.TableAlias, true);
         }
     }
 }

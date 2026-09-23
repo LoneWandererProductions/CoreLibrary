@@ -31,24 +31,26 @@ namespace SqliteHelper
         {
             var headers = new Dictionary<string, TableColumns>(table.Rows.Count, StringComparer.Ordinal);
 
-            foreach (DataRow row in table.Rows)
+            foreach (DataRow? row in table.Rows)
             {
-                if (row == null) continue;
-
-                var name = row.Field<string>(1);
+                var name = row?.Field<string>(1);
                 if (string.IsNullOrEmpty(name))
                     continue;
 
                 var column = new TableColumns
                 {
-                    RowId = row[0]?.ToString(),
-                    NotNull = row.Field<long?>(3) == 1,
-                    PrimaryKey = row.Field<long?>(5) == 1
+                    RowId = row?[0].ToString(),
+                    NotNull = row?.Field<long?>(3) == 1,
+                    PrimaryKey = row?.Field<long?>(5) == 1
                 };
 
                 // Extract type and normalize
-                var type = row.Field<string>(2);
-                column = SetDataType(column, type);
+                var type = row?.Field<string>(2);
+
+                if (type != null)
+                {
+                    column = SetDataType(column, type);
+                }
 
                 if (column == null)
                     return null; // bail-out on invalid type
@@ -124,7 +126,7 @@ namespace SqliteHelper
         /// <param name="convert">The target SQLite data type to check against.</param>
         /// <param name="value">The value to convert, expressed as a string.</param>
         /// <returns>True if the value can be converted to the target type, otherwise false.</returns>
-        internal static bool CheckConvert(SqLiteDataTypes convert, string value)
+        internal static bool CheckConvert(SqLiteDataTypes convert, string? value)
         {
             if (value == null) return false;
 

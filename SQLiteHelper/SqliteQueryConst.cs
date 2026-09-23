@@ -33,7 +33,7 @@ namespace SqliteHelper
         /// <param name="tableFrom">Table name old</param>
         /// <param name="tableTo">Table name new</param>
         /// <returns>Sql String</returns>
-        internal static string RenameTable(string tableFrom, string tableTo)
+        internal static string RenameTable(string? tableFrom, string? tableTo)
         {
             return $"alter Table {tableFrom} rename to {tableTo}";
         }
@@ -44,7 +44,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Table name</param>
         /// <returns>Sql String</returns>
-        internal static string DropTable(string tableAlias)
+        internal static string DropTable(string? tableAlias)
         {
             return $"Drop Table {tableAlias}";
         }
@@ -55,7 +55,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Table name</param>
         /// <returns>Sql String</returns>
-        internal static string TruncateTable(string tableAlias)
+        internal static string TruncateTable(string? tableAlias)
         {
             return $"Delete from {tableAlias}";
         }
@@ -88,7 +88,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">name of table</param>
         /// <returns>Sql String</returns>
-        internal static string SelectTable(string tableAlias)
+        internal static string? SelectTable(string? tableAlias)
         {
             return string.IsNullOrEmpty(tableAlias) ? SqliteHelperResources.ErrorCheck : $"select * from {tableAlias}";
         }
@@ -101,7 +101,7 @@ namespace SqliteHelper
         /// <param name="tableAlias">name of table</param>
         /// <param name="tableHeaders">Headers of table</param>
         /// <returns>Sql String</returns>
-        internal static string CreateTable(string tableAlias, DictionaryTableColumns tableHeaders)
+        internal static string? CreateTable(string? tableAlias, DictionaryTableColumns? tableHeaders)
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
@@ -124,7 +124,7 @@ namespace SqliteHelper
         /// <param name="tableAlias">name of table</param>
         /// <param name="headerTable">Headers of table as String List</param>
         /// <returns>Sql String</returns>
-        public static string InsertTable(string tableAlias, List<string> headerTable)
+        public static string? InsertTable(string? tableAlias, List<string>? headerTable)
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
@@ -150,7 +150,7 @@ namespace SqliteHelper
         /// <param name="where">Name of the column</param>
         /// <param name="value">Value</param>
         /// <returns>Sql String</returns>
-        internal static string DeleteRows(string tableAlias, string where, string value)
+        internal static string? DeleteRows(string? tableAlias, string? where, string? value)
         {
             if (string.IsNullOrEmpty(tableAlias) || string.IsNullOrEmpty(where) || string.IsNullOrEmpty(value))
             {
@@ -172,8 +172,8 @@ namespace SqliteHelper
         /// <param name="where">identifier for where clause, always equal</param>
         /// <param name="value">string value</param>
         /// <returns>Sql String</returns>
-        internal static string UpdateTable(string tableAlias, List<string> headerTable, CompareOperator operators,
-            string where, string value)
+        internal static string? UpdateTable(string? tableAlias, List<string>? headerTable, CompareOperator operators,
+            string? where, string? value)
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
@@ -203,7 +203,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">name of table</param>
         /// <returns>Sql String</returns>
-        internal static string Pragma_TableInfo(string tableAlias)
+        internal static string? Pragma_TableInfo(string? tableAlias)
         {
             return string.IsNullOrEmpty(tableAlias)
                 ? SqliteHelperResources.ErrorCheck
@@ -217,7 +217,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">name of table</param>
         /// <returns>Sql String</returns>
-        internal static string Pragma_index_list(string tableAlias)
+        internal static string? Pragma_index_list(string? tableAlias)
         {
             return string.IsNullOrEmpty(tableAlias)
                 ? SqliteHelperResources.ErrorCheck
@@ -257,8 +257,8 @@ namespace SqliteHelper
         /// <param name="operators">Optional, if where is set essential, CompareOperator</param>
         /// <param name="whereValue">Compare to</param>
         /// <returns>Returns build Statement</returns>
-        internal static string SimpleSelect(List<string> headerTable, List<string> headers,
-            string tableAlias, string oderBy, string where, CompareOperator operators, string whereValue)
+        internal static string? SimpleSelect(List<string>? headerTable, List<string>? headers,
+            string? tableAlias, string oderBy, string? where, CompareOperator operators, string? whereValue)
         {
             if (string.IsNullOrEmpty(tableAlias))
             {
@@ -271,7 +271,7 @@ namespace SqliteHelper
             }
 
             var queryStart = SqliteHelperResources.SqlSelect;
-            string vector;
+            string? vector;
 
             if (headers != null)
             {
@@ -326,7 +326,7 @@ namespace SqliteHelper
         /// <param name="column">Column Name</param>
         /// <param name="indexName">Name of the Index</param>
         /// <returns>SqlLite Query</returns>
-        internal static string CreateUniqueIndex(string tableAlias, string column, string indexName)
+        internal static string? CreateUniqueIndex(string? tableAlias, string column, string indexName)
         {
             if (string.IsNullOrEmpty(tableAlias) || string.IsNullOrEmpty(column) || string.IsNullOrEmpty(indexName))
             {
@@ -354,15 +354,15 @@ namespace SqliteHelper
         /// <returns>
         /// Table creation, empty if Key Constraint
         /// </returns>
-        private static string ConcatenateHeaders(DictionaryTableColumns tableHeaders, string query)
+        private static string? ConcatenateHeaders(DictionaryTableColumns? tableHeaders, string query)
         {
-            if (tableHeaders.DColumns.Count == 0)
+            if (tableHeaders?.DColumns.Count == 0)
                 return SqliteHelperResources.ErrorCheck;
 
             var headersList = tableHeaders.DColumns.ToList();
             var primaryKeyUsed = false;
 
-            string AddHeader(KeyValuePair<string, TableColumns> kv)
+            string? AddHeader(KeyValuePair<string?, TableColumns> kv)
             {
                 var col = kv.Value;
                 var line = $"{kv.Key} {col.DataType}";
@@ -431,58 +431,13 @@ namespace SqliteHelper
         }
 
         /// <summary>
-        ///     Add UNIQUE and PRIMARY KEY Parameters
-        /// </summary>
-        /// <param name="query">Current query text</param>
-        /// <param name="value">Check Parameters</param>
-        /// <returns>Added Parameters, empty if Key Constraint</returns>
-        private static string AddRowDefinitions(string query, KeyValuePair<string, TableColumns> value)
-        {
-            if (value.Value.PrimaryKey)
-            {
-                if (_primaryKey)
-                {
-                    return SqliteHelperResources.ErrorCheck;
-                }
-
-                _primaryKey = true;
-                query = string.Concat(query, $" {value.Key} ", $" {value.Value.DataType}  PRIMARY KEY ");
-                if (value.Value.NotNull)
-                {
-                    query = string.Concat(query, SqliteHelperResources.SqlNotNull);
-                }
-
-                return query;
-            }
-
-            if (value.Value.Unique)
-            {
-                query = string.Concat(query, $" {value.Key} ", $" {value.Value.DataType}  UNIQUE ");
-                if (value.Value.NotNull)
-                {
-                    query = string.Concat(query, SqliteHelperResources.SqlNotNull);
-                }
-
-                return query;
-            }
-
-            query = string.Concat(query, $" {value.Key} ", $" {value.Value.DataType}  ");
-            if (value.Value.NotNull)
-            {
-                query = string.Concat(query, SqliteHelperResources.SqlNotNull);
-            }
-
-            return query;
-        }
-
-        /// <summary>
         ///     Dynamically build query Statement
         /// </summary>
         /// <param name="queryStart">Start of the query</param>
         /// <param name="queryEnd">End of the query</param>
         /// <param name="headerTable">Name of the table</param>
         /// <returns>Returns build Statement</returns>
-        private static string BuildConjunction(string queryStart, string queryEnd, ICollection<string> headerTable)
+        private static string BuildConjunction(string queryStart, string queryEnd, ICollection<string>? headerTable)
         {
             var count = headerTable.Count;
             var endColumn = string.Concat(headerTable.Last(), SqliteHelperResources.BracketClose);
@@ -509,7 +464,7 @@ namespace SqliteHelper
         /// <param name="headers">Optional, select over specific headers</param>
         /// <param name="headerTable">Headers of the table</param>
         /// <returns>Added Parameters, empty if wrong parameters</returns>
-        private static string GetTableHeaders(string queryStart, IList<string> headers, IList<string> headerTable)
+        private static string? GetTableHeaders(string? queryStart, IList<string>? headers, IList<string> headerTable)
         {
             IList<string> workingHeaders = headers != null ? headers.ToList() : headerTable.ToList();
 
@@ -529,7 +484,8 @@ namespace SqliteHelper
         /// <param name="whereValue">Compare to</param>
         /// <param name="headerTable">Headers of the table</param>
         /// <returns>Where Clause</returns>
-        private static string SetWhereClause(string oderBy, string where, CompareOperator operators, string whereValue,
+        private static string? SetWhereClause(string oderBy, string? where, CompareOperator operators,
+            string? whereValue,
             List<string> headerTable)
         {
             var query = string.Empty;

@@ -32,7 +32,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Logs all activities
         /// </summary>
-        internal static List<string> LogFile { get; } = new();
+        internal static List<string>? LogFile { get; } = new();
 
         /// <summary>
         ///     Last Message
@@ -42,7 +42,7 @@ namespace SqliteHelper
         /// <summary>
         ///     List of Errors
         /// </summary>
-        internal static List<string> ListError { get; } = new();
+        internal static List<string>? ListError { get; } = new();
 
         /// <summary>
         ///     Error Logging
