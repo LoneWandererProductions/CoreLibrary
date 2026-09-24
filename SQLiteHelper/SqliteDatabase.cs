@@ -41,7 +41,7 @@ namespace SqliteHelper
         /// <summary>
         ///     Execute our Tasks
         /// </summary>
-        private SqliteExecute _execute;
+        private SqliteExecute? _execute;
 
         /// <summary>
         ///     Initiate Database
@@ -91,7 +91,6 @@ namespace SqliteHelper
         public string? Location
         {
             get => SqliteConnectionConfig.Location;
-
             set => SqliteConnectionConfig.Location = value;
         }
 
@@ -102,7 +101,6 @@ namespace SqliteHelper
         public string? DbName
         {
             get => SqliteConnectionConfig.DbName;
-
             set => SqliteConnectionConfig.DbName = value;
         }
 
@@ -165,7 +163,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool CreateDatabase(bool overwrite)
         {
-            return _execute.CreateDatabase(Location, DbName, overwrite);
+            return _execute?.CreateDatabase(Location, DbName, overwrite) == true;
         }
 
         /// <inheritdoc />
@@ -179,7 +177,7 @@ namespace SqliteHelper
         public bool CreateDatabase(string? dbName, bool overwrite)
         {
             DbName = dbName;
-            return _execute.CreateDatabase(Location, dbName, overwrite);
+            return _execute?.CreateDatabase(Location, dbName, overwrite) == true;
         }
 
         /// <inheritdoc />
@@ -195,7 +193,7 @@ namespace SqliteHelper
         {
             Location = location;
             DbName = dbName;
-            return _execute.CreateDatabase(Location, dbName, overwrite);
+            return _execute?.CreateDatabase(Location, dbName, overwrite) == true;
         }
 
         /// <inheritdoc />
@@ -241,7 +239,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool DeleteDatabase(string? location, string? dbName)
         {
-            return _execute.DeleteDatabase(location, dbName);
+            return _execute?.DeleteDatabase(location, dbName) == true;
         }
 
         /// <inheritdoc />
@@ -253,7 +251,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool RenameTable(string? tblName, string? tblNameNew)
         {
-            return _execute.RenameTable(tblName, tblNameNew);
+            return _execute?.RenameTable(tblName, tblNameNew) == true;
         }
 
         /// <inheritdoc />
@@ -268,17 +266,16 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool AttachDatabase(string dbName, string alias)
         {
-            return _execute.AttachDatabase(dbName, alias);
+            return _execute?.AttachDatabase(dbName, alias) == true;
         }
 
         /// <inheritdoc />
         /// <summary>
         ///     Throws  string with all Infos we can possible get about the Database
         /// </summary>
-        /// <returns></returns>
-        public string GetDatabaseInfos()
+        public string? GetDatabaseInfos()
         {
-            return _execute.GetDatabaseInfos();
+            return _execute?.GetDatabaseInfos();
         }
 
         /// <inheritdoc />
@@ -290,7 +287,7 @@ namespace SqliteHelper
         /// <returns>True if Connection is possible</returns>
         public bool DatabaseContextSwitch(string? location, string? dbName)
         {
-            return _execute.DatabaseContextSwitch(location, dbName);
+            return _execute?.DatabaseContextSwitch(location, dbName) == true;
         }
 
         /// <inheritdoc />
@@ -301,7 +298,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool CheckIfDatabaseTableExists(string? tableAlias)
         {
-            return _execute.CheckIfDatabaseTableExists(tableAlias);
+            return _execute?.CheckIfDatabaseTableExists(tableAlias) == true;
         }
 
         /// <inheritdoc />
@@ -312,7 +309,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool DropTable(string? tableAlias)
         {
-            return _execute.DropTable(tableAlias);
+            return _execute?.DropTable(tableAlias) == true;
         }
 
         /// <inheritdoc />
@@ -323,7 +320,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool TruncateTable(string? tableAlias)
         {
-            return _execute.TruncateTable(tableAlias);
+            return _execute?.TruncateTable(tableAlias) == true;
         }
 
         /// <inheritdoc />
@@ -335,7 +332,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool CreateTable(string? tableAlias, DictionaryTableColumns? tableHeaders)
         {
-            return _execute.CreateTable(tableAlias, tableHeaders);
+            return _execute?.CreateTable(tableAlias, tableHeaders) == true;
         }
 
         /// <inheritdoc />
@@ -352,7 +349,16 @@ namespace SqliteHelper
         public int UpdateTable(string? tableAlias, CompareOperator operators, string? where, string? value, object obj)
         {
             var lst = _util.ConvertObjectToAttributes(obj);
-            return _execute.UpdateTable(tableAlias, operators, where, value, lst);
+
+            if (lst != null)
+            {
+                if (_execute != null)
+                {
+                    return _execute.UpdateTable(tableAlias, operators, where, value, lst);
+                }
+            }
+
+            return -1;
         }
 
         /// <inheritdoc />
@@ -369,7 +375,12 @@ namespace SqliteHelper
         public int UpdateTable(string? tableAlias, CompareOperator operators, string? where, string? value,
             List<string> lst)
         {
-            return _execute.UpdateTable(tableAlias, operators, where, value, lst);
+            if (_execute != null)
+            {
+                return _execute.UpdateTable(tableAlias, operators, where, value, lst);
+            }
+
+            return -1;
         }
 
         /// <inheritdoc />
@@ -383,7 +394,7 @@ namespace SqliteHelper
         public bool InsertSingleRow(string? tableAlias, TableSet row, bool checking)
         {
             var table = new List<TableSet> { row };
-            return _execute.InsertMultipleRow(tableAlias, table, checking);
+            return _execute?.InsertMultipleRow(tableAlias, table, checking) == true;
         }
 
         /// <inheritdoc />
@@ -396,7 +407,12 @@ namespace SqliteHelper
         /// <returns>Rows deleted</returns>
         public int DeleteRows(string? tableAlias, string? where, string? value)
         {
-            return _execute.DeleteRows(tableAlias, where, value);
+            if (_execute != null)
+            {
+                return _execute.DeleteRows(tableAlias, where, value);
+            }
+
+            return -1;
         }
 
         /// <inheritdoc />
@@ -409,7 +425,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool InsertMultipleRow(string? tableAlias, List<TableSet>? rows, bool checking)
         {
-            return _execute.InsertMultipleRow(tableAlias, rows, checking);
+            return _execute?.InsertMultipleRow(tableAlias, rows, checking) == true;
         }
 
         /// <inheritdoc />
@@ -422,7 +438,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool CreateUniqueIndex(string? tableAlias, string column, string indexName)
         {
-            return _execute.CreateUniqueIndex(tableAlias, column, indexName);
+            return _execute?.CreateUniqueIndex(tableAlias, column, indexName) == true;
         }
 
         /// <inheritdoc />
@@ -433,7 +449,7 @@ namespace SqliteHelper
         /// <returns>Operation Success</returns>
         public bool DropUniqueIndex(string indexName)
         {
-            return _execute.DropUniqueIndex(indexName);
+            return _execute?.DropUniqueIndex(indexName) == true;
         }
 
         /// <inheritdoc />
@@ -442,9 +458,9 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>Dictionary with Name of the Column as Key and all Information about the Column as Value</returns>
-        public DictionaryTableColumns Pragma_TableInfo(string? tableAlias)
+        public DictionaryTableColumns? Pragma_TableInfo(string? tableAlias)
         {
-            return _execute.PragmaTable_Info(tableAlias);
+            return _execute?.PragmaTable_Info(tableAlias);
         }
 
         /// <inheritdoc />
@@ -453,11 +469,11 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">Name of the Table</param>
         /// <returns>List of Columns that are PrimaryKey</returns>
-        public List<string> Primary_Key_list(string? tableAlias)
+        public List<string?> Primary_Key_list(string? tableAlias)
         {
-            var dct = _execute.PragmaTable_Info(tableAlias);
+            var dct = _execute?.PragmaTable_Info(tableAlias);
 
-            return (from item in dct.DColumns where item.Value.PrimaryKey select item.Key).ToList();
+            return (from item in dct?.DColumns where item.Value.PrimaryKey select item.Key).ToList();
         }
 
         /// <inheritdoc />
@@ -468,7 +484,7 @@ namespace SqliteHelper
         /// <returns>List of Names of all Table Headers with the Unique Property</returns>
         public List<string>? Pragma_index_list(string? tableAlias)
         {
-            return _execute.Pragma_index_list(tableAlias);
+            return _execute?.Pragma_index_list(tableAlias);
         }
 
         /// <inheritdoc />
@@ -478,7 +494,7 @@ namespace SqliteHelper
         /// <returns>Name of all Tables</returns>
         public List<string>? GetTables()
         {
-            return _execute.GetTables();
+            return _execute?.GetTables();
         }
 
         /// <inheritdoc />
@@ -489,7 +505,7 @@ namespace SqliteHelper
         /// <returns>TableMultipleSet, results as string</returns>
         public DataSet? SimpleSelect(string? tableAlias)
         {
-            return _execute.SimpleSelect(tableAlias);
+            return _execute?.SimpleSelect(tableAlias);
         }
 
         /// <inheritdoc />
@@ -501,7 +517,7 @@ namespace SqliteHelper
         /// <returns>TableMultipleSet, results as string</returns>
         public DataSet? SimpleSelect(string? tableAlias, List<string>? headers)
         {
-            return _execute.SimpleSelect(headers, tableAlias);
+            return _execute?.SimpleSelect(headers, tableAlias);
         }
 
         /// <inheritdoc />
@@ -515,7 +531,7 @@ namespace SqliteHelper
         /// <returns>TableMultipleSet, results as string</returns>
         public DataSet? SimpleSelect(string? tableAlias, string? where, CompareOperator operators, string? whereValue)
         {
-            return _execute.SimpleSelect(tableAlias, where, operators, whereValue);
+            return _execute?.SimpleSelect(tableAlias, where, operators, whereValue);
         }
 
         /// <inheritdoc />
@@ -531,7 +547,7 @@ namespace SqliteHelper
         public DataSet? SimpleSelect(string? tableAlias, List<string>? headers,
             string? where, CompareOperator operators, string? whereValue)
         {
-            return _execute.SimpleSelect(headers, tableAlias, where, operators, whereValue);
+            return _execute?.SimpleSelect(headers, tableAlias, where, operators, whereValue);
         }
 
         /// <inheritdoc />
@@ -548,7 +564,7 @@ namespace SqliteHelper
         public DataSet? SimpleSelect(string? tableAlias, List<string>? headers,
             string? where, CompareOperator operators, string? whereValue, string oderBy)
         {
-            return _execute.SimpleSelect(headers, tableAlias, oderBy, where, operators, whereValue);
+            return _execute?.SimpleSelect(headers, tableAlias, oderBy, where, operators, whereValue);
         }
 
         /// <inheritdoc />
@@ -561,7 +577,7 @@ namespace SqliteHelper
         /// <returns>v, results as string</returns>
         public DataSet? SelectIn(string? tableAlias, string? whereValue, List<string> inClause)
         {
-            return _execute.SelectIn(tableAlias, null, whereValue, inClause, null);
+            return _execute?.SelectIn(tableAlias, null, whereValue, inClause, null);
         }
 
         /// <inheritdoc />
@@ -575,7 +591,7 @@ namespace SqliteHelper
         /// <returns>TableMultipleSet, results as string</returns>
         public DataSet? SelectIn(string? tableAlias, List<string>? headers, string? whereValue, List<string> inClause)
         {
-            return _execute.SelectIn(tableAlias, headers, whereValue, inClause, null);
+            return _execute?.SelectIn(tableAlias, headers, whereValue, inClause, null);
         }
 
         /// <inheritdoc />
@@ -591,7 +607,7 @@ namespace SqliteHelper
         public DataSet? SelectIn(string? tableAlias, List<string>? headers, string? whereValue, List<string> inClause,
             string? oderBy)
         {
-            return _execute.SelectIn(tableAlias, headers, whereValue, inClause, oderBy);
+            return _execute?.SelectIn(tableAlias, headers, whereValue, inClause, oderBy);
         }
 
         /// <inheritdoc />
@@ -614,14 +630,14 @@ namespace SqliteHelper
                 return false;
             }
 
-            var check = _execute.CreateTable(tableAlias, tableHeaders);
+            var check = _execute?.CreateTable(tableAlias, tableHeaders) == true;
             if (!check)
             {
                 return false;
             }
 
             var table = SqliteHelper.LoadCsv(csv, headers);
-            return _execute.InsertMultipleRow(tableAlias, table, true);
+            return _execute?.InsertMultipleRow(tableAlias, table, true) == true;
         }
 
         /// <inheritdoc />
@@ -645,7 +661,7 @@ namespace SqliteHelper
             var tableHeaders = CreateTableHeaders(csv, headers);
 
             // Create the table based on inferred headers
-            var tableCreated = _execute.CreateTable(tableAlias, tableHeaders);
+            var tableCreated = _execute?.CreateTable(tableAlias, tableHeaders) == true;
             if (!tableCreated)
             {
                 // Log or handle the failure of creating the table
@@ -654,7 +670,7 @@ namespace SqliteHelper
 
             // Load CSV data and insert rows into the database
             var table = SqliteHelper.LoadCsv(csv, headers);
-            return _execute.InsertMultipleRow(tableAlias, table, true);
+            return _execute?.InsertMultipleRow(tableAlias, table, true) == true;
         }
 
         /// <inheritdoc />
@@ -668,8 +684,8 @@ namespace SqliteHelper
         /// </returns>
         public List<List<string>>? ExportCvs(string? tableAlias, bool headers)
         {
-            var table = _execute.SimpleSelect(tableAlias);
-            var info = _execute.PragmaTable_Info(tableAlias);
+            var table = _execute?.SimpleSelect(tableAlias);
+            var info = _execute?.PragmaTable_Info(tableAlias);
 
             return headers ? SqliteHelper.ExportCsv(table, info) : SqliteHelper.ExportCsv(table);
         }
@@ -748,7 +764,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="sender">Object</param>
         /// <param name="e">Type</param>
-        private void SetMessage(object sender, MessageItem e)
+        private void SetMessage(object? sender, MessageItem? e)
         {
             var message = MessageHandling.SetMessage(e.Message, e.Level);
             SendMessage?.Invoke(this, message);

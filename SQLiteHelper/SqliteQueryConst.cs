@@ -22,11 +22,6 @@ namespace SqliteHelper
     internal static class SqliteQueryConst
     {
         /// <summary>
-        ///     Helper to check for Primary Key
-        /// </summary>
-        private static bool _primaryKey;
-
-        /// <summary>
         ///     Renames Table
         ///     https://www.sqlite.org/lang_altertable.html
         /// </summary>
@@ -113,7 +108,6 @@ namespace SqliteHelper
                 return SqliteHelperResources.ErrorCheck;
             }
 
-            _primaryKey = false;
             return ConcatenateHeaders(tableHeaders, $"create TABLE {tableAlias}");
         }
 
@@ -359,7 +353,8 @@ namespace SqliteHelper
             if (tableHeaders?.DColumns.Count == 0)
                 return SqliteHelperResources.ErrorCheck;
 
-            var headersList = tableHeaders.DColumns.ToList();
+            var headersList = tableHeaders?.DColumns.ToList();
+
             var primaryKeyUsed = false;
 
             string? AddHeader(KeyValuePair<string?, TableColumns> kv)
@@ -386,8 +381,8 @@ namespace SqliteHelper
             }
 
             // Build all columns joined with commas
-            var columnsSql = string.Join(SqliteHelperResources.Comma, headersList.Select(AddHeader));
-            if (columnsSql.Contains(SqliteHelperResources.ErrorCheck))
+            var columnsSql = string.Join(SqliteHelperResources.Comma, headersList!.Select(AddHeader));
+            if (columnsSql.Contains(SqliteHelperResources.ErrorCheck!))
                 return SqliteHelperResources.ErrorCheck;
 
             return $"{query}{SqliteHelperResources.BracketOpen}{columnsSql}{SqliteHelperResources.BracketClose}";
@@ -437,8 +432,10 @@ namespace SqliteHelper
         /// <param name="queryEnd">End of the query</param>
         /// <param name="headerTable">Name of the table</param>
         /// <returns>Returns build Statement</returns>
-        private static string BuildConjunction(string queryStart, string queryEnd, ICollection<string>? headerTable)
+        private static string? BuildConjunction(string queryStart, string queryEnd, ICollection<string>? headerTable)
         {
+            if (headerTable == null) return null;
+
             var count = headerTable.Count;
             var endColumn = string.Concat(headerTable.Last(), SqliteHelperResources.BracketClose);
             //remove last element
@@ -464,9 +461,9 @@ namespace SqliteHelper
         /// <param name="headers">Optional, select over specific headers</param>
         /// <param name="headerTable">Headers of the table</param>
         /// <returns>Added Parameters, empty if wrong parameters</returns>
-        private static string? GetTableHeaders(string? queryStart, IList<string>? headers, IList<string> headerTable)
+        private static string? GetTableHeaders(string? queryStart, IEnumerable<string> headers, ICollection<string> headerTable)
         {
-            IList<string> workingHeaders = headers != null ? headers.ToList() : headerTable.ToList();
+            IList<string> workingHeaders = headers?.ToList() ?? headerTable.ToList();
 
             if (!workingHeaders.All(headerTable.Contains))
                 return SqliteHelperResources.ErrorCheck;

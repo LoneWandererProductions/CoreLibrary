@@ -427,7 +427,7 @@ namespace Common.Images
                 return;
             }
 
-            if (control == null || !control._refresh)
+            if (control?._refresh != true)
             {
                 return;
             }
@@ -799,7 +799,7 @@ namespace Common.Images
                 // Loading is async and out-of-order, so a thumbnail can land here well after a
                 // search/filter was applied. Without this, it always shows up regardless of
                 // whether it matches, which is what made non-matching thumbnails "stick around".
-                if (_activeFilter != null && !_activeFilter(filePath))
+                if (_activeFilter?.Invoke(filePath) == false)
                 {
                     cellContainer.Visibility = Visibility.Collapsed;
                 }
@@ -1050,7 +1050,7 @@ namespace Common.Images
 
             // "Open in Explorer" doesn't need any external wiring - the file path is right here
             // in ItemsSource, so the control can just launch it itself.
-            if (ItemsSource != null && ItemsSource.ContainsKey(value))
+            if (ItemsSource?.ContainsKey(value) == true)
             {
                 _ = cm.Items.Add(new Separator());
 

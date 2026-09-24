@@ -268,7 +268,7 @@ namespace Imaging.Helpers
         /// <param name="image">The input image.</param>
         /// <param name="stepWidth">Width of the step.</param>
         /// <returns>Pixelated Image</returns>
-        internal static Bitmap Pixelate(Image? image, int stepWidth)
+        internal static Bitmap? Pixelate(Image? image, int stepWidth)
         {
             if (image == null)
             {
@@ -309,7 +309,7 @@ namespace Imaging.Helpers
         /// </summary>
         /// <param name="originalImage">The original image.</param>
         /// <returns>Contour of an Image</returns>
-        private static Bitmap ApplySobel(Bitmap? originalImage)
+        private static Bitmap? ApplySobel(Bitmap? originalImage)
         {
             var greyscaleImage = FilterImage(originalImage, FiltersType.GrayScale);
 
@@ -491,7 +491,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="scale">The scale.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplySupersamplingAntialiasing(Bitmap? image, int scale = 1)
+        private static Bitmap? ApplySupersamplingAntialiasing(Bitmap? image, int scale = 1)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(scale);
 
@@ -557,7 +557,7 @@ namespace Imaging.Helpers
         /// <param name="image">The image.</param>
         /// <param name="sigma">The sigma.</param>
         /// <returns>Filtered Image</returns>
-        private static Bitmap ApplyPostProcessingAntialiasing(Bitmap? image, double sigma = 1.0)
+        private static Bitmap? ApplyPostProcessingAntialiasing(Bitmap? image, double sigma = 1.0)
         {
             // Convert the image to DirectBitmap
             using var dbmBase = new DirectBitmap(image);

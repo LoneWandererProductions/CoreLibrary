@@ -165,7 +165,7 @@ namespace SQLiteGui
         ///     Display a Message box
         /// </summary>
         /// <param name="error">Error Message</param>
-        private static void CreateErrorBox(string error)
+        private static void CreateErrorBox(string? error)
         {
             _ = MessageBox.Show(error, SQLiteGuiStringResource.MsgBxError, MessageBoxButton.OK);
         }

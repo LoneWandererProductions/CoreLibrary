@@ -70,18 +70,21 @@ namespace Imaging
         /// <param name="image">The image in question.</param>
         public DirectBitmap(Image? image)
         {
-            Width = image.Width;
-            Height = image.Height;
-            Bits = new Pixel32[Width * Height];
-            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
-
-            using var bmp = new Bitmap(image);
-            for (var y = 0; y < Height; y++)
+            if (image != null)
             {
-                for (var x = 0; x < Width; x++)
+                Width = image.Width;
+                Height = image.Height;
+                Bits = new Pixel32[Width * Height];
+                BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
+
+                using var bmp = new Bitmap(image);
+                for (var y = 0; y < Height; y++)
                 {
-                    var c = bmp.GetPixel(x, y);
-                    Bits[y * Width + x] = new Pixel32(c.R, c.G, c.B, c.A);
+                    for (var x = 0; x < Width; x++)
+                    {
+                        var c = bmp.GetPixel(x, y);
+                        Bits[y * Width + x] = new Pixel32(c.R, c.G, c.B, c.A);
+                    }
                 }
             }
 
@@ -89,7 +92,7 @@ namespace Imaging
                 Width,
                 Height,
                 Width * Marshal.SizeOf<Pixel32>(),
-                PixelFormat.Format32bppArgb, // REMOVE THE 'P' HERE
+                PixelFormat.Format32bppArgb,
                 BitsHandle.AddrOfPinnedObject()
             );
         }
@@ -120,6 +123,8 @@ namespace Imaging
                 Width = image.Width;
                 Height = image.Height;
                 Initiate();
+
+                if (UnsafeBitmap == null) return;
 
                 using var graphics = Graphics.FromImage(UnsafeBitmap);
                 graphics.DrawImage(image, new Rectangle(0, 0, Width, Height), 0, 0, Width, Height, GraphicsUnit.Pixel);
@@ -154,7 +159,7 @@ namespace Imaging
 
             // We clone the UnsafeBitmap (which is pinned) into a new,
             // unpinned managed Bitmap.
-            return (Bitmap)UnsafeBitmap.Clone();
+            return (Bitmap)UnsafeBitmap?.Clone()!;
         }
 
         /// <summary>
@@ -246,7 +251,15 @@ namespace Imaging
         /// Gets the instance.
         /// </summary>
         /// <param name="btm">The custom Bitmap.</param>
-        /// <returns>New Instance of <see cref="DirectBitmap"/>.</returns>
+        /// <returns>
+        /// New Instance of <see cref="DirectBitmap" />.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">btm</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// DirectBitmap destination array is null or insufficiently sized.
+        /// or
+        /// Failed to retrieve valid Scan0 pointer from Bitmap.
+        /// </exception>
         /// <exception cref="ArgumentNullException">Thrown if the provided bitmap is null.</exception>
         public static DirectBitmap GetInstance(Bitmap? btm)
         {
@@ -263,7 +276,12 @@ namespace Imaging
             }
 
             var rect = new Rectangle(0, 0, btm.Width, btm.Height);
-            var srcData = btm.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            BitmapData srcData;
+
+            lock (btm)
+            {
+                srcData = btm.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            }
 
             try
             {
@@ -281,7 +299,6 @@ namespace Imaging
                         var rowBytes = btm.Width * 4;
                         var stride = srcData.Stride;
 
-                        // Fast path: contiguous memory (stride matches exact row byte size)
                         if (stride == rowBytes)
                         {
                             Buffer.MemoryCopy(
@@ -293,11 +310,16 @@ namespace Imaging
                         }
                         else
                         {
-                            // Safe path: copy row-by-row to handle stride padding correctly
+                            var absStride = Math.Abs(stride);
+
                             for (var y = 0; y < btm.Height; y++)
                             {
-                                var currentSrc = pSrc + (y * stride);
-                                var currentDest = pDestByte + (y * rowBytes);
+                                var srcRowOffset = stride > 0
+                                    ? (long)y * stride
+                                    : (long)(btm.Height - 1 - y) * absStride;
+
+                                var currentSrc = pSrc + srcRowOffset;
+                                var currentDest = pDestByte + ((long)y * rowBytes);
 
                                 Buffer.MemoryCopy(
                                     currentSrc,
@@ -312,7 +334,10 @@ namespace Imaging
             }
             finally
             {
-                btm.UnlockBits(srcData);
+                lock (btm)
+                {
+                    btm.UnlockBits(srcData);
+                }
             }
 
             return dbm;
@@ -328,6 +353,8 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void DrawVerticalLine(int x, int y, int height, Color color)
         {
+            if (Bits == null) return;
+
             lock (_syncLock)
             {
                 var colorPixel = new Pixel32(color.R, color.G, color.B, color.A); // Convert once
@@ -399,6 +426,8 @@ namespace Imaging
         /// <param name="color">The color.</param>
         public void SetArea(IEnumerable<int> idList, Color color)
         {
+            if (Bits == null) return;
+
             lock (_syncLock)
             {
                 var colorPixel = new Pixel32(color.R, color.G, color.B, color.A);
@@ -428,6 +457,8 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetPixel(int x, int y, Color color)
         {
+            if (Bits == null) return;
+
             var px = new Pixel32(color.R, color.G, color.B, color.A);
             lock (_syncLock)
             {
@@ -450,6 +481,8 @@ namespace Imaging
         /// <param name="threshold">The threshold.</param>
         public void SetPixels(IEnumerable<PixelData> pixels, int threshold = 64)
         {
+            if (Bits == null) return;
+
             lock (_syncLock)
             {
                 DirectBitmapCore.SetPixelsAdaptive(Bits, Width, Height, pixels, threshold);
@@ -459,6 +492,8 @@ namespace Imaging
         /// <inheritdoc />
         public void BlendInt(uint[] src)
         {
+            if (Bits == null) return;
+
             DirectBitmapCore.BlendInt(Bits, src);
         }
 
@@ -468,6 +503,8 @@ namespace Imaging
         /// <param name="verticalLines">The vertical lines.</param>
         public void DrawVerticalLines(IEnumerable<(int x, int y, int finalY, Color color)> verticalLines)
         {
+            if (Bits == null) return;
+
             _ = Parallel.ForEach(verticalLines, line =>
             {
                 var (x, y, finalY, color) = line;
@@ -495,13 +532,17 @@ namespace Imaging
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color GetPixel(int x, int y)
         {
+            if (Bits == null) return default;
+
             var p = DirectBitmapCore.GetPixel(Bits, Width, x, y);
             return Color.FromArgb(p.A, p.R, p.G, p.B);
         }
 
         /// <inheritdoc />
-        public Pixel32 GetPixel32(int x, int y)
+        public Pixel32? GetPixel32(int x, int y)
         {
+            if (Bits == null) return null;
+
             var p = DirectBitmapCore.GetPixel(Bits, Width, x, y);
             return new Pixel32(p.R, p.G, p.B, p.A);
         }
@@ -511,8 +552,10 @@ namespace Imaging
         /// </summary>
         /// <param name="x">The x-coordinate.</param>
         /// <returns>Array of Colors in the column.</returns>
-        public Color[] GetColumn(int x)
+        public Color[]? GetColumn(int x)
         {
+            if (Bits == null) return null;
+
             var column = new Color[Height];
 
             for (var y = 0; y < Height; y++)
@@ -530,8 +573,10 @@ namespace Imaging
         /// </summary>
         /// <param name="y">The y-coordinate.</param>
         /// <returns>Array of Colors in the row.</returns>
-        public Color[] GetRow(int y)
+        public Color[]? GetRow(int y)
         {
+            if (Bits == null) return null;
+
             var row = new Color[Width];
 
             for (var i = 0; i < Width; i++)
@@ -643,9 +688,11 @@ namespace Imaging
         /// Converts the specified pixels.
         /// </summary>
         /// <param name="pixels">The pixels.</param>
-        /// <returns>Conveteed Coordinates into Pixel32</returns>
+        /// <returns>Converted Coordinates into Pixel32</returns>
         private static IEnumerable<PixelData> Convert(IEnumerable<(int x, int y, Color color)>? pixels)
         {
+            if (pixels == null) yield break;
+
             foreach (var p in pixels)
                 yield return new PixelData(p.x, p.y, p.color.R, p.color.G, p.color.B, p.color.A);
         }
@@ -664,7 +711,7 @@ namespace Imaging
             if (disposing)
             {
                 // Managed resources (objects that implement IDisposable)
-                UnsafeBitmap.Dispose();
+                UnsafeBitmap?.Dispose();
             }
 
             // Unmanaged resources/Handles (Free these always)

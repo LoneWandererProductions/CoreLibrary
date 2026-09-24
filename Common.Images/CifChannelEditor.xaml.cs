@@ -391,7 +391,7 @@ namespace Common.Images
             IReadOnlyDictionary<SystemDrawingColor, SystemDrawingColor> activePalette,
             CancellationToken token)
         {
-            if (cif == null || cif.CifImage == null) return null;
+            if (cif?.CifImage == null) return null;
 
             var totalPixels = cif.PixelCount;
             var buffer = new int[totalPixels];
@@ -443,7 +443,7 @@ namespace Common.Images
         private void LoadCif_Click(object sender, RoutedEventArgs e)
         {
             var target = DialogHandler.HandleFileOpen(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
+            if (string.IsNullOrEmpty(target?.FilePath)) return;
 
             var cif = _customFormat.GetCif(target.FilePath);
             if (cif == null) return;
@@ -461,7 +461,7 @@ namespace Common.Images
             if (CifSource == null) return;
 
             var target = DialogHandler.HandleFileSave(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
+            if (string.IsNullOrEmpty(target?.FilePath)) return;
 
             using var bitmap = CifSource.GetImage();
             if (bitmap != null)
@@ -486,7 +486,7 @@ namespace Common.Images
             if (CifSource == null || _writeableBitmap == null) return;
 
             var target = DialogHandler.HandleFileSave(CifFilter);
-            if (target == null || string.IsNullOrEmpty(target.FilePath)) return;
+            if (string.IsNullOrEmpty(target?.FilePath)) return;
 
             var dir = Path.GetDirectoryName(target.FilePath) ?? string.Empty;
             var file = Path.GetFileNameWithoutExtension(target.FilePath);

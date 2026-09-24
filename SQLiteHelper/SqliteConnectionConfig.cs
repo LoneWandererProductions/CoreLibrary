@@ -18,12 +18,12 @@ namespace SqliteHelper
         /// <summary>
         ///     Gets or sets the location.
         /// </summary>
-        internal static string Location { get; set; } = null!;
+        internal static string? Location { get; set; } = null!;
 
         /// <summary>
         ///     Gets or sets the db name.
         /// </summary>
-        internal static string DbName { get; set; } = null!;
+        internal static string? DbName { get; set; } = null!;
 
         /// <summary>
         ///     Basic Value is 3

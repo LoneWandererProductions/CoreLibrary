@@ -48,7 +48,7 @@ namespace SQLiteGui
         ///     Appends the information.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal void AppendInfo(string message)
+        internal void AppendInfo(string? message)
         {
             InfoText += message + Environment.NewLine;
         }

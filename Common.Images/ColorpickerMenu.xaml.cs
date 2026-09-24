@@ -85,8 +85,14 @@ namespace Common.Images
         {
             GridPicker.Children.Clear();
 
+            var colorHsv = ColorHsv.FromRgb(r, g, b, alpha);
             var colorPick = new ColorPicker(r, g, b, alpha);
-            AddColor(ColorPickerRegister.Colors);
+
+            // Preview the color this method was actually asked to show - previously
+            // this showed ColorPickerRegister.Colors instead, a static value entirely
+            // unrelated to the r/g/b/alpha just passed in, so the swatch and the
+            // picker wheel this opens with could show two different colors.
+            AddColor(colorHsv);
             _ = GridPicker.Children.Add(colorPick);
         }
 

@@ -6,15 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable ArrangeBraces_foreach
+
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-
-
-// ReSharper disable ArrangeBraces_foreach
 
 namespace SqliteHelper
 {
@@ -214,13 +213,13 @@ namespace SqliteHelper
         ///     Collect all data from the Master table
         /// </summary>
         /// <returns>All Info as string</returns>
-        internal string GetDatabaseInfos()
+        internal string? GetDatabaseInfos()
         {
             var sqlQuery = SqliteQueryConst.GetDatabaseStatus();
 
             var dt = SelectDataTable(sqlQuery);
 
-            return dt.Rows.Count == 0 ? null : GetAllData(dt);
+            return dt?.Rows.Count == 0 ? null : GetAllData(dt);
         }
 
         /// <summary>
@@ -519,6 +518,11 @@ namespace SqliteHelper
             {
                 sqlQuery = SqliteQueryConst.Pragma_index_info(indexName);
                 table = SelectDataTable(sqlQuery);
+                if (table == null)
+                {
+                    continue;
+                }
+
                 var columnName = SqliteProcessing.GetTableHeader(table);
 
                 if (string.IsNullOrEmpty(columnName))
@@ -705,6 +709,12 @@ namespace SqliteHelper
             }
 
             var sqlQuery = Select(headers, tableAlias, string.Empty, string.Empty, CompareOperator.None, string.Empty);
+
+            if (sqlQuery == null)
+            {
+                return null;
+            }
+
             sqlQuery = SelectInClause(sqlQuery, whereValue, inClause, oderBy);
             return ExecSelect(sqlQuery);
         }
@@ -951,40 +961,43 @@ namespace SqliteHelper
                 // Cache parameters to reuse objects (Optimization)
                 var paramCache = new Dictionary<int, SQLiteParameter>();
 
-                foreach (var row in table)
+                if (table != null)
                 {
-                    // Syntax Check Logic
-                    if (checking)
+                    foreach (var row in table)
                     {
-                        // Pass the full schema (tableInfo) and the full batch (table)
-                        // The Syntax class now handles the column iteration internally.
-                        if (!syntax.AdvancedSyntaxCheck(tableInfo, row, table))
+                        // Syntax Check Logic
+                        if (checking)
                         {
-                            return false;
+                            // Pass the full schema (tableInfo) and the full batch (table)
+                            // The Syntax class now handles the column iteration internally.
+                            if (!syntax.AdvancedSyntaxCheck(tableInfo, row, table))
+                            {
+                                return false;
+                            }
                         }
+
+                        // Clear parameters for the new row
+                        cmd.Parameters.Clear();
+
+                        for (var i = 0; i < row.Row.Count; i++)
+                        {
+                            if (!paramCache.TryGetValue(i, out var param))
+                            {
+                                // Create parameter if it doesn't exist
+                                param = new SQLiteParameter($"{SqliteHelperResources.Param}{i}", row.Row[i]);
+                                cmd.Parameters.Add(param);
+                                paramCache[i] = param;
+                            }
+                            else
+                            {
+                                // Reuse parameter object, just update value and re-add to command
+                                param.Value = row.Row[i];
+                                cmd.Parameters.Add(param);
+                            }
+                        }
+
+                        cmd.ExecuteNonQuery();
                     }
-
-                    // Clear parameters for the new row
-                    cmd.Parameters.Clear();
-
-                    for (var i = 0; i < row.Row.Count; i++)
-                    {
-                        if (!paramCache.TryGetValue(i, out var param))
-                        {
-                            // Create parameter if it doesn't exist
-                            param = new SQLiteParameter($"{SqliteHelperResources.Param}{i}", row.Row[i]);
-                            cmd.Parameters.Add(param);
-                            paramCache[i] = param;
-                        }
-                        else
-                        {
-                            // Reuse parameter object, just update value and re-add to command
-                            param.Value = row.Row[i];
-                            cmd.Parameters.Add(param);
-                        }
-                    }
-
-                    cmd.ExecuteNonQuery();
                 }
 
                 tr.Commit();
@@ -1150,7 +1163,8 @@ namespace SqliteHelper
 
             var headerTable = tableInfo.Keys.ToList();
 
-            List<string> header = null;
+            List<string>? header = null;
+
             if (headers != null)
             {
                 header = new List<string>(headers);
@@ -1200,9 +1214,14 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="dt">Database Query results</param>
         /// <returns>String of DB Status</returns>
-        private static string GetAllData(DataTable dt)
+        private static string GetAllData(DataTable? dt)
         {
             var str = string.Concat(SqliteHelperResources.MessageInitiate, Environment.NewLine);
+
+            if (dt?.Rows == null)
+            {
+                return str;
+            }
 
             foreach (DataRow row in dt.Rows)
             {
@@ -1220,7 +1239,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="dt">Data Table of the select Statement</param>
         /// <returns>List of Names of all Table Headers</returns>
-        private static List<string> GetTableHeaders(DataTable dt)
+        private static List<string?> GetTableHeaders(DataTable dt)
         {
             return (from DataRow row in dt.Rows select row[0].ToString()).ToList();
         }
@@ -1296,7 +1315,7 @@ namespace SqliteHelper
         private static bool GetDataBaseInfo(string? location, string? dbName, bool overwrite)
         {
             //Database exists and we are not allowed to overwrite, Return
-            if (File.Exists(Path.Combine(location, dbName)) && !overwrite)
+            if (dbName != null && location != null && File.Exists(Path.Combine(location, dbName)) && !overwrite)
             {
                 return false;
             }
@@ -1372,6 +1391,7 @@ namespace SqliteHelper
             SetMessage?.Invoke(this, dbMessage);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

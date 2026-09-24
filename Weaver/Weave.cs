@@ -157,7 +157,7 @@ namespace Weaver
                 return ns == null
                     ? _extensions.Values.ToList()
                     : _extensions.Values.Where(e =>
-                        e.Namespace != null && e.Namespace.Equals(ns, StringComparison.OrdinalIgnoreCase)).ToList();
+                        e.Namespace?.Equals(ns, StringComparison.OrdinalIgnoreCase) == true).ToList();
             }
         }
 

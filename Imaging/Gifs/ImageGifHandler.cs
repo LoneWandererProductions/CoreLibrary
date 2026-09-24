@@ -94,8 +94,7 @@ namespace Imaging.Gifs
 
                     var disposalProperty = gifImage.GetPropertyItem(0x5100);
 
-                    if (disposalProperty == null || disposalProperty.Value == null ||
-                        disposalProperty.Value.Length < frameCount * 4)
+                    if (disposalProperty?.Value == null || disposalProperty.Value.Length < frameCount * 4)
                     {
                         throw new InvalidDataException("GIF does not contain valid disposal method data.");
                     }

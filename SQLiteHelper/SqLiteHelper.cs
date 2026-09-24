@@ -22,7 +22,7 @@ namespace SqliteHelper
         /// <param name="csv">The CSV.</param>
         /// <param name="headers">if set to <c>true</c> [headers].</param>
         /// <returns>Table Set</returns>
-        public static List<TableSet>? LoadCsv(List<List<string?>>? csv, bool headers)
+        public static List<TableSet>? LoadCsv(List<List<string?>> csv, bool headers)
         {
             var cache = new List<List<string>>(csv);
 

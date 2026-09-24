@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Authors>Wayfarer</Authors>
-    <Copyright>Lone Wanderer Productions</Copyright>
-    <Company>Lone Wanderer Productions</Company>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <Authors>Wayfarer</Authors>
+        <Copyright>Lone Wanderer Productions</Copyright>
+        <Company>Lone Wanderer Productions</Company>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
-    <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
-    <ProjectReference Include="..\Imaging.Cifs\Imaging.Cifs.csproj" />
-    <ProjectReference Include="..\Imaging\Imaging.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Common.Converter\Common.Converter.csproj" />
+        <ProjectReference Include="..\Common.Dialogs\Common.Dialogs.csproj" />
+        <ProjectReference Include="..\Imaging.Cifs\Imaging.Cifs.csproj" />
+        <ProjectReference Include="..\Imaging\Imaging.csproj" />
+    </ItemGroup>
 
 </Project>

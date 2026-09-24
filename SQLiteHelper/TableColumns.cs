@@ -89,6 +89,6 @@ namespace SqliteHelper
         /// <summary>
         ///     Gets or sets the DColumns.
         /// </summary>
-        public Dictionary<string?, TableColumns> DColumns { get; internal init; }
+        public Dictionary<string, TableColumns>? DColumns { get; internal init; }
     }
 }

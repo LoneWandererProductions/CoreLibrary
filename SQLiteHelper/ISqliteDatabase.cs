@@ -148,7 +148,7 @@ namespace SqliteHelper
         ///     Get the database infos.
         /// </summary>
         /// <returns>The <see cref="string" />.</returns>
-        string GetDatabaseInfos();
+        string? GetDatabaseInfos();
 
         /// <summary>
         ///     Check the if database table exists.
@@ -257,7 +257,7 @@ namespace SqliteHelper
         /// </summary>
         /// <param name="tableAlias">The Table alias.</param>
         /// <returns>The <see cref="T:List{string}" />.</returns>
-        List<string> Primary_Key_list(string? tableAlias);
+        List<string?> Primary_Key_list(string? tableAlias);
 
         /// <summary>
         ///     The pragma index list.

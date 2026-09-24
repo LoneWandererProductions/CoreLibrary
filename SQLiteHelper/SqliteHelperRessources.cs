@@ -332,20 +332,5 @@ namespace SqliteHelper
         ///     The do not suppress error (const). Value: false.
         /// </summary>
         internal const bool DoNotSuppressError = false;
-
-        /// <summary>
-        /// The primary key
-        /// </summary>
-        internal const string PrimaryKey = "1";
-
-        /// <summary>
-        /// The not null
-        /// </summary>
-        internal const string NotNull = "1";
-
-        /// <summary>
-        /// The unique
-        /// </summary>
-        internal const string Unique = "1";
     }
 }

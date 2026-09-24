@@ -503,7 +503,7 @@ namespace Imaging
         ///     The changed image as Bitmap
         /// </returns>
         /// <exception cref="ArgumentNullException">nameof(image)</exception>
-        public Bitmap? SetPixel(Bitmap? image, Point point, Color color)
+        public Bitmap SetPixel(Bitmap? image, Point point, Color color)
         {
             return ImageStream.SetPixel(image, point, color);
         }

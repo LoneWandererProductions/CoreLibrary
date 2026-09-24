@@ -89,6 +89,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -350,6 +351,26 @@ namespace Common.Images
         ///     then fights the miscalculated delta) the further zoom moved from 1.0.
         /// </summary>
         private Point _panStartPoint;
+
+        /// <summary>
+        ///     Points accumulated for the <see cref="ImageZoomTools.Dot" /> tool (pencil,
+        ///     eraser) since the last flush to <see cref="SelectedPointCommand" />. Points
+        ///     are always appended here, never dropped, and every accumulated point is
+        ///     eventually included in some flush - see <see cref="FlushStroke" />.
+        /// </summary>
+        private readonly List<Point> _strokeBuffer = new();
+
+        /// <summary>
+        ///     When <see cref="_strokeBuffer" /> was last flushed. Used to throttle how
+        ///     often a Dot-tool drag submits a batch: mouse-move events can fire well over
+        ///     a hundred times a second, and each flush costs a real image edit (a clone,
+        ///     the actual draw, and a commit/redraw) - submitting one for every single move
+        ///     event, rather than batching the points seen between flushes, is what made a
+        ///     fast stroke feel like it was lagging behind the cursor instead of following it.
+        /// </summary>
+        private DateTime _lastStrokeFlush = DateTime.MinValue;
+
+        private static readonly TimeSpan StrokeFlushInterval = TimeSpan.FromMilliseconds(25);
 
         /// <inheritdoc />
         /// <summary>
@@ -650,16 +671,17 @@ namespace Common.Images
                 case ImageZoomTools.Trace:
                     if (SelectionAdorner != null) SelectionAdorner.IsTracing = true;
                     break;
-                case ImageZoomTools.Rectangle:
-                case ImageZoomTools.Ellipse:
-                case ImageZoomTools.FreeForm:
-                case ImageZoomTools.Polygon:
-                    break;
                 case ImageZoomTools.Dot:
+                    _strokeBuffer.Clear();
                     SelectionAdorner?.UpdateSelection(_startPoint, _startPoint);
                     break;
                 default:
-                    return;
+                    // Any other registered shape gesture (Rectangle, Ellipse,
+                    // FreeForm, Polygon, ...) needs no extra mouse-down setup beyond
+                    // the AttachAdorner call above - only an *unregistered* tool
+                    // falls all the way through and is ignored.
+                    if (!GestureCatalog.TryGet(SelectionTool, out _)) return;
+                    break;
             }
         }
 
@@ -680,16 +702,21 @@ namespace Common.Images
             {
                 SelectionAdorner.CaptureAndClear(); // Clear the red dot visual
 
-                // Fire the Point command to ImageView
-                SafeExecuteCommand(SelectedPointCommand, _startPoint);
-                SelectedPoint?.Invoke(_startPoint);
+                // Use the actual release position, not the stale mouse-down
+                // _startPoint: a drag that ends somewhere else used to always
+                // paint only the point where the drag *started*.
+                _strokeBuffer.Add(e.GetPosition(BtmImage));
+                _ = FlushStrokeOnReleaseAsync(); // reliable: retries briefly rather than dropping the stroke's tail if a previous flush is still in flight
 
                 return; // Exit early!
             }
 
-            // 2. Identify "Immediate Action" tools (Shapes, Frames)
-            var isDrawingTool = SelectionTool is ImageZoomTools.Rectangle or ImageZoomTools.Ellipse
-                or ImageZoomTools.FreeForm or ImageZoomTools.Trace or ImageZoomTools.Polygon;
+            // 2. Identify "Immediate Action" tools (Shapes, Frames). Driven by the
+            // catalog rather than a hand-written list here: this is exactly the
+            // list Polygon was previously missing from, which silently meant its
+            // selections were drawn on screen but never committed to an edit.
+            var isDrawingTool = GestureCatalog.TryGet(SelectionTool, out var behavior) &&
+                                behavior.CapturesFrameOnMouseUp;
 
             if (isDrawingTool)
             {
@@ -760,15 +787,97 @@ namespace Common.Images
                     break;
                 }
 
-                case ImageZoomTools.Rectangle:
-                case ImageZoomTools.Ellipse:
-                    SelectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                case ImageZoomTools.Dot:
+                    // This case was missing entirely before: dragging the pencil
+                    // or eraser produced no MouseMove handling at all, so only
+                    // the single point from MouseDown/MouseUp ever got painted -
+                    // dragging looked identical to a single click. Buffered and
+                    // throttled (see FlushStroke) rather than submitted on every
+                    // move event, since each flush is a real image edit.
+                    _strokeBuffer.Add(mousePos);
+                    if (DateTime.UtcNow - _lastStrokeFlush >= StrokeFlushInterval)
+                    {
+                        FlushStroke();
+                    }
+
                     break;
 
-                case ImageZoomTools.FreeForm:
-                case ImageZoomTools.Polygon:
-                    SelectionAdorner?.AddFreeFormPoint(mousePos);
+                default:
+                    if (GestureCatalog.TryGet(SelectionTool, out var behavior))
+                    {
+                        switch (behavior.MouseMoveShape)
+                        {
+                            case SelectionShape.Box:
+                                SelectionAdorner?.UpdateSelection(_startPoint, mousePos);
+                                break;
+                            case SelectionShape.Freeform:
+                                SelectionAdorner?.AddFreeFormPoint(mousePos);
+                                break;
+                            case SelectionShape.None:
+                                // Bespoke tool (e.g. Trace) - drives itself, nothing to do here.
+                                break;
+                        }
+                    }
+
                     break;
+            }
+        }
+
+        /// <summary>
+        ///     Submits every point accumulated in <see cref="_strokeBuffer" /> since the
+        ///     last flush as a single batch, then clears the buffer.
+        /// </summary>
+        /// <remarks>
+        ///     One <see cref="SelectedPointCommand" /> execution (and therefore one
+        ///     underlying image edit: one clone, one set of pixel writes, one commit) per
+        ///     flush, covering however many points were seen since the last one - not one
+        ///     execution per point. This is what makes a fast drag apply as a continuous
+        ///     stroke instead of however many independent, comparatively expensive edits
+        ///     as there were mouse-move samples.
+        ///     <para>
+        ///     <see cref="ViewModel.AsyncDelegateCommand{T}" /> refuses to run (and does
+        ///     NOT queue) a call that arrives while a previous one is still executing -
+        ///     appropriate for a button, wrong for a stream of drag samples. So this only
+        ///     clears the buffer once <see cref="ICommand.CanExecute" /> confirms the
+        ///     command will actually run; otherwise the accumulated points are left
+        ///     in place for the next attempt rather than being silently discarded.
+        ///     </para>
+        /// </remarks>
+        /// <returns><c>true</c> if a batch was actually submitted.</returns>
+        private bool FlushStroke()
+        {
+            if (_strokeBuffer.Count == 0) return true;
+            if (SelectedPointCommand?.CanExecute(null) != true) return false;
+
+            var batch = _strokeBuffer.ToArray();
+            _strokeBuffer.Clear();
+            _lastStrokeFlush = DateTime.UtcNow;
+
+            SafeExecuteCommand(SelectedPointCommand, batch);
+            SelectedPoint?.Invoke(batch[^1]);
+            return true;
+        }
+
+        /// <summary>
+        ///     Flushes the stroke at the end of a gesture (MouseUp), retrying briefly if
+        ///     the command is still busy with a previous flush instead of giving up
+        ///     immediately.
+        /// </summary>
+        /// <remarks>
+        ///     During a drag, a flush that can't run yet is harmless to skip - the next
+        ///     mouse-move retries it a few milliseconds later. At release there's no
+        ///     later mouse-move to retry it, so silently giving up here would mean the
+        ///     last few points of a stroke could vanish depending on exactly when the
+        ///     mouse happened to come up relative to the in-flight flush. Bounded to
+        ///     ~400ms so a genuinely stuck command can't hang the UI thread's event
+        ///     handling indefinitely.
+        /// </remarks>
+        private async Task FlushStrokeOnReleaseAsync()
+        {
+            var attempts = 0;
+            while (!FlushStroke() && attempts++ < 40)
+            {
+                await Task.Delay(10);
             }
         }
 

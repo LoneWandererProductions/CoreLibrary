@@ -894,14 +894,92 @@
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
     </Style>
 
-    <Style TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-    </Style>
-
     <Style TargetType="ListBox">
         <Setter Property="Background" Value="{StaticResource PanelBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+    </Style>
+
+    <!-- Style for RadioButton -->
+    <Style TargetType="RadioButton">
+        <Setter Property="Background" Value="{StaticResource InputBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="2,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Custom Radio Outer Ring + Inner Bullet -->
+                        <Grid Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
+                            <Ellipse x:Name="radioButtonBorder"
+                                     Width="16"
+                                     Height="16"
+                                     Fill="{TemplateBinding Background}"
+                                     Stroke="{StaticResource BorderBrush}"
+                                     StrokeThickness="1" />
+                            <Ellipse x:Name="radioButtonGlyph"
+                                     Width="8"
+                                     Height="8"
+                                     Fill="{StaticResource AccentBrush}"
+                                     Visibility="Collapsed"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+                        </Grid>
+
+                        <!-- Text Label -->
+                        <ContentPresenter Grid.Column="1"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True" />
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Checked State -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="radioButtonGlyph" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource AccentBrush}" />
+                        </Trigger>
+
+                        <!-- Hover State -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource TextMutedBrush}" />
+                        </Trigger>
+
+                        <!-- Hover + Checked State -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource AccentBrush}" />
+                        </MultiTrigger>
+
+                        <!-- Disabled State -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="radioButtonBorder" Property="Stroke"
+                                    Value="{StaticResource BorderSubtleBrush}" />
+                            <Setter TargetName="radioButtonGlyph" Property="Fill"
+                                    Value="{StaticResource TextMutedBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="ListBoxItem">
@@ -992,6 +1070,64 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- ================================================================= -->
+    <!-- SIDE PANEL STYLING (TextureConfig / FilterConfig / CifChannelEditor) -->
+    <!-- Shared so the three config panels look and feel like one family   -->
+    <!-- instead of three separately hand-styled controls.                 -->
+    <!-- ================================================================= -->
+
+    <!-- A titled "card" section within a side panel. -->
+    <Style x:Key="SidePanelCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderSubtleBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" Direction="270" ShadowDepth="1.5" BlurRadius="6" Opacity="0.35" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Panel-level header (icon glyph + title) at the top of a whole side panel. -->
+    <Style x:Key="SidePanelTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Card-level section header, e.g. "General Settings" within a card. -->
+    <Style x:Key="SidePanelSectionHeaderStyle" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+
+    <!-- Left-hand parameter label inside a settings card. -->
+    <Style x:Key="ParameterLabelStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+
+    <!-- Numeric/text parameter input: adds a visible red outline + tooltip on invalid input
+         instead of silently ignoring bad values or leaving the binding in an ambiguous state. -->
+    <Style x:Key="ParameterTextBoxStyle" TargetType="TextBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="4,3" />
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="BorderBrush" Value="#FFCC4444" />
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

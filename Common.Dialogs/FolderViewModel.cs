@@ -423,8 +423,7 @@ namespace Common.Dialogs
 
                 // Detect root (C:\, D:\, etc.)
                 var root = Path.GetPathRoot(full);
-                if (root != null &&
-                    root.Equals(full, StringComparison.OrdinalIgnoreCase))
+                if (root?.Equals(full, StringComparison.OrdinalIgnoreCase) == true)
                 {
                     return null; // No parent above root
                 }

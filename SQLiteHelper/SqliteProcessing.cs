@@ -107,10 +107,12 @@ namespace SqliteHelper
         /// <param name="tableInfo">A dictionary containing the table columns.</param>
         /// <param name="uniqueHeaders">A list of unique column names.</param>
         /// <returns>The updated table information dictionary with unique status applied.</returns>
-        internal static Dictionary<string, TableColumns> AddUniqueStatus(
-            Dictionary<string, TableColumns> tableInfo,
-            List<string> uniqueHeaders)
+        internal static Dictionary<string, TableColumns>? AddUniqueStatus(
+            Dictionary<string, TableColumns>? tableInfo,
+            List<string>? uniqueHeaders)
         {
+            if (tableInfo == null || uniqueHeaders == null) return null;
+
             foreach (var header in uniqueHeaders)
             {
                 if (tableInfo.TryGetValue(header, out var col))

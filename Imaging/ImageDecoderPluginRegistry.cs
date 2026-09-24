@@ -1,4 +1,4 @@
-﻿/*
+/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
  * FILE:        ImageDecoderPluginRegistry.cs
@@ -280,7 +280,7 @@ namespace Imaging
         /// </summary>
         /// <param name="extension">The extension.</param>
         /// <returns>The normalized extension.</returns>
-        private static string NormalizeExtension(string? extension)
+        private static string? NormalizeExtension(string? extension)
         {
             var trimmed = extension.Trim();
             return trimmed.StartsWith('.') ? trimmed.ToLowerInvariant() : "." + trimmed.ToLowerInvariant();

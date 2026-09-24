@@ -88,7 +88,7 @@ namespace Common.Dialogs
             var dispatcher = Application.Current?.Dispatcher;
 
             // Redirect background thread calls safely to the main UI thread
-            if (dispatcher != null && !dispatcher.CheckAccess())
+            if (dispatcher?.CheckAccess() == false)
             {
                 dispatcher.BeginInvoke(new Action(() => ErrorDialog(message, source, details, title)));
                 return;
