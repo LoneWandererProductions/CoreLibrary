@@ -14,10 +14,8 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <!-- Theme now comes from Application.Resources (App.xaml) - was merging Common.Dialogs'
-                 own Themes/Generic.xaml here, which no longer exists. -->
 
-            <!-- Transparent Read-Only TextBox to enable text selection/copying -->
+            <!-- Read-only selectable TextBox -->
             <Style x:Key="SelectableTextStyle" TargetType="TextBox">
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="TextWrapping" Value="Wrap" />
@@ -27,7 +25,15 @@
                 <Setter Property="Focusable" Value="True" />
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
                 <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
             </Style>
+
+            <!-- Expander Header -->
+            <Style TargetType="Expander">
+                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
         </ResourceDictionary>
     </Window.Resources>
 
@@ -39,35 +45,44 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Header Section: Icon + Title + Source -->
+        <!-- Header -->
         <Grid Grid.Row="0" Margin="0,0,0,12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Visual Error Badge -->
-            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="16" Background="#3A1C1C" Margin="0,0,12,0"
+            <!-- Error Icon -->
+            <Border Grid.Column="0"
+                    Width="32" Height="32"
+                    CornerRadius="16"
+                    Background="{DynamicResource AccentBrush}"
+                    Margin="0,0,12,0"
                     VerticalAlignment="Top">
-                <TextBlock Text="⚠️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="⚠️"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextEmphasisBrush}" />
             </Border>
 
-            <!-- Header Text Stack -->
+            <!-- Title + Source -->
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                 <TextBox x:Name="ErrorTitleText"
                          Style="{StaticResource SelectableTextStyle}"
                          FontWeight="Bold"
                          FontSize="15"
-                         Foreground="#FF6B6B" />
+                         Foreground="{DynamicResource TextEmphasisBrush}" />
+
                 <TextBox x:Name="ErrorSourceText"
                          Style="{StaticResource SelectableTextStyle}"
                          FontSize="11"
-                         Foreground="#AAAAAA"
+                         Foreground="{DynamicResource TextSecondaryBrush}"
                          Margin="0,2,0,0" />
             </StackPanel>
         </Grid>
 
-        <!-- Primary Error Message -->
+        <!-- Main Error Message -->
         <TextBox x:Name="ErrorMessageText"
                  Grid.Row="1"
                  Style="{StaticResource SelectableTextStyle}"
@@ -75,23 +90,29 @@
                  Margin="0,0,0,12"
                  MaxHeight="160" />
 
-        <!-- Collapsible Exception / StackTrace Details -->
+        <!-- Details -->
         <Expander x:Name="DetailsExpander"
                   Header="Details"
                   Grid.Row="2"
                   Margin="0,0,0,16">
-            <Border Background="#1A1A1A" BorderBrush="#383838" BorderThickness="1" CornerRadius="4" Padding="8"
+
+            <Border Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="8"
                     Margin="0,8,0,0">
+
                 <TextBox x:Name="ErrorDetailsText"
                          Style="{StaticResource SelectableTextStyle}"
                          FontFamily="Consolas, Courier New, monospace"
                          FontSize="11"
-                         Foreground="#CCCCCC"
+                         Foreground="{DynamicResource TextSecondaryBrush}"
                          MaxHeight="180" />
             </Border>
         </Expander>
 
-        <!-- Action Bar -->
+        <!-- Action Buttons -->
         <Grid Grid.Row="3">
             <Button Content="📋 Copy Details"
                     HorizontalAlignment="Left"

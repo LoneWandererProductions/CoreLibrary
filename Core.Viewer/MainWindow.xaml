@@ -15,10 +15,6 @@
         <local:AnalyzerViewModel />
     </Window.DataContext>
 
-    <Window.Resources>
-        <conv:BooleanToVisibilityConverter x:Key="BoolToVisibility" Collapse="True" />
-    </Window.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

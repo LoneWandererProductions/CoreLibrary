@@ -166,7 +166,8 @@ namespace Imaging.Compare
                 }
                 catch (ArgumentException ex)
                 {
-                    Trace.WriteLine(ex);
+                    Trace.WriteLine(ex.Message);
+                    Trace.WriteLine($"Paht: {value}");
                 }
                 catch (OutOfMemoryException ex)
                 {
@@ -286,8 +287,7 @@ namespace Imaging.Compare
 
             var duplicateGroups = groups.Values.Where(g => g.Count > 1).ToList();
 
-            Trace.WriteLine(nameof(GetDuplicateGroups));
-            Trace.WriteLine(duplicateGroups.Count);
+            Trace.WriteLine($"Method: {nameof(GetDuplicateGroups)} found: {duplicateGroups.Count}");
             return duplicateGroups;
         }
 
@@ -299,7 +299,7 @@ namespace Imaging.Compare
         private static List<List<string>> Translate(IEnumerable<List<ImageSimilar>> duplicateGroups)
         {
             return duplicateGroups.Select(group =>
-                    (from element in @group where Translator[element.Id] != null select Translator[element.Id])
+                    (from element in @group where Translator[element.Id] is { } select Translator[element.Id])
                     .ToList())
                 .ToList();
         }

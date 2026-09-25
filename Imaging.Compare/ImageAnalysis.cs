@@ -65,7 +65,7 @@ namespace Imaging.Compare
         {
             var lst = new List<ImageData>(imagePaths.Count);
 
-            lst.AddRange(imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache != null)!);
+            lst.AddRange(imagePaths.Select(AnalysisProcessing.GetImageDetails).Where(cache => cache is { })!);
 
             //File was skipped? Return null
             if (lst.Count != imagePaths.Count)
@@ -76,7 +76,7 @@ namespace Imaging.Compare
             var similarity = AnalysisProcessing.GetSimilarity(imagePaths);
             for (var i = 0; i < lst.Count; i++)
             {
-                if (similarity != null) lst[i].Similarity = similarity[i];
+                if (similarity is { }) lst[i].Similarity = similarity[i];
             }
 
             return lst;

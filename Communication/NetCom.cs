@@ -23,14 +23,6 @@ namespace Communication
     public sealed class NetCom : INetCom
     {
         /// <inheritdoc />
-        /// <summary>
-        ///     Saves the file.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        /// <param name="url">The URL.</param>
-        /// <returns>
-        ///     Success Status
-        /// </returns>
         public Task<bool> SaveFile(string filePath, string url, IProgress<int>? progress = null,
             CancellationToken cancellationToken = default)
         {

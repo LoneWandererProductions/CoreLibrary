@@ -59,12 +59,27 @@ namespace Common.Images
         private bool _isSyncingMultiselect;
 
         /// <summary>
+        /// The is updating sliders
+        /// </summary>
+        private bool _isUpdatingSliders;
+
+        /// <summary>
+        /// The is bulk updating
+        /// </summary>
+        private bool _isBulkUpdating;
+
+        /// <summary>
         /// Gets the palette items.
         /// </summary>
         /// <value>
         /// The palette items.
         /// </value>
         public ObservableCollection<CifColorItem> PaletteItems { get; } = new();
+
+        /// <summary>
+        /// The current selection
+        /// </summary>
+        private List<CifColorItem> _currentSelection = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CifChannelEditor"/> class.
@@ -237,9 +252,8 @@ namespace Common.Images
         /// Populates the palette.
         /// </summary>
         /// <param name="cif">The cif.</param>
-        private void PopulatePalette(Cif cif)
+        private void PopulatePalette(Cif? cif)
         {
-            // Unsubscribe from previous items
             foreach (var item in PaletteItems)
             {
                 item.PropertyChanged -= ColorItem_PropertyChanged;
@@ -248,45 +262,38 @@ namespace Common.Images
             PaletteItems.Clear();
 
             var index = 0;
-            foreach (var colorKey in cif.CifImage.Keys)
+
+            if (cif?.CifImage == null) return;
+
+            foreach (var kvp in cif.CifImage)
             {
-                var newItem = new CifColorItem(colorKey, index++);
+                var count = kvp.Value.Count();
+                var newItem = new CifColorItem(kvp.Key, index++, count);
                 newItem.PropertyChanged += ColorItem_PropertyChanged;
                 PaletteItems.Add(newItem);
             }
         }
 
         /// <summary>
-        /// Colors the item property changed.
+        /// Reacts to changes in individual CifColorItems.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
         private void ColorItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (_isBulkUpdating) return;
+
             if (e.PropertyName is nameof(CifColorItem.R) or nameof(CifColorItem.G) or nameof(CifColorItem.B))
             {
-                // Sync the R, G, or B value to all other selected items in the ListBox
-                if (!_isSyncingMultiselect && sender is CifColorItem changedItem &&
-                    PaletteListBox?.SelectedItems.Contains(changedItem) == true)
-                {
-                    _isSyncingMultiselect = true;
-                    foreach (CifColorItem item in PaletteListBox.SelectedItems)
-                    {
-                        if (item == changedItem) continue;
-
-                        if (e.PropertyName == nameof(CifColorItem.R)) item.R = changedItem.R;
-                        else if (e.PropertyName == nameof(CifColorItem.G)) item.G = changedItem.G;
-                        else if (e.PropertyName == nameof(CifColorItem.B)) item.B = changedItem.B;
-                    }
-
-                    _isSyncingMultiselect = false;
-                }
-
                 RequestRender();
                 CheckForColorMerge(sender as CifColorItem);
             }
         }
 
+        /// <summary>
+        /// Checks for color merge.
+        /// </summary>
+        /// <param name="changedItem">The changed item.</param>
         private void CheckForColorMerge(CifColorItem? changedItem)
         {
             if (changedItem == null || CifSource == null) return;
@@ -299,7 +306,7 @@ namespace Common.Images
                 p.G == changedItem.G &&
                 p.B == changedItem.B);
 
-            if (match != null)
+            if (match is { })
             {
                 // Note: To implement a full merge, you would need a method in your Cif class
                 // that remaps the pixel indices from changedItem.SourceColor to match.SourceColor.
@@ -464,7 +471,7 @@ namespace Common.Images
             if (string.IsNullOrEmpty(target?.FilePath)) return;
 
             using var bitmap = CifSource.GetImage();
-            if (bitmap != null)
+            if (bitmap is { })
             {
                 if (CifSource.Compressed)
                     _customFormat.GenerateCifCompressedFromBitmap(bitmap, target.FilePath);
@@ -512,6 +519,20 @@ namespace Common.Images
         /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void PaletteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            _currentSelection = PaletteListBox.SelectedItems.Cast<CifColorItem>().ToList();
+
+            // Bei neuer Auswahl die Slider auf die Werte der primär gewählten Farbe setzen
+            if (SelectedPaletteItem != null)
+            {
+                _isUpdatingSliders = true;
+                EditRSlider.Value = SelectedPaletteItem.R;
+                EditGSlider.Value = SelectedPaletteItem.G;
+                EditBSlider.Value = SelectedPaletteItem.B;
+                _isUpdatingSliders = false;
+
+                UpdatePreviewColor();
+            }
+
             if (IsIsolationEnabled)
             {
                 RequestRender();
@@ -519,9 +540,11 @@ namespace Common.Images
         }
 
         /// <summary>
-        ///     Snaps a global channel offset slider back to 0 on double-click - a quick, discoverable
-        ///     way to undo a single channel without having to hit the full "Reset Image" button.
+        /// Snaps a global channel offset slider back to 0 on double-click - a quick, discoverable
+        /// way to undo a single channel without having to hit the full "Reset Image" button.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
         private void OffsetSlider_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is Slider slider)
@@ -553,6 +576,63 @@ namespace Common.Images
             }
 
             RequestRender();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ApplyColorEdit control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        private void ApplyColorEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentSelection.Count == 0) return;
+
+            var r = (byte)EditRSlider.Value;
+            var g = (byte)EditGSlider.Value;
+            var b = (byte)EditBSlider.Value;
+
+            _isBulkUpdating = true;
+
+            foreach (var item in _currentSelection)
+            {
+                item.R = r;
+                item.G = g;
+                item.B = b;
+            }
+
+            _isBulkUpdating = false;
+
+            RequestRender();
+
+            foreach (var item in _currentSelection.ToList())
+            {
+                CheckForColorMerge(item);
+            }
+        }
+
+        /// <summary>
+        /// Handles the ValueChanged event of the EditSlider control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.RoutedPropertyChangedEventArgs{double}"/> instance containing the event data.</param>
+        /// <returns></returns>
+        private void EditSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_isUpdatingSliders) return;
+            UpdatePreviewColor();
+        }
+
+        /// <summary>
+        /// Updates the color of the preview.
+        /// </summary>
+        /// <returns></returns>
+        private void UpdatePreviewColor()
+        {
+            if (PreviewBrush == null) return;
+            var r = (byte)EditRSlider.Value;
+            var g = (byte)EditGSlider.Value;
+            var b = (byte)EditBSlider.Value;
+            PreviewBrush.Color = System.Windows.Media.Color.FromRgb(r, g, b);
         }
     }
 }

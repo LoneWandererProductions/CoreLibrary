@@ -30,7 +30,7 @@ namespace Communication.Tests
         public async Task SendAsync_ShouldLogRequestAndResponseToTrace_AndReturnCorrectResponse()
         {
             // Arrange
-            using var stringWriter = new StringWriter();
+            await using var stringWriter = new StringWriter();
             using var traceListener = new TextWriterTraceListener(stringWriter);
             Trace.Listeners.Add(traceListener);
 

@@ -805,6 +805,110 @@ namespace Imaging.Helpers
         }
 
         /// <summary>
+        ///     Draws a whole batch of pencil/eraser dabs in place: one <c>LockBits</c>, direct row writes,
+        ///     no copies of the image. Consecutive points (and the last point of the previous batch, if
+        ///     supplied) are connected by stamping along the segment, so fast drags don't leave gaps.
+        ///     The colour is written as-is (straight ARGB), so <see cref="Color.Transparent" /> erases.
+        /// </summary>
+        /// <param name="image">The image. Modified in place and returned.</param>
+        /// <param name="points">The points of this batch, in order.</param>
+        /// <param name="previous">Last point of the previous batch of the same stroke, or null at stroke start.</param>
+        /// <param name="color">The colour (or Transparent for the eraser).</param>
+        /// <param name="radius">The brush radius in pixels (0 = single pixel).</param>
+        /// <returns>The same bitmap instance.</returns>
+        internal static Bitmap? DrawStroke(Bitmap? image, IReadOnlyList<Point> points, Point? previous, Color color,
+            int radius)
+        {
+            ImageHelper.ValidateImage(nameof(DrawStroke), image);
+
+            if (points == null || points.Count == 0) return image;
+
+            radius = Math.Max(0, radius);
+            var width = image!.Width;
+            var height = image.Height;
+            var packed = color.ToArgb();
+
+            // Half-width of the disc for every row offset, computed once per batch.
+            var halfWidths = new int[(radius * 2) + 1];
+            for (var dy = -radius; dy <= radius; dy++)
+            {
+                halfWidths[dy + radius] = (int)Math.Sqrt((radius * radius) - (dy * dy));
+            }
+
+            var data = image.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite,
+                PixelFormat.Format32bppArgb);
+
+            try
+            {
+                unsafe
+                {
+                    var scan0 = (byte*)data.Scan0;
+                    var stride = data.Stride;
+                    var step = Math.Max(1.0, radius * 0.35);
+                    var last = previous;
+
+                    foreach (var point in points)
+                    {
+                        if (last is null)
+                        {
+                            StampDisc(scan0, stride, width, height, point.X, point.Y, radius, halfWidths, packed);
+                        }
+                        else
+                        {
+                            var start = last.Value;
+                            double dx = point.X - start.X;
+                            double dy = point.Y - start.Y;
+                            var dist = Math.Sqrt((dx * dx) + (dy * dy));
+                            var n = (int)Math.Ceiling(dist / step);
+
+                            // i starts at 1: the start of the segment was stamped by the previous point.
+                            for (var i = 1; i <= n; i++)
+                            {
+                                var t = i / (double)n;
+                                StampDisc(scan0, stride, width, height,
+                                    (int)Math.Round(start.X + (dx * t)),
+                                    (int)Math.Round(start.Y + (dy * t)),
+                                    radius, halfWidths, packed);
+                            }
+                        }
+
+                        last = point;
+                    }
+                }
+            }
+            finally
+            {
+                image.UnlockBits(data);
+            }
+
+            return image;
+        }
+
+        /// <summary>
+        ///     Writes one filled disc into locked 32bpp ARGB memory, clipped to the image.
+        /// </summary>
+        private static unsafe void StampDisc(byte* scan0, int stride, int width, int height, int cx, int cy,
+            int radius, int[] halfWidths, int packedColor)
+        {
+            for (var dy = -radius; dy <= radius; dy++)
+            {
+                var y = cy + dy;
+                if ((uint)y >= (uint)height) continue;
+
+                var half = halfWidths[dy + radius];
+                var x0 = Math.Max(0, cx - half);
+                var x1 = Math.Min(width - 1, cx + half);
+                if (x0 > x1) continue;
+
+                var row = (int*)(scan0 + ((long)y * stride));
+                for (var x = x0; x <= x1; x++)
+                {
+                    row[x] = packedColor;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Fills the area with color.
         /// </summary>
         /// <param name="image">The image.</param>

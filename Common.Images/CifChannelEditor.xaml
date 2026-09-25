@@ -47,7 +47,7 @@
             squeezed into a 320px-wide side panel - three buttons say the same thing more plainly
             and match the rest of the app's action-button footers.
         -->
-        <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource SidePanelCardStyle}"
+        <Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Style="{StaticResource SidePanelCardStyle}"
                 Padding="8" Margin="0,0,0,12">
             <StackPanel Orientation="Horizontal">
                 <Button Content="📂 Load CIF..." Padding="8,4" Margin="0,0,6,0" Click="LoadCif_Click"
@@ -227,9 +227,10 @@
                         <Border Margin="0,10,0,0" Padding="8" BorderThickness="1"
                                 BorderBrush="{StaticResource BorderSubtleBrush}"
                                 Background="{StaticResource InputBrush}" CornerRadius="4"
-                                Visibility="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibilityConverter}}">
-                            <StackPanel
-                                DataContext="{Binding Path=SelectedPaletteItem, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                Visibility="{Binding Path=SelectedPaletteItem,
+                     RelativeSource={RelativeSource AncestorType=UserControl},
+                     Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel>
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -237,15 +238,16 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Edit Selected Color" FontWeight="SemiBold"
                                                VerticalAlignment="Center" />
-                                    <!-- Live preview of the color as edited, not just three separate numbers. -->
+                                    <!-- Vorschau-Box der neu eingestellten Farbe -->
                                     <Border Grid.Column="1" Width="24" Height="24" CornerRadius="3"
                                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                                         <Border.Background>
-                                            <SolidColorBrush Color="{Binding DisplayColor}" />
+                                            <SolidColorBrush x:Name="PreviewBrush" Color="Black" />
                                         </Border.Background>
                                     </Border>
                                 </Grid>
 
+                                <!-- R Slider -->
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="16" />
@@ -254,13 +256,15 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="R" Foreground="#FFE06C6C"
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
-                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding R, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                                            Margin="6,0" />
-                                    <TextBlock Grid.Column="2" Text="{Binding R}" VerticalAlignment="Center"
+                                    <Slider Grid.Column="1" x:Name="EditRSlider" Minimum="0" Maximum="255"
+                                            ValueChanged="EditSlider_ValueChanged" Margin="6,0" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding Value, ElementName=EditRSlider, StringFormat={}{0:0}}"
+                                               VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
 
+                                <!-- G Slider -->
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="16" />
@@ -269,13 +273,15 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="G" Foreground="#FF7CC47C"
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
-                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding G, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                                            Margin="6,0" />
-                                    <TextBlock Grid.Column="2" Text="{Binding G}" VerticalAlignment="Center"
+                                    <Slider Grid.Column="1" x:Name="EditGSlider" Minimum="0" Maximum="255"
+                                            ValueChanged="EditSlider_ValueChanged" Margin="6,0" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding Value, ElementName=EditGSlider, StringFormat={}{0:0}}"
+                                               VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
 
+                                <!-- B Slider -->
                                 <Grid Margin="0,2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="16" />
@@ -284,12 +290,17 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="B" Foreground="#FF6C9CE0"
                                                VerticalAlignment="Center" FontWeight="SemiBold" />
-                                    <Slider Grid.Column="1" Minimum="0" Maximum="255"
-                                            Value="{Binding B, UpdateSourceTrigger=PropertyChanged, Delay=100}"
-                                            Margin="6,0" />
-                                    <TextBlock Grid.Column="2" Text="{Binding B}" VerticalAlignment="Center"
+                                    <Slider Grid.Column="1" x:Name="EditBSlider" Minimum="0" Maximum="255"
+                                            ValueChanged="EditSlider_ValueChanged" Margin="6,0" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding Value, ElementName=EditBSlider, StringFormat={}{0:0}}"
+                                               VerticalAlignment="Center"
                                                FontFamily="Consolas" />
                                 </Grid>
+
+                                <Button Content="✅ Apply" Click="ApplyColorEdit_Click" Margin="0,8,0,0"
+                                        Padding="6,4" HorizontalAlignment="Stretch"
+                                        ToolTip="Applies the selected RGB values to all selected colors" />
                             </StackPanel>
                         </Border>
 

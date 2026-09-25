@@ -427,7 +427,7 @@ namespace Common.Images
                 return;
             }
 
-            if (control?._refresh != true)
+            if (control == null || !control._refresh)
             {
                 return;
             }
@@ -499,7 +499,7 @@ namespace Common.Images
 
             // 2. WAIT for the previous run to finish or acknowledge cancellation
             // This prevents "Double-Loading" and collection collisions
-            if (_loadingTask != null)
+            if (_loadingTask is { })
             {
                 try
                 {
@@ -541,7 +541,7 @@ namespace Common.Images
                 _originalHeight = ThumbHeight;
 
                 // Start loading images asynchronously
-                if (ItemsSource != null)
+                if (ItemsSource is { })
                 {
                     _ = LoadItemsAsync();
                 }
@@ -685,7 +685,7 @@ namespace Common.Images
                 // Re-pack once every thumbnail is in: individual late arrivals were already hidden
                 // above as they loaded, but only a full pass over the finished set can move the
                 // remaining visible ones back into one contiguous block.
-                if (_activeFilter != null)
+                if (_activeFilter is { })
                 {
                     await Dispatcher.InvokeAsync(() => ApplyFilter(_activeFilter));
                 }
@@ -799,7 +799,7 @@ namespace Common.Images
                 // Loading is async and out-of-order, so a thumbnail can land here well after a
                 // search/filter was applied. Without this, it always shows up regardless of
                 // whether it matches, which is what made non-matching thumbnails "stick around".
-                if (_activeFilter?.Invoke(filePath) == false)
+                if (_activeFilter is { } && !_activeFilter(filePath))
                 {
                     cellContainer.Visibility = Visibility.Collapsed;
                 }
@@ -1005,7 +1005,7 @@ namespace Common.Images
         ///     Next/Previous navigation consistent with what's actually on screen while a filter is
         ///     active, instead of stepping through items the user can't even see.
         /// </summary>
-        public List<int> GetVisibleIds()
+        public List<int>? GetVisibleIds()
         {
             if (Border == null) return
             []
@@ -1050,7 +1050,7 @@ namespace Common.Images
 
             // "Open in Explorer" doesn't need any external wiring - the file path is right here
             // in ItemsSource, so the control can just launch it itself.
-            if (ItemsSource?.ContainsKey(value) == true)
+            if (ItemsSource is { } && ItemsSource.ContainsKey(value))
             {
                 _ = cm.Items.Add(new Separator());
 
@@ -1062,7 +1062,7 @@ namespace Common.Images
             // "Delete Selected" only shows up when the host has actually wired a command for it
             // (currently the duplicate/similar-image compare view) - the main thumb strip has no
             // equivalent multi-select delete concept, so it simply won't appear there.
-            if (DeleteSelectedCommand != null)
+            if (DeleteSelectedCommand is { })
             {
                 menuItem = new MenuItem { Header = ComCtlResources.ContextDeleteSelected };
                 menuItem.Click += DeleteSelected_Click;
@@ -1256,7 +1256,7 @@ namespace Common.Images
         private void UpdateSelectedBorder(Border? newSelectedBorder)
         {
             // Remove the "selected" style from the previously selected border
-            if (_currentSelectedBorder != null)
+            if (_currentSelectedBorder is { })
             {
                 _currentSelectedBorder.BorderBrush = Brushes.Transparent; // Reset previous border
                 _currentSelectedBorder.BorderThickness = new Thickness(0); // Reset thickness

@@ -39,7 +39,7 @@ namespace Common.ExtendedObject.Tests
 
                 // Reallocate to a bigger size
                 const int newCount = 20;
-                var newPtr = UnmanagedMemoryHelper.Reallocate<int>(ptr, newCount);
+                var newPtr = UnmanagedMemoryHelper.Reallocate(ptr, newCount);
                 Assert.IsTrue(newPtr != null, "Reallocation failed; pointer is null.");
                 ptr = newPtr;
 
@@ -86,7 +86,7 @@ namespace Common.ExtendedObject.Tests
                 }
 
                 // Clear using pure pointer arithmetic
-                UnmanagedMemoryHelper.Clear<int>(ptr, count);
+                UnmanagedMemoryHelper.Clear(ptr, count);
 
                 // Assert zero-init block
                 for (var i = 0; i < count; i++)

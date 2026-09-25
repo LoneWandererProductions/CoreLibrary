@@ -526,6 +526,12 @@ namespace Imaging
         }
 
         /// <inheritdoc />
+        public Bitmap? DrawStroke(Bitmap? image, IReadOnlyList<Point> points, Point? previous, Color color, int radius)
+        {
+            return ImageStream.DrawStroke(image, points, previous, color, radius);
+        }
+
+        /// <inheritdoc />
         /// <summary>
         ///     Fills the color of the area with.
         /// </summary>

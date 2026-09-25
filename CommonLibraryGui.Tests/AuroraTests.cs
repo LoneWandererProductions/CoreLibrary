@@ -364,12 +364,10 @@ namespace CommonLibraryGui.Tests
             }
 
             // Open with FileShare.ReadWrite to prevent locking issues
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                // We create a copy so the stream can be closed immediately
-                var bitmap = new Bitmap(stream);
-                return new Bitmap(bitmap);
-            }
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            // We create a copy so the stream can be closed immediately
+            var bitmap = new Bitmap(stream);
+            return new Bitmap(bitmap);
         }
     }
 }

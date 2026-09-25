@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedType.Global
+
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -13,10 +16,11 @@ using System.Windows.Media;
 
 namespace Common.Converter
 {
+    /// <inheritdoc />
     /// <summary>
     /// Converter that converts a boolean value to a color for WPF bindings. It returns Gold for true (active) and Dark Gray for false (inactive).
     /// </summary>
-    /// <seealso cref="System.Windows.Data.IValueConverter" />
+    /// <seealso cref="T:System.Windows.Data.IValueConverter" />
     public class ActiveToColorConverter : IValueConverter
     {
         /// <summary>
@@ -35,6 +39,7 @@ namespace Common.Converter
         /// </value>
         public Brush InactiveBrush { get; set; } = new SolidColorBrush(Color.FromRgb(60, 60, 60));
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -47,7 +52,7 @@ namespace Common.Converter
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool and true)
+            if (value is true)
             {
                 return ActiveBrush; // Gold for Active
             }
@@ -55,6 +60,7 @@ namespace Common.Converter
             return InactiveBrush; // Dark Gray for Inactive
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Converts a value.
         /// </summary>

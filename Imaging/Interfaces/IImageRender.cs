@@ -374,6 +374,17 @@ namespace Imaging.Interfaces
         Bitmap? SetPixel(Bitmap? image, Point point, Color color, int radius);
 
         /// <summary>
+        ///     Draws a batch of pencil/eraser dabs in place (no image copies) and connects the points.
+        /// </summary>
+        /// <param name="image">The image, modified in place.</param>
+        /// <param name="points">The points of this batch.</param>
+        /// <param name="previous">Last point of the previous batch of the same stroke, or null.</param>
+        /// <param name="color">The colour (Transparent erases).</param>
+        /// <param name="radius">The brush radius.</param>
+        /// <returns>The same bitmap instance.</returns>
+        Bitmap? DrawStroke(Bitmap? image, IReadOnlyList<Point> points, Point? previous, Color color, int radius);
+
+        /// <summary>
         ///     Fills the area with color.
         /// </summary>
         /// <param name="image">The image.</param>

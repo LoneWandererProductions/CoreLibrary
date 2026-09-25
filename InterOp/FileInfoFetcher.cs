@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable UnusedType.Global
+// ReSharper disable InconsistentNaming
+// ReSharper disable MemberCanBeInternal
 
 using System;
 using System.Collections.Generic;

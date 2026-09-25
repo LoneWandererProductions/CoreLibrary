@@ -132,7 +132,7 @@ namespace Imaging.Objects
         ///     Composites the layers.
         /// </summary>
         /// <param name="layerIndices">The layer indices.</param>
-        /// <returns></returns>
+        /// <returns>Merged layers inot my UnmanagedImageffer.</returns>
         /// <exception cref="ArgumentOutOfRangeException">layerIndices</exception>
         public UnmanagedImageBuffer CompositeLayers(IEnumerable<int> layerIndices)
         {
@@ -193,48 +193,11 @@ namespace Imaging.Objects
         /// </summary>
         /// <param name="baseSpan">The base span.</param>
         /// <param name="overlaySpan">The overlay span.</param>
-        private static unsafe void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
+        private static void AlphaBlend(Span<byte> baseSpan, Span<byte> overlaySpan)
         {
-            var length = baseSpan.Length;
-
-            // Pin the spans in memory so we can use raw pointers for maximum speed
-            fixed (byte* pBase = baseSpan)
-            fixed (byte* pOverlay = overlaySpan)
-            {
-                for (var i = 0; i < length; i += 4)
-                {
-                    int srcA = pOverlay[i + 3];
-
-                    // 1. Fast Path: Fully Transparent Overlay
-                    if (srcA == 0) continue;
-
-                    // 2. Fast Path: Fully Opaque Overlay (Just overwrite the base pixel)
-                    if (srcA == 255)
-                    {
-                        // Cast to an integer pointer to copy all 4 bytes (BGRA) in a single CPU tick
-                        *(int*)(pBase + i) = *(int*)(pOverlay + i);
-                        continue;
-                    }
-
-                    // 3. Integer Math Porter-Duff Composition
-                    int dstA = pBase[i + 3];
-                    var invSrcA = 255 - srcA;
-
-                    // Calculate the output alpha scaled by 255
-                    var outA = (srcA * 255) + (dstA * invSrcA);
-                    if (outA == 0) continue;
-
-                    // Calculate color channels (Numerator / Denominator)
-                    // Maximum value of numerator is ~33 million, which fits perfectly inside a standard 32-bit int
-                    pBase[i] = (byte)(((pOverlay[i] * srcA * 255) + (pBase[i] * dstA * invSrcA)) / outA); // Blue
-                    pBase[i + 1] =
-                        (byte)(((pOverlay[i + 1] * srcA * 255) + (pBase[i + 1] * dstA * invSrcA)) / outA); // Green
-                    pBase[i + 2] =
-                        (byte)(((pOverlay[i + 2] * srcA * 255) + (pBase[i + 2] * dstA * invSrcA)) / outA); // Red
-
-                    pBase[i + 3] = (byte)(outA / 255); // Alpha
-                }
-            }
+            // The integer Porter-Duff loop now lives in AlphaBlender so the document renderer shares it
+            // (it additionally understands layer opacity; 255 = the behaviour this method always had).
+            AlphaBlender.Over(baseSpan, overlaySpan);
         }
     }
 }

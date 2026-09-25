@@ -89,6 +89,29 @@ namespace Imaging
 
         /// <summary>
         ///     Extension Method
+        ///     Converts any BitmapSource (e.g. the frozen WriteableBitmap used for display) to a Bitmap.
+        /// </summary>
+        /// <param name="bmp">The BitmapSource.</param>
+        /// <returns>A Bitmap</returns>
+        public static Bitmap? ToBitmap(this BitmapSource bmp)
+        {
+            return ImageStreamMedia.BitmapSourceToBitmap(bmp);
+        }
+
+        /// <summary>
+        ///     Extension Method
+        ///     Converts a Bitmap to a frozen BitmapSource without the PNG round-trip
+        ///     <see cref="ToBitmapImage(Bitmap?)" /> does. Use this for display.
+        /// </summary>
+        /// <param name="bmp">The Bitmap.</param>
+        /// <returns>A frozen BitmapSource</returns>
+        public static BitmapSource? ToBitmapSource(this Bitmap? bmp)
+        {
+            return ImageStreamMedia.BitmapToDisplaySource(bmp);
+        }
+
+        /// <summary>
+        ///     Extension Method
         ///     Converts Image to BitmapImage.
         /// </summary>
         /// <param name="image">The image.</param>

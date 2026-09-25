@@ -126,7 +126,7 @@ namespace Imaging
         {
             get
             {
-                if (_cachedImage != null)
+                if (_cachedImage is { })
                 {
                     return _cachedImage;
                 }
@@ -309,7 +309,7 @@ namespace Imaging
         /// <returns>A BitmapImage.</returns>
         private BitmapImage? ConvertImage()
         {
-            if (_cachedImage != null) return _cachedImage;
+            if (_cachedImage is { }) return _cachedImage;
 
             // 1. Ensure the WriteableBitmap is ready
             // (Assuming _bitmap is your WriteableBitmap instance)

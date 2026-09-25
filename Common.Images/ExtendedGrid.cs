@@ -115,7 +115,7 @@ namespace Common.Images
 #endif
             };
 
-            if (columnWidths != null)
+            if (columnWidths is { })
             {
                 foreach (var colWidth in columnWidths)
                 {
@@ -130,7 +130,7 @@ namespace Common.Images
                 }
             }
 
-            if (rowHeights != null)
+            if (rowHeights is { })
             {
                 foreach (var rowHeight in rowHeights)
                 {

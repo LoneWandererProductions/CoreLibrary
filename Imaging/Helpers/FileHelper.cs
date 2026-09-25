@@ -43,7 +43,7 @@ namespace Imaging.Helpers
             foreach (var ext in extensions)
             {
                 var files = GetFilesByExtension(path, ext);
-                if (files != null)
+                if (files is { })
                     result.AddRange(files);
             }
 

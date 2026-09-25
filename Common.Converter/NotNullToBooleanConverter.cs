@@ -33,7 +33,7 @@ namespace Common.Converter
         /// A converted value. If the method returns <see langword="null" />, the valid null value is used.
         /// </returns>
         public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
-            => value != null;
+            => value is { };
 
         /// <inheritdoc />
         /// <summary>

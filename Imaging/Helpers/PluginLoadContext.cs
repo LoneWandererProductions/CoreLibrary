@@ -59,7 +59,7 @@ namespace Imaging.Helpers
             var assemblyPath =
                 _resolver.ResolveAssemblyToPath(assemblyName);
 
-            if (assemblyPath != null)
+            if (assemblyPath is { })
             {
                 return LoadFromAssemblyPath(assemblyPath);
             }
@@ -82,7 +82,7 @@ namespace Imaging.Helpers
             Trace.WriteLine(
                 $"[PluginLoadContext] Native dependency resolved to: {libraryPath ?? "<not found>"}");
 
-            if (libraryPath != null)
+            if (libraryPath is { })
             {
                 return LoadUnmanagedDllFromPath(libraryPath);
             }

@@ -146,7 +146,7 @@ namespace Common.Images
         /// </summary>
         public List<SelectionFrame> GetCommittedFrames()
         {
-            if (FreeFormPoints.Count > 0 || (_startPoint.HasValue && _endPoint.HasValue))
+            if (FreeFormPoints.Count > 0 || (_startPoint is { } && _endPoint is { }))
             {
                 CommitCurrentFrame();
             }
@@ -213,7 +213,7 @@ namespace Common.Images
             }
 
             // Render active shape being drawn
-            if (_startPoint.HasValue && _endPoint.HasValue)
+            if (_startPoint is { } && _endPoint is { })
             {
                 var vStart = _imageTransform.Transform(_startPoint.Value);
                 var vEnd = _imageTransform.Transform(_endPoint.Value);
@@ -307,7 +307,7 @@ namespace Common.Images
                     height = (int)(maxY - minY);
                 }
             }
-            else if (_startPoint.HasValue && _endPoint.HasValue)
+            else if (_startPoint is { } && _endPoint is { })
             {
                 var selectionRect = new Rect(_startPoint.Value, _endPoint.Value);
                 x = (int)selectionRect.X;
@@ -315,7 +315,7 @@ namespace Common.Images
                 width = (int)selectionRect.Width;
                 height = (int)selectionRect.Height;
             }
-            else if (Tool == ImageZoomTools.Dot && _startPoint.HasValue)
+            else if (Tool == ImageZoomTools.Dot && _startPoint is { })
             {
                 x = (int)_startPoint.Value.X;
                 y = (int)_startPoint.Value.Y;

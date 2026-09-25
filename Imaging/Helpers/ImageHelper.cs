@@ -210,7 +210,7 @@ namespace Imaging.Helpers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, Bitmap? image)
         {
-            if (image != null)
+            if (image is { })
             {
                 return;
             }
@@ -229,7 +229,7 @@ namespace Imaging.Helpers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ValidateImage(string method, BitmapImage image)
         {
-            if (image != null)
+            if (image is { })
             {
                 return;
             }
@@ -330,7 +330,7 @@ namespace Imaging.Helpers
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                var innerException = path != null
+                var innerException = path is { }
                     ? new IOException(string.Concat(nameof(path), ImagingResources.Spacing, path))
                     : new IOException(nameof(path));
                 throw new IOException(ImagingResources.ErrorFileNotFound, innerException);

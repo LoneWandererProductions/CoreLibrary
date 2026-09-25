@@ -27,7 +27,7 @@ namespace ViewModel
         /// <summary>
         ///     The predicate to determine if the command can execute.
         /// </summary>
-        private readonly Predicate<T> _canExecute;
+        private readonly Predicate<T>? _canExecute;
 
         /// <summary>
         ///     The action to execute.
@@ -45,13 +45,13 @@ namespace ViewModel
         private bool _isExecuting;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AsyncDelegateCommand{T}" /> class.
+        /// Initializes a new instance of the <see cref="AsyncDelegateCommand{T}" /> class.
         /// </summary>
         /// <param name="execute">The asynchronous action to execute.</param>
-        /// <param name="canExecute">
-        ///     A predicate to determine if the command can execute. If null, the command is always
-        ///     executable.
-        /// </param>
+        /// <param name="canExecute">A predicate to determine if the command can execute. If null, the command is always
+        /// executable.</param>
+        /// <param name="onException">The on exception.</param>
+        /// <exception cref="System.ArgumentNullException">execute</exception>
         /// <exception cref="ArgumentNullException">Thrown when the execute action is null.</exception>
         public AsyncDelegateCommand(Func<T, Task> execute, Predicate<T>? canExecute = null,
             Action<Exception>? onException = null)

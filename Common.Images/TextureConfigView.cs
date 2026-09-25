@@ -239,7 +239,7 @@ namespace Common.Images
 
                 // Sync values from Facade for the new selection
                 var config = ImagingFacade.GetTextureSettings(value);
-                if (config != null) LoadFromConfig(config);
+                if (config is { }) LoadFromConfig(config);
 
                 UpdateActiveProperties();
             }

@@ -112,7 +112,7 @@ namespace Common.Dialogs
             {
                 if (SetProperty(ref _selectedFolder, value))
                 {
-                    if (value != null && Directory.Exists(value.Path))
+                    if (value is { } && Directory.Exists(value.Path))
                     {
                         Paths = value.Path;
                     }
@@ -423,7 +423,8 @@ namespace Common.Dialogs
 
                 // Detect root (C:\, D:\, etc.)
                 var root = Path.GetPathRoot(full);
-                if (root?.Equals(full, StringComparison.OrdinalIgnoreCase) == true)
+                if (root is { } &&
+                    root.Equals(full, StringComparison.OrdinalIgnoreCase))
                 {
                     return null; // No parent above root
                 }

@@ -6,25 +6,28 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System.Drawing;
 using Imaging.Plugins.Interface;
 using Imazen.WebP;
 
 namespace Imaging.Plugins
 {
+    /// <inheritdoc cref="IImageDecoderPlugin" />
     /// <summary>
     ///     Decodes WebP images using the lightweight Imazen.WebP micro-library.
     /// </summary>
     public sealed class WebPDecoderPlugin : IImageDecoderPlugin, IImageEncoderPlugin
     {
-        /// <inheritdoc />
+        /// <inheritdoc cref="IImageDecoderPlugin" />
         public string Name => "WebP Decoder";
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IImageDecoderPlugin" />
         public IReadOnlyCollection<string?> SupportedExtensions { get; } = new[] { ".webp" };
 
         /// <inheritdoc />
-        public bool CanDecode(byte[] header)
+        public bool CanDecode(byte[]? header)
         {
             // A WebP file must be at least 12 bytes long to check RIFF + Webp container markers
             if (header == null || header.Length < 12)
@@ -68,8 +71,8 @@ namespace Imaging.Plugins
             using var stream = File.Create(path);
 
             // Encode the bitmap to WebP.
-            // Die Qualität kann von 0 (schlechteste) bis 100 (beste, verlustbehaftet) gewählt werden. 
-            // -1 würde "Lossless" (verlustfrei) bedeuten.
+            // The quality can be set from 0 (worst) to 100 (best, lossy).
+            // -1 would mean “lossless.”
             encoder.Encode(bitmap, stream, 90);
         }
     }

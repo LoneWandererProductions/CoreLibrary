@@ -126,7 +126,7 @@ namespace Imaging.Gifs
         private async void LoadGifAsync(string? path)
         {
             // 1. Check for null before cancelling
-            if (_loaderCts != null)
+            if (_loaderCts is { })
             {
                 await _loaderCts.CancelAsync();
                 _loaderCts.Dispose(); // Clean up the old instance

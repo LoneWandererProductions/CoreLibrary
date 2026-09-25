@@ -44,7 +44,7 @@ namespace Imaging.Cifs
                     }
 
                     // Ensure Start and End are not null before casting
-                    if (sequence.Value.Start.HasValue && sequence.Value.End.HasValue)
+                    if (sequence.Value.Start is { } && sequence.Value.End is { })
                     {
                         for (var id = sequence.Value.Start.Value; id <= sequence.Value.End.Value; id++)
                         {

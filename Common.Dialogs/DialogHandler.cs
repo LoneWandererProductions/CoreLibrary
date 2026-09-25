@@ -57,8 +57,7 @@ namespace Common.Dialogs
                 folder = Directory.GetCurrentDirectory();
             }
 
-            var browser = new FolderBrowser(folder);
-            browser.Topmost = true;
+            var browser = new FolderBrowser(folder) { Topmost = true };
             _ = browser.ShowDialog();
 
             return browser.Root;
@@ -120,7 +119,7 @@ namespace Common.Dialogs
                 }
             }
 
-            if (dispatcher != null)
+            if (dispatcher is { })
             {
                 dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(ShowDialogAction));
             }

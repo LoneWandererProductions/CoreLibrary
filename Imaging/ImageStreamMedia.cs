@@ -118,6 +118,81 @@ namespace Imaging
         }
 
         /// <summary>
+        /// Converts a <see cref="BitmapSource"/> (including a <see cref="WriteableBitmap"/>) to a
+        /// System.Drawing <see cref="Bitmap"/>. Same as <see cref="BitmapImageToBitmap"/> but accepts
+        /// any <see cref="BitmapSource"/>.
+        /// </summary>
+        internal static Bitmap? BitmapSourceToBitmap(BitmapSource image)
+        {
+            ArgumentNullException.ThrowIfNull(image);
+
+            using var ms = new MemoryStream();
+            var enc = new BmpBitmapEncoder();
+            enc.Frames.Add(BitmapFrame.Create(image));
+            enc.Save(ms);
+
+            ms.Position = 0;
+
+            using var tmp = new Bitmap(ms);
+            return new Bitmap(tmp);
+        }
+
+        /// <summary>
+        /// Builds a frozen <see cref="WriteableBitmap"/> (Bgra32) straight from the GDI+ pixels:
+        /// one memory copy, no PNG encode/decode. <see cref="BitmapToBitmapImage"/> pushes every
+        /// image through <see cref="PngBitmapEncoder"/> and back, which for a large image costs far
+        /// more than the pencil stroke that triggered it.
+        /// </summary>
+        /// <param name="bitmap">The source bitmap.</param>
+        /// <returns>A frozen <see cref="BitmapSource"/> that is safe to hand to the UI thread.</returns>
+        internal static BitmapSource? BitmapToDisplaySource(Bitmap? bitmap)
+        {
+            ImageHelper.ValidateImage(nameof(BitmapToDisplaySource), bitmap);
+
+            var width = bitmap!.Width;
+            var height = bitmap.Height;
+
+            var wbmp = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+            var data = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
+
+            try
+            {
+                wbmp.Lock();
+                try
+                {
+                    unsafe
+                    {
+                        var src = (byte*)data.Scan0;
+                        var dst = (byte*)wbmp.BackBuffer;
+                        var rowBytes = (long)width * 4;
+
+                        // Strides can differ (GDI+ rows are 4-byte aligned, WriteableBitmap's are too for
+                        // 32bpp, but don't rely on it) - copy row by row.
+                        for (var y = 0; y < height; y++)
+                        {
+                            Buffer.MemoryCopy(src + (long)y * data.Stride, dst + (long)y * wbmp.BackBufferStride,
+                                rowBytes, rowBytes);
+                        }
+                    }
+
+                    wbmp.AddDirtyRect(new Int32Rect(0, 0, width, height));
+                }
+                finally
+                {
+                    wbmp.Unlock();
+                }
+            }
+            finally
+            {
+                bitmap.UnlockBits(data);
+            }
+
+            wbmp.Freeze();
+            return wbmp;
+        }
+
+        /// <summary>
         /// Converts a <see cref="BitmapImage"/> to a System.Drawing <see cref="Bitmap"/>.
         /// </summary>
         /// <param name="image">Source image.</param>

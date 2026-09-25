@@ -70,7 +70,7 @@ namespace Imaging
         /// <param name="image">The image in question.</param>
         public DirectBitmap(Image? image)
         {
-            if (image != null)
+            if (image is { })
             {
                 Width = image.Width;
                 Height = image.Height;
@@ -387,7 +387,7 @@ namespace Imaging
                 var rowStart = y * Width;
                 for (var i = x; i < endX; i++)
                 {
-                    if (Bits != null) Bits[rowStart + i] = colorPixel;
+                    if (Bits is { }) Bits[rowStart + i] = colorPixel;
                 }
             }
         }
@@ -413,7 +413,7 @@ namespace Imaging
 
                     for (var x = x1; x < x1 + width && x < Width; x++)
                     {
-                        if (Bits != null) Bits[rowStart + x] = colorPixel;
+                        if (Bits is { }) Bits[rowStart + x] = colorPixel;
                     }
                 }
             }

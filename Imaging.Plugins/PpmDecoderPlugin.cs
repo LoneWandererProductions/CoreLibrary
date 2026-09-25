@@ -10,6 +10,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable UnusedType.Global
+
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -18,6 +20,7 @@ using Imaging.Plugins.Interface;
 
 namespace Imaging.Plugins
 {
+    /// <inheritdoc cref="IImageDecoderPlugin" />
     /// <summary>
     ///     Decodes binary PPM (Netpbm "P6") images.
     /// </summary>
@@ -29,14 +32,14 @@ namespace Imaging.Plugins
     /// </remarks>
     public sealed class PpmDecoderPlugin : IImageDecoderPlugin, IImageEncoderPlugin
     {
-        /// <inheritdoc />
+        /// <inheritdoc cref="IImageDecoderPlugin" />
         public string Name => "PPM (Netpbm P6) decoder";
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IImageDecoderPlugin" />
         public IReadOnlyCollection<string?> SupportedExtensions { get; } = new[] { ".ppm" };
 
         /// <inheritdoc />
-        public bool CanDecode(byte[] header)
+        public bool CanDecode(byte[]? header)
         {
             // A binary PPM file must be at least 3 bytes long and start with "P6"
             // followed by a whitespace character (space, tab, newline, or carriage return).
@@ -51,7 +54,7 @@ namespace Imaging.Plugins
         }
 
         /// <inheritdoc />
-        public Bitmap? Decode(byte[] data)
+        public Bitmap Decode(byte[] data)
         {
             using var stream = new MemoryStream(data);
 
@@ -96,7 +99,7 @@ namespace Imaging.Plugins
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>Normal Bitmap</returns>
-        private static Bitmap ToBitmap(byte[] rgb, int width, int height)
+        private static Bitmap ToBitmap(IReadOnlyList<byte> rgb, int width, int height)
         {
             var bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
             var bits = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly,
@@ -110,8 +113,8 @@ namespace Imaging.Plugins
                 {
                     // No row padding - swap R/B (PPM is RGB, 24bppRgb is stored BGR)
                     // in one pass and copy the whole buffer at once.
-                    var bgr = new byte[rgb.Length];
-                    for (var i = 0; i < rgb.Length; i += 3)
+                    var bgr = new byte[rgb.Count];
+                    for (var i = 0; i < rgb.Count; i += 3)
                     {
                         bgr[i] = rgb[i + 2];
                         bgr[i + 1] = rgb[i + 1];

@@ -630,7 +630,7 @@ namespace Imaging
                 if (doc == null) return;
 
                 // Load filter property map
-                if (doc.FilterProperties != null)
+                if (doc.FilterProperties is { })
                 {
                     foreach (var (filter, props) in doc.FilterProperties)
                     {
@@ -639,7 +639,7 @@ namespace Imaging
                 }
 
                 // Load filter runtime settings
-                if (doc.FilterSettings != null)
+                if (doc.FilterSettings is { })
                 {
                     foreach (var (filter, config) in doc.FilterSettings)
                     {
@@ -648,7 +648,7 @@ namespace Imaging
                 }
 
                 // Load texture runtime settings
-                if (doc.TextureSettings != null)
+                if (doc.TextureSettings is { })
                 {
                     foreach (var (texture, config) in doc.TextureSettings)
                     {

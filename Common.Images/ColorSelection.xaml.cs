@@ -129,7 +129,7 @@ namespace Common.Images
                 if (CmbColor?.SelectedItem is not PropertyInfo property) return;
 
                 var selectedColor = (Color)property.GetValue(null, null)!;
-                if (_colorDct != null) StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
+                if (_colorDct is { }) StartColor = _colorDct.FirstOrDefault(x => x.Value == selectedColor).Key;
                 ColorChanged?.Invoke(this, StartColor);
             }
             catch (Exception ex) when (ex is ArgumentException or TargetException or TargetException

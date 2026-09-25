@@ -310,7 +310,7 @@ namespace Imaging.Tests
         ///     Applies the color matrix grayscale all pixels should be gray.
         /// </summary>
         [TestMethod]
-        public void ApplyColorMatrixGrayscaleShouldMakeRGBEqual()
+        public void ApplyColorMatrixGrayscaleShouldMakeRgbEqual()
         {
             var bmp = new DirectBitmapImage(2, 2);
             bmp.SetPixels(new[]

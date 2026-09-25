@@ -461,7 +461,8 @@ namespace SqliteHelper
         /// <param name="headers">Optional, select over specific headers</param>
         /// <param name="headerTable">Headers of the table</param>
         /// <returns>Added Parameters, empty if wrong parameters</returns>
-        private static string? GetTableHeaders(string? queryStart, IEnumerable<string> headers, ICollection<string> headerTable)
+        private static string? GetTableHeaders(string? queryStart, IEnumerable<string> headers,
+            ICollection<string> headerTable)
         {
             IList<string> workingHeaders = headers?.ToList() ?? headerTable.ToList();
 

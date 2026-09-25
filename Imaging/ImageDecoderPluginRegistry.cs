@@ -182,7 +182,7 @@ namespace Imaging
         {
             // Iterate through plugins and let them inspect the magic numbers
             plugin = _plugins.FirstOrDefault(p => p.CanDecode(headerBytes));
-            return plugin != null;
+            return plugin is { };
         }
 
         /// <summary>

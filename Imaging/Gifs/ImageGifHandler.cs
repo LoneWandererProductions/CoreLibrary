@@ -189,7 +189,7 @@ namespace Imaging.Gifs
                             break;
 
                         case 3: // Restore to previous
-                            if (previousFrameBackup != null)
+                            if (previousFrameBackup is { })
                             {
                                 ImageGifHelper.CopyBitmap(previousFrameBackup, composed);
                             }
