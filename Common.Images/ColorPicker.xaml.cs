@@ -52,7 +52,7 @@ namespace Common.Images
         ///
         /// </summary>
         /// <param name="colorHsv">The color HSV.</param>
-        public delegate void DelegateColor(ColorHsv colorHsv);
+        public delegate void DelegateColor(ColorHsv? colorHsv);
 
         /// <summary>
         /// Occurs when [color changed].

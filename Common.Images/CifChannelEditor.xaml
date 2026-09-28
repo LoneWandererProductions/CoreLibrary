@@ -238,7 +238,6 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Edit Selected Color" FontWeight="SemiBold"
                                                VerticalAlignment="Center" />
-                                    <!-- Vorschau-Box der neu eingestellten Farbe -->
                                     <Border Grid.Column="1" Width="24" Height="24" CornerRadius="3"
                                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                                         <Border.Background>

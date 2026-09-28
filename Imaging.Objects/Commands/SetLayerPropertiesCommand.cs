@@ -2,8 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents
  * FILE:        Commands.cs
- * PURPOSE:     Undoable edits of a document. A command stores just enough to apply and revert itself:
- *              ids and small records for structure/shape edits, tile patches for pixel edits.
+ * PURPOSE:     Change Layer Properties Command.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -18,13 +17,27 @@ namespace Imaging.Objects.Commands
     /// </summary>
     public sealed class SetLayerPropertiesCommand : IDocumentCommand
     {
+        /// <summary>
+        /// The after
+        /// </summary>
         private readonly LayerProperties _after;
 
+        /// <summary>
+        /// The layer identifier
+        /// </summary>
         private readonly Guid _layerId;
 
+        /// <summary>
+        /// The before
+        /// </summary>
         private LayerProperties? _before;
 
-        /// <summary>Initializes a new instance of the <see cref="SetLayerPropertiesCommand" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetLayerPropertiesCommand" /> class.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <param name="after">The after.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public SetLayerPropertiesCommand(Guid layerId, LayerProperties after)
         {
             ArgumentNullException.ThrowIfNull(after);

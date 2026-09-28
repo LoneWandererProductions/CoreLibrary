@@ -54,11 +54,6 @@ namespace Common.Images
         private readonly CustomImageFormat _customFormat = new();
 
         /// <summary>
-        /// The is syncing multiselect
-        /// </summary>
-        private bool _isSyncingMultiselect;
-
-        /// <summary>
         /// The is updating sliders
         /// </summary>
         private bool _isUpdatingSliders;
@@ -267,7 +262,7 @@ namespace Common.Images
 
             foreach (var kvp in cif.CifImage)
             {
-                var count = kvp.Value.Count();
+                var count = kvp.Value.Count;
                 var newItem = new CifColorItem(kvp.Key, index++, count);
                 newItem.PropertyChanged += ColorItem_PropertyChanged;
                 PaletteItems.Add(newItem);
@@ -389,12 +384,12 @@ namespace Common.Images
         /// Array of Pixel data.
         /// </returns>
         private static int[]? GeneratePixelData(
-            Cif cif,
+            Cif? cif,
             int rOffset,
             int gOffset,
             int bOffset,
             bool isIsolationEnabled,
-            HashSet<int> isolatedColorArgb,
+            IReadOnlySet<int> isolatedColorArgb,
             IReadOnlyDictionary<SystemDrawingColor, SystemDrawingColor> activePalette,
             CancellationToken token)
         {
@@ -406,6 +401,7 @@ namespace Common.Images
             foreach (var (originalColor, value) in cif.CifImage)
             {
                 if (token.IsCancellationRequested) return null;
+
                 var baseColor = activePalette.TryGetValue(originalColor, out var uiColor) ? uiColor : originalColor;
                 int pixelInt;
 
@@ -521,7 +517,6 @@ namespace Common.Images
         {
             _currentSelection = PaletteListBox.SelectedItems.Cast<CifColorItem>().ToList();
 
-            // Bei neuer Auswahl die Slider auf die Werte der primär gewählten Farbe setzen
             if (SelectedPaletteItem != null)
             {
                 _isUpdatingSliders = true;
@@ -619,6 +614,7 @@ namespace Common.Images
         private void EditSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (_isUpdatingSliders) return;
+
             UpdatePreviewColor();
         }
 
@@ -629,6 +625,7 @@ namespace Common.Images
         private void UpdatePreviewColor()
         {
             if (PreviewBrush == null) return;
+
             var r = (byte)EditRSlider.Value;
             var g = (byte)EditGSlider.Value;
             var b = (byte)EditBSlider.Value;

@@ -2,8 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents
  * FILE:        Commands.cs
- * PURPOSE:     Undoable edits of a document. A command stores just enough to apply and revert itself:
- *              ids and small records for structure/shape edits, tile patches for pixel edits.
+ * PURPOSE:     Command to move Layers.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -12,13 +11,25 @@ using Imaging.Objects.Interfaces;
 
 namespace Imaging.Objects.Commands
 {
-    /// <summary>Moves a layer in the stack.</summary>
+    /// <summary>
+    /// Moves a layer in the stack.
+    /// </summary>
+    /// <seealso cref="Imaging.Objects.Interfaces.IDocumentCommand" />
     public sealed class MoveLayerCommand : IDocumentCommand
     {
+        /// <summary>
+        /// The layer identifier
+        /// </summary>
         private readonly Guid _layerId;
 
+        /// <summary>
+        /// The new index
+        /// </summary>
         private readonly int _newIndex;
 
+        /// <summary>
+        /// The old index
+        /// </summary>
         private int _oldIndex;
 
         /// <summary>

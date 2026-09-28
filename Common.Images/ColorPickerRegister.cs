@@ -39,6 +39,6 @@ namespace Common.Images
         /// <value>
         ///     The colors.
         /// </value>
-        internal static ColorHsv Colors { get; set; }
+        internal static ColorHsv? Colors { get; set; }
     }
 }

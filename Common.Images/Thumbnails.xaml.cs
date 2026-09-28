@@ -176,16 +176,6 @@ namespace Common.Images
         private bool _disposed;
 
         /// <summary>
-        ///     The original height
-        /// </summary>
-        private int _originalHeight;
-
-        /// <summary>
-        ///     The original width
-        /// </summary>
-        private int _originalWidth;
-
-        /// <summary>
         ///     The selection
         /// </summary>
         private int _selection;
@@ -337,7 +327,7 @@ namespace Common.Images
         /// <value>
         ///     The Id of the Key
         /// </value>
-        private ConcurrentDictionary<string, int>? Keys { get; set; }
+        private ConcurrentDictionary<string, int> Keys { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the image Dictionary.
@@ -345,7 +335,7 @@ namespace Common.Images
         /// <value>
         ///     The image Dictionary.
         /// </value>
-        private ConcurrentDictionary<string, Image>? ImageDct { get; set; }
+        private ConcurrentDictionary<string, Image> ImageDct { get; set; } = new();
 
         /// <summary>
         ///     Gets or sets the CheckBox.
@@ -353,12 +343,12 @@ namespace Common.Images
         /// <value>
         ///     The CheckBox.
         /// </value>
-        private ConcurrentDictionary<int, CheckBox>? ChkBox { get; set; }
+        private ConcurrentDictionary<int, CheckBox> ChkBox { get; set; } = new();
 
         /// <summary>
         ///     The border
         /// </summary>
-        private ConcurrentDictionary<int, Border>? Border { get; set; }
+        private ConcurrentDictionary<int, Border> Border { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the selection.
@@ -443,7 +433,7 @@ namespace Common.Images
         {
             _refresh = false;
 
-            if (!ItemsSource.ContainsKey(id))
+            if (ItemsSource != null && !ItemsSource.ContainsKey(id))
             {
                 return;
             }
@@ -451,7 +441,7 @@ namespace Common.Images
             var keyName = string.Concat(ComCtlResources.ImageAdd, id);
 
             // Remove Image and unsubscribe events
-            if (ImageDct!.TryRemove(keyName, out var image))
+            if (ImageDct.TryRemove(keyName, out var image))
             {
                 image.MouseDown -= ImageClick_MouseDown;
                 image.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
@@ -460,13 +450,13 @@ namespace Common.Images
             }
 
             // Remove Border
-            if (Border!.TryRemove(id, out var border))
+            if (Border.TryRemove(id, out var border))
             {
                 Thb.Children.Remove(border);
             }
 
             // Remove CheckBox
-            if (SelectBox && ChkBox!.TryRemove(id, out var checkbox))
+            if (SelectBox && ChkBox.TryRemove(id, out var checkbox))
             {
                 checkbox.Checked -= CheckBox_Checked;
                 checkbox.Unchecked -= CheckBox_Unchecked;
@@ -482,9 +472,9 @@ namespace Common.Images
             // (intended as "nothing selected, delete the current image") took the wrong branch:
             // it tried to delete the stale (already-gone) ids instead, found no valid paths, and
             // silently did nothing.
-            Selection?.TryRemove(id, out _);
+            Selection.TryRemove(id, out _);
 
-            _ = ItemsSource.Remove(id);
+            if (ItemsSource != null) _ = ItemsSource.Remove(id);
 
             _refresh = true;
         }
@@ -516,11 +506,11 @@ namespace Common.Images
 
             // 3. Clean up UI and collections safely
             Thb.Children.Clear();
-            Keys?.Clear();
-            ImageDct?.Clear();
-            ChkBox?.Clear();
-            Border?.Clear();
-            Selection?.Clear();
+            Keys.Clear();
+            ImageDct.Clear();
+            ChkBox.Clear();
+            Border.Clear();
+            Selection.Clear();
 
             // 4. Start the new task and track it
             _loadingTask = LoadImages(token);
@@ -536,10 +526,6 @@ namespace Common.Images
         {
             try
             {
-                // Capture original width/height immediately
-                _originalWidth = ThumbWidth;
-                _originalHeight = ThumbHeight;
-
                 // Start loading images asynchronously
                 if (ItemsSource is { })
                 {
@@ -607,14 +593,7 @@ namespace Common.Images
                 Border = new ConcurrentDictionary<int, Border>();
 
                 //needed because of Binding
-                if (Selection == null)
-                {
-                    Selection = new ConcurrentDictionary<int, bool>();
-                }
-                else
-                {
-                    Selection.Clear();
-                }
+                Selection.Clear();
 
                 if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
@@ -845,7 +824,7 @@ namespace Common.Images
         /// </summary>
         public void Next()
         {
-            if (Border == null || Border.Count == 0)
+            if (Border.Count == 0)
             {
                 return;
             }
@@ -862,7 +841,7 @@ namespace Common.Images
         /// </summary>
         public void Previous()
         {
-            if (Border == null || Border.Count == 0)
+            if (Border.Count == 0)
             {
                 return;
             }
@@ -892,7 +871,7 @@ namespace Common.Images
             // back-to-back key presses. Now that CenterOnItem computes the target position
             // arithmetically instead of measuring anything, there's no render-pipeline race left
             // to defer around, so this can just run immediately.
-            if (Border == null || !Border.TryGetValue(id, out var border) || border == null)
+            if (!Border.TryGetValue(id, out var border))
             {
                 return;
             }
@@ -954,7 +933,7 @@ namespace Common.Images
             // flight, and so a load that finishes later can re-run it once everything is in.
             _activeFilter = predicate;
 
-            if (Border == null || ItemsSource == null) return;
+            if (ItemsSource == null) return;
 
             // Same column count the grid was originally built with (see LoadSingleImage's own
             // Grid.SetRow(cellContainer, key / thumbWidth) / SetColumn(... key % thumbWidth)) -
@@ -976,7 +955,7 @@ namespace Common.Images
 
             foreach (var id in orderedIds)
             {
-                if (!Border.TryGetValue(id, out var border) || border?.Parent is not UIElement cellContainer)
+                if (!Border.TryGetValue(id, out var border) || border.Parent is not UIElement cellContainer)
                 {
                     continue;
                 }
@@ -1005,14 +984,10 @@ namespace Common.Images
         ///     Next/Previous navigation consistent with what's actually on screen while a filter is
         ///     active, instead of stepping through items the user can't even see.
         /// </summary>
-        public List<int>? GetVisibleIds()
+        public List<int> GetVisibleIds()
         {
-            if (Border == null) return
-            []
-            ;
-
             return Border
-                .Where(kvp => kvp.Value?.Parent is UIElement { Visibility: Visibility.Visible })
+                .Where(kvp => kvp.Value.Parent is UIElement { Visibility: Visibility.Visible })
                 .Select(kvp => kvp.Key)
                 .OrderBy(id => id)
                 .ToList();
@@ -1111,7 +1086,7 @@ namespace Common.Images
                 return;
             }
 
-            var selection = Selection ?? new ConcurrentDictionary<int, bool>();
+            var selection = Selection;
             if (selection.IsEmpty)
             {
                 selection.TryAdd(_selection, true);
@@ -1130,7 +1105,7 @@ namespace Common.Images
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void Deselect_Click(object sender, RoutedEventArgs e)
         {
-            if (ChkBox?.ContainsKey(_selection) != true)
+            if (ChkBox.ContainsKey(_selection) != true)
             {
                 return;
             }
@@ -1146,7 +1121,7 @@ namespace Common.Images
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.IsEmpty || ChkBox == null || ChkBox.Count == 0)
+            if (Selection.IsEmpty || ChkBox.Count == 0)
             {
                 return;
             }
@@ -1174,7 +1149,7 @@ namespace Common.Images
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             //get the button that was clicked
-            if (sender is not CheckBox clickedCheckBox || Keys == null)
+            if (sender is not CheckBox clickedCheckBox)
             {
                 return;
             }
@@ -1215,7 +1190,7 @@ namespace Common.Images
         /// <param name="args">Custom Events</param>
         private void OnImageThumbClicked(ImageEventArgs args)
         {
-            ImageClickedCommand?.Execute(args);
+            ImageClickedCommand.Execute(args);
 
             ImageClicked?.Invoke(this, args);
         }
@@ -1263,6 +1238,8 @@ namespace Common.Images
             }
 
             // Set the new border as selected
+            if (newSelectedBorder == null) return;
+
             newSelectedBorder.BorderBrush = Brushes.Blue; // Set a color for the border
             newSelectedBorder.BorderThickness = new Thickness(2); // Set thickness to highlight
 
@@ -1281,7 +1258,7 @@ namespace Common.Images
             if (disposing)
             {
                 // Unsubscribe Image events
-                foreach (var image in ImageDct?.Values ?? Enumerable.Empty<Image>())
+                foreach (var image in ImageDct.Values)
                 {
                     image.MouseDown -= ImageClick_MouseDown;
                     image.MouseRightButtonDown -= ImageClick_MouseRightButtonDown;
@@ -1289,7 +1266,7 @@ namespace Common.Images
                 }
 
                 // Unsubscribe CheckBox events
-                foreach (var checkBox in ChkBox?.Values ?? Enumerable.Empty<CheckBox>())
+                foreach (var checkBox in ChkBox.Values)
                 {
                     checkBox.Checked -= CheckBox_Checked;
                     checkBox.Unchecked -= CheckBox_Unchecked;
@@ -1308,8 +1285,8 @@ namespace Common.Images
                 _loadingCts?.Cancel();
                 _loadingCts?.Dispose();
 
-                ImageDct?.Clear();
-                Border?.Clear();
+                ImageDct.Clear();
+                Border.Clear();
             }
 
             _disposed = true;

@@ -2,7 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Commands;
  * FILE:        AddLayerCommand.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Add Layer command for the Layered Image Format.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -18,13 +18,27 @@ namespace Imaging.Objects.Commands;
 /// <seealso cref="IDisposable" />
 public sealed class AddLayerCommand : IDocumentCommand, IDisposable
 {
+    /// <summary>
+    /// The index
+    /// </summary>
     private readonly int? _index;
 
+    /// <summary>
+    /// The layer
+    /// </summary>
     private readonly Layer _layer;
 
+    /// <summary>
+    /// The applied
+    /// </summary>
     private bool _applied;
 
-    /// <summary>Initializes a new instance of the <see cref="AddLayerCommand" /> class.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddLayerCommand" /> class.
+    /// </summary>
+    /// <param name="layer">The layer.</param>
+    /// <param name="index">The index.</param>
+    /// <exception cref="System.ArgumentNullException"></exception>
     public AddLayerCommand(Layer layer, int? index = null)
     {
         ArgumentNullException.ThrowIfNull(layer);
@@ -49,7 +63,10 @@ public sealed class AddLayerCommand : IDocumentCommand, IDisposable
         _applied = false;
     }
 
-    /// <summary>Releases the layer if it is not part of a document (undone and discarded).</summary>
+    /// <inheritdoc />
+    /// <summary>
+    /// Releases the layer if it is not part of a document (undone and discarded).
+    /// </summary>
     public void Dispose()
     {
         if (!_applied) (_layer as IDisposable)?.Dispose();

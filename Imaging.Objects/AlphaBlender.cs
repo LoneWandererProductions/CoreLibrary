@@ -27,6 +27,7 @@ namespace Imaging.Objects
             if (destination.Length != source.Length) throw new ArgumentException(ImageResource.ErrorInputBuffer);
 
             if (opacity <= 0) return;
+
             if (opacity > 255) opacity = 255;
 
             var length = destination.Length;

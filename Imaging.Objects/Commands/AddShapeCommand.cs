@@ -19,10 +19,19 @@ namespace Imaging.Objects.Commands
     /// <seealso cref="IDocumentCommand" />
     public sealed class AddShapeCommand : IDocumentCommand
     {
+        /// <summary>
+        /// The index
+        /// </summary>
         private readonly int? _index;
 
+        /// <summary>
+        /// The layer identifier
+        /// </summary>
         private readonly Guid _layerId;
 
+        /// <summary>
+        /// The shape
+        /// </summary>
         private readonly Shape _shape;
 
         /// <summary>Initializes a new instance of the <see cref="AddShapeCommand" /> class.</summary>

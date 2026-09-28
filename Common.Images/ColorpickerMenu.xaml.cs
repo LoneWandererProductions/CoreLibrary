@@ -66,7 +66,7 @@ namespace Common.Images
         /// <value>
         ///     The colors.
         /// </value>
-        public ColorHsv Colors => ColorPickerRegister.Colors;
+        public ColorHsv? Colors => ColorPickerRegister.Colors;
 
         /// <summary>
         ///     An Image was clicked <see cref="DelegateColor" />.

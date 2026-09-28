@@ -85,6 +85,9 @@ namespace Common.Images
     /// </remarks>
     public static class GestureCatalog
     {
+        /// <summary>
+        /// The registry
+        /// </summary>
         private static readonly Dictionary<ImageZoomTools, GestureBehavior> Registry = new()
         {
             [ImageZoomTools.Rectangle] = new GestureBehavior(

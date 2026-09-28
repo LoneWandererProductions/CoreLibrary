@@ -147,7 +147,7 @@ namespace Imaging
         /// <param name="v">The v.</param>
         /// <param name="a">a.</param>
         /// <returns>Color HSV object.</returns>
-        public static ColorHsv FromHsv(double h, double s, double v, int a = 255)
+        public static ColorHsv? FromHsv(double h, double s, double v, int a = 255)
         {
             // Robustness: Handle "fuzzy" floating point math
 

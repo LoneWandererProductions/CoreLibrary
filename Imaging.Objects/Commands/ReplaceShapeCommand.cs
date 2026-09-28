@@ -2,8 +2,7 @@
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents
  * FILE:        ReplaceShapeCommand.cs
- * PURPOSE:     Undoable edits of a document. A command stores just enough to apply and revert itself:
- *              ids and small records for structure/shape edits, tile patches for pixel edits.
+ * PURPOSE:     Replace Shape on Layer.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -19,15 +18,32 @@ namespace Imaging.Objects.Commands
     /// </summary>
     public sealed class ReplaceShapeCommand : IDocumentCommand
     {
+        /// <summary>
+        /// The layer identifier
+        /// </summary>
         private readonly Guid _layerId;
 
+        /// <summary>
+        /// The after
+        /// </summary>
         private readonly Shape _after;
 
+        /// <summary>
+        /// The before
+        /// </summary>
         private Shape? _before;
 
+        /// <summary>
+        /// The index
+        /// </summary>
         private int _index;
 
-        /// <summary>Initializes a new instance of the <see cref="ReplaceShapeCommand" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReplaceShapeCommand" /> class.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <param name="after">The after.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public ReplaceShapeCommand(Guid layerId, Shape after)
         {
             ArgumentNullException.ThrowIfNull(after);
