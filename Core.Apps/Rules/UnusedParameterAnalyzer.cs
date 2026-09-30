@@ -52,8 +52,14 @@ namespace Core.Apps.Rules
                 yield break;
 
             var tree = CSharpSyntaxTree.ParseText(fileContent);
+
+            // Dynamically gather loaded assemblies as metadata references for full symbol resolution
+            var references = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+                .Select(a => MetadataReference.CreateFromFile(a.Location));
+
             var compilation = CSharpCompilation.Create("Analysis")
-                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddReferences(references)
                 .AddSyntaxTrees(tree);
 
             var model = compilation.GetSemanticModel(tree);
@@ -65,18 +71,35 @@ namespace Core.Apps.Rules
                 if (methodDecl.Body == null && methodDecl.ExpressionBody == null)
                     continue;
 
+                var methodSymbol = model.GetDeclaredSymbol(methodDecl);
+                if (methodSymbol == null)
+                    continue;
+
+                // Skip overrides, interface implementations, or virtual/abstract signatures
+                if (methodSymbol.IsOverride || methodSymbol.IsAbstract || methodSymbol.ExplicitInterfaceImplementations.Length > 0)
+                    continue;
+
+                // Skip standard WPF/WinForms event handlers (e.g. sender, e)
+                if (methodDecl.ParameterList.Parameters.Count == 2 &&
+                    methodDecl.ParameterList.Parameters[1].Type?.ToString().EndsWith("EventArgs") == true)
+                    continue;
+
                 foreach (var parameter in methodDecl.ParameterList.Parameters)
                 {
+                    // Skip discard parameters
+                    if (parameter.Identifier.Text.StartsWith("_"))
+                        continue;
+
                     var symbol = model.GetDeclaredSymbol(parameter);
                     if (symbol is not { } paramSymbol)
                         continue;
 
-                    var references = methodDecl.DescendantNodes()
+                    var referencesList = methodDecl.DescendantNodes()
                         .OfType<IdentifierNameSyntax>()
                         .Where(id =>
                             SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, paramSymbol));
 
-                    if (references.Any())
+                    if (referencesList.Any())
                         continue;
 
                     var line = parameter.GetLocation().GetLineSpan().StartLinePosition.Line + 1;

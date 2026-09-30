@@ -52,13 +52,20 @@ namespace Core.Apps.Rules
                 yield break;
 
             var tree = CSharpSyntaxTree.ParseText(fileContent);
+
+            // Dynamically gather loaded assemblies as metadata references for full symbol resolution
+            var references = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+                .Select(a => MetadataReference.CreateFromFile(a.Location));
+
             var compilation = CSharpCompilation.Create("Analysis")
-                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddReferences(references)
                 .AddSyntaxTrees(tree);
 
             var model = compilation.GetSemanticModel(tree);
             var root = tree.GetRoot();
 
+            // 1. Standard Local Declaration Statements (var x = ...; using var stream = ...;)
             foreach (var localDecl in root.DescendantNodes().OfType<LocalDeclarationStatementSyntax>())
             {
                 foreach (var variable in localDecl.Declaration.Variables)
@@ -76,6 +83,29 @@ namespace Core.Apps.Rules
                     var line = variable.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
                     yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, line,
                         $"Unused local variable '{variable.Identifier.Text}'.");
+                }
+            }
+
+            // 2. Pattern Matching and Out-Variable Declarations (e.g., int.TryParse(s, out var x), if (obj is MyType x))
+            foreach (var designation in root.DescendantNodes().OfType<SingleVariableDesignationSyntax>())
+            {
+                var varName = designation.Identifier.Text;
+                if (varName == "_")
+                    continue;
+
+                var symbol = model.GetDeclaredSymbol(designation);
+                if (symbol is not ILocalSymbol localSymbol)
+                    continue;
+
+                // Skip if parent is a standard local declaration (already processed above)
+                if (designation.Ancestors().OfType<LocalDeclarationStatementSyntax>().Any())
+                    continue;
+
+                if (!CoreHelper.IsSymbolUsed(model, root, localSymbol))
+                {
+                    var line = designation.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                    yield return new Diagnostic(Name, DiagnosticSeverity.Info, filePath, line,
+                        $"Unused local variable '{varName}'.");
                 }
             }
         }

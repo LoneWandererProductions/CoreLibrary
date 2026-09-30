@@ -54,7 +54,9 @@ namespace Core.Apps
                 new ApiExplorerCommand(), new LogTailCommand(), new SmartPingPro(), new Tree(),
                 new StructPaddingAnalyzer(), new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(),
                 new LoopAllocationAnalyzer(), new LoopCacheAnalyzer(), new BatchAnalyzerCommand(),
-                new RoslynCompilerAnalyzer()
+                new RoslynCompilerAnalyzer(), new UnusedUsingAnalyzer(), new UnusedPrivateMethodAnalyzer(),
+                new LinqInLoopAnalyzer(), new StringConcatInLoopAnalyzer(), new EmptyCatchBlockAnalyzer(),
+                new RethrowExceptionAnalyzer(), new AsyncVoidAnalyzer()
             });
 
             // --- PRODUCERS (Require Registry) ---
@@ -104,7 +106,7 @@ namespace Core.Apps
         /// Gets all analyzers.
         /// </summary>
         /// <returns>All Code Analyzers</returns>
-        public static IReadOnlyList<ICodeAnalyzer> GetAllAnalyzers()
+        public static IReadOnlyList<ICodeAnalyzer>? GetAllAnalyzers()
         {
             ICodeAnalyzer[] modules =
             {
@@ -114,7 +116,9 @@ namespace Core.Apps
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new StructPaddingAnalyzer(),
                 new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(), new LoopAllocationAnalyzer(),
-                new LoopCacheAnalyzer(), new RoslynCompilerAnalyzer()
+                new LoopCacheAnalyzer(), new RoslynCompilerAnalyzer(), new UnusedUsingAnalyzer(), new UnusedPrivateMethodAnalyzer(),
+                new LinqInLoopAnalyzer(), new StringConcatInLoopAnalyzer(), new EmptyCatchBlockAnalyzer(),new RethrowExceptionAnalyzer(),
+                new AsyncVoidAnalyzer()
             };
 
             return modules;

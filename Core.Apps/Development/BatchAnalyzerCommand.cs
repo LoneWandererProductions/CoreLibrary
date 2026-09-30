@@ -57,22 +57,45 @@ namespace Core.Apps.Development
             var allDiagnostics = new List<Diagnostic>();
             var csFiles = Directory.EnumerateFiles(rootPath, "*.cs", SearchOption.AllDirectories).ToList();
 
+            // Pre-read valid source files into a dictionary for both project-level and per-file analysis
+            var fileContentsMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
             foreach (var filePath in csFiles)
             {
                 // Skip generated or ignored files if CoreHelper supports it
                 if (CoreHelper.ShouldIgnoreFile(filePath))
                     continue;
 
-                string fileContent;
                 try
                 {
-                    fileContent = File.ReadAllText(filePath);
+                    fileContentsMap[filePath] = File.ReadAllText(filePath);
                 }
                 catch
                 {
                     continue; // Skip files that cannot be read safely
                 }
+            }
 
+            // 1. Run Project-Wide Analyzers (e.g., UnusedClassAnalyzer, UnusedConstantAnalyzer)
+            foreach (var analyzer in analyzers)
+            {
+                try
+                {
+                    var diagnostics = analyzer.AnalyzeProject(fileContentsMap);
+                    if (diagnostics != null)
+                    {
+                        allDiagnostics.AddRange(diagnostics);
+                    }
+                }
+                catch
+                {
+                    // Prevent an exception in a single analyzer from crashing the batch run
+                }
+            }
+
+            // 2. Run Per-File Analyzers
+            foreach (var (filePath, fileContent) in fileContentsMap)
+            {
                 foreach (var analyzer in analyzers)
                 {
                     try

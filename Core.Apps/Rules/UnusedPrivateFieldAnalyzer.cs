@@ -66,13 +66,12 @@ namespace Core.Apps.Rules
                 foreach (var variable in fieldDecl.Declaration.Variables)
                 {
                     var symbol = model.GetDeclaredSymbol(variable);
-                    if (symbol is not IFieldSymbol
-                        {
-                            DeclaredAccessibility: Microsoft.CodeAnalysis.Accessibility.Private
-                        } fieldSymbol)
+                    if (symbol is not IFieldSymbol fieldSymbol)
                         continue;
 
                     // 1. Rely on Semantic Model for accessibility (catches implicit private)
+                    if (fieldSymbol.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Private)
+                        continue;
 
                     // 2. Use your robust CoreHelper check instead of a manual IdentifierNameSyntax search
                     if (!CoreHelper.IsSymbolUsed(model, root, fieldSymbol))

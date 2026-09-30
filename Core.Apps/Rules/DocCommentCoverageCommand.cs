@@ -9,6 +9,7 @@
 using Core.Apps.Enums;
 using Core.Apps.Helper;
 using Core.Apps.Interface;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -17,6 +18,7 @@ using System.Linq;
 using Weaver;
 using Weaver.Interfaces;
 using Weaver.Messages;
+using DiagnosticSeverity = Core.Apps.Enums.DiagnosticSeverity;
 
 namespace Core.Apps.Rules
 {
@@ -34,7 +36,7 @@ namespace Core.Apps.Rules
         public string Name => "doccoverage";
 
         /// <inheritdoc cref="ICodeAnalyzer" />
-        public string Description => "Reports the percentage of public members with XML doc comments.";
+        public string Description => "Reports missing XML doc comments or missing <inheritdoc /> tags on types, methods, properties, and attributes.";
 
         /// <inheritdoc />
         public int ParameterCount => 1;
@@ -54,13 +56,11 @@ namespace Core.Apps.Rules
             var tree = CSharpSyntaxTree.ParseText(fileContent);
             var root = tree.GetRoot();
 
-            foreach (var typeDecl in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
+            // 1. Check Type Declarations (classes, structs, interfaces, enums, record types)
+            foreach (var typeDecl in root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>())
             {
-                // Check type-level doc comments
                 var trivia = typeDecl.GetLeadingTrivia();
-                var hasXmlDoc = CoreHelper.HasXmlDocTrivia(trivia);
-
-                if (!hasXmlDoc)
+                if (!HasValidDocumentation(trivia))
                 {
                     var line = typeDecl.Identifier.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
                     yield return new Diagnostic(
@@ -68,32 +68,89 @@ namespace Core.Apps.Rules
                         DiagnosticSeverity.Info,
                         filePath,
                         line,
-                        $"Type '{CoreHelper.GetTypeFullName(typeDecl)}' is missing XML documentation.",
+                        $"Type '{typeDecl.Identifier.Text}' is missing XML documentation or '<inheritdoc />'.",
                         DiagnosticImpact.Readability
                     );
                 }
 
-                // Check members
-                foreach (var member in typeDecl.Members)
+                // Retrieve members safely based on the specific declaration type
+                IEnumerable<MemberDeclarationSyntax> members = typeDecl switch
+                {
+                    TypeDeclarationSyntax t => t.Members,
+                    EnumDeclarationSyntax e => e.Members,
+                    _ => Enumerable.Empty<MemberDeclarationSyntax>()
+                };
+
+                // 2. Check Type Members (methods, properties, fields, events, constructors, indexers, enum members)
+                foreach (var member in members)
                 {
                     var memberTrivia = member.GetLeadingTrivia();
-                    var memberHasDoc = CoreHelper.HasXmlDocTrivia(memberTrivia);
+                    if (HasValidDocumentation(memberTrivia))
+                        continue;
 
-                    if (!memberHasDoc)
+                    var line = member.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                    var memberName = CoreHelper.GetMemberName(member);
+
+                    // Provide specific guidance if the member is an override or explicit interface implementation
+                    if (isOverrideOrInterfaceImplementation(member))
                     {
-                        var line = member.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-
                         yield return new Diagnostic(
                             Name,
                             DiagnosticSeverity.Info,
                             filePath,
                             line,
-                            $"Member '{CoreHelper.GetMemberName(member)}' is missing XML documentation.",
+                            $"Member '{memberName}' is an override or interface implementation but is missing '<inheritdoc />' or XML documentation.",
+                            DiagnosticImpact.Readability
+                        );
+                    }
+                    else
+                    {
+                        yield return new Diagnostic(
+                            Name,
+                            DiagnosticSeverity.Info,
+                            filePath,
+                            line,
+                            $"Member '{memberName}' is missing XML documentation.",
                             DiagnosticImpact.Readability
                         );
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks if the leading trivia contains valid XML documentation comments or an &lt;inheritdoc /&gt; tag.
+        /// </summary>
+        private static bool HasValidDocumentation(SyntaxTriviaList trivia)
+        {
+            foreach (var t in trivia)
+            {
+                if (t.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia) ||
+                    t.IsKind(SyntaxKind.MultiLineDocumentationCommentTrivia))
+                {
+                    var commentText = t.ToFullString();
+
+                    // If XML comments exist OR <inheritdoc> is present, count as documented
+                    if (!string.IsNullOrWhiteSpace(commentText))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether a member declaration is an override or explicit interface implementation.
+        /// </summary>
+        private static bool isOverrideOrInterfaceImplementation(MemberDeclarationSyntax member)
+        {
+            return member switch
+            {
+                MethodDeclarationSyntax m => m.Modifiers.Any(SyntaxKind.OverrideKeyword) || m.ExplicitInterfaceSpecifier != null,
+                PropertyDeclarationSyntax p => p.Modifiers.Any(SyntaxKind.OverrideKeyword) || p.ExplicitInterfaceSpecifier != null,
+                EventDeclarationSyntax e => e.Modifiers.Any(SyntaxKind.OverrideKeyword) || e.ExplicitInterfaceSpecifier != null,
+                _ => false
+            };
         }
 
         /// <inheritdoc />

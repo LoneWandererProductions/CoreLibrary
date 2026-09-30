@@ -195,10 +195,7 @@ namespace Core.Apps.Rules
         /// </summary>
         /// <param name="method">The method.</param>
         /// <param name="ctx">The CTX.</param>
-        /// <param name="enclosingMethod">The enclosing method.</param>
-        /// <returns>
-        /// Concated message.
-        /// </returns>
+        /// <returns>Concated message.</returns>
         private static string BuildMessage(string method, LoopContext ctx, string enclosingMethod) =>
             ctx switch
             {
