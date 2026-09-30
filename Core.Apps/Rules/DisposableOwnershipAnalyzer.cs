@@ -82,8 +82,8 @@ namespace Core.Apps.Rules
         /// </summary>
         private static readonly string[] HeuristicDisposableHints =
         {
-            "Stream", "Reader", "Writer", "Bitmap", "Image", "Graphics", "Font", "Pen", "Brush",
-            "Handle", "Timer", "Connection", "Command", "Context", "Socket"
+            "Stream", "Reader", "Writer", "Bitmap", "Image", "Graphics", "Font", "Pen", "Brush", "Handle", "Timer",
+            "Connection", "Command", "Context", "Socket"
         };
 
         /// <inheritdoc />
@@ -444,7 +444,9 @@ namespace Core.Apps.Rules
             }
 
             if (allowThisPrefix && expression is MemberAccessExpressionSyntax
-                { Expression: ThisExpressionSyntax, Name.Identifier.Text: var inner } &&
+                {
+                    Expression: ThisExpressionSyntax, Name.Identifier.Text: var inner
+                } &&
                 inner == name)
             {
                 return true;
@@ -491,9 +493,12 @@ namespace Core.Apps.Rules
 
             var suffix = loopContext switch
             {
-                LoopContext.Nested => " Runs inside nested loops - every leaked instance multiplies per outer iteration.",
-                LoopContext.VariableBounded => " Runs inside a loop with a variable bound (e.g. a file/collection scan) - the leak scales with input size, not code size.",
-                LoopContext.ConstantBounded => " Runs inside a fixed-size loop - repeats a known number of times per call.",
+                LoopContext.Nested =>
+                    " Runs inside nested loops - every leaked instance multiplies per outer iteration.",
+                LoopContext.VariableBounded =>
+                    " Runs inside a loop with a variable bound (e.g. a file/collection scan) - the leak scales with input size, not code size.",
+                LoopContext.ConstantBounded =>
+                    " Runs inside a fixed-size loop - repeats a known number of times per call.",
                 _ => string.Empty
             };
 

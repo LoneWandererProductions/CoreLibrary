@@ -126,7 +126,7 @@ namespace Solaris
         /// <param name="map">The active tile map data structure.</param>
         /// <param name="viewport">Optional active viewport camera.</param>
         internal static void RedrawTileRegion(
-            UnmanagedImageBuffer canvas,
+            UnmanagedImageBuffer? canvas,
             int tileIndex,
             int width,
             int textureSize,
@@ -217,7 +217,7 @@ namespace Solaris
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <returns>ImageSource representing the grid overlay.</returns>
-        internal static ImageSource GenerateGrid(int width, int height, int textureSize)
+        internal static ImageSource? GenerateGrid(int width, int height, int textureSize)
         {
             using var bitmap = new Bitmap(width * textureSize, height * textureSize);
             using var graphics = Graphics.FromImage(bitmap);
@@ -239,7 +239,7 @@ namespace Solaris
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="padding">The padding.</param>
         /// <returns>ImageSource representing the number overlay.</returns>
-        internal static ImageSource GenerateNumbers(int width, int height, int textureSize, int padding = 2)
+        internal static ImageSource? GenerateNumbers(int width, int height, int textureSize, int padding = 2)
         {
             using var bitmap = new Bitmap(width * textureSize, height * textureSize);
             using var graphics = Graphics.FromImage(bitmap);
@@ -482,8 +482,8 @@ namespace Solaris
         /// <param name="destX">The destination X offset.</param>
         /// <param name="destY">The destination Y offset.</param>
         private static unsafe void BlitRegionBlend(
-            this UnmanagedImageBuffer dest,
-            UnmanagedImageBuffer src,
+            this UnmanagedImageBuffer? dest,
+            UnmanagedImageBuffer? src,
             int srcX, int srcY,
             int width, int height,
             int destX, int destY)

@@ -87,7 +87,7 @@ namespace Mathematics
         /// <returns>Scale Matrix</returns>
         public static BaseMatrix Scale(Vector3D start, int value)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,]? matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
 
@@ -106,7 +106,7 @@ namespace Mathematics
         /// <returns>Translation Matrix</returns>
         public static BaseMatrix Scale(Vector3D start, double one, double two, double three)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,]? matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
 

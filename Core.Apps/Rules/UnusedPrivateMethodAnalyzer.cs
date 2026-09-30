@@ -101,9 +101,11 @@ namespace Core.Apps.Rules
         {
             try
             {
-                var results = AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedPrivateMethod <fileOrDirectoryPath>");
+                var results =
+                    AnalyzerExecutor.ExecutePath(this, args, "Usage: UnusedPrivateMethod <fileOrDirectoryPath>");
                 return CommandResult.Ok($"Unused private methods found: {results.Count}\n" +
-                    string.Join("\n", results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
+                                        string.Join("\n",
+                                            results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
             }
             catch (Exception ex)
             {

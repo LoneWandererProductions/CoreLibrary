@@ -130,6 +130,7 @@ namespace Mathematics
         }
 
 
+        /// <inheritdoc />
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
         /// </summary>
@@ -137,7 +138,7 @@ namespace Mathematics
         /// <returns>
         ///   <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
         /// </returns>
-        public bool Equals(PolyTriangle other)
+        public bool Equals(PolyTriangle? other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;

@@ -60,7 +60,8 @@ namespace Core.Apps.Rules
                 if (!IsInsideLoop(assignment))
                     continue;
 
-                if (assignment.IsKind(SyntaxKind.AddAssignmentExpression) || assignment.IsKind(SyntaxKind.SimpleAssignmentExpression))
+                if (assignment.IsKind(SyntaxKind.AddAssignmentExpression) ||
+                    assignment.IsKind(SyntaxKind.SimpleAssignmentExpression))
                 {
                     // Check if the assignment involves a string or string addition
                     if (assignment.Right is BinaryExpressionSyntax binary && binary.IsKind(SyntaxKind.AddExpression))
@@ -130,9 +131,11 @@ namespace Core.Apps.Rules
         {
             try
             {
-                var results = AnalyzerExecutor.ExecutePath(this, args, "Usage: StringConcatInLoop <fileOrDirectoryPath>");
+                var results =
+                    AnalyzerExecutor.ExecutePath(this, args, "Usage: StringConcatInLoop <fileOrDirectoryPath>");
                 return CommandResult.Ok($"String concatenations in loops found: {results.Count}\n" +
-                    string.Join("\n", results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
+                                        string.Join("\n",
+                                            results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
             }
             catch (Exception ex)
             {

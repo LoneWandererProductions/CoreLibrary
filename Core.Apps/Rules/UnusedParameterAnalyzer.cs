@@ -76,7 +76,8 @@ namespace Core.Apps.Rules
                     continue;
 
                 // Skip overrides, interface implementations, or virtual/abstract signatures
-                if (methodSymbol.IsOverride || methodSymbol.IsAbstract || methodSymbol.ExplicitInterfaceImplementations.Length > 0)
+                if (methodSymbol.IsOverride || methodSymbol.IsAbstract ||
+                    methodSymbol.ExplicitInterfaceImplementations.Length > 0)
                     continue;
 
                 // Skip standard WPF/WinForms event handlers (e.g. sender, e)

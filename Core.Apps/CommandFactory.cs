@@ -116,9 +116,9 @@ namespace Core.Apps
                 new UnusedLocalVariableAnalyzer(), new UnusedParameterAnalyzer(), new UnusedPrivateFieldAnalyzer(),
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new StructPaddingAnalyzer(),
                 new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(), new LoopAllocationAnalyzer(),
-                new LoopCacheAnalyzer(), new RoslynCompilerAnalyzer(), new UnusedUsingAnalyzer(), new UnusedPrivateMethodAnalyzer(),
-                new LinqInLoopAnalyzer(), new StringConcatInLoopAnalyzer(), new EmptyCatchBlockAnalyzer(),
-                new RethrowExceptionAnalyzer(), new AsyncVoidAnalyzer()
+                new LoopCacheAnalyzer(), new RoslynCompilerAnalyzer(), new UnusedUsingAnalyzer(),
+                new UnusedPrivateMethodAnalyzer(), new LinqInLoopAnalyzer(), new StringConcatInLoopAnalyzer(),
+                new EmptyCatchBlockAnalyzer(), new RethrowExceptionAnalyzer(), new AsyncVoidAnalyzer()
             };
 
             return modules;

@@ -79,7 +79,8 @@ namespace Core.Apps.Rules
             {
                 var results = AnalyzerExecutor.ExecutePath(this, args, "Usage: EmptyCatchBlock <fileOrDirectoryPath>");
                 return CommandResult.Ok($"Empty catch blocks found: {results.Count}\n" +
-                    string.Join("\n", results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
+                                        string.Join("\n",
+                                            results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
             }
             catch (Exception ex)
             {

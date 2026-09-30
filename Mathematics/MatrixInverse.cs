@@ -25,7 +25,7 @@ namespace Mathematics
         /// <param name="matrix">The matrix.</param>
         /// <returns>Determinant of the matrix</returns>
         /// <exception cref="ArithmeticException">Unable to compute MatrixDeterminant</exception>
-        internal static double MatrixDeterminant(double[,] matrix)
+        internal static double MatrixDeterminant(double[,]? matrix)
         {
             var lum = MatrixDecompose(matrix, out _, out var toggle) ??
                       throw new ArithmeticException(MathResources.MatrixErrorDeterminant);
@@ -52,7 +52,7 @@ namespace Mathematics
         ///     or
         ///     Cannot use Doolittle's method
         /// </exception>
-        internal static double[,] MatrixDecompose(double[,] matrix, out int[] perm,
+        internal static double[,] MatrixDecompose(double[,]? matrix, out int[] perm,
             out int toggle)
         {
             // Doolittle LUP decomposition with partial pivoting.
@@ -153,7 +153,7 @@ namespace Mathematics
         /// <param name="matrix">The matrix.</param>
         /// <returns></returns>
         /// <exception cref="ArithmeticException">Unable to compute inverse</exception>
-        internal static double[,] Inverse(double[,] matrix)
+        internal static double[,]? Inverse(double[,]? matrix)
         {
             var n = matrix.GetLength(0);
             var result = matrix.Duplicate();
@@ -233,7 +233,7 @@ namespace Mathematics
         /// </summary>
         /// <param name="matrix">The matrix.</param>
         /// <returns>LU decomposition</returns>
-        internal static KeyValuePair<double[,], double[,]> LuDecomposition(double[,] matrix)
+        internal static KeyValuePair<double[,]?, double[,]> LuDecomposition(double[,]? matrix)
         {
             var width = matrix.GetLength(0);
             var height = matrix.GetLength(1);
@@ -282,7 +282,7 @@ namespace Mathematics
                 }
             }
 
-            return new KeyValuePair<double[,], double[,]>(lower, upper);
+            return new KeyValuePair<double[,]?, double[,]>(lower, upper);
         }
     }
 }

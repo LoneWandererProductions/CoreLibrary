@@ -115,7 +115,7 @@ namespace CommonLibrary.Tests
         /// <param name="m1">The m1.</param>
         /// <param name="m2">The m2.</param>
         /// <returns>Base Matrix multiplied</returns>
-        internal static BaseMatrix MatrixTestTwo(double[,] m1, double[,] m2)
+        internal static BaseMatrix MatrixTestTwo(double[,] m1, double[,]? m2)
         {
             var newMatrix = new double[m1.GetLength(0), m2.GetLength(1)];
 

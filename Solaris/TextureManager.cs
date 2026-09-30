@@ -25,7 +25,7 @@ namespace Solaris
         /// The file cache
         ///  Tier 1: Deduplicates hard drive reads (Path -> Bitmap)
         /// </summary>
-        private static readonly ConcurrentDictionary<string?, Bitmap> FileCache = new();
+        private static readonly ConcurrentDictionary<string, Bitmap> FileCache = new();
 
         // 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Solaris
         /// <param name="mapTextures">The map textures.</param>
         /// <param name="texture">The texture.</param>
         /// <returns>True if the texture was found; otherwise, false.</returns>
-        public static bool TryGetTexture(int id, Dictionary<int, Texture> mapTextures, out Texture texture)
+        public static bool TryGetTexture(int id, Dictionary<int, Texture>? mapTextures, out Texture texture)
         {
             if (mapTextures != null && mapTextures.TryGetValue(id, out texture))
                 return true;
@@ -138,7 +138,7 @@ namespace Solaris
         /// <returns>
         /// A new Bitmap instance or null if the file does not exist.
         /// </returns>
-        private static Bitmap? LoadBitmapFromFile(string? path)
+        private static Bitmap? LoadBitmapFromFile(string path)
         {
             if (!File.Exists(path)) return null;
 

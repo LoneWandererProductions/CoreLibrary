@@ -29,7 +29,7 @@ namespace Mathematics
         /// <returns>Projection Matrix</returns>
         internal static BaseMatrix ProjectionTo3DMatrix()
         {
-            double[,] translation =
+            double[,]? translation =
             {
                 { Projection3DRegister.A * Projection3DRegister.F, 0, 0, 0 }, { 0, Projection3DRegister.F, 0, 0 },
                 { 0, 0, Projection3DRegister.Q, 1 },
@@ -70,7 +70,7 @@ namespace Mathematics
                 -(up * pos),
                 -(forward * pos));
 
-            double[,] viewMatrix =
+            double[,]? viewMatrix =
             {
                 { right.X, up.X, forward.X, 0 }, { right.Y, up.Y, forward.Y, 0 }, { right.Z, up.Z, forward.Z, 0 },
                 { transl.X, transl.Y, transl.Z, 1 }

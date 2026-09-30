@@ -25,23 +25,15 @@ namespace Mathematics
     /// </summary>
     public readonly struct Vector3D : IEquatable<Vector3D>
     {
+        /// <inheritdoc />
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Vector3D" /> class.
+        ///     Initializes a new instance of the <see cref="T:Mathematics.Vector3D" /> class.
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="z">The z.</param>
         // Passes to the master constructor below, ensuring W defaults to 1.0
         public Vector3D(double x, double y, double z) : this(x, y, z, 1.0d)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Vector3D"/> struct.
-        /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        public Vector3D(double x, double y) : this(x, y, 0d, 1.0d)
         {
         }
 
@@ -53,7 +45,7 @@ namespace Mathematics
         /// <param name="y">The y.</param>
         /// <param name="z">The z.</param>
         /// <param name="w">The w.</param>
-        public Vector3D(double x, double y, double z, double w)
+        public Vector3D(double x, double y, double z = 0d, double w = 1.0d)
         {
             X = x;
             Y = y;
@@ -158,7 +150,7 @@ namespace Mathematics
         /// <returns>
         ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is Vector3D other && Equals(other);
         }

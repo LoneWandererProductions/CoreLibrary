@@ -34,7 +34,8 @@ namespace Core.Apps.Rules
         public string Name => "LinqInLoop";
 
         /// <inheritdoc cref="ICodeAnalyzer" />
-        public string Description => "Detects LINQ calls inside loops which allocate delegates and enumerators on every iteration.";
+        public string Description =>
+            "Detects LINQ calls inside loops which allocate delegates and enumerators on every iteration.";
 
         /// <inheritdoc />
         public string Namespace => "Analyzer";
@@ -50,9 +51,24 @@ namespace Core.Apps.Rules
         /// </summary>
         private static readonly HashSet<string> LinqMethods = new(StringComparer.Ordinal)
         {
-            "Where", "Select", "SelectMany", "Any", "All", "First", "FirstOrDefault",
-            "Single", "SingleOrDefault", "Last", "LastOrDefault", "Count", "ToList",
-            "ToArray", "ToDictionary", "GroupBy", "OrderBy", "OrderByDescending"
+            "Where",
+            "Select",
+            "SelectMany",
+            "Any",
+            "All",
+            "First",
+            "FirstOrDefault",
+            "Single",
+            "SingleOrDefault",
+            "Last",
+            "LastOrDefault",
+            "Count",
+            "ToList",
+            "ToArray",
+            "ToDictionary",
+            "GroupBy",
+            "OrderBy",
+            "OrderByDescending"
         };
 
         /// <inheritdoc />
@@ -108,7 +124,8 @@ namespace Core.Apps.Rules
             {
                 var results = AnalyzerExecutor.ExecutePath(this, args, "Usage: LinqInLoop <fileOrDirectoryPath>");
                 return CommandResult.Ok($"LINQ calls in loops found: {results.Count}\n" +
-                    string.Join("\n", results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
+                                        string.Join("\n",
+                                            results.Select(d => $"{d.FilePath}({d.LineNumber}): {d.Message}")));
             }
             catch (Exception ex)
             {

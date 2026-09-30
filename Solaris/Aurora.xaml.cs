@@ -119,11 +119,6 @@ namespace Solaris
         #endregion
 
         /// <summary>
-        /// The cursor
-        /// </summary>
-        private Coordinate _cursor;
-
-        /// <summary>
         /// The third layer
         /// </summary>
         private UnmanagedImageBuffer? _thirdLayer;

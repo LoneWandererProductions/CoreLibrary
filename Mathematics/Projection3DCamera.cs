@@ -29,7 +29,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D ProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,]? matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
             var projection = Projection3DConstants.ProjectionTo3DMatrix();
@@ -60,7 +60,7 @@ namespace Mathematics
         /// <returns>Transformed Coordinates</returns>
         public static Vector3D OrthographicProjectionTo3D(Vector3D start)
         {
-            double[,] matrix = { { start.X, start.Y, start.Z, 1 } };
+            double[,]? matrix = { { start.X, start.Y, start.Z, 1 } };
 
             var m1 = new BaseMatrix(matrix);
             var projection = OrthographicProjectionTo3DMatrix();
@@ -108,7 +108,7 @@ namespace Mathematics
         /// <returns>Projection Matrix</returns>
         private static BaseMatrix OrthographicProjectionTo3DMatrix()
         {
-            double[,] translation =
+            double[,]? translation =
             {
                 { Projection3DRegister.A, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 }
             };
@@ -185,7 +185,7 @@ namespace Mathematics
 
             // Join rotation and translation in a single matrix
             // instead of calculating their multiplication
-            double[,] viewMatrix =
+            double[,]? viewMatrix =
             {
                 { transform.Right.X, transform.Up.X, transform.Forward.X, 0 },
                 { transform.Right.Y, transform.Up.Y, transform.Forward.Y, 0 },

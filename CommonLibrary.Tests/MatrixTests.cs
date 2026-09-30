@@ -99,7 +99,7 @@ namespace CommonLibrary.Tests
             Assert.AreEqual(result[1, 0], 1, "10");
             Assert.AreEqual(result[2, 0], 0, "20");
 
-            double[,] matrix = { { 1, 1, 3, 1 } };
+            double[,]? matrix = { { 1, 1, 3, 1 } };
             m1 = new BaseMatrix(matrix);
 
             double[,] scale = { { 320, 0, 0, 0 }, { 0, 240, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } };
@@ -261,7 +261,7 @@ namespace CommonLibrary.Tests
         [TestMethod]
         public void MatrixDecompose()
         {
-            double[,] matrix = { { 2, -1, -2 }, { -4, 6, 3 }, { -4, -2, 8 } };
+            double[,]? matrix = { { 2, -1, -2 }, { -4, 6, 3 }, { -4, -2, 8 } };
 
             var cache = MatrixInverse.LuDecomposition(matrix);
 

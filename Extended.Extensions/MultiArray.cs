@@ -123,7 +123,7 @@ namespace Extended.Extensions
         /// <param name="array">The array.</param>
         /// <param name="compare">The compare target.</param>
         /// <returns>Equal or not</returns>
-        public static bool Equal<TValue>(this TValue[,] array, TValue[,] compare) where TValue : unmanaged
+        public static bool Equal<TValue>(this TValue[,] array, TValue[,]? compare) where TValue : unmanaged
         {
             if (array.GetLength(0) != compare.GetLength(0) ||
                 array.GetLength(1) != compare.GetLength(1)) return false;
