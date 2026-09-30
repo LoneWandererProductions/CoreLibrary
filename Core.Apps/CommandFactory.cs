@@ -56,7 +56,7 @@ namespace Core.Apps
                 new LoopAllocationAnalyzer(), new LoopCacheAnalyzer(), new BatchAnalyzerCommand(),
                 new RoslynCompilerAnalyzer(), new UnusedUsingAnalyzer(), new UnusedPrivateMethodAnalyzer(),
                 new LinqInLoopAnalyzer(), new StringConcatInLoopAnalyzer(), new EmptyCatchBlockAnalyzer(),
-                new RethrowExceptionAnalyzer(), new AsyncVoidAnalyzer()
+                new RethrowExceptionAnalyzer(), new AsyncVoidAnalyzer(), new RoslynCompilerAnalyzer()
             });
 
             // --- PRODUCERS (Require Registry) ---
@@ -117,8 +117,8 @@ namespace Core.Apps
                 new DocCommentCoverageCommand(), new DeadReferenceAnalyzer(), new StructPaddingAnalyzer(),
                 new UnusedMemberAnalyzer(), new MagicNumberAnalyzer(), new LoopAllocationAnalyzer(),
                 new LoopCacheAnalyzer(), new RoslynCompilerAnalyzer(), new UnusedUsingAnalyzer(), new UnusedPrivateMethodAnalyzer(),
-                new LinqInLoopAnalyzer(), new StringConcatInLoopAnalyzer(), new EmptyCatchBlockAnalyzer(),new RethrowExceptionAnalyzer(),
-                new AsyncVoidAnalyzer()
+                new LinqInLoopAnalyzer(), new StringConcatInLoopAnalyzer(), new EmptyCatchBlockAnalyzer(),
+                new RethrowExceptionAnalyzer(), new AsyncVoidAnalyzer(), new RoslynCompilerAnalyzer()
             };
 
             return modules;
