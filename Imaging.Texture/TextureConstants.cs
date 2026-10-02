@@ -360,5 +360,24 @@ namespace Imaging.Texture
                 WarpScale = 64.0, WarpStrength = 16.0, Persistence = 3.0 // Reused for reflection band count
             };
         }
+
+        /// <summary>
+        /// Gets the leaf cloud foliage canopy configuration.
+        /// </summary>
+        /// <returns>The leaf cloud configuration.</returns>
+        public static TextureConfig GetLeafCloudConfig()
+        {
+            return new TextureConfig
+            {
+                VoronoiGridSize = 12, // High cell density creates tight leaf clusters
+                                      // Format: Highlight [0-2], Base Leaf [3-5], Deep Shadow [6-8], Mortar/Gap [9-11]
+                RgbRamp = [
+                    140, 210, 60,  // Bright sunlit leaf highlight
+            50,  140, 35,  // Mid-tone foliage green
+            20,  60,  20,  // Deep shadow crease
+            10,  30,  10   // Inner dark gap / ambient shadow
+                ]
+            };
+        }
     }
 }

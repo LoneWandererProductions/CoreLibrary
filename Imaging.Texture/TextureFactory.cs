@@ -340,5 +340,30 @@ namespace Imaging.Texture
                 activeConfig.Persistence, activeConfig.WarpScale, activeConfig.WarpStrength
             );
         }
+
+        /// <summary>
+        /// Generates a volumetric leaf cloud texture for bushes and tree canopies.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <param name="fillArea">If false, spaces between leaf clusters remain transparent.</param>
+        /// <returns>
+        /// The generated raw texture buffer containing volumetric leaf clouds.
+        /// </returns>
+        public static RawTextureBuffer? GenerateLeafCloud(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null, bool fillArea = false)
+        {
+            var activeConfig = config ?? TextureConstants.GetLeafCloudConfig();
+
+            return TextureMathEngine.GenerateDirectionalStone(
+                width,
+                height,
+                noiseGenInstance,
+                activeConfig.RgbRamp,
+                activeConfig.VoronoiGridSize,
+                fillArea);
+        }
     }
 }

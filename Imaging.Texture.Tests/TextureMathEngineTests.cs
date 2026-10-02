@@ -320,6 +320,27 @@ namespace Imaging.Texture.Tests
         }
 
         /// <summary>
+        /// Generates the volumetric leaf cloud visual test with transparent canopy gaps.
+        /// Ideal for bush clusters and tree canopies.
+        /// </summary>
+        [TestMethod]
+        public void GenerateLeafCloud_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: false);
+            SaveBufferToImage(buffer, "23_LeafCloud_Transparent.png");
+        }
+
+        /// <summary>
+        /// Generates the volumetric leaf cloud visual test with solid dark inner foliage backing.
+        /// </summary>
+        [TestMethod]
+        public void GenerateLeafCloud_Solid_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: true);
+            SaveBufferToImage(buffer, "23_LeafCloud_Solid.png");
+        }
+
+        /// <summary>
         /// Converts the RawTextureBuffer span (BGRA) into a standard PNG file.
         /// </summary>
         private void SaveBufferToImage(RawTextureBuffer? buffer, string filename)
@@ -344,7 +365,11 @@ namespace Imaging.Texture.Tests
             bmp.UnlockBits(bmpData);
 
             var filePath = Path.Combine(_outputDirectory, filename);
-            bmp.Save(filePath, ImageFormat.Png);
+
+            // Save via MemoryStream to bypass GDI+ native file-locking issues
+            using var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Png);
+            File.WriteAllBytes(filePath, ms.ToArray());
 
             Trace.WriteLine($"Saved: {filePath}");
         }
