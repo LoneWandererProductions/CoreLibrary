@@ -341,6 +341,76 @@ namespace Imaging.Texture.Tests
         }
 
         /// <summary>
+        /// Generates the smooth volumetric leaf cloud visual test with transparent canopy gaps.
+        /// </summary>
+        [TestMethod]
+        public void GenerateVolumetricLeafCloud_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateVolumetricLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: false);
+            SaveBufferToImage(buffer, "24_VolumetricLeafCloud_Transparent.png");
+        }
+
+        /// <summary>
+        /// Generates the smooth volumetric leaf cloud visual test with solid dark inner foliage backing.
+        /// </summary>
+        [TestMethod]
+        public void GenerateVolumetricLeafCloud_Solid_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateVolumetricLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: true);
+            SaveBufferToImage(buffer, "24_VolumetricLeafCloud_Solid.png");
+        }
+
+        /// <summary>
+        /// Generates the soft, low-noise terrain grass visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateTerrainGrass_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateTerrainGrass(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "25_TerrainGrass.png");
+        }
+
+        /// <summary>
+        /// Generates the soft, muted terrain dirt visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateTerrainDirt_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateTerrainDirt(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "26_TerrainDirt.png");
+        }
+
+        /// <summary>
+        /// Generates the mountain rock visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateMountainRock_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateMountainRock(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "27_MountainRock.png");
+        }
+
+        /// <summary>
+        /// Generates the layered dungeon sandstone visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateDungeonSandstone_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateDungeonSandstone(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "28_DungeonSandstone.png");
+        }
+
+        /// <summary>
+        /// Generates the flat, low-noise dungeon sandstone visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateDungeonSandstoneFlat_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateDungeonSandstoneFlat(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "29_DungeonSandstone_Flat.png");
+        }
+
+        /// <summary>
         /// Converts the RawTextureBuffer span (BGRA) into a standard PNG file.
         /// </summary>
         private void SaveBufferToImage(RawTextureBuffer? buffer, string filename)

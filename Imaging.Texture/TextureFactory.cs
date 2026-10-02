@@ -365,5 +365,117 @@ namespace Imaging.Texture
                 activeConfig.VoronoiGridSize,
                 fillArea);
         }
+
+        /// <summary>
+        /// Generates a smooth, volumetric leaf cloud texture with rounded leaf puffs and distinct canopy gaps.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <param name="fillArea">If false, spaces between leaf clusters remain transparent.</param>
+        /// <returns>
+        /// The generated raw texture buffer containing smooth volumetric leaf clouds.
+        /// </returns>
+        public static RawTextureBuffer? GenerateVolumetricLeafCloud(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null, bool fillArea = false)
+        {
+            var activeConfig = config ?? TextureConstants.GetVolumetricLeafCloudConfig();
+
+            return TextureMathEngine.GenerateVolumetricLeafCloud(
+                width,
+                height,
+                noiseGenInstance,
+                activeConfig.RgbRamp,
+                activeConfig.VoronoiGridSize,
+                clusterCoverage: 0.68,
+                fillArea: fillArea);
+        }
+
+        /// <summary>
+        /// Generates a smooth, low-noise terrain grass texture with macro color transitions.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateTerrainGrass(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetTerrainGrassConfig();
+
+            return TextureMathEngine.GenerateTerrainGrass(
+                width, height, noiseGenInstance, activeConfig.RgbRamp, activeConfig.TurbulenceSize);
+        }
+
+        /// <summary>
+        /// Generates a soft, muted terrain dirt texture with smooth soil transitions.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateTerrainDirt(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetTerrainDirtConfig();
+
+            return TextureMathEngine.GenerateTerrainDirt(
+                width, height, noiseGenInstance, activeConfig.RgbRamp, activeConfig.TurbulenceSize);
+        }
+
+        /// <summary>
+        /// Generates a mountain rock texture with macro height contours and directional slope shading.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateMountainRock(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetMountainRockConfig();
+
+            return TextureMathEngine.GenerateMountainRock(
+                width, height, noiseGenInstance, activeConfig.RgbRamp, activeConfig.TurbulenceSize);
+        }
+
+        /// <summary>
+        /// Generates a layered dungeon sandstone texture with domain-warped sedimentary strata.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateDungeonSandstone(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetDungeonSandstoneConfig();
+
+            return TextureMathEngine.GenerateDungeonSandstone(
+                width, height, noiseGenInstance, activeConfig.RgbRamp,
+                activeConfig.TurbulenceSize, activeConfig.WarpScale, activeConfig.WarpStrength);
+        }
+
+        /// <summary>
+        /// Generates a flat, soft-blended dungeon sandstone terrain texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateDungeonSandstoneFlat(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetDungeonSandstoneFlatConfig();
+
+            return TextureMathEngine.GenerateDungeonSandstoneFlat(
+                width, height, noiseGenInstance, activeConfig.RgbRamp, activeConfig.TurbulenceSize);
+        }
     }
 }

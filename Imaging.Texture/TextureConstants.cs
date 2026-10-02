@@ -379,5 +379,115 @@ namespace Imaging.Texture
                 ]
             };
         }
+
+        /// <summary>
+        /// Gets the smooth volumetric leaf cloud configuration.
+        /// </summary>
+        /// <returns>The volumetric leaf cloud configuration.</returns>
+        public static TextureConfig GetVolumetricLeafCloudConfig()
+        {
+            return new TextureConfig
+            {
+                VoronoiGridSize = 8, // Grid resolution for rounded leaf puffs
+                RgbRamp = [
+                    140, 210, 60,  // Sunlit leaf highlight
+            50,  140, 35,  // Mid-tone foliage green
+            20,  60,  20,  // Deep shadow crease
+            10,  30,  10   // Inner dark gap / ambient shadow
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the soft, low-noise terrain grass configuration.
+        /// </summary>
+        /// <returns>The terrain grass configuration.</returns>
+        public static TextureConfig GetTerrainGrassConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 48.0, // Large macro scale for broad field color transitions
+                                       // Format: Dark Moss [0-2], Mid Meadow [3-5], Warm Highlight [6-8]
+                RgbRamp = [
+                    35, 75, 30,    // Deep forest green
+            70, 115, 45,   // Mid-tone meadow green
+            95, 135, 55    // Soft sunlit grass accent
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the soft earthy terrain dirt configuration.
+        /// </summary>
+        /// <returns>The terrain dirt configuration.</returns>
+        public static TextureConfig GetTerrainDirtConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 32.0, // Macro scale for soil patches
+                                       // Format: Damp Rich Soil [0-2], Mid Loam [3-5], Soft Dry Silt [6-8]
+                RgbRamp = [
+                    55, 40, 28,    // Deep rich damp soil
+            85, 62, 42,    // Mid-tone brown loam
+            115, 88, 60    // Soft dry silt highlight
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the mountain cliff rock configuration.
+        /// </summary>
+        /// <returns>The mountain rock configuration.</returns>
+        public static TextureConfig GetMountainRockConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 64.0, // Macro elevation contours
+                                       // Format: Deep Shadow Slate [0-2], Cliff Grey [3-5], Ridge Highlight [6-8]
+                RgbRamp = [
+                    45, 50, 55,    // Deep slate shadow
+            85, 90, 95,    // Mid-tone cliff rock
+            135, 140, 145  // Sunlit mountain ridge highlight
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the layered dungeon sandstone configuration.
+        /// </summary>
+        /// <returns>The dungeon sandstone configuration.</returns>
+        public static TextureConfig GetDungeonSandstoneConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 16.0, // Strata layer spacing
+                WarpScale = 40.0,      // Bedding plane wave scale
+                WarpStrength = 12.0,   // Bedding distortion strength
+                                       // Format: Seam Line [0-2], Mid Tan Sandstone [3-5], Ochre Layer [6-8]
+                RgbRamp = [
+                    110, 85, 55,   // Dark sediment seam
+            160, 130, 90,  // Mid-tone tan sandstone
+            205, 175, 130  // Warm ochre highlight band
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the flat, low-noise dungeon sandstone terrain configuration.
+        /// </summary>
+        /// <returns>The flat dungeon sandstone configuration.</returns>
+        public static TextureConfig GetDungeonSandstoneFlatConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 40.0, // Macro scale for broad, smooth sand patch transitions
+                                       // Format: Deep Warm Sand [0-2], Mid Tan [3-5], Ochre Highlight [6-8]
+                RgbRamp = [
+                    120, 95, 60,   // Deep warm sand shadow
+            165, 135, 95,  // Mid-tone tan sandstone
+            210, 180, 135  // Soft sunlit ochre highlight
+                ]
+            };
+        }
     }
 }
