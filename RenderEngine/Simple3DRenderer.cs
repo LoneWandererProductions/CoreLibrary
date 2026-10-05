@@ -81,6 +81,33 @@ namespace RenderEngine
         /// </summary>
         private TK.Matrix4 _view;
 
+        // --- STATE CACHING FIELDS ---
+
+        /// <summary>
+        /// The active program
+        /// </summary>
+        private int _activeProgram = -1;
+
+        /// <summary>
+        /// The active vao
+        /// </summary>
+        private int _activeVao = -1;
+
+        /// <summary>
+        /// The active texture
+        /// </summary>
+        private int _activeTexture = -1;
+
+        /// <summary>
+        /// The matrices dirty solid
+        /// </summary>
+        private bool _matricesDirtySolid = true;
+
+        /// <summary>
+        /// The matrices dirty tex
+        /// </summary>
+        private bool _matricesDirtyTex = true;
+
         // --- PERFORMANCE CACHE FIELDS ---
 
         /// <summary>
@@ -206,6 +233,8 @@ namespace RenderEngine
                 aspect,
                 near,
                 far);
+            _matricesDirtySolid = true;
+            _matricesDirtyTex = true;
         }
 
         /// <summary>
@@ -253,6 +282,99 @@ namespace RenderEngine
                 new TK.Vector3(position.X, position.Y, position.Z),
                 new TK.Vector3(target.X, target.Y, target.Z),
                 new TK.Vector3(up.X, up.Y, up.Z));
+            _matricesDirtySolid = true;
+            _matricesDirtyTex = true;
+        }
+
+        // --- STATE BINDING HELPERS ---
+
+        /// <summary>
+        /// Binds the program.
+        /// </summary>
+        /// <param name="program">The program.</param>
+        private void BindProgram(int program)
+        {
+            if (_activeProgram != program)
+            {
+                GL.UseProgram(program);
+                _activeProgram = program;
+            }
+        }
+
+        /// <summary>
+        /// Binds the vao.
+        /// </summary>
+        /// <param name="vao">The vao.</param>
+        private void BindVao(int vao)
+        {
+            if (_activeVao != vao)
+            {
+                GL.BindVertexArray(vao);
+                _activeVao = vao;
+            }
+        }
+
+        /// <summary>
+        /// Binds the texture.
+        /// </summary>
+        /// <param name="textureId">The texture identifier.</param>
+        private void BindTexture(int textureId)
+        {
+            if (_activeTexture != textureId)
+            {
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, textureId);
+                _activeTexture = textureId;
+            }
+        }
+
+        /// <summary>
+        /// Ensures the solid matrices.
+        /// </summary>
+        private void EnsureSolidMatrices()
+        {
+            if (_matricesDirtySolid)
+            {
+                var id = TK.Matrix4.Identity;
+                GL.UniformMatrix4(_locModelSolid, false, ref id);
+                GL.UniformMatrix4(_locViewSolid, false, ref _view);
+                GL.UniformMatrix4(_locProjSolid, false, ref _projection);
+                _matricesDirtySolid = false;
+            }
+        }
+
+        /// <summary>
+        /// Ensures the tex matrices.
+        /// </summary>
+        private void EnsureTexMatrices()
+        {
+            if (_matricesDirtyTex)
+            {
+                var idTex = TK.Matrix4.Identity;
+                GL.UniformMatrix4(_locModelTex, false, ref idTex);
+                GL.UniformMatrix4(_locViewTex, false, ref _view);
+                GL.UniformMatrix4(_locProjTex, false, ref _projection);
+                _matricesDirtyTex = false;
+            }
+        }
+
+        /// <summary>
+        /// Sets every piece of global GL state the 3D pass depends on, once per frame, instead of inheriting whatever the
+        /// previous pass (the 2D overlay, post-processing) happened to leave behind. This is exactly the state the 2D
+        /// renderer already restores after drawing text, so the very first frame now behaves like every later one.
+        /// Back faces are culled (the engine builds double-sided surfaces as two opposite-facing layers), and blending
+        /// is off for opaque world geometry.
+        /// </summary>
+        private static void ApplyFrameState()
+        {
+            GL.Enable(EnableCap.DepthTest);
+            GL.DepthMask(true);
+
+            // Cull mode (back) and winding (counter-clockwise) are the GL defaults and nothing in the engine changes
+            // them, so only the enable bit needs to be pinned here.
+            GL.Enable(EnableCap.CullFace);
+
+            GL.Disable(EnableCap.Blend);
         }
 
         // --- PIPELINE INITIALIZATION ENGINE ---
@@ -385,6 +507,12 @@ namespace RenderEngine
         {
             EnsureInitialized();
 
+            _activeProgram = -1;
+            _activeVao = -1;
+            _activeTexture = -1;
+
+            ApplyFrameState();
+
             if (PostProcessingEnabled)
             {
                 EnsureFboInitialized();
@@ -447,20 +575,25 @@ namespace RenderEngine
 
             // 3. Render Post-Processing Quad
             GL.UseProgram(_postProcessShader);
+            _activeProgram = _postProcessShader;
 
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, _fboTexture);
+            _activeTexture = _fboTexture;
 
             GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uScene"), 0);
             GL.Uniform2(GL.GetUniformLocation(_postProcessShader, "uScreenSize"), Width, (float)Height);
             GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uFilterMode"), (int)CurrentFilter);
 
             GL.BindVertexArray(_quadVao);
+            _activeVao = _quadVao;
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
 
             // 4. Restore state for 2D UI / future passes
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
+            _activeVao = 0;
+            _activeTexture = 0;
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
             GL.DepthMask(true);
@@ -474,13 +607,9 @@ namespace RenderEngine
         public unsafe void DrawTriangle(Vector3 v0, Vector3 v1, Vector3 v2, (int r, int g, int b, int a) color)
         {
             EnsureInitialized();
-            GL.UseProgram(_shaderSolid);
-            GL.BindVertexArray(_vaoSolid);
-
-            var model = TK.Matrix4.Identity;
-            GL.UniformMatrix4(_locModelSolid, false, ref model);
-            GL.UniformMatrix4(_locViewSolid, false, ref _view);
-            GL.UniformMatrix4(_locProjSolid, false, ref _projection);
+            BindProgram(_shaderSolid);
+            BindVao(_vaoSolid);
+            EnsureSolidMatrices();
 
             var r = color.r / 255f;
             var g = color.g / 255f;
@@ -519,21 +648,16 @@ namespace RenderEngine
             textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
-            GL.UseProgram(_shaderTex);
-            GL.BindVertexArray(_vaoTex);
+            BindProgram(_shaderTex);
+            BindVao(_vaoTex);
 
             if (_locTexSampler >= 0)
             {
                 GL.Uniform1(_locTexSampler, 0);
             }
 
-            var model = TK.Matrix4.Identity;
-            GL.UniformMatrix4(_locModelTex, false, ref model);
-            GL.UniformMatrix4(_locViewTex, false, ref _view);
-            GL.UniformMatrix4(_locProjTex, false, ref _projection);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
+            EnsureTexMatrices();
+            BindTexture(textureId);
 
             var c = color ?? (255, 255, 255, 255);
             var r = c.r / 255f;
@@ -569,8 +693,8 @@ namespace RenderEngine
             textureId = _resources.ResolveTextureId(textureId);
 
             EnsureInitialized();
-            GL.UseProgram(_shaderTex);
-            GL.BindVertexArray(_vaoTex);
+            BindProgram(_shaderTex);
+            BindVao(_vaoTex);
 
             if (_locTexSampler >= 0)
             {
@@ -586,13 +710,8 @@ namespace RenderEngine
             var v2 = pos + (right * radius) + (up * radius);
             var v3 = pos - (right * radius) + (up * radius);
 
-            var model = TK.Matrix4.Identity;
-            GL.UniformMatrix4(_locModelTex, false, ref model);
-            GL.UniformMatrix4(_locViewTex, false, ref _view);
-            GL.UniformMatrix4(_locProjTex, false, ref _projection);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
+            EnsureTexMatrices();
+            BindTexture(textureId);
 
             var c = color ?? (255, 255, 255, 255);
             var r = c.r / 255f;
@@ -627,6 +746,8 @@ namespace RenderEngine
                 projection.M31, projection.M32, projection.M33, projection.M34,
                 projection.M41, projection.M42, projection.M43, projection.M44
             );
+            _matricesDirtySolid = true;
+            _matricesDirtyTex = true;
         }
 
         // --- HARDWARE BATCH FLUSH RUNTIMES ---
@@ -640,13 +761,9 @@ namespace RenderEngine
 
             if (batch.Solid3DVertices.Length > 0)
             {
-                GL.UseProgram(_shaderSolid);
-                GL.BindVertexArray(_vaoSolid);
-
-                var id = TK.Matrix4.Identity;
-                GL.UniformMatrix4(_locModelSolid, false, ref id);
-                GL.UniformMatrix4(_locViewSolid, false, ref _view);
-                GL.UniformMatrix4(_locProjSolid, false, ref _projection);
+                BindProgram(_shaderSolid);
+                BindVao(_vaoSolid);
+                EnsureSolidMatrices();
 
                 EnsureBufferCapacity(_vboSolid, ref _vboSolidCapacity, batch.Solid3DVertices.Length);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
@@ -657,27 +774,22 @@ namespace RenderEngine
 
             if (batch.Textured3DBatches.Count > 0)
             {
-                GL.UseProgram(_shaderTex);
-                GL.BindVertexArray(_vaoTex);
+                BindProgram(_shaderTex);
+                BindVao(_vaoTex);
 
                 if (_locTexSampler >= 0)
                 {
                     GL.Uniform1(_locTexSampler, 0);
                 }
 
-                var id = TK.Matrix4.Identity;
-                GL.UniformMatrix4(_locModelTex, false, ref id);
-                GL.UniformMatrix4(_locViewTex, false, ref _view);
-                GL.UniformMatrix4(_locProjTex, false, ref _projection);
+                EnsureTexMatrices();
 
                 foreach (var kvp in batch.Textured3DBatches)
                 {
                     if (kvp.Value.Count == 0) continue;
 
                     var texToBind = _resources.ResolveTextureId(kvp.Key);
-
-                    GL.ActiveTexture(TextureUnit.Texture0);
-                    GL.BindTexture(TextureTarget.Texture2D, texToBind);
+                    BindTexture(texToBind);
 
                     var span = CollectionsMarshal.AsSpan(kvp.Value);
                     EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, span.Length);
@@ -693,7 +805,7 @@ namespace RenderEngine
                 }
             }
 
-            GL.BindVertexArray(0);
+            BindVao(0);
         }
 
         /// <summary>
@@ -706,39 +818,31 @@ namespace RenderEngine
 
             if (mesh.SolidVertexCount > 0)
             {
-                GL.UseProgram(_shaderSolid);
-                GL.BindVertexArray(mesh.SolidVao);
-
-                var id = TK.Matrix4.Identity;
-                GL.UniformMatrix4(_locModelSolid, false, ref id);
-                GL.UniformMatrix4(_locViewSolid, false, ref _view);
-                GL.UniformMatrix4(_locProjSolid, false, ref _projection);
+                BindProgram(_shaderSolid);
+                BindVao(mesh.SolidVao);
+                EnsureSolidMatrices();
 
                 GL.DrawArrays(PrimitiveType.Triangles, 0, mesh.SolidVertexCount);
             }
 
             if (mesh.Ranges.Count == 0) return;
 
-            GL.UseProgram(_shaderTex);
-            GL.BindVertexArray(mesh.Vao);
+            BindProgram(_shaderTex);
+            BindVao(mesh.Vao);
             if (_locTexSampler >= 0) GL.Uniform1(_locTexSampler, 0);
 
-            var idTex = TK.Matrix4.Identity;
-            GL.UniformMatrix4(_locModelTex, false, ref idTex);
-            GL.UniformMatrix4(_locViewTex, false, ref _view);
-            GL.UniformMatrix4(_locProjTex, false, ref _projection);
+            EnsureTexMatrices();
 
             foreach (var range in mesh.Ranges)
             {
                 if (range.VertexCount == 0) continue;
 
                 var texToBind = _resources.ResolveTextureId(range.TextureId);
-                GL.ActiveTexture(TextureUnit.Texture0);
-                GL.BindTexture(TextureTarget.Texture2D, texToBind);
+                BindTexture(texToBind);
                 GL.DrawArrays(PrimitiveType.Triangles, range.StartVertex, range.VertexCount);
             }
 
-            GL.BindVertexArray(0);
+            BindVao(0);
         }
 
         /// <summary>

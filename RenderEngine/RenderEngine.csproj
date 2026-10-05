@@ -26,7 +26,6 @@
         <ProjectReference Include="..\Extended.Unmanaged\Extended.Unmanaged.csproj" />
         <ProjectReference Include="..\Imaging.Objects\Imaging.Objects.csproj" />
         <ProjectReference Include="..\Imaging.Texture\Imaging.Texture.csproj" />
-        <ProjectReference Include="..\Mathematics\Mathematics.csproj" />
     </ItemGroup>
 
 </Project>

@@ -157,6 +157,15 @@ namespace RenderEngine
             GL.BindVertexArray(0);
         }
 
+        /// <summary>
+        /// Resets this instance.
+        /// </summary>
+        public void Reset()
+        {
+            SolidVertexCount = 0;
+            Ranges.Clear();
+        }
+
         /// <inheritdoc/>
         public void Dispose()
         {

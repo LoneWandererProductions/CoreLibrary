@@ -585,7 +585,7 @@ namespace RenderEngine
             foreach (var ch in text)
             {
                 var ascii = (int)ch;
-                if (ascii < 32 || ascii > 126) ascii = 63; // Fallback to '?'
+                if (ascii is < 32 or > 126) ascii = 63; // Fallback to '?'
 
                 // Handle newlines
                 if (ch == '\n')

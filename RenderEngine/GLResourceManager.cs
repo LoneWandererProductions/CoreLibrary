@@ -115,9 +115,64 @@ namespace RenderEngine
                 { 10018, ("Steel", "Directional brushed steel metal surface with specular grit.") },
                 { 10019, ("Latex", "Glossy latex surface with steep specular falloff.") },
                 { 10020, ("Leather", "Pebbled organic skin pores and warped wrinkles.") },
-                { 10021, ("PolishedSteel", "High-gloss chrome reflective steel surface.") }
+                { 10021, ("PolishedSteel", "High-gloss chrome reflective steel surface.") },
+                { 10022, ("LeafCloud", "Volumetric leaf cloud texture for bushes and tree canopies.") },
+                {
+                    10023,
+                    ("VolumetricLeafCloud",
+                        "Smooth volumetric leaf cloud texture with rounded leaf puffs and distinct canopy gaps.")
+                },
+                { 10024, ("TerrainGrass", "Smooth low-noise terrain grass texture with macro color transitions.") },
+                { 10025, ("TerrainDirt", "Soft muted terrain dirt texture with smooth soil transitions.") },
+                {
+                    10026,
+                    ("MountainRock", "Mountain rock texture with macro height contours and directional slope shading.")
+                },
+                {
+                    10027,
+                    ("DungeonSandstone", "Layered dungeon sandstone texture with domain-warped sedimentary strata.")
+                },
+                { 10028, ("DungeonSandstoneFlat", "Flat soft-blended dungeon sandstone terrain texture.") },
+                { 10029, ("RawIron", "Raw cast iron texture with fine surface pitting and micro-grit.") },
+                { 10030, ("WroughtIron", "Wrought iron texture with subtle hammer marks and forged cellular facets.") },
+                { 10031, ("RustedIron", "Rusted corroded iron texture with domain-warped oxidation layer.") },
+                { 10032, ("DesertSand", "Desert sand texture with gentle directional wind ripples.") },
+                { 10033, ("DesertSandFlat", "Flat soft-blended desert sand terrain texture for beds and background areas.") }
             };
+
         // --- PROCEDURAL LAZY LOADING INTEGRATION PASS ---
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GlResourceManager"/> class.
+        /// </summary>
+        public GlResourceManager()
+        {
+            _lazyNoiseGen = new NoiseGenerator(256, 256);
+        }
+
+        /// <summary>
+        /// Sets the base resolution for dynamic procedural texture baking.
+        /// </summary>
+        /// <param name="width">Pixel width (e.g., 256, 512, 1024).</param>
+        /// <param name="height">Pixel height (e.g., 256, 512, 1024).</param>
+        /// <param name="clearExistingCache">If set to <c>true</c>, purges existing GL handles so textures re-bake at the new resolution.</param>
+        public void SetProceduralResolution(int width, int height, bool clearExistingCache = false)
+        {
+            _procWidth = width;
+            _procHeight = height;
+            _lazyNoiseGen = new NoiseGenerator(width, height);
+
+            if (clearExistingCache)
+            {
+                foreach (var handle in _bakedProceduralCache.Values)
+                {
+                    GL.DeleteTexture(handle);
+                    _allTrackedHandles.Remove(handle);
+                }
+
+                _bakedProceduralCache.Clear();
+            }
+        }
 
         /// <summary>
         /// Configures the base resolution and noise algorithm context used for dynamic on-demand baking.
@@ -200,7 +255,7 @@ namespace RenderEngine
                 10003 => TextureMathEngine.GenerateWood(_procWidth, _procHeight, _lazyNoiseGen),
                 10004 => TextureMathEngine.GenerateWave(_procWidth, _procHeight, _lazyNoiseGen),
                 10005 => TextureMathEngine.GenerateCrosshatch(_procWidth, _procHeight, lineSpacing: 32,
-                    lineThickness: 2),
+                    lineThickness: 2, bgR: 245, bgG: 238, bgB: 220, bgA: 255),
                 10006 => TextureMathEngine.GenerateConcrete(_procWidth, _procHeight, _lazyNoiseGen),
                 10007 => TextureMathEngine.GenerateCanvas(_procWidth, _procHeight, lineSpacing: 8, lineThickness: 1),
                 10008 => TextureFactory.GenerateTreeBark(_procWidth, _procHeight, _lazyNoiseGen),
@@ -217,6 +272,18 @@ namespace RenderEngine
                 10019 => TextureFactory.GenerateLatex(_procWidth, _procHeight, _lazyNoiseGen),
                 10020 => TextureFactory.GenerateLeather(_procWidth, _procHeight, _lazyNoiseGen),
                 10021 => TextureFactory.GeneratePolishedSteel(_procWidth, _procHeight, _lazyNoiseGen),
+                10022 => TextureFactory.GenerateLeafCloud(_procWidth, _procHeight, _lazyNoiseGen),
+                10023 => TextureFactory.GenerateVolumetricLeafCloud(_procWidth, _procHeight, _lazyNoiseGen),
+                10024 => TextureFactory.GenerateTerrainGrass(_procWidth, _procHeight, _lazyNoiseGen),
+                10025 => TextureFactory.GenerateTerrainDirt(_procWidth, _procHeight, _lazyNoiseGen),
+                10026 => TextureFactory.GenerateMountainRock(_procWidth, _procHeight, _lazyNoiseGen),
+                10027 => TextureFactory.GenerateDungeonSandstone(_procWidth, _procHeight, _lazyNoiseGen),
+                10028 => TextureFactory.GenerateDungeonSandstoneFlat(_procWidth, _procHeight, _lazyNoiseGen),
+                10029 => TextureFactory.GenerateRawIron(_procWidth, _procHeight, _lazyNoiseGen),
+                10030 => TextureFactory.GenerateWroughtIron(_procWidth, _procHeight, _lazyNoiseGen),
+                10031 => TextureFactory.GenerateRustedIron(_procWidth, _procHeight, _lazyNoiseGen),
+                10032 => TextureFactory.GenerateDesertSand(_procWidth, _procHeight, _lazyNoiseGen),
+                10033 => TextureFactory.GenerateDesertSandFlat(_procWidth, _procHeight, _lazyNoiseGen),
                 _ => null
             };
 
@@ -467,11 +534,11 @@ namespace RenderEngine
                     vertexSrc = ShaderResource.TexturedQuad2DVertexShader;
                     fragmentSrc = ShaderResource.TexturedQuad2DFragmentShader;
                     break;
-                case ShaderTypeApp.PhongLighting: // UNUSED for now
+                case ShaderTypeApp.PhongLighting:
                     vertexSrc = ShaderResource.PhongLightingVertexShader;
                     fragmentSrc = ShaderResource.PhongLightingFragmentShader;
                     break;
-                case ShaderTypeApp.Instancing: // UNUSED for now
+                case ShaderTypeApp.Instancing:
                     vertexSrc = ShaderResource.InstancingVertexShader;
                     fragmentSrc = ShaderResource.InstancingFragmentShader;
                     break;
@@ -479,12 +546,12 @@ namespace RenderEngine
                     vertexSrc = ShaderResource.PostProcessingVertexShader;
                     fragmentSrc = ShaderResource.PostProcessingFragmentShader;
                     break;
-                case ShaderTypeApp.WaterRipple: // UNUSED for now
+                case ShaderTypeApp.WaterRipple:
                     vertexSrc = ShaderResource.WaterRippleVertexShader;
                     fragmentSrc = ShaderResource.WaterRippleFragmentShader;
                     break;
 
-                case ShaderTypeApp.VolumetricFog: // UNUSED for now
+                case ShaderTypeApp.VolumetricFog:
                     vertexSrc = ShaderResource.VolumetricFogVertexShader;
                     fragmentSrc = ShaderResource.VolumetricFogFragmentShader;
                     break;
