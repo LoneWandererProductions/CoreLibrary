@@ -119,6 +119,9 @@ namespace RenderEngine
         /// <summary>
         /// Overload for backwards compatibility with List&lt;SubMeshRange&gt;.
         /// </summary>
+        /// <param name="vertexData">The vertex data.</param>
+        /// <param name="ranges">The ranges.</param>
+        /// <param name="isDynamic">if set to <c>true</c> [is dynamic].</param>
         public void Upload(ReadOnlySpan<float> vertexData, List<SubMeshRange> ranges, bool isDynamic = false)
         {
             Upload(vertexData, System.Runtime.InteropServices.CollectionsMarshal.AsSpan(ranges), isDynamic);
@@ -128,6 +131,9 @@ namespace RenderEngine
         /// Uploads untextured solid geometry (7 floats/vertex: X,Y,Z,R,G,B,A).
         /// Reuses existing GPU handles if available.
         /// </summary>
+        /// <param name="dataPointer">The data pointer.</param>
+        /// <param name="floatCount">The float count.</param>
+        /// <param name="isDynamic">if set to <c>true</c> [is dynamic].</param>
         public void UploadSolid(IntPtr dataPointer, int floatCount, bool isDynamic = false)
         {
             SolidVertexCount = floatCount / 7;

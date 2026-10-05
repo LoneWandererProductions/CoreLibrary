@@ -16,6 +16,9 @@ namespace RenderEngine
     /// </summary>
     public sealed class GpuMeshPool : IDisposable
     {
+        /// <summary>
+        /// The pool
+        /// </summary>
         private readonly Stack<GpuMesh> _pool = new();
 
         /// <summary>
