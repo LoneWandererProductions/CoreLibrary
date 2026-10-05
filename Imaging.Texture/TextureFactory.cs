@@ -477,5 +477,102 @@ namespace Imaging.Texture
             return TextureMathEngine.GenerateDungeonSandstoneFlat(
                 width, height, noiseGenInstance, activeConfig.RgbRamp, activeConfig.TurbulenceSize);
         }
+
+        /// <summary>
+        /// Generates a raw cast iron texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateRawIron(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetRawIronConfig();
+
+            return TextureMathEngine.GenerateRawIron(
+                width, height, noiseGen, 255,
+                activeConfig.TurbulenceSize,
+                activeConfig.CenterRgb[0], activeConfig.CenterRgb[1], activeConfig.CenterRgb[2],
+                activeConfig.EdgeRgb[0], activeConfig.EdgeRgb[1], activeConfig.EdgeRgb[2]
+            );
+        }
+
+        /// <summary>
+        /// Generates a wrought/hammered iron texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateWroughtIron(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetWroughtIronConfig();
+
+            return TextureMathEngine.GenerateWroughtIron(
+                width, height, noiseGen,
+                activeConfig.CellSize, 255, activeConfig.WarpStrength,
+                activeConfig.EdgeRgb[0], activeConfig.EdgeRgb[1], activeConfig.EdgeRgb[2],
+                activeConfig.CenterRgb[0], activeConfig.CenterRgb[1], activeConfig.CenterRgb[2]
+            );
+        }
+
+        /// <summary>
+        /// Generates a rusted corroded iron texture.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateRustedIron(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetRustedIronConfig();
+
+            return TextureMathEngine.GenerateWarpedMapped(
+                width, height, noiseGen,
+                activeConfig.RgbRamp,
+                activeConfig.TurbulenceSize, activeConfig.WarpScale, activeConfig.WarpStrength
+            );
+        }
+
+        /// <summary>
+        /// Generates a desert sand texture with gentle wind ripples.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateDesertSand(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetDesertSandConfig();
+
+            return TextureMathEngine.GenerateDesertSand(
+                width, height, noiseGenInstance, activeConfig.RgbRamp,
+                activeConfig.TurbulenceSize, activeConfig.WarpScale, activeConfig.WarpStrength);
+        }
+
+        /// <summary>
+        /// Generates a flat, soft-blended desert sand texture for pond bottoms and background areas.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        public static RawTextureBuffer? GenerateDesertSandFlat(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetDesertSandFlatConfig();
+
+            return TextureMathEngine.GenerateDesertSandFlat(
+                width, height, noiseGenInstance, activeConfig.RgbRamp, activeConfig.TurbulenceSize);
+        }
     }
 }

@@ -411,6 +411,56 @@ namespace Imaging.Texture.Tests
         }
 
         /// <summary>
+        /// Generates the raw cast iron visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateRawIron_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateRawIron(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "30_RawIron.png");
+        }
+
+        /// <summary>
+        /// Generates the wrought iron visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateWroughtIron_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateWroughtIron(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "31_WroughtIron.png");
+        }
+
+        /// <summary>
+        /// Generates the rusted iron visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateRustedIron_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateRustedIron(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "32_RustedIron.png");
+        }
+
+        /// <summary>
+        /// Generates the rippled desert sand visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateDesertSand_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateDesertSand(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "33_DesertSand_Rippled.png");
+        }
+
+        /// <summary>
+        /// Generates the flat desert sand visual test for pond beds and muted background areas.
+        /// </summary>
+        [TestMethod]
+        public void GenerateDesertSandFlat_VisualTest()
+        {
+            var buffer = TextureFactory.GenerateDesertSandFlat(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "34_DesertSand_Flat.png");
+        }
+
+        /// <summary>
         /// Converts the RawTextureBuffer span (BGRA) into a standard PNG file.
         /// </summary>
         private void SaveBufferToImage(RawTextureBuffer? buffer, string filename)

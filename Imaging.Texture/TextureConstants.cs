@@ -489,5 +489,93 @@ namespace Imaging.Texture
                 ]
             };
         }
+
+        /// <summary>
+        /// Gets the raw cast iron configuration.
+        /// </summary>
+        /// <returns>The raw iron configuration.</returns>
+        public static TextureConfig GetRawIronConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 32.0,
+                CenterRgb = [55, 58, 62],      // Dark matte cast iron base
+                EdgeRgb = [110, 115, 122]       // Micro-pitting highlight tone
+            };
+        }
+
+        /// <summary>
+        /// Gets the wrought/hammered iron configuration.
+        /// </summary>
+        /// <returns>The wrought iron configuration.</returns>
+        public static TextureConfig GetWroughtIronConfig()
+        {
+            return new TextureConfig
+            {
+                CellSize = 28,
+                WarpStrength = 4.0,
+                CenterRgb = [85, 90, 98],       // Hammer face highlight
+                EdgeRgb = [25, 27, 30]          // Deep forged crease/shadow
+            };
+        }
+
+        /// <summary>
+        /// Gets the rusted iron configuration.
+        /// </summary>
+        /// <returns>The rusted iron configuration.</returns>
+        public static TextureConfig GetRustedIronConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 48.0,
+                WarpScale = 32.0,
+                WarpStrength = 8.0,
+                // Dark Oxidized Iron Base -> Deep Corrosion -> Rich Oxide Rust -> Ochre Highlight
+                RgbRamp = [
+                    35, 35, 40,    // Oxidized dark iron base
+                    90, 35, 15,    // Deep corrosion shadow
+                    175, 70, 20,   // Rich iron oxide rust
+                    215, 120, 35   // Flaky ochre rust highlight
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the desert sand configuration with gentle ripple contours.
+        /// </summary>
+        /// <returns>The desert sand configuration.</returns>
+        public static TextureConfig GetDesertSandConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 24.0, // Ripple wavelength
+                WarpScale = 48.0,      // Smooth wave distortion
+                WarpStrength = 6.0,    // Soft ripple drift
+                // Silt/Shadow [0-2], Mid Tan / Dune Gold [3-5], Warm Pale Sunlit Sand [6-8]
+                RgbRamp = [
+                    165, 130, 80,  // Soft silt shadow / wet sand
+                    215, 180, 120, // Mid-tone golden desert sand
+                    240, 210, 155  // Warm pale highlight
+                ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the flat, muted desert sand configuration for toned-down areas and pond bottoms.
+        /// </summary>
+        /// <returns>The flat desert sand configuration.</returns>
+        public static TextureConfig GetDesertSandFlatConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 48.0, // Macro scale for broad, smooth sand patch transitions
+                // Deep Silt [0-2], Muted Tan Sand [3-5], Soft Warm Sand [6-8]
+                RgbRamp = [
+                    155, 125, 75,  // Muted damp silt shadow
+                    205, 170, 110, // Smooth mid-tone sand
+                    230, 200, 145  // Soft low-contrast highlight
+                ]
+            };
+        }
     }
 }

@@ -2059,5 +2059,280 @@ namespace Imaging.Texture
 
             return buffer;
         }
+
+        /// <summary>
+        /// Generates a raw cast iron texture with fine surface pitting and micro-grit.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="macroScale">The macro scale.</param>
+        /// <param name="baseR">The base r.</param>
+        /// <param name="baseG">The base g.</param>
+        /// <param name="baseB">The base b.</param>
+        /// <param name="gritR">The grit r.</param>
+        /// <param name="gritG">The grit g.</param>
+        /// <param name="gritB">The grit b.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateRawIron(int width,
+            int height,
+            object noiseGenInstance,
+            int alpha = 255,
+            double macroScale = 32.0,
+            byte baseR = 55, byte baseG = 58, byte baseB = 62,
+            byte gritR = 110, byte gritG = 115, byte gritB = 122)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var macroNoise = (double)noiseGen.SmoothNoise(x / macroScale, y / macroScale);
+                    var microGrit = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.25;
+
+                    var ironFactor = Math.Clamp(macroNoise + microGrit, 0.0, 1.0);
+
+                    span[idx++] = (byte)(baseB + (gritB - baseB) * ironFactor); // B
+                    span[idx++] = (byte)(baseG + (gritG - baseG) * ironFactor); // G
+                    span[idx++] = (byte)(baseR + (gritR - baseR) * ironFactor); // R
+                    span[idx++] = (byte)alpha;                                  // A
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a wrought iron texture with subtle hammer marks and forged cellular facets.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="cellSize">Size of the cell.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="warpStrength">The warp strength.</param>
+        /// <param name="shadowR">The shadow r.</param>
+        /// <param name="shadowG">The shadow g.</param>
+        /// <param name="shadowB">The shadow b.</param>
+        /// <param name="faceR">The face r.</param>
+        /// <param name="faceG">The face g.</param>
+        /// <param name="faceB">The face b.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateWroughtIron(int width,
+            int height,
+            object noiseGenInstance,
+            int cellSize = 28,
+            int alpha = 255,
+            double warpStrength = 4.0,
+            byte shadowR = 25, byte shadowG = 27, byte shadowB = 30,
+            byte faceR = 85, byte faceG = 90, byte faceB = 98)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            var rand = new Random(54321);
+            dynamic noiseGen = noiseGenInstance;
+
+            var gridCols = (width / cellSize) + 2;
+            var gridRows = (height / cellSize) + 2;
+            var featurePointsX = new int[gridCols, gridRows];
+            var featurePointsY = new int[gridCols, gridRows];
+
+            for (var y = 0; y < gridRows; y++)
+            {
+                for (var x = 0; x < gridCols; x++)
+                {
+                    featurePointsX[x, y] = (x * cellSize) + rand.Next(0, cellSize);
+                    featurePointsY[x, y] = (y * cellSize) + rand.Next(0, cellSize);
+                }
+            }
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var warpX = ((double)noiseGen.SmoothNoise(x / 24.0, y / 24.0) - 0.5) * warpStrength;
+                    var warpY = ((double)noiseGen.SmoothNoise((x + 50) / 24.0, (y + 50) / 24.0) - 0.5) * warpStrength;
+
+                    var sampleX = x + warpX;
+                    var sampleY = y + warpY;
+
+                    var cellX = (int)sampleX / cellSize;
+                    var cellY = (int)sampleY / cellSize;
+
+                    var minDist = double.MaxValue;
+
+                    var startX = Math.Max(0, cellX - 1);
+                    var endX = Math.Min(gridCols - 1, cellX + 1);
+                    var startY = Math.Max(0, cellY - 1);
+                    var endY = Math.Min(gridRows - 1, cellY + 1);
+
+                    for (var checkY = startY; checkY <= endY; checkY++)
+                    {
+                        for (var checkX = startX; checkX <= endX; checkX++)
+                        {
+                            var dx = sampleX - featurePointsX[checkX, checkY];
+                            var dy = sampleY - featurePointsY[checkX, checkY];
+                            var dist = Math.Sqrt(dx * dx + dy * dy);
+
+                            if (dist < minDist) minDist = dist;
+                        }
+                    }
+
+                    var hammerFactor = Math.Clamp(1.0 - (minDist / (cellSize * 0.85)), 0.0, 1.0);
+                    var microGrit = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.1;
+                    hammerFactor = Math.Clamp(hammerFactor + microGrit, 0.0, 1.0);
+
+                    span[idx++] = (byte)(shadowB + (faceB - shadowB) * hammerFactor);
+                    span[idx++] = (byte)(shadowG + (faceG - shadowG) * hammerFactor);
+                    span[idx++] = (byte)(shadowR + (faceR - shadowR) * hammerFactor);
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a desert sand texture with gentle directional ripples and micro-grit.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="colorRampRgb">The color ramp RGB.</param>
+        /// <param name="rippleScale">The ripple scale.</param>
+        /// <param name="warpScale">The warp scale.</param>
+        /// <param name="warpStrength">The warp strength.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateDesertSand(
+            int width,
+            int height,
+            object noiseGenInstance,
+            byte[]? colorRampRgb = null,
+            double rippleScale = 24.0,
+            double warpScale = 48.0,
+            double warpStrength = 6.0,
+            int alpha = 255)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var ramp = colorRampRgb ?? TextureConstants.GetDesertSandConfig().RgbRamp!;
+            int r1 = ramp[0], g1 = ramp[1], b1 = ramp[2];
+            int r2 = ramp[3], g2 = ramp[4], b2 = ramp[5];
+            int r3 = ramp[6], g3 = ramp[7], b3 = ramp[8];
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var warp = (double)noiseGen.SmoothNoise(x / warpScale, y / warpScale) * warpStrength;
+                    var ripplePos = (y + warp) / rippleScale;
+                    var rippleVal = 0.5 + 0.5 * Math.Sin(ripplePos * Math.PI);
+
+                    var macroNoise = (double)noiseGen.SmoothNoise(x / 64.0, y / 64.0) * 0.35;
+                    var microGrit = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.05;
+                    var val = Math.Clamp(rippleVal * 0.6 + macroNoise + microGrit, 0.0, 1.0);
+
+                    byte r, g, b;
+                    if (val < 0.5)
+                    {
+                        var t = val / 0.5;
+                        r = (byte)(r1 + (r2 - r1) * t);
+                        g = (byte)(g1 + (g2 - g1) * t);
+                        b = (byte)(b1 + (b2 - b1) * t);
+                    }
+                    else
+                    {
+                        var t = (val - 0.5) / 0.5;
+                        r = (byte)(r2 + (r3 - r2) * t);
+                        g = (byte)(g2 + (g3 - g2) * t);
+                        b = (byte)(b3 + (b2 - b3) * t);
+                    }
+
+                    span[idx++] = b;
+                    span[idx++] = g;
+                    span[idx++] = r;
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates a flat, soft-blended desert sand terrain texture ideal for pond beds and background areas.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="colorRampRgb">The color ramp RGB.</param>
+        /// <param name="macroScale">The macro scale.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateDesertSandFlat(
+            int width,
+            int height,
+            object noiseGenInstance,
+            byte[]? colorRampRgb = null,
+            double macroScale = 48.0,
+            int alpha = 255)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var ramp = colorRampRgb ?? TextureConstants.GetDesertSandFlatConfig().RgbRamp!;
+            int r1 = ramp[0], g1 = ramp[1], b1 = ramp[2];
+            int r2 = ramp[3], g2 = ramp[4], b2 = ramp[5];
+            int r3 = ramp[6], g3 = ramp[7], b3 = ramp[8];
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var n1 = (double)noiseGen.SmoothNoise(x / macroScale, y / macroScale);
+                    var n2 = (double)noiseGen.SmoothNoise(x / (macroScale * 0.35), y / (macroScale * 0.35)) * 0.2;
+                    var microGrit = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.04;
+                    var val = Math.Clamp(n1 * 0.8 + n2 + microGrit, 0.0, 1.0);
+
+                    byte r, g, b;
+                    if (val < 0.5)
+                    {
+                        var t = val / 0.5;
+                        r = (byte)(r1 + (r2 - r1) * t);
+                        g = (byte)(g1 + (g2 - g1) * t);
+                        b = (byte)(b1 + (b2 - b1) * t);
+                    }
+                    else
+                    {
+                        var t = (val - 0.5) / 0.5;
+                        r = (byte)(r2 + (r3 - r2) * t);
+                        g = (byte)(g2 + (g3 - g2) * t);
+                        b = (byte)(b3 + (b2 - b3) * t);
+                    }
+
+                    span[idx++] = b;
+                    span[idx++] = g;
+                    span[idx++] = r;
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
     }
 }
