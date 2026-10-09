@@ -11,6 +11,7 @@
 
 // ReSharper disable UnusedType.Global
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -28,10 +29,23 @@ namespace Core.MemoryLog
     /// All logging work and parameter evaluation is skipped at compile time.
     /// In Debug builds, calls are routed to <see cref="Backend"/>,
     /// which can be swapped at runtime.
+    /// Some Exceptions though WarningOnce and ErrorOnce are not compiled out, but they will only log once per call site.
     /// </para>
     /// </summary>
     public static class DebugLogger
     {
+
+        /// <summary>
+        /// The logged keys
+        /// </summary>
+        private static readonly ConcurrentDictionary<string, byte> LoggedKeys = new();
+
+        /// <summary>
+        /// Resets the LoggedKeys dictionary, allowing all "Once" log methods to log again.
+        /// Escape Hatches: This is useful for unit tests that need to verify logging behavior across multiple test cases.
+        /// </summary>
+        public static void ResetOnce() => LoggedKeys.Clear();
+
         /// <summary>
         /// Gets or sets the backend logger instance used for debug logging.
         /// <para>
@@ -125,6 +139,114 @@ namespace Core.MemoryLog
         {
             var prefix = $"{Path.GetFileName(file)}:{line} {caller} → ";
             Backend.LogDebug(prefix + message, args);
+        }
+
+        /// <summary>
+        /// Writes a debug-level message **only once** per call site during runtime.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="caller">The caller.</param>
+        /// <param name="file">The file.</param>
+        /// <param name="line">The line.</param>
+        /// <param name="args">The arguments.</param>
+        [Conditional("DEBUG")]
+        public static void DebugOnce(
+            string message,
+            [CallerMemberName] string caller = "",
+            [CallerFilePath] string file = "",
+            [CallerLineNumber] int line = 0,
+            params object[] args)
+        {
+            if (LoggedKeys.TryAdd($"{file}:{line}", 0))
+            {
+                Backend.LogDebug(message, args);
+            }
+        }
+
+        /// <summary>
+        /// Writes a trace-level message **only once** per call site during runtime.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="caller">The caller.</param>
+        /// <param name="file">The file.</param>
+        /// <param name="line">The line.</param>
+        /// <param name="args">The arguments.</param>
+        [Conditional("DEBUG")]
+        public static void TraceOnce(
+            string message,
+            [CallerMemberName] string caller = "",
+            [CallerFilePath] string file = "",
+            [CallerLineNumber] int line = 0,
+            params object[] args)
+        {
+            if (LoggedKeys.TryAdd($"{file}:{line}", 0))
+            {
+                Backend.LogTrace(message, args);
+            }
+        }
+
+        /// <summary>
+        /// Writes an information-level message **only once** per call site during runtime.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="caller">The caller.</param>
+        /// <param name="file">The file.</param>
+        /// <param name="line">The line.</param>
+        /// <param name="args">The arguments.</param>
+        [Conditional("DEBUG")]
+        public static void InfoOnce(
+            string message,
+            [CallerMemberName] string caller = "",
+            [CallerFilePath] string file = "",
+            [CallerLineNumber] int line = 0,
+            params object[] args)
+        {
+            if (LoggedKeys.TryAdd($"{file}:{line}", 0))
+            {
+                Backend.LogInformation(message, args);
+            }
+        }
+
+        /// <summary>
+        /// Writes a warning-level message **only once** per call site during runtime.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="caller">The caller.</param>
+        /// <param name="file">The file.</param>
+        /// <param name="line">The line.</param>
+        /// <param name="args">The arguments.</param>
+        public static void WarnOnce(
+            string message,
+            [CallerMemberName] string caller = "",
+            [CallerFilePath] string file = "",
+            [CallerLineNumber] int line = 0,
+            params object[] args)
+        {
+            if (LoggedKeys.TryAdd($"{file}:{line}", 0))
+            {
+                Backend.LogWarning(message, args);
+            }
+        }
+
+        /// <summary>
+        /// Writes an error-level message **only once** per call site during runtime.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="caller">The caller.</param>
+        /// <param name="file">The file.</param>
+        /// <param name="line">The line.</param>
+        /// <param name="args">The arguments.</param>
+        public static void ErrorOnce(
+            string message,
+            [CallerMemberName] string caller = "",
+            [CallerFilePath] string file = "",
+            [CallerLineNumber] int line = 0,
+            params object[] args)
+        {
+            if (LoggedKeys.TryAdd($"{file}:{line}", 0))
+            {
+                Backend.LogError(message, args);
+            }
         }
     }
 }
