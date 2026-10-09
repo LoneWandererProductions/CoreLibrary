@@ -17,9 +17,9 @@ namespace Core.MemoryLog
     /// </summary>
     public interface ILogger
     {
-        // ---------------------------------------------------------
+
         // Configuration
-        // ---------------------------------------------------------
+
 
         /// <summary>
         /// Gets or sets the minimum log level for this logger.
@@ -27,9 +27,7 @@ namespace Core.MemoryLog
         /// </summary>
         LogLevel LogLevel { get; set; }
 
-        // ---------------------------------------------------------
-        // Core logging
-        // ---------------------------------------------------------
+        // --- Core logging ---
 
         /// <summary>
         /// Logs a message with the specified <paramref name="level"/>.
@@ -40,9 +38,7 @@ namespace Core.MemoryLog
         /// <param name="args">Optional arguments for message formatting.</param>
         void Log(LogLevel level, string? message, Exception? exception = null, params object[] args);
 
-        // ---------------------------------------------------------
-        // Convenience shortcuts
-        // ---------------------------------------------------------
+        // --- Convenience shortcuts ---
 
         /// <summary>
         /// Logs the debug.
@@ -79,9 +75,7 @@ namespace Core.MemoryLog
         /// <param name="args">The arguments.</param>
         void LogError(string? message, params object[] args);
 
-        // ---------------------------------------------------------
-        // Optional Microsoft.Extensions.Logging bridge
-        // ---------------------------------------------------------
+        // --- Optional Microsoft.Extensions.Logging bridge ---
 
         /// <summary>
         /// Bridges to Microsoft.Extensions.Logging infrastructure.
@@ -92,9 +86,7 @@ namespace Core.MemoryLog
             Exception? exception,
             Func<TState, Exception?, string> formatter);
 
-        // ---------------------------------------------------------
-        // Persistence
-        // ---------------------------------------------------------
+        // --- Persistence ---
 
         /// <summary>
         /// Writes the current log entries to a file.

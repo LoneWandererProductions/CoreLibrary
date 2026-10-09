@@ -20,9 +20,7 @@ namespace Core.MemoryLog
     /// </summary>
     public interface IInMemoryLogger
     {
-        // ---------------------------------------------------------
-        // Configuration
-        // ---------------------------------------------------------
+        // --- Configuration ---
 
         /// <summary>
         /// Gets or sets the minimum log level for this logger.
@@ -35,15 +33,14 @@ namespace Core.MemoryLog
 
         /// <summary>
         /// Gets or sets a value indicating whether [enable stack trace].
+        /// Should be always false in production, as it can be expensive to capture stack traces for every log entry.
         /// </summary>
         /// <value>
         ///   <c>true</c> if [enable stack trace]; otherwise, <c>false</c>.
         /// </value>
         bool EnableStackTrace { get; set; }
 
-        // ---------------------------------------------------------
-        // Core logging
-        // ---------------------------------------------------------
+        // --- Core logging ---
 
         /// <summary>
         /// Adds a log entry to the memory (this can be directly from logging operations).
@@ -63,9 +60,7 @@ namespace Core.MemoryLog
             [CallerMemberName] string callerMethod = "",
             params object[] args);
 
-        // ---------------------------------------------------------
-        // Retrieval
-        // ---------------------------------------------------------
+        // --- Retrieval ---
 
         /// <summary>
         /// Gets all logs from memory.
@@ -97,9 +92,7 @@ namespace Core.MemoryLog
         /// </summary>
         event EventHandler<LogEntry>? LogAdded;
 
-        // ---------------------------------------------------------
-        // Persistence
-        // ---------------------------------------------------------
+        // --- Persistence ---
 
         /// <summary>
         /// Dumps the in-memory logs to a file.
@@ -109,9 +102,7 @@ namespace Core.MemoryLog
         /// <param name="minimumLevel">Minimum level to include in the dump.</param>
         void DumpToFile(string filePath, bool append = false, LogLevel minimumLevel = LogLevel.Trace);
 
-        // ---------------------------------------------------------
-        // Clearing
-        // ---------------------------------------------------------
+        // --- Clearing ---
 
         /// <summary>
         /// Clears log entries from a specific library.
