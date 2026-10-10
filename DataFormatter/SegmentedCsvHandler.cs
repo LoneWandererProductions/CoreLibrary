@@ -6,13 +6,14 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DataFormatter
 {
     /// <summary>
-    ///     Separate multible csv files via keywords.
+    ///     Separate multiple csv files via keywords.
     /// </summary>
     public static class SegmentedCsvHandler
     {
@@ -47,10 +48,9 @@ namespace DataFormatter
         ///     Reads the CSV with layer keywords.
         /// </summary>
         /// <param name="filepath">The filepath.</param>
-        /// <param name="separator">The separator.</param>
         /// <param name="layerKeyword">The layer keyword.</param>
         /// <returns>Content of our special format file</returns>
-        public static List<string> ReadCsvWithLayerKeywords(string filepath, char separator, string layerKeyword)
+        public static List<string>? ReadCsvWithLayerKeywords(string filepath, string layerKeyword)
         {
             var lst = CsvHelper.ReadFileContent(filepath);
             if (lst == null)
@@ -64,7 +64,7 @@ namespace DataFormatter
             foreach (var line in lst)
                 // When the layer keyword is encountered, store the current layer
             {
-                if (line.StartsWith(layerKeyword))
+                if (line.StartsWith(layerKeyword, StringComparison.Ordinal))
                 {
                     if (currentLayer.Length > 0)
                     {

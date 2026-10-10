@@ -25,7 +25,7 @@ namespace DataFormatter
         /// <returns>Content of File</returns>
         /// <exception cref="ArgumentException">File path is empty - filepath</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static List<string> ReadFileContent(string filepath)
+        internal static List<string>? ReadFileContent(string filepath)
         {
             if (string.IsNullOrEmpty(filepath))
             {

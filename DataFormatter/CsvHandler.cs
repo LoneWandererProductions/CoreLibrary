@@ -24,7 +24,7 @@ namespace DataFormatter
         /// <param name="filepath">Path of the CSV file.</param>
         /// <param name="separator">The separator in use.</param>
         /// <returns>List of lines split into parts if successful; otherwise, null.</returns>
-        public static List<List<string>> ReadCsv(string filepath, char separator)
+        public static List<List<string?>>? ReadCsv(string filepath, char separator)
         {
             var lst = CsvHelper.ReadFileContent(filepath);
             return lst?.ConvertAll(item => CsvHelper.SplitLine(item, separator));
@@ -84,7 +84,7 @@ namespace DataFormatter
         /// <param name="filepath">The file path.</param>
         /// <param name="csv">The CSV data.</param>
         /// <param name="separator">The separator character. Defaults to comma.</param>
-        public static void WriteCsv(string filepath, IEnumerable<List<string>> csv, string separator = ",")
+        public static void WriteCsv(string filepath, IEnumerable<List<string>>? csv, string separator = ",")
         {
             var file = new StringBuilder();
 
