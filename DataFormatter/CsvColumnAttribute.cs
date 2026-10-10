@@ -6,8 +6,6 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-// ReSharper disable UnusedType.Global
-
 using System;
 
 namespace DataFormatter

@@ -346,7 +346,8 @@ namespace Imaging.Texture.Tests
         [TestMethod]
         public void GenerateVolumetricLeafCloud_VisualTest()
         {
-            var buffer = TextureFactory.GenerateVolumetricLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: false);
+            var buffer =
+                TextureFactory.GenerateVolumetricLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: false);
             SaveBufferToImage(buffer, "24_VolumetricLeafCloud_Transparent.png");
         }
 
@@ -356,7 +357,8 @@ namespace Imaging.Texture.Tests
         [TestMethod]
         public void GenerateVolumetricLeafCloud_Solid_VisualTest()
         {
-            var buffer = TextureFactory.GenerateVolumetricLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: true);
+            var buffer =
+                TextureFactory.GenerateVolumetricLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: true);
             SaveBufferToImage(buffer, "24_VolumetricLeafCloud_Solid.png");
         }
 

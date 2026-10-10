@@ -17,7 +17,6 @@ namespace Core.MemoryLog
     /// </summary>
     public interface ILogger
     {
-
         // Configuration
 
 

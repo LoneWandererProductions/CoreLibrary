@@ -1679,6 +1679,7 @@ namespace Imaging.Texture
                             pixels[index + 2] = 0;
                             pixels[index + 3] = 0;
                         }
+
                         continue;
                     }
 
@@ -2101,7 +2102,7 @@ namespace Imaging.Texture
                     span[idx++] = (byte)(baseB + (gritB - baseB) * ironFactor); // B
                     span[idx++] = (byte)(baseG + (gritG - baseG) * ironFactor); // G
                     span[idx++] = (byte)(baseR + (gritR - baseR) * ironFactor); // R
-                    span[idx++] = (byte)alpha;                                  // A
+                    span[idx++] = (byte)alpha; // A
                 }
             }
 

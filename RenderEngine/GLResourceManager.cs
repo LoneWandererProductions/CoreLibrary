@@ -118,8 +118,7 @@ namespace RenderEngine
                 { 10021, ("PolishedSteel", "High-gloss chrome reflective steel surface.") },
                 { 10022, ("LeafCloud", "Volumetric leaf cloud texture for bushes and tree canopies.") },
                 {
-                    10023,
-                    ("VolumetricLeafCloud",
+                    10023, ("VolumetricLeafCloud",
                         "Smooth volumetric leaf cloud texture with rounded leaf puffs and distinct canopy gaps.")
                 },
                 { 10024, ("TerrainGrass", "Smooth low-noise terrain grass texture with macro color transitions.") },
@@ -137,7 +136,10 @@ namespace RenderEngine
                 { 10030, ("WroughtIron", "Wrought iron texture with subtle hammer marks and forged cellular facets.") },
                 { 10031, ("RustedIron", "Rusted corroded iron texture with domain-warped oxidation layer.") },
                 { 10032, ("DesertSand", "Desert sand texture with gentle directional wind ripples.") },
-                { 10033, ("DesertSandFlat", "Flat soft-blended desert sand terrain texture for beds and background areas.") }
+                {
+                    10033,
+                    ("DesertSandFlat", "Flat soft-blended desert sand terrain texture for beds and background areas.")
+                }
             };
 
         // --- PROCEDURAL LAZY LOADING INTEGRATION PASS ---

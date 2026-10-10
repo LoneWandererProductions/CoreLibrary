@@ -34,7 +34,6 @@ namespace Core.MemoryLog
     /// </summary>
     public static class DebugLogger
     {
-
         /// <summary>
         /// The logged keys
         /// </summary>

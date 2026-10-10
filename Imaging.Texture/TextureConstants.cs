@@ -370,13 +370,21 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 VoronoiGridSize = 12, // High cell density creates tight leaf clusters
-                                      // Format: Highlight [0-2], Base Leaf [3-5], Deep Shadow [6-8], Mortar/Gap [9-11]
-                RgbRamp = [
-                    140, 210, 60,  // Bright sunlit leaf highlight
-            50,  140, 35,  // Mid-tone foliage green
-            20,  60,  20,  // Deep shadow crease
-            10,  30,  10   // Inner dark gap / ambient shadow
-                ]
+                // Format: Highlight [0-2], Base Leaf [3-5], Deep Shadow [6-8], Mortar/Gap [9-11]
+                RgbRamp =  [
+                140,
+                210,
+                60, // Bright sunlit leaf highlight
+                50,
+                140,
+                35, // Mid-tone foliage green
+                20,
+                60,
+                20, // Deep shadow crease
+                10,
+                30,
+                10 // Inner dark gap / ambient shadow
+                    ]
             };
         }
 
@@ -389,12 +397,20 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 VoronoiGridSize = 8, // Grid resolution for rounded leaf puffs
-                RgbRamp = [
-                    140, 210, 60,  // Sunlit leaf highlight
-            50,  140, 35,  // Mid-tone foliage green
-            20,  60,  20,  // Deep shadow crease
-            10,  30,  10   // Inner dark gap / ambient shadow
-                ]
+                RgbRamp =  [
+                140,
+                210,
+                60, // Sunlit leaf highlight
+                50,
+                140,
+                35, // Mid-tone foliage green
+                20,
+                60,
+                20, // Deep shadow crease
+                10,
+                30,
+                10 // Inner dark gap / ambient shadow
+                    ]
             };
         }
 
@@ -407,12 +423,18 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 48.0, // Large macro scale for broad field color transitions
-                                       // Format: Dark Moss [0-2], Mid Meadow [3-5], Warm Highlight [6-8]
-                RgbRamp = [
-                    35, 75, 30,    // Deep forest green
-            70, 115, 45,   // Mid-tone meadow green
-            95, 135, 55    // Soft sunlit grass accent
-                ]
+                // Format: Dark Moss [0-2], Mid Meadow [3-5], Warm Highlight [6-8]
+                RgbRamp =  [
+                35,
+                75,
+                30, // Deep forest green
+                70,
+                115,
+                45, // Mid-tone meadow green
+                95,
+                135,
+                55 // Soft sunlit grass accent
+                    ]
             };
         }
 
@@ -425,12 +447,18 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 32.0, // Macro scale for soil patches
-                                       // Format: Damp Rich Soil [0-2], Mid Loam [3-5], Soft Dry Silt [6-8]
-                RgbRamp = [
-                    55, 40, 28,    // Deep rich damp soil
-            85, 62, 42,    // Mid-tone brown loam
-            115, 88, 60    // Soft dry silt highlight
-                ]
+                // Format: Damp Rich Soil [0-2], Mid Loam [3-5], Soft Dry Silt [6-8]
+                RgbRamp =  [
+                55,
+                40,
+                28, // Deep rich damp soil
+                85,
+                62,
+                42, // Mid-tone brown loam
+                115,
+                88,
+                60 // Soft dry silt highlight
+                    ]
             };
         }
 
@@ -443,12 +471,18 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 64.0, // Macro elevation contours
-                                       // Format: Deep Shadow Slate [0-2], Cliff Grey [3-5], Ridge Highlight [6-8]
-                RgbRamp = [
-                    45, 50, 55,    // Deep slate shadow
-            85, 90, 95,    // Mid-tone cliff rock
-            135, 140, 145  // Sunlit mountain ridge highlight
-                ]
+                // Format: Deep Shadow Slate [0-2], Cliff Grey [3-5], Ridge Highlight [6-8]
+                RgbRamp =  [
+                45,
+                50,
+                55, // Deep slate shadow
+                85,
+                90,
+                95, // Mid-tone cliff rock
+                135,
+                140,
+                145 // Sunlit mountain ridge highlight
+                    ]
             };
         }
 
@@ -461,14 +495,20 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 16.0, // Strata layer spacing
-                WarpScale = 40.0,      // Bedding plane wave scale
-                WarpStrength = 12.0,   // Bedding distortion strength
-                                       // Format: Seam Line [0-2], Mid Tan Sandstone [3-5], Ochre Layer [6-8]
-                RgbRamp = [
-                    110, 85, 55,   // Dark sediment seam
-            160, 130, 90,  // Mid-tone tan sandstone
-            205, 175, 130  // Warm ochre highlight band
-                ]
+                WarpScale = 40.0, // Bedding plane wave scale
+                WarpStrength = 12.0, // Bedding distortion strength
+                // Format: Seam Line [0-2], Mid Tan Sandstone [3-5], Ochre Layer [6-8]
+                RgbRamp =  [
+                110,
+                85,
+                55, // Dark sediment seam
+                160,
+                130,
+                90, // Mid-tone tan sandstone
+                205,
+                175,
+                130 // Warm ochre highlight band
+                    ]
             };
         }
 
@@ -481,12 +521,18 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 40.0, // Macro scale for broad, smooth sand patch transitions
-                                       // Format: Deep Warm Sand [0-2], Mid Tan [3-5], Ochre Highlight [6-8]
-                RgbRamp = [
-                    120, 95, 60,   // Deep warm sand shadow
-            165, 135, 95,  // Mid-tone tan sandstone
-            210, 180, 135  // Soft sunlit ochre highlight
-                ]
+                // Format: Deep Warm Sand [0-2], Mid Tan [3-5], Ochre Highlight [6-8]
+                RgbRamp =  [
+                120,
+                95,
+                60, // Deep warm sand shadow
+                165,
+                135,
+                95, // Mid-tone tan sandstone
+                210,
+                180,
+                135 // Soft sunlit ochre highlight
+                    ]
             };
         }
 
@@ -499,8 +545,12 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 32.0,
-                CenterRgb = [55, 58, 62],      // Dark matte cast iron base
-                EdgeRgb = [110, 115, 122]       // Micro-pitting highlight tone
+                CenterRgb =  [55,
+                58,
+                62], // Dark matte cast iron base
+                EdgeRgb =  [110,
+                115,
+                122] // Micro-pitting highlight tone
             };
         }
 
@@ -514,8 +564,12 @@ namespace Imaging.Texture
             {
                 CellSize = 28,
                 WarpStrength = 4.0,
-                CenterRgb = [85, 90, 98],       // Hammer face highlight
-                EdgeRgb = [25, 27, 30]          // Deep forged crease/shadow
+                CenterRgb =  [85,
+                90,
+                98], // Hammer face highlight
+                EdgeRgb =  [25,
+                27,
+                30] // Deep forged crease/shadow
             };
         }
 
@@ -531,12 +585,20 @@ namespace Imaging.Texture
                 WarpScale = 32.0,
                 WarpStrength = 8.0,
                 // Dark Oxidized Iron Base -> Deep Corrosion -> Rich Oxide Rust -> Ochre Highlight
-                RgbRamp = [
-                    35, 35, 40,    // Oxidized dark iron base
-                    90, 35, 15,    // Deep corrosion shadow
-                    175, 70, 20,   // Rich iron oxide rust
-                    215, 120, 35   // Flaky ochre rust highlight
-                ]
+                RgbRamp =  [
+                35,
+                35,
+                40, // Oxidized dark iron base
+                90,
+                35,
+                15, // Deep corrosion shadow
+                175,
+                70,
+                20, // Rich iron oxide rust
+                215,
+                120,
+                35 // Flaky ochre rust highlight
+                    ]
             };
         }
 
@@ -549,14 +611,20 @@ namespace Imaging.Texture
             return new TextureConfig
             {
                 TurbulenceSize = 24.0, // Ripple wavelength
-                WarpScale = 48.0,      // Smooth wave distortion
-                WarpStrength = 6.0,    // Soft ripple drift
+                WarpScale = 48.0, // Smooth wave distortion
+                WarpStrength = 6.0, // Soft ripple drift
                 // Silt/Shadow [0-2], Mid Tan / Dune Gold [3-5], Warm Pale Sunlit Sand [6-8]
-                RgbRamp = [
-                    165, 130, 80,  // Soft silt shadow / wet sand
-                    215, 180, 120, // Mid-tone golden desert sand
-                    240, 210, 155  // Warm pale highlight
-                ]
+                RgbRamp =  [
+                165,
+                130,
+                80, // Soft silt shadow / wet sand
+                215,
+                180,
+                120, // Mid-tone golden desert sand
+                240,
+                210,
+                155 // Warm pale highlight
+                    ]
             };
         }
 
@@ -570,11 +638,17 @@ namespace Imaging.Texture
             {
                 TurbulenceSize = 48.0, // Macro scale for broad, smooth sand patch transitions
                 // Deep Silt [0-2], Muted Tan Sand [3-5], Soft Warm Sand [6-8]
-                RgbRamp = [
-                    155, 125, 75,  // Muted damp silt shadow
-                    205, 170, 110, // Smooth mid-tone sand
-                    230, 200, 145  // Soft low-contrast highlight
-                ]
+                RgbRamp =  [
+                155,
+                125,
+                75, // Muted damp silt shadow
+                205,
+                170,
+                110, // Smooth mid-tone sand
+                230,
+                200,
+                145 // Soft low-contrast highlight
+                    ]
             };
         }
     }
