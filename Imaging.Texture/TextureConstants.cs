@@ -28,7 +28,7 @@ namespace Imaging.Texture
         /// <returns>The stone configuration.</returns>
         public static TextureConfig GetStoneConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 // Reusing this property for the Voronoi grid size (e.g., 4 cells across)
                 VoronoiGridSize = 4,
@@ -56,7 +56,7 @@ namespace Imaging.Texture
         /// <returns>The lava pool configuration.</returns>
         public static TextureConfig GetLavaPoolConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 32.0,
                 // Stored purely as flat [R, G, B] bytes for the math engine
@@ -81,7 +81,7 @@ namespace Imaging.Texture
         /// <returns>The cobblestone configuration.</returns>
         public static TextureConfig GetCobblestoneConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 CellSize = 48,
                 CenterRgb =  [140,
@@ -99,7 +99,7 @@ namespace Imaging.Texture
         /// <returns>The magical ether configuration.</returns>
         public static TextureConfig GetMagicalEtherConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 128.0,
                 // Flat [R, G, B] bytes for: Dark Navy -> Deep Blue -> Bright Purple -> White
@@ -124,7 +124,7 @@ namespace Imaging.Texture
         /// <returns>The cracked ice configuration.</returns>
         public static TextureConfig GetCrackedIceConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 CellSize = 64,
                 CenterRgb =  [230,
@@ -142,7 +142,7 @@ namespace Imaging.Texture
         /// <returns>The magic portal configuration.</returns>
         public static TextureConfig GetMagicPortalConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 64.0,
                 WarpScale = 128.0,
@@ -168,7 +168,7 @@ namespace Imaging.Texture
         /// <returns>The plasma arc configuration.</returns>
         public static TextureConfig GetPlasmaArcConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 128.0,
                 Octaves = 5,
@@ -195,7 +195,7 @@ namespace Imaging.Texture
         /// <returns>The tree bark configuration.</returns>
         public static TextureConfig GetTreeBarkConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 16.0, // Maps to horizontal frequency scale
                 WarpStrength = 12.0, // Grain twisting displacement power
@@ -214,7 +214,7 @@ namespace Imaging.Texture
         /// <returns>The leaf foliage configuration.</returns>
         public static TextureConfig GetFoliageConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 CellSize = 40,
                 CenterRgb =  [34,
@@ -232,7 +232,7 @@ namespace Imaging.Texture
         /// <returns>The wooden plank board configuration.</returns>
         public static TextureConfig GetWoodPlankConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 32.0,
                 WarpStrength = 0.15, // Reusing WarpStrength for internal Engine TurbulencePower
@@ -251,7 +251,7 @@ namespace Imaging.Texture
         /// <returns>The steel configuration.</returns>
         public static TextureConfig GetSteelConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 80.0, // Used for Y-grain scale
                 CenterRgb =  [180,
@@ -269,7 +269,7 @@ namespace Imaging.Texture
         /// <returns>The latex configuration.</returns>
         public static TextureConfig GetLatexConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 64.0,
                 Persistence = 8.0, // Reused for specular exponent
@@ -288,7 +288,7 @@ namespace Imaging.Texture
         /// <returns>The leather configuration.</returns>
         public static TextureConfig GetLeatherConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 CellSize = 12,
                 WarpStrength = 6.0,
@@ -312,7 +312,7 @@ namespace Imaging.Texture
             var sheenG = (byte)Math.Min(255, g + 100);
             var sheenB = (byte)Math.Min(255, b + 100);
 
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 64.0,
                 Persistence = 8.0,
@@ -336,7 +336,7 @@ namespace Imaging.Texture
             var poreG = (byte)(g * shadowFactor);
             var poreB = (byte)(b * shadowFactor);
 
-            return new TextureConfig
+            return new()
             {
                 CellSize = 12,
                 WarpStrength = 6.0,
@@ -355,7 +355,7 @@ namespace Imaging.Texture
         /// <returns>The polished steel configuration.</returns>
         public static TextureConfig GetPolishedSteelConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 WarpScale = 64.0, WarpStrength = 16.0, Persistence = 3.0 // Reused for reflection band count
             };
@@ -367,7 +367,7 @@ namespace Imaging.Texture
         /// <returns>The leaf cloud configuration.</returns>
         public static TextureConfig GetLeafCloudConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 VoronoiGridSize = 12, // High cell density creates tight leaf clusters
                 // Format: Highlight [0-2], Base Leaf [3-5], Deep Shadow [6-8], Mortar/Gap [9-11]
@@ -389,12 +389,39 @@ namespace Imaging.Texture
         }
 
         /// <summary>
+        /// Gets the dark leaf cloud configuration.
+        /// </summary>
+        /// <returns>The dark leaf cloud configuration.</returns>
+        public static TextureConfig GetDarkLeafCloudConfig()
+        {
+            return new()
+            {
+                VoronoiGridSize = 12, // High cell density creates tight leaf clusters
+                // Format: Highlight [0-2], Base Leaf [3-5], Deep Shadow [6-8], Mortar/Gap [9-11]
+                RgbRamp =  [
+                75,
+                115,
+                60, // Muted sunlit leaf highlight
+                43,
+                80,
+                45, // Base foliage green (matched to floor)
+                22,
+                45,
+                25, // Deep shadow crease
+                10,
+                22,
+                12 // Inner dark gap / ambient shadow
+                    ]
+            };
+        }
+
+        /// <summary>
         /// Gets the smooth volumetric leaf cloud configuration.
         /// </summary>
         /// <returns>The volumetric leaf cloud configuration.</returns>
         public static TextureConfig GetVolumetricLeafCloudConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 VoronoiGridSize = 8, // Grid resolution for rounded leaf puffs
                 RgbRamp =  [
@@ -420,7 +447,7 @@ namespace Imaging.Texture
         /// <returns>The terrain grass configuration.</returns>
         public static TextureConfig GetTerrainGrassConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 48.0, // Large macro scale for broad field color transitions
                 // Format: Dark Moss [0-2], Mid Meadow [3-5], Warm Highlight [6-8]
@@ -444,7 +471,7 @@ namespace Imaging.Texture
         /// <returns>The terrain dirt configuration.</returns>
         public static TextureConfig GetTerrainDirtConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 32.0, // Macro scale for soil patches
                 // Format: Damp Rich Soil [0-2], Mid Loam [3-5], Soft Dry Silt [6-8]
@@ -468,7 +495,7 @@ namespace Imaging.Texture
         /// <returns>The mountain rock configuration.</returns>
         public static TextureConfig GetMountainRockConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 64.0, // Macro elevation contours
                 // Format: Deep Shadow Slate [0-2], Cliff Grey [3-5], Ridge Highlight [6-8]
@@ -492,7 +519,7 @@ namespace Imaging.Texture
         /// <returns>The dungeon sandstone configuration.</returns>
         public static TextureConfig GetDungeonSandstoneConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 16.0, // Strata layer spacing
                 WarpScale = 40.0, // Bedding plane wave scale
@@ -518,7 +545,7 @@ namespace Imaging.Texture
         /// <returns>The flat dungeon sandstone configuration.</returns>
         public static TextureConfig GetDungeonSandstoneFlatConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 40.0, // Macro scale for broad, smooth sand patch transitions
                 // Format: Deep Warm Sand [0-2], Mid Tan [3-5], Ochre Highlight [6-8]
@@ -542,7 +569,7 @@ namespace Imaging.Texture
         /// <returns>The raw iron configuration.</returns>
         public static TextureConfig GetRawIronConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 32.0,
                 CenterRgb =  [55,
@@ -560,7 +587,7 @@ namespace Imaging.Texture
         /// <returns>The wrought iron configuration.</returns>
         public static TextureConfig GetWroughtIronConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 CellSize = 28,
                 WarpStrength = 4.0,
@@ -579,7 +606,7 @@ namespace Imaging.Texture
         /// <returns>The rusted iron configuration.</returns>
         public static TextureConfig GetRustedIronConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 48.0,
                 WarpScale = 32.0,
@@ -608,7 +635,7 @@ namespace Imaging.Texture
         /// <returns>The desert sand configuration.</returns>
         public static TextureConfig GetDesertSandConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 24.0, // Ripple wavelength
                 WarpScale = 48.0, // Smooth wave distortion
@@ -634,7 +661,7 @@ namespace Imaging.Texture
         /// <returns>The flat desert sand configuration.</returns>
         public static TextureConfig GetDesertSandFlatConfig()
         {
-            return new TextureConfig
+            return new()
             {
                 TurbulenceSize = 48.0, // Macro scale for broad, smooth sand patch transitions
                 // Deep Silt [0-2], Muted Tan Sand [3-5], Soft Warm Sand [6-8]
@@ -648,6 +675,75 @@ namespace Imaging.Texture
                 230,
                 200,
                 145 // Soft low-contrast highlight
+                    ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the polished gold configuration.
+        /// </summary>
+        /// <returns>The polished gold configuration.</returns>
+        public static TextureConfig GetGoldConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 48.0,
+                RgbRamp =  [
+                80,
+                50,
+                10, // Deep gold shadow
+                210,
+                175,
+                60, // Rich gold mid-tone
+                255,
+                235,
+                150 // Bright highlight gold
+                    ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the polished copper configuration.
+        /// </summary>
+        /// <returns>The polished copper configuration.</returns>
+        public static TextureConfig GetCopperConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 48.0,
+                RgbRamp =  [
+                90,
+                40,
+                25, // Deep copper shadow
+                180,
+                100,
+                65, // Rich copper mid-tone
+                235,
+                150,
+                110 // Bright copper highlight
+                    ]
+            };
+        }
+
+        /// <summary>
+        /// Gets the fired terracotta clay configuration.
+        /// </summary>
+        /// <returns>The fired terracotta clay configuration.</returns>
+        public static TextureConfig GetClayConfig()
+        {
+            return new TextureConfig
+            {
+                TurbulenceSize = 32.0,
+                RgbRamp =  [
+                110,
+                55,
+                30, // Deep terracotta shadow
+                165,
+                95,
+                60, // Mid-tone clay
+                210,
+                135,
+                95 // Soft sandy highlight
                     ]
             };
         }

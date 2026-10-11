@@ -164,6 +164,39 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Adds a solid triangle with one color per vertex (interpolated across the face), used for smooth lighting.
+        /// </summary>
+        public void AddSolid3DTriangle(
+            Vector3 v1, Vector3 v2, Vector3 v3,
+            (int r, int g, int b, int a) c1, (int r, int g, int b, int a) c2, (int r, int g, int b, int a) c3)
+        {
+            AddColoredVertex3D(v1, c1, Solid3DVertices);
+            AddColoredVertex3D(v2, c2, Solid3DVertices);
+            AddColoredVertex3D(v3, c3, Solid3DVertices);
+        }
+
+        /// <summary>
+        /// Adds a textured triangle with one tint color per vertex (interpolated across the face).
+        /// </summary>
+        public void AddTextured3DTriangle(
+            Vector3 v1, Vector2 uv1,
+            Vector3 v2, Vector2 uv2,
+            Vector3 v3, Vector2 uv3,
+            int textureId,
+            (int r, int g, int b, int a) c1, (int r, int g, int b, int a) c2, (int r, int g, int b, int a) c3)
+        {
+            if (!Textured3DBatches.TryGetValue(textureId, out var list))
+            {
+                list = new List<float>(4096);
+                Textured3DBatches[textureId] = list;
+            }
+
+            AddTexturedVertex3D(v1, uv1, list, c1);
+            AddTexturedVertex3D(v2, uv2, list, c2);
+            AddTexturedVertex3D(v3, uv3, list, c3);
+        }
+
+        /// <summary>
         /// Adds a textured triangle to the 3D batch with optional vertex color tinting, grouped by texture ID.
         /// </summary>
         /// <param name="v1">The v1.</param>

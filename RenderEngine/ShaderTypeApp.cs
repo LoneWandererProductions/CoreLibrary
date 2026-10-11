@@ -27,6 +27,9 @@ namespace RenderEngine
 
         // Placeholders
         WaterRipple = 11, // placeholder
-        VolumetricFog = 12 // placeholde
+        VolumetricFog = 12, // placeholder
+
+        // Terrain splatting: 4 texture layers blended by per-vertex weights
+        TerrainSplat = 13
     }
 }

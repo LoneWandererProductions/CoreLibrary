@@ -96,6 +96,9 @@ namespace Imaging.Texture
         /// Defines how many cells across the texture will contain a stone center.
         /// A higher number means smaller, more densely packed stones.
         /// </summary>
+        /// <value>
+        /// The size of the voronoi grid.
+        /// </value>
         public int VoronoiGridSize { get; init; } = 4; // Default to 4
     }
 }

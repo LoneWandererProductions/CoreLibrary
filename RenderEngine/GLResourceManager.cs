@@ -15,6 +15,7 @@ using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace RenderEngine
 {
@@ -53,6 +54,27 @@ namespace RenderEngine
         private int _fallbackTextureId = -1;
 
         /// <summary>
+        /// Texture ids (same ids as everywhere else, virtual ids allowed) of the four terrain splat layers.
+        /// Layer 0..2 are the RGB weights, layer 3 is the remainder. Set this once where textures are registered.
+        /// </summary>
+        public int[]? TerrainLayerTextureIds { get; set; }
+
+        /// <summary>
+        /// Terrain splat texture repeats per world unit.
+        /// </summary>
+        public float TerrainTiling { get; set; } = 0.25f;
+
+        /// <summary>
+        /// Terrain splat transition sharpness (1 = linear, higher = narrower).
+        /// </summary>
+        public float TerrainSharpness { get; set; } = 2.0f;
+
+        /// <summary>
+        /// Terrain splat edge noise amount (0 = straight fade).
+        /// </summary>
+        public float TerrainEdgeNoise { get; set; } = 0.3f;
+
+        /// <summary>
         /// All tracked handles
         /// </summary>
         private readonly HashSet<int> _allTrackedHandles = new();
@@ -62,7 +84,7 @@ namespace RenderEngine
         /// <summary>
         /// The lazy noise gen
         /// </summary>
-        private object? _lazyNoiseGen;
+        private NoiseGenerator? _lazyNoiseGen;
 
         /// <summary>
         /// The proc width
@@ -88,59 +110,184 @@ namespace RenderEngine
         /// Immutable structural menu catalog outlining every procedural texture type
         /// available for generation, mapped by its high-range safe identity key.
         /// </summary>
-        /// <value>
-        /// The procedural catalogue.
-        /// </value>
-        public static IReadOnlyDictionary<int, (string Name, string Description)> ProceduralCatalogue { get; } =
-            new Dictionary<int, (string Name, string Description)>
+        private static readonly Dictionary<int, ProceduralEntry> ProceduralRegistry = new()
+        {
             {
-                { 10000, ("Noise", "Procedural monochrome simplex noise distribution grain.") },
-                { 10001, ("Clouds", "Fluid multi-octave cloud sky pattern spectrum.") },
-                { 10002, ("Marble", "Sinusoidal soft marble stone vein matrix layout.") },
-                { 10003, ("Wood", "Concentric organic natural wood grain ring texture layers.") },
-                { 10004, ("Wave", "Continuous fluid phase wave spectrum running on a pure HSV scale.") },
-                { 10005, ("Crosshatch", "Pixel-perfect grid intersecting alignment lines overlay.") },
-                { 10006, ("Concrete", "Industrial high-contrast gritty stone concrete texture map.") },
-                { 10007, ("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.") },
-                { 10008, ("TreeBark", "Anisotropic domain-warped vertical furrowed bark grain.") },
-                { 10009, ("Foliage", "Dense organic canopy composed of distance-pinched leaf profiles.") },
-                { 10010, ("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.") },
-                { 10011, ("Cobblestone", "Voronoi cellular paving stone grid texture.") },
-                { 10012, ("Stone", "Directional shaded stone surface with mortar joints.") },
-                { 10013, ("LavaPool", "Molten lava pool with turbulent color ramp mapping.") },
-                { 10014, ("MagicalEther", "Ethereal magical aura flow texture.") },
-                { 10015, ("CrackedIce", "Cellular cracked ice crystal structure.") },
-                { 10016, ("MagicPortal", "Domain-warped swirling portal energy texture.") },
-                { 10017, ("PlasmaArc", "Ridged multifractal plasma energy arc.") },
-                { 10018, ("Steel", "Directional brushed steel metal surface with specular grit.") },
-                { 10019, ("Latex", "Glossy latex surface with steep specular falloff.") },
-                { 10020, ("Leather", "Pebbled organic skin pores and warped wrinkles.") },
-                { 10021, ("PolishedSteel", "High-gloss chrome reflective steel surface.") },
-                { 10022, ("LeafCloud", "Volumetric leaf cloud texture for bushes and tree canopies.") },
-                {
-                    10023, ("VolumetricLeafCloud",
-                        "Smooth volumetric leaf cloud texture with rounded leaf puffs and distinct canopy gaps.")
-                },
-                { 10024, ("TerrainGrass", "Smooth low-noise terrain grass texture with macro color transitions.") },
-                { 10025, ("TerrainDirt", "Soft muted terrain dirt texture with smooth soil transitions.") },
-                {
-                    10026,
-                    ("MountainRock", "Mountain rock texture with macro height contours and directional slope shading.")
-                },
-                {
-                    10027,
-                    ("DungeonSandstone", "Layered dungeon sandstone texture with domain-warped sedimentary strata.")
-                },
-                { 10028, ("DungeonSandstoneFlat", "Flat soft-blended dungeon sandstone terrain texture.") },
-                { 10029, ("RawIron", "Raw cast iron texture with fine surface pitting and micro-grit.") },
-                { 10030, ("WroughtIron", "Wrought iron texture with subtle hammer marks and forged cellular facets.") },
-                { 10031, ("RustedIron", "Rusted corroded iron texture with domain-warped oxidation layer.") },
-                { 10032, ("DesertSand", "Desert sand texture with gentle directional wind ripples.") },
-                {
-                    10033,
-                    ("DesertSandFlat", "Flat soft-blended desert sand terrain texture for beds and background areas.")
-                }
-            };
+                10000, new("Noise", "Procedural monochrome simplex noise distribution grain.",
+                    (w, h, n) => TextureMathEngine.GenerateNoise(w, h, n))
+            },
+            {
+                10001, new("Clouds", "Fluid multi-octave cloud sky pattern spectrum.",
+                    (w, h, n) => TextureMathEngine.GenerateClouds(w, h, n))
+            },
+            {
+                10002, new("Marble", "Sinusoidal soft marble stone vein matrix layout.",
+                    (w, h, n) => TextureMathEngine.GenerateMarble(w, h, n))
+            },
+            {
+                10003, new("Wood", "Concentric organic natural wood grain ring texture layers.",
+                    (w, h, n) => TextureMathEngine.GenerateWood(w, h, n))
+            },
+            {
+                10004, new("Wave", "Continuous fluid phase wave spectrum running on a pure HSV scale.",
+                    (w, h, n) => TextureMathEngine.GenerateWave(w, h, n))
+            },
+            {
+                10005, new("Crosshatch", "Pixel-perfect grid intersecting alignment lines overlay.",
+                    (w, h, _) =>
+                        TextureMathEngine.GenerateCrosshatch(w, h, 32, 2, bgR: 140, bgG: 40, bgB: 40, bgA: 255))
+            },
+            {
+                10006, new("Concrete", "Industrial high-contrast gritty stone concrete texture map.",
+                    (w, h, n) => TextureMathEngine.GenerateConcrete(w, h, n))
+            },
+            {
+                10007, new("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.",
+                    (w, h, _) => TextureMathEngine.GenerateCanvas(w, h, 8, 1))
+            },
+            {
+                10008, new("TreeBark", "Anisotropic domain-warped vertical furrowed bark grain.",
+                    (w, h, n) => TextureFactory.GenerateTreeBark(w, h, n))
+            },
+            {
+                10009, new("Foliage", "Dense organic canopy composed of distance-pinched leaf profiles.",
+                    (w, h, n) => TextureFactory.GenerateFoliage(w, h, n))
+            },
+            {
+                10010, new("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.",
+                    (w, h, n) => TextureFactory.GenerateWoodPlank(w, h, n))
+            },
+            {
+                10011, new("Cobblestone", "Voronoi cellular paving stone grid texture.",
+                    (w, h, _) => TextureFactory.GenerateCobblestone(w, h))
+            },
+            {
+                10012, new("Stone", "Directional shaded stone surface with mortar joints.",
+                    (w, h, n) => TextureFactory.GenerateStoneTexture(w, h, n))
+            },
+            {
+                10013, new("LavaPool", "Molten lava pool with turbulent color ramp mapping.",
+                    (w, h, n) => TextureFactory.GenerateLavaPool(w, h, n))
+            },
+            {
+                10014, new("MagicalEther", "Ethereal magical aura flow texture.",
+                    (w, h, n) => TextureFactory.GenerateMagicalEther(w, h, n))
+            },
+            {
+                10015, new("CrackedIce", "Cellular cracked ice crystal structure.",
+                    (w, h, _) => TextureFactory.GenerateCrackedIce(w, h))
+            },
+            {
+                10016, new("MagicPortal", "Domain-warped swirling portal energy texture.",
+                    (w, h, n) => TextureFactory.GenerateMagicPortal(w, h, n))
+            },
+            {
+                10017, new("PlasmaArc", "Ridged multifractal plasma energy arc.",
+                    (w, h, n) => TextureFactory.GeneratePlasmaArc(w, h, n))
+            },
+            {
+                10018, new("Steel", "Directional brushed steel metal surface with specular grit.",
+                    (w, h, n) => TextureFactory.GenerateSteel(w, h, n))
+            },
+            {
+                10019, new("Latex", "Glossy latex surface with steep specular falloff.",
+                    (w, h, n) => TextureFactory.GenerateLatex(w, h, n))
+            },
+            {
+                10020, new("Leather", "Pebbled organic skin pores and warped wrinkles.",
+                    (w, h, n) => TextureFactory.GenerateLeather(w, h, n))
+            },
+            {
+                10021, new("PolishedSteel", "High-gloss chrome reflective steel surface.",
+                    (w, h, n) => TextureFactory.GeneratePolishedSteel(w, h, n))
+            },
+            {
+                10022, new("LeafCloud", "Volumetric leaf cloud texture for bushes and tree canopies.",
+                    (w, h, n) => TextureFactory.GenerateLeafCloud(w, h, n))
+            },
+            {
+                10023, new("VolumetricLeafCloud",
+                    "Smooth volumetric leaf cloud texture with rounded leaf puffs and distinct canopy gaps.",
+                    (w, h, n) => TextureFactory.GenerateVolumetricLeafCloud(w, h, n))
+            },
+            {
+                10024, new("TerrainGrass", "Smooth low-noise terrain grass texture with macro color transitions.",
+                    (w, h, n) => TextureFactory.GenerateTerrainGrass(w, h, n))
+            },
+            {
+                10025, new("TerrainDirt", "Soft muted terrain dirt texture with smooth soil transitions.",
+                    (w, h, n) => TextureFactory.GenerateTerrainDirt(w, h, n))
+            },
+            {
+                10026, new("MountainRock",
+                    "Mountain rock texture with macro height contours and directional slope shading.",
+                    (w, h, n) => TextureFactory.GenerateMountainRock(w, h, n))
+            },
+            {
+                10027, new("DungeonSandstone",
+                    "Layered dungeon sandstone texture with domain-warped sedimentary strata.",
+                    (w, h, n) => TextureFactory.GenerateDungeonSandstone(w, h, n))
+            },
+            {
+                10028, new("DungeonSandstoneFlat", "Flat soft-blended dungeon sandstone terrain texture.",
+                    (w, h, n) => TextureFactory.GenerateDungeonSandstoneFlat(w, h, n))
+            },
+            {
+                10029, new("RawIron", "Raw cast iron texture with fine surface pitting and micro-grit.",
+                    (w, h, n) => TextureFactory.GenerateRawIron(w, h, n))
+            },
+            {
+                10030, new("WroughtIron", "Wrought iron texture with subtle hammer marks and forged cellular facets.",
+                    (w, h, n) => TextureFactory.GenerateWroughtIron(w, h, n))
+            },
+            {
+                10031, new("RustedIron", "Rusted corroded iron texture with domain-warped oxidation layer.",
+                    (w, h, n) => TextureFactory.GenerateRustedIron(w, h, n))
+            },
+            {
+                10032, new("DesertSand", "Desert sand texture with gentle directional wind ripples.",
+                    (w, h, n) => TextureFactory.GenerateDesertSand(w, h, n))
+            },
+            {
+                10033, new("DesertSandFlat",
+                    "Flat soft-blended desert sand terrain texture for beds and background areas.",
+                    (w, h, n) => TextureFactory.GenerateDesertSandFlat(w, h, n))
+            },
+            {
+                10034, new("DarkLeafCloud", "Dark volumetric leaf cloud texture matched to floor tile shading.",
+                    (w, h, n) => TextureFactory.GenerateLeafCloud(w, h, n, TextureConstants.GetDarkLeafCloudConfig()))
+            },
+            {
+                10035, new("Gold", "Polished warm gold metal with soft highlights.",
+                    (w, h, n) =>
+                    {
+                        var cfg = TextureConstants.GetGoldConfig();
+                        return TextureMathEngine.GenerateColorMapped(w, h, n, cfg.RgbRamp!, cfg.TurbulenceSize);
+                    })
+            },
+            {
+                10036, new("Copper", "Polished reddish copper metal.",
+                    (w, h, n) =>
+                    {
+                        var cfg = TextureConstants.GetCopperConfig();
+                        return TextureMathEngine.GenerateColorMapped(w, h, n, cfg.RgbRamp!, cfg.TurbulenceSize);
+                    })
+            },
+            {
+                10037, new("Clay", "Fired terracotta clay with soft sandy grain.",
+                    (w, h, n) =>
+                    {
+                        var cfg = TextureConstants.GetClayConfig();
+                        return TextureMathEngine.GenerateColorMapped(w, h, n, cfg.RgbRamp!, cfg.TurbulenceSize);
+                    })
+            }
+        };
+
+        /// <summary>
+        /// Public metadata catalog exposed for UI / Menu bindings (Backwards Compatible).
+        /// </summary>
+        public static IReadOnlyDictionary<int, (string Name, string Description)> ProceduralCatalogue { get; } =
+            ProceduralRegistry.ToDictionary(kvp => kvp.Key, kvp => (kvp.Value.Name, kvp.Value.Description));
 
         // --- PROCEDURAL LAZY LOADING INTEGRATION PASS ---
 
@@ -182,7 +329,7 @@ namespace RenderEngine
         /// <param name="defaultWidth">Default pixel width for generated textures.</param>
         /// <param name="defaultHeight">Default pixel height for generated textures.</param>
         /// <param name="noiseGeneratorInstance">An initialized instance of your custom NoiseGenerator class.</param>
-        public void ConfigureLazyBaking(int defaultWidth, int defaultHeight, object? noiseGeneratorInstance)
+        public void ConfigureLazyBaking(int defaultWidth, int defaultHeight, NoiseGenerator? noiseGeneratorInstance)
         {
             _procWidth = defaultWidth;
             _procHeight = defaultHeight;
@@ -228,67 +375,12 @@ namespace RenderEngine
         /// <exception cref="System.InvalidOperationException">Procedural layout execution halted: No NoiseGenerator instance was initialized or found.</exception>
         private int LazyBakeTexture(int id)
         {
-            if (!ProceduralCatalogue.TryGetValue(id, out _))
+            if (!ProceduralRegistry.TryGetValue(id, out var entry))
                 return GetFallbackTexture();
 
-            if (_lazyNoiseGen == null)
-            {
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    var type = assembly.GetType("Imaging.NoiseGenerator") ??
-                               assembly.GetType("Imaging.Helpers.NoiseGenerator");
-                    if (type != null)
-                    {
-                        _lazyNoiseGen = Activator.CreateInstance(type, _procWidth, _procHeight);
-                        break;
-                    }
-                }
+            EnsureNoiseGenerator();
 
-                if (_lazyNoiseGen == null)
-                    throw new InvalidOperationException(
-                        "Procedural layout execution halted: No NoiseGenerator instance was initialized or found.");
-            }
-
-            var rawBuffer = id switch
-            {
-                10000 => TextureMathEngine.GenerateNoise(_procWidth, _procHeight, _lazyNoiseGen),
-                10001 => TextureMathEngine.GenerateClouds(_procWidth, _procHeight, _lazyNoiseGen),
-                10002 => TextureMathEngine.GenerateMarble(_procWidth, _procHeight, _lazyNoiseGen),
-                10003 => TextureMathEngine.GenerateWood(_procWidth, _procHeight, _lazyNoiseGen),
-                10004 => TextureMathEngine.GenerateWave(_procWidth, _procHeight, _lazyNoiseGen),
-                10005 => TextureMathEngine.GenerateCrosshatch(_procWidth, _procHeight, lineSpacing: 32,
-                    lineThickness: 2, bgR: 245, bgG: 238, bgB: 220, bgA: 255),
-                10006 => TextureMathEngine.GenerateConcrete(_procWidth, _procHeight, _lazyNoiseGen),
-                10007 => TextureMathEngine.GenerateCanvas(_procWidth, _procHeight, lineSpacing: 8, lineThickness: 1),
-                10008 => TextureFactory.GenerateTreeBark(_procWidth, _procHeight, _lazyNoiseGen),
-                10009 => TextureFactory.GenerateFoliage(_procWidth, _procHeight, _lazyNoiseGen),
-                10010 => TextureFactory.GenerateWoodPlank(_procWidth, _procHeight, _lazyNoiseGen),
-                10011 => TextureFactory.GenerateCobblestone(_procWidth, _procHeight),
-                10012 => TextureFactory.GenerateStoneTexture(_procWidth, _procHeight, _lazyNoiseGen),
-                10013 => TextureFactory.GenerateLavaPool(_procWidth, _procHeight, _lazyNoiseGen),
-                10014 => TextureFactory.GenerateMagicalEther(_procWidth, _procHeight, _lazyNoiseGen),
-                10015 => TextureFactory.GenerateCrackedIce(_procWidth, _procHeight),
-                10016 => TextureFactory.GenerateMagicPortal(_procWidth, _procHeight, _lazyNoiseGen),
-                10017 => TextureFactory.GeneratePlasmaArc(_procWidth, _procHeight, _lazyNoiseGen),
-                10018 => TextureFactory.GenerateSteel(_procWidth, _procHeight, _lazyNoiseGen),
-                10019 => TextureFactory.GenerateLatex(_procWidth, _procHeight, _lazyNoiseGen),
-                10020 => TextureFactory.GenerateLeather(_procWidth, _procHeight, _lazyNoiseGen),
-                10021 => TextureFactory.GeneratePolishedSteel(_procWidth, _procHeight, _lazyNoiseGen),
-                10022 => TextureFactory.GenerateLeafCloud(_procWidth, _procHeight, _lazyNoiseGen),
-                10023 => TextureFactory.GenerateVolumetricLeafCloud(_procWidth, _procHeight, _lazyNoiseGen),
-                10024 => TextureFactory.GenerateTerrainGrass(_procWidth, _procHeight, _lazyNoiseGen),
-                10025 => TextureFactory.GenerateTerrainDirt(_procWidth, _procHeight, _lazyNoiseGen),
-                10026 => TextureFactory.GenerateMountainRock(_procWidth, _procHeight, _lazyNoiseGen),
-                10027 => TextureFactory.GenerateDungeonSandstone(_procWidth, _procHeight, _lazyNoiseGen),
-                10028 => TextureFactory.GenerateDungeonSandstoneFlat(_procWidth, _procHeight, _lazyNoiseGen),
-                10029 => TextureFactory.GenerateRawIron(_procWidth, _procHeight, _lazyNoiseGen),
-                10030 => TextureFactory.GenerateWroughtIron(_procWidth, _procHeight, _lazyNoiseGen),
-                10031 => TextureFactory.GenerateRustedIron(_procWidth, _procHeight, _lazyNoiseGen),
-                10032 => TextureFactory.GenerateDesertSand(_procWidth, _procHeight, _lazyNoiseGen),
-                10033 => TextureFactory.GenerateDesertSandFlat(_procWidth, _procHeight, _lazyNoiseGen),
-                _ => null
-            };
-
+            var rawBuffer = entry.Generator(_procWidth, _procHeight, _lazyNoiseGen!);
             if (rawBuffer == null) return GetFallbackTexture();
 
             var glHandle = GetTexture(rawBuffer, linearFilter: true);
@@ -558,6 +650,11 @@ namespace RenderEngine
                     fragmentSrc = ShaderResource.VolumetricFogFragmentShader;
                     break;
 
+                case ShaderTypeApp.TerrainSplat:
+                    vertexSrc = ShaderResource.TerrainSplatVertexShader;
+                    fragmentSrc = ShaderResource.TerrainSplatFragmentShader;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(appType));
             }
@@ -627,6 +724,17 @@ namespace RenderEngine
             var info = GL.GetShaderInfoLog(shader);
             GL.DeleteShader(shader);
             throw new Exception($"Error compiling {type}: {info}");
+        }
+
+        // --- Helper methods ---
+
+        /// <summary>
+        /// Ensures the noise generator.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">Procedural layout execution halted: No NoiseGenerator instance was initialized or found.</exception>
+        private void EnsureNoiseGenerator()
+        {
+            _lazyNoiseGen ??= new NoiseGenerator(_procWidth, _procHeight);
         }
 
         // --- CLEANUP UNMANAGED ASSET STACK ---

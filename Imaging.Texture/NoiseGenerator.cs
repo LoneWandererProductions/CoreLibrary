@@ -36,20 +36,32 @@ namespace Imaging.Texture
         /// </summary>
         /// <param name="width">The width of the noise map.</param>
         /// <param name="height">The height of the noise map.</param>
-        public NoiseGenerator(int width, int height)
+        public NoiseGenerator(int width, int height) : this(width, height, null)
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="NoiseGenerator" /> class with a deterministic seed.
+        ///     The same seed and size always produce the same noise map, which is what texture variants rely on.
+        /// </summary>
+        /// <param name="width">The width of the noise map.</param>
+        /// <param name="height">The height of the noise map.</param>
+        /// <param name="seed">Seed for the random source. <c>null</c> keeps the legacy non-deterministic behavior.</param>
+        public NoiseGenerator(int width, int height, int? seed)
         {
             _width = width;
             _height = height;
-            _noise = GenerateNoise();
+            _noise = GenerateNoise(seed);
         }
 
         /// <summary>
         ///     Generates a 2D array filled with random noise values between 0 and 1.
         /// </summary>
         /// <returns>A 2D array representing the noise map.</returns>
-        private double[,] GenerateNoise()
+        /// <param name="seed">Optional deterministic seed.</param>
+        private double[,] GenerateNoise(int? seed)
         {
-            var rand = new Random();
+            var rand = seed.HasValue ? new Random(seed.Value) : new Random();
             var noiseData = new double[_height, _width];
 
             for (var y = 0; y < _height; y++)

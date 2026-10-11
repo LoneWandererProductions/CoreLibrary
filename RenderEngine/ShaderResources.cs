@@ -204,6 +204,65 @@ uniform sampler2DArray uTextureArray;
 void main() { FragColor = texture(uTextureArray, vec3(vTexCoord, vTileIndex)); }";
 
         /// <summary>
+        /// Vertex shader for terrain splatting. Vertex attribute 2 carries the blend weights
+        /// (RGB = layers 0..2, layer 3 is the remainder) and the baked light factor (A).
+        /// </summary>
+        public const string TerrainSplatVertexShader = @"#version 450 core
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec2 aTexCoord;
+layout(location = 2) in vec4 aColor;
+out vec4 vSplat;
+out vec2 vWorldXZ;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+void main() {
+    vec4 world = model * vec4(aPosition, 1.0);
+    gl_Position = projection * view * world;
+    vSplat = aColor;
+    vWorldXZ = world.xz;
+}";
+
+        /// <summary>
+        /// Fragment shader for terrain splatting: mixes four tiling layers by interpolated weights,
+        /// with a noise term so transitions are ragged instead of a straight gradient.
+        /// </summary>
+        public const string TerrainSplatFragmentShader = @"#version 450 core
+in vec4 vSplat;
+in vec2 vWorldXZ;
+out vec4 FragColor;
+uniform sampler2D uLayer0;
+uniform sampler2D uLayer1;
+uniform sampler2D uLayer2;
+uniform sampler2D uLayer3;
+uniform float uTiling;     // texture repeats per world unit
+uniform float uSharpness;  // 1 = linear fade, higher = narrower transition (keep >= 1.6 with noise)
+uniform float uEdgeNoise;  // 0 = straight fade, ~0.3 = ragged edge
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float vnoise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+               mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+}
+
+void main() {
+    vec4 w = vec4(vSplat.rgb, max(0.0, 1.0 - vSplat.r - vSplat.g - vSplat.b));
+    float n = vnoise(vWorldXZ * 0.35) * 0.65 + vnoise(vWorldXZ * 1.7) * 0.35;
+    w = clamp((w - 0.5) * uSharpness + 0.5 + (n - 0.5) * uEdgeNoise, 0.0, 1.0);
+    w /= max(w.x + w.y + w.z + w.w, 0.0001);
+
+    vec2 uv = vWorldXZ * uTiling;
+    vec3 col = texture(uLayer0, uv).rgb * w.x
+             + texture(uLayer1, uv).rgb * w.y
+             + texture(uLayer2, uv).rgb * w.z
+             + texture(uLayer3, uv).rgb * w.w;
+    FragColor = vec4(col * vSplat.a, 1.0);
+}";
+
+        /// <summary>
         /// General-purpose vertex shader for basic colored geometry.
         /// </summary>
         public static string VertexShaderSource => @"
@@ -395,6 +454,11 @@ uniform sampler2D uScene;
 uniform vec2 uScreenSize;
 uniform int uFilterMode;
 
+// Underwater look (all zero when the camera is not under water, which makes this a no-op).
+uniform float uUnderwater;       // 0 = dry, 1 = fully submerged (fades in and out)
+uniform float uUnderwaterDepth;  // metres between the camera and the water surface
+uniform float uTime;             // seconds, drives the wobble and the shimmer
+
 // Kuwahara Filter for Oil-Paint effect
 vec3 KuwaharaFilter(vec2 uv) {
     int radius = 3;
@@ -472,37 +536,66 @@ vec3 Posterize(vec3 color, float steps) {
     return floor(color * steps) / steps;
 }
 
+// Gentle refraction: the whole picture ripples a little while submerged.
+vec2 UnderwaterUv(vec2 uv) {
+    if (uUnderwater <= 0.0) return uv;
+    vec2 wobble = vec2(sin(uv.y * 26.0 + uTime * 1.7), cos(uv.x * 22.0 + uTime * 1.3)) * 0.0035 * uUnderwater;
+    return clamp(uv + wobble, vec2(0.001), vec2(0.999));
+}
+
+// Water swallows red first and then green, gets murkier with depth, darkens towards the edges of the view.
+vec3 ApplyUnderwater(vec3 c, vec2 uv) {
+    if (uUnderwater <= 0.0) return c;
+
+    float depthFade = clamp(uUnderwaterDepth / 14.0, 0.0, 1.0);
+
+    vec3 tinted = c * vec3(0.30, 0.74, 0.92);
+    tinted = mix(tinted, vec3(0.02, 0.10, 0.17), 0.18 + 0.45 * depthFade);
+
+    // Light patterns dancing in the shallows, gone in deep water.
+    float shimmer = 0.5 + 0.5 * sin((uv.x * 40.0) + sin(uv.y * 18.0 + uTime * 1.4) + uTime * 1.1);
+    tinted += vec3(0.02, 0.05, 0.06) * shimmer * (1.0 - depthFade);
+
+    float vignette = 1.0 - smoothstep(0.35, 0.95, length(uv - 0.5) * 1.4) * (0.35 + 0.25 * depthFade);
+
+    return mix(c, tinted * vignette, uUnderwater);
+}
+
 void main() {
-    vec3 baseColor = texture(uScene, vTexCoord).rgb;
+    vec2 uv = UnderwaterUv(vTexCoord);
+    vec3 baseColor = texture(uScene, uv).rgb;
+    vec3 color;
 
     if (uFilterMode == 1) {
         // Mode 1: Painterly (Kuwahara)
-        FragColor = vec4(KuwaharaFilter(vTexCoord), 1.0);
+        color = KuwaharaFilter(uv);
     } else if (uFilterMode == 2) {
         // Mode 2: Posterize & Edge Outlines
         vec3 pColor = Posterize(baseColor, 6.0);
-        float edge = DetectEdge(vTexCoord);
-        FragColor = vec4(pColor * edge, 1.0);
+        float edge = DetectEdge(uv);
+        color = pColor * edge;
     } else if (uFilterMode == 3) {
         // Mode 3: Painterly Impasto Canvas
-        vec3 kColor = KuwaharaFilter(vTexCoord);
+        vec3 kColor = KuwaharaFilter(uv);
         vec3 pColor = Posterize(kColor, 8.0);
-        float edge = DetectEdge(vTexCoord);
+        float edge = DetectEdge(uv);
 
         // Procedural canvas weave texture pattern
         vec2 st = vTexCoord * uScreenSize * 0.25;
         float grain = sin(st.x * 12.566) * cos(st.y * 12.566) * 0.05;
         pColor = clamp(pColor + vec3(grain), 0.0, 1.0);
 
-        FragColor = vec4(pColor * edge, 1.0);
+        color = pColor * edge;
     } else if (uFilterMode == 4) {
         // Mode 4: Grayscale Mono
         float gray = dot(baseColor, vec3(0.299, 0.587, 0.114));
-        FragColor = vec4(vec3(gray), 1.0);
+        color = vec3(gray);
     } else {
         // Mode 0: Passthrough / None
-        FragColor = vec4(baseColor, 1.0);
+        color = baseColor;
     }
+
+    FragColor = vec4(ApplyUnderwater(color, vTexCoord), 1.0);
 }";
 
         /// <summary>

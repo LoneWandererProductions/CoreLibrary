@@ -42,6 +42,7 @@ namespace RenderEngine
         public void Return(GpuMesh? mesh)
         {
             if (mesh == null) return;
+
             mesh.Reset();
             _pool.Push(mesh);
         }

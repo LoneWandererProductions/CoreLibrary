@@ -12,6 +12,7 @@
 
 using OpenTK.Graphics.OpenGL4;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using RenderEngine.Enums;
@@ -181,6 +182,34 @@ namespace RenderEngine
         /// Gets or sets the active post-processing filter mode.
         /// </summary>
         public PostProcessFilter CurrentFilter { get; set; } = PostProcessFilter.Painterly;
+
+        /// <summary>
+        /// Gets or sets how submerged the camera is, from 0 (dry) to 1 (fully under water). The caller fades it in and
+        /// out. Anything above zero draws the frame through the post-processing pass with the underwater look, even when
+        /// the user has no filter switched on.
+        /// </summary>
+        public float UnderwaterAmount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the distance in metres between the camera and the water surface (deeper means murkier).
+        /// </summary>
+        public float UnderwaterDepth { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this frame has to go through the post-processing pass.
+        /// </summary>
+        private bool PostPassWanted => PostProcessingEnabled || UnderwaterAmount > 0.001f;
+
+        /// <summary>
+        /// Whether the frame that is being drawn started in the offscreen target (decided once in
+        /// <see cref="BeginFrame"/> so <see cref="EndFrame"/> always agrees with it).
+        /// </summary>
+        private bool _framePostProcessed;
+
+        /// <summary>
+        /// Clock for the animated underwater look.
+        /// </summary>
+        private readonly System.Diagnostics.Stopwatch _postClock = System.Diagnostics.Stopwatch.StartNew();
 
         // --- CONSTRUCTOR ---
 
@@ -513,7 +542,9 @@ namespace RenderEngine
 
             ApplyFrameState();
 
-            if (PostProcessingEnabled)
+            _framePostProcessed = PostPassWanted;
+
+            if (_framePostProcessed)
             {
                 EnsureFboInitialized();
 
@@ -559,7 +590,7 @@ namespace RenderEngine
         /// </summary>
         public void EndFrame()
         {
-            if (!PostProcessingEnabled || !_fboInitialized) return;
+            if (!_framePostProcessed || !_fboInitialized) return;
 
             // 1. Restore GLWpfControl's target FBO and Viewport
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, _previousFbo);
@@ -583,7 +614,12 @@ namespace RenderEngine
 
             GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uScene"), 0);
             GL.Uniform2(GL.GetUniformLocation(_postProcessShader, "uScreenSize"), Width, (float)Height);
-            GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uFilterMode"), (int)CurrentFilter);
+            GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uFilterMode"),
+                PostProcessingEnabled ? (int)CurrentFilter : (int)PostProcessFilter.None);
+            GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uUnderwater"),
+                Math.Clamp(UnderwaterAmount, 0f, 1f));
+            GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uUnderwaterDepth"), MathF.Max(0f, UnderwaterDepth));
+            GL.Uniform1(GL.GetUniformLocation(_postProcessShader, "uTime"), (float)_postClock.Elapsed.TotalSeconds);
 
             GL.BindVertexArray(_quadVao);
             _activeVao = _quadVao;
@@ -837,12 +873,89 @@ namespace RenderEngine
             {
                 if (range.VertexCount == 0) continue;
 
+                if (range.TextureId == SplatTextureId)
+                {
+                    DrawSplatRange(mesh, range.StartVertex, range.VertexCount);
+
+                    // back to the plain textured program for any following ranges
+                    BindProgram(_shaderTex);
+                    BindVao(mesh.Vao);
+                    if (_locTexSampler >= 0) GL.Uniform1(_locTexSampler, 0);
+                    continue;
+                }
+
                 var texToBind = _resources.ResolveTextureId(range.TextureId);
                 BindTexture(texToBind);
                 GL.DrawArrays(PrimitiveType.Triangles, range.StartVertex, range.VertexCount);
             }
 
             BindVao(0);
+        }
+
+        /// <summary>
+        /// Marker texture id: a mesh range with this id is drawn with the terrain splat program
+        /// (four layers from <see cref="GLResourceManager.TerrainLayerTextureIds"/>, weights in vertex attribute 2).
+        /// </summary>
+        public const int SplatTextureId = -7001;
+
+        private int _shaderSplat = -1;
+        private int _locSplatModel, _locSplatView, _locSplatProj;
+        private int _locSplatTiling, _locSplatSharp, _locSplatNoise;
+        private readonly int[] _locSplatLayer = new int[4];
+        private readonly HashSet<int> _splatRepeatApplied = new();
+
+        /// <summary>
+        /// Draws one splat range: binds the four layers to units 0..3 and issues the draw.
+        /// </summary>
+        private void DrawSplatRange(GpuMesh mesh, int startVertex, int vertexCount)
+        {
+            if (_shaderSplat < 0)
+            {
+                _shaderSplat = _resources.GetShaderProgram(ShaderTypeApp.TerrainSplat);
+                _locSplatModel = GL.GetUniformLocation(_shaderSplat, "model");
+                _locSplatView = GL.GetUniformLocation(_shaderSplat, "view");
+                _locSplatProj = GL.GetUniformLocation(_shaderSplat, "projection");
+                _locSplatTiling = GL.GetUniformLocation(_shaderSplat, "uTiling");
+                _locSplatSharp = GL.GetUniformLocation(_shaderSplat, "uSharpness");
+                _locSplatNoise = GL.GetUniformLocation(_shaderSplat, "uEdgeNoise");
+                for (var i = 0; i < 4; i++)
+                    _locSplatLayer[i] = GL.GetUniformLocation(_shaderSplat, "uLayer" + i);
+            }
+
+            BindProgram(_shaderSplat);
+            BindVao(mesh.Vao);
+
+            var model = TK.Matrix4.Identity;
+            GL.UniformMatrix4(_locSplatModel, false, ref model);
+            GL.UniformMatrix4(_locSplatView, false, ref _view);
+            GL.UniformMatrix4(_locSplatProj, false, ref _projection);
+            GL.Uniform1(_locSplatTiling, _resources.TerrainTiling);
+            GL.Uniform1(_locSplatSharp, _resources.TerrainSharpness);
+            GL.Uniform1(_locSplatNoise, _resources.TerrainEdgeNoise);
+
+            var ids = _resources.TerrainLayerTextureIds;
+            for (var i = 0; i < 4; i++)
+            {
+                var tex = _resources.ResolveTextureId(ids != null && i < ids.Length ? ids[i] : 0);
+                GL.ActiveTexture((TextureUnit)((int)TextureUnit.Texture0 + i));
+                GL.BindTexture(TextureTarget.Texture2D, tex);
+
+                // Uploaded textures are ClampToEdge; world-space tiling needs Repeat.
+                if (_splatRepeatApplied.Add(tex))
+                {
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
+                        (int)TextureWrapMode.Repeat);
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
+                        (int)TextureWrapMode.Repeat);
+                }
+
+                GL.Uniform1(_locSplatLayer[i], i);
+            }
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+            _activeTexture = -1; // unit 0 now holds layer 0 - force the next BindTexture to rebind
+
+            GL.DrawArrays(PrimitiveType.Triangles, startVertex, vertexCount);
         }
 
         /// <summary>
