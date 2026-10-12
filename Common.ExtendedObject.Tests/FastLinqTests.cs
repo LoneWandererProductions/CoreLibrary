@@ -104,7 +104,7 @@ namespace Common.ExtendedObject.Tests
         {
             ReadOnlySpan<int> span = _largeData!;
 
-            Assert.AreEqual(_largeData!.Any(), span.AnyFast());
+            Assert.AreEqual(_largeData!.Length != 0, span.AnyFast());
             Assert.AreEqual(_largeData.All(x => x >= 0), span.AllFast(x => x >= 0));
             Assert.AreEqual(_largeData.Length, span.CountFast());
         }

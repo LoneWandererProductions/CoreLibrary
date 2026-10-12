@@ -82,8 +82,8 @@ namespace Imaging.Texture
         /// <returns>RGB component value.</returns>
         private static double HueToRgbComponent(double p, double q, double t)
         {
-            if (t < 0.0) t += 1.0;
-            if (t > 1.0) t -= 1.0;
+            if (t < 0.0) t++;
+            if (t > 1.0) t--;
             if (t < 1.0 / 6.0) return p + (q - p) * 6.0 * t;
             if (t < 1.0 / 2.0) return q;
             if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6.0;

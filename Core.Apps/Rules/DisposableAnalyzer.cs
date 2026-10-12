@@ -112,12 +112,7 @@ namespace Core.Apps.Rules
 
             // 4. Fallback Heuristic: Check the variable name itself
             // If the user named it 'stream', it's highly likely an IDisposable.
-            if (LooksLikeDisposable(variable.Identifier.Text))
-            {
-                return true;
-            }
-
-            return false;
+            return LooksLikeDisposable(variable.Identifier.Text);
         }
 
         /// <summary>

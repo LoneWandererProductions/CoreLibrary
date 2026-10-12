@@ -104,10 +104,8 @@ namespace Core.Apps.FileManager
             {
                 try
                 {
-                    using (var stream = File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
-                    {
-                        // File is not locked
-                    }
+                    using var stream = File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                    // File is not locked
                 }
                 catch
                 {

@@ -79,7 +79,7 @@ namespace Imaging.Tests
         public void Rasterize_SolidFill_MutatesBuffer()
         {
             using var buffer = new UnmanagedImageBuffer(10, 10);
-            uint whiteArgb = 0xFFFFFFFF;
+            const uint whiteArgb = 0xFFFFFFFF;
 
             var rect = new RectShape(0, 0, 5, 5)
             {
@@ -102,7 +102,7 @@ namespace Imaging.Tests
 
             var rect = new RectShape(0, 0, 20, 20)
             {
-                Fill = new TextureFill(TextureType.Marble.ToString()), Stroke = new StrokeSpec(0, 0)
+                Fill = new TextureFill(nameof(TextureType.Marble)), Stroke = new StrokeSpec(0, 0)
             };
 
             _rasterizer.Rasterize(new List<Shape> { rect }, buffer);
@@ -121,7 +121,7 @@ namespace Imaging.Tests
 
             var ellipse = new EllipseShape(10, 10, 20, 20)
             {
-                Fill = new FilterFill(FiltersType.BoxBlur.ToString()), Stroke = new StrokeSpec(0, 0)
+                Fill = new FilterFill(nameof(FiltersType.BoxBlur)), Stroke = new StrokeSpec(0, 0)
             };
 
             var shapes = new List<Shape> { ellipse };

@@ -693,8 +693,8 @@ namespace Imaging
         {
             if (pixels == null) yield break;
 
-            foreach (var p in pixels)
-                yield return new PixelData(p.x, p.y, p.color.R, p.color.G, p.color.B, p.color.A);
+            foreach (var (x, y, color) in pixels)
+                yield return new PixelData(x, y, color.R, color.G, color.B, color.A);
         }
 
         /// <summary>

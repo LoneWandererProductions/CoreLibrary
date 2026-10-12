@@ -79,9 +79,9 @@ namespace Weaver.ParseEngine
 
             if (!string.IsNullOrEmpty(extPart))
             {
-                var parsedExt = ParseSignature(extPart);
-                extName = parsedExt.Name;
-                extArgs = parsedExt.Args;
+                var (Name, Args) = ParseSignature(extPart);
+                extName = Name;
+                extArgs = Args;
 
                 if (string.IsNullOrEmpty(extName))
                     throw new FormatException($"Invalid extension format: '{extPart}'");

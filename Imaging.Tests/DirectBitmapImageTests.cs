@@ -461,8 +461,8 @@ namespace Imaging.Tests
         public void DirectBitmapImage_ToBitmapImage_PreservesTransparencyAndColor()
         {
             // Arrange: Create a 2x2 image
-            var width = 2;
-            var height = 2;
+            const int width = 2;
+            const int height = 2;
             using var dbi = new DirectBitmapImage(width, height);
 
             // Act

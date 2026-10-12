@@ -31,7 +31,7 @@ namespace Imaging.Compare
         {
             using var scaled = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
-            var size = ImageResources.DuplicateSize;
+            const int size = ImageResources.DuplicateSize;
             var totalPixels = size * size;
             var imageBytes = new byte[totalPixels];
 
@@ -93,7 +93,7 @@ namespace Imaging.Compare
 
             ReadOnlySpan<byte> img1 = imageToCompareTo.Image;
             ReadOnlySpan<byte> img2 = targetBitmap.Image;
-            var threshold = ImageResources.ColorThreshold;
+            const int threshold = ImageResources.ColorThreshold;
             var diff = 0;
 
             var length = Math.Min(img1.Length, img2.Length);

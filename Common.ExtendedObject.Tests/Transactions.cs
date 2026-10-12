@@ -173,7 +173,7 @@ namespace Common.ExtendedObject.Tests
         }
 
         /// <summary>
-        /// Gets the index of the item item exists returns.
+        /// Checks if item exists and returns id.
         /// </summary>
         [TestMethod]
         public void GetItemItemExistsReturnsIndex()
@@ -187,7 +187,7 @@ namespace Common.ExtendedObject.Tests
         }
 
         /// <summary>
-        /// Gets the item item does not exist returns minus one.
+        /// Gets the item, if item does not exist returns minus one.
         /// </summary>
         [TestMethod]
         public void GetItemItemDoesNotExistReturnsMinusOne()

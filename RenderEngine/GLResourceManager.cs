@@ -113,152 +113,185 @@ namespace RenderEngine
         private static readonly Dictionary<int, ProceduralEntry> ProceduralRegistry = new()
         {
             {
-                10000, new("Noise", "Procedural monochrome simplex noise distribution grain.",
+                10000,
+                new("Noise", "Procedural monochrome simplex noise distribution grain.",
                     (w, h, n) => TextureMathEngine.GenerateNoise(w, h, n))
             },
             {
-                10001, new("Clouds", "Fluid multi-octave cloud sky pattern spectrum.",
+                10001,
+                new("Clouds", "Fluid multi-octave cloud sky pattern spectrum.",
                     (w, h, n) => TextureMathEngine.GenerateClouds(w, h, n))
             },
             {
-                10002, new("Marble", "Sinusoidal soft marble stone vein matrix layout.",
+                10002,
+                new("Marble", "Sinusoidal soft marble stone vein matrix layout.",
                     (w, h, n) => TextureMathEngine.GenerateMarble(w, h, n))
             },
             {
-                10003, new("Wood", "Concentric organic natural wood grain ring texture layers.",
+                10003,
+                new("Wood", "Concentric organic natural wood grain ring texture layers.",
                     (w, h, n) => TextureMathEngine.GenerateWood(w, h, n))
             },
             {
-                10004, new("Wave", "Continuous fluid phase wave spectrum running on a pure HSV scale.",
+                10004,
+                new("Wave", "Continuous fluid phase wave spectrum running on a pure HSV scale.",
                     (w, h, n) => TextureMathEngine.GenerateWave(w, h, n))
             },
             {
-                10005, new("Crosshatch", "Pixel-perfect grid intersecting alignment lines overlay.",
+                10005,
+                new("Crosshatch", "Pixel-perfect grid intersecting alignment lines overlay.",
                     (w, h, _) =>
                         TextureMathEngine.GenerateCrosshatch(w, h, 32, 2, bgR: 140, bgG: 40, bgB: 40, bgA: 255))
             },
             {
-                10006, new("Concrete", "Industrial high-contrast gritty stone concrete texture map.",
+                10006,
+                new("Concrete", "Industrial high-contrast gritty stone concrete texture map.",
                     (w, h, n) => TextureMathEngine.GenerateConcrete(w, h, n))
             },
             {
-                10007, new("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.",
+                10007,
+                new("Canvas", "Woven organic fiber cloth structural mesh with random fraying cutoffs.",
                     (w, h, _) => TextureMathEngine.GenerateCanvas(w, h, 8, 1))
             },
             {
-                10008, new("TreeBark", "Anisotropic domain-warped vertical furrowed bark grain.",
+                10008,
+                new("TreeBark", "Anisotropic domain-warped vertical furrowed bark grain.",
                     (w, h, n) => TextureFactory.GenerateTreeBark(w, h, n))
             },
             {
-                10009, new("Foliage", "Dense organic canopy composed of distance-pinched leaf profiles.",
+                10009,
+                new("Foliage", "Dense organic canopy composed of distance-pinched leaf profiles.",
                     (w, h, n) => TextureFactory.GenerateFoliage(w, h, n))
             },
             {
-                10010, new("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.",
+                10010,
+                new("WoodPlank", "Longitudinal sawn wood board with sweeping grain and cathedral arches.",
                     (w, h, n) => TextureFactory.GenerateWoodPlank(w, h, n))
             },
             {
-                10011, new("Cobblestone", "Voronoi cellular paving stone grid texture.",
+                10011,
+                new("Cobblestone", "Voronoi cellular paving stone grid texture.",
                     (w, h, _) => TextureFactory.GenerateCobblestone(w, h))
             },
             {
-                10012, new("Stone", "Directional shaded stone surface with mortar joints.",
+                10012,
+                new("Stone", "Directional shaded stone surface with mortar joints.",
                     (w, h, n) => TextureFactory.GenerateStoneTexture(w, h, n))
             },
             {
-                10013, new("LavaPool", "Molten lava pool with turbulent color ramp mapping.",
+                10013,
+                new("LavaPool", "Molten lava pool with turbulent color ramp mapping.",
                     (w, h, n) => TextureFactory.GenerateLavaPool(w, h, n))
             },
             {
-                10014, new("MagicalEther", "Ethereal magical aura flow texture.",
+                10014,
+                new("MagicalEther", "Ethereal magical aura flow texture.",
                     (w, h, n) => TextureFactory.GenerateMagicalEther(w, h, n))
             },
             {
-                10015, new("CrackedIce", "Cellular cracked ice crystal structure.",
+                10015,
+                new("CrackedIce", "Cellular cracked ice crystal structure.",
                     (w, h, _) => TextureFactory.GenerateCrackedIce(w, h))
             },
             {
-                10016, new("MagicPortal", "Domain-warped swirling portal energy texture.",
+                10016,
+                new("MagicPortal", "Domain-warped swirling portal energy texture.",
                     (w, h, n) => TextureFactory.GenerateMagicPortal(w, h, n))
             },
             {
-                10017, new("PlasmaArc", "Ridged multifractal plasma energy arc.",
+                10017,
+                new("PlasmaArc", "Ridged multifractal plasma energy arc.",
                     (w, h, n) => TextureFactory.GeneratePlasmaArc(w, h, n))
             },
             {
-                10018, new("Steel", "Directional brushed steel metal surface with specular grit.",
+                10018,
+                new("Steel", "Directional brushed steel metal surface with specular grit.",
                     (w, h, n) => TextureFactory.GenerateSteel(w, h, n))
             },
             {
-                10019, new("Latex", "Glossy latex surface with steep specular falloff.",
+                10019,
+                new("Latex", "Glossy latex surface with steep specular falloff.",
                     (w, h, n) => TextureFactory.GenerateLatex(w, h, n))
             },
             {
-                10020, new("Leather", "Pebbled organic skin pores and warped wrinkles.",
+                10020,
+                new("Leather", "Pebbled organic skin pores and warped wrinkles.",
                     (w, h, n) => TextureFactory.GenerateLeather(w, h, n))
             },
             {
-                10021, new("PolishedSteel", "High-gloss chrome reflective steel surface.",
+                10021,
+                new("PolishedSteel", "High-gloss chrome reflective steel surface.",
                     (w, h, n) => TextureFactory.GeneratePolishedSteel(w, h, n))
             },
             {
-                10022, new("LeafCloud", "Volumetric leaf cloud texture for bushes and tree canopies.",
+                10022,
+                new("LeafCloud", "Volumetric leaf cloud texture for bushes and tree canopies.",
                     (w, h, n) => TextureFactory.GenerateLeafCloud(w, h, n))
             },
             {
-                10023, new("VolumetricLeafCloud",
+                10023,
+                new("VolumetricLeafCloud",
                     "Smooth volumetric leaf cloud texture with rounded leaf puffs and distinct canopy gaps.",
                     (w, h, n) => TextureFactory.GenerateVolumetricLeafCloud(w, h, n))
             },
             {
-                10024, new("TerrainGrass", "Smooth low-noise terrain grass texture with macro color transitions.",
+                10024,
+                new("TerrainGrass", "Smooth low-noise terrain grass texture with macro color transitions.",
                     (w, h, n) => TextureFactory.GenerateTerrainGrass(w, h, n))
             },
             {
-                10025, new("TerrainDirt", "Soft muted terrain dirt texture with smooth soil transitions.",
+                10025,
+                new("TerrainDirt", "Soft muted terrain dirt texture with smooth soil transitions.",
                     (w, h, n) => TextureFactory.GenerateTerrainDirt(w, h, n))
             },
             {
-                10026, new("MountainRock",
-                    "Mountain rock texture with macro height contours and directional slope shading.",
+                10026,
+                new("MountainRock", "Mountain rock texture with macro height contours and directional slope shading.",
                     (w, h, n) => TextureFactory.GenerateMountainRock(w, h, n))
             },
             {
-                10027, new("DungeonSandstone",
-                    "Layered dungeon sandstone texture with domain-warped sedimentary strata.",
+                10027,
+                new("DungeonSandstone", "Layered dungeon sandstone texture with domain-warped sedimentary strata.",
                     (w, h, n) => TextureFactory.GenerateDungeonSandstone(w, h, n))
             },
             {
-                10028, new("DungeonSandstoneFlat", "Flat soft-blended dungeon sandstone terrain texture.",
+                10028,
+                new("DungeonSandstoneFlat", "Flat soft-blended dungeon sandstone terrain texture.",
                     (w, h, n) => TextureFactory.GenerateDungeonSandstoneFlat(w, h, n))
             },
             {
-                10029, new("RawIron", "Raw cast iron texture with fine surface pitting and micro-grit.",
+                10029,
+                new("RawIron", "Raw cast iron texture with fine surface pitting and micro-grit.",
                     (w, h, n) => TextureFactory.GenerateRawIron(w, h, n))
             },
             {
-                10030, new("WroughtIron", "Wrought iron texture with subtle hammer marks and forged cellular facets.",
+                10030,
+                new("WroughtIron", "Wrought iron texture with subtle hammer marks and forged cellular facets.",
                     (w, h, n) => TextureFactory.GenerateWroughtIron(w, h, n))
             },
             {
-                10031, new("RustedIron", "Rusted corroded iron texture with domain-warped oxidation layer.",
+                10031,
+                new("RustedIron", "Rusted corroded iron texture with domain-warped oxidation layer.",
                     (w, h, n) => TextureFactory.GenerateRustedIron(w, h, n))
             },
             {
-                10032, new("DesertSand", "Desert sand texture with gentle directional wind ripples.",
+                10032,
+                new("DesertSand", "Desert sand texture with gentle directional wind ripples.",
                     (w, h, n) => TextureFactory.GenerateDesertSand(w, h, n))
             },
             {
-                10033, new("DesertSandFlat",
-                    "Flat soft-blended desert sand terrain texture for beds and background areas.",
+                10033,
+                new("DesertSandFlat", "Flat soft-blended desert sand terrain texture for beds and background areas.",
                     (w, h, n) => TextureFactory.GenerateDesertSandFlat(w, h, n))
             },
             {
-                10034, new("DarkLeafCloud", "Dark volumetric leaf cloud texture matched to floor tile shading.",
+                10034,
+                new("DarkLeafCloud", "Dark volumetric leaf cloud texture matched to floor tile shading.",
                     (w, h, n) => TextureFactory.GenerateLeafCloud(w, h, n, TextureConstants.GetDarkLeafCloudConfig()))
             },
             {
-                10035, new("Gold", "Polished warm gold metal with soft highlights.",
+                10035,
+                new("Gold", "Polished warm gold metal with soft highlights.",
                     (w, h, n) =>
                     {
                         var cfg = TextureConstants.GetGoldConfig();
@@ -266,7 +299,8 @@ namespace RenderEngine
                     })
             },
             {
-                10036, new("Copper", "Polished reddish copper metal.",
+                10036,
+                new("Copper", "Polished reddish copper metal.",
                     (w, h, n) =>
                     {
                         var cfg = TextureConstants.GetCopperConfig();
@@ -274,7 +308,8 @@ namespace RenderEngine
                     })
             },
             {
-                10037, new("Clay", "Fired terracotta clay with soft sandy grain.",
+                10037,
+                new("Clay", "Fired terracotta clay with soft sandy grain.",
                     (w, h, n) =>
                     {
                         var cfg = TextureConstants.GetClayConfig();
