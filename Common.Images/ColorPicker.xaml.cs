@@ -528,7 +528,7 @@ namespace Common.Images
         /// <param name="s">The s.</param>
         /// <param name="v">The v.</param>
         /// <param name="alpha">The alpha.</param>
-        /// <returns></returns>
+        /// <returns>An integer representing the ARGB color.</returns>
         private static int HsvToInt(double h, double s, double v, int alpha)
         {
             var c = v * s;

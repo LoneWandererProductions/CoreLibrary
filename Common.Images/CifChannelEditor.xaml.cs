@@ -610,7 +610,6 @@ namespace Common.Images
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Windows.RoutedPropertyChangedEventArgs{double}"/> instance containing the event data.</param>
-        /// <returns></returns>
         private void EditSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (_isUpdatingSliders) return;
@@ -621,7 +620,6 @@ namespace Common.Images
         /// <summary>
         /// Updates the color of the preview.
         /// </summary>
-        /// <returns></returns>
         private void UpdatePreviewColor()
         {
             if (PreviewBrush == null) return;

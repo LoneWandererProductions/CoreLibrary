@@ -925,7 +925,6 @@ namespace Common.Images
         /// </summary>
         /// <param name="predicate">Called with each item's file path; return <c>true</c> to keep it visible. Pass
         /// <c>null</c> to clear the filter and show everything again.</param>
-        /// <returns></returns>
         public void ApplyFilter(Func<string, bool>? predicate)
         {
             // Remember this so LoadSingleImage can apply it to thumbnails that are still in

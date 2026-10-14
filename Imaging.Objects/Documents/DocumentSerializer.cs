@@ -22,23 +22,44 @@ namespace Imaging.Objects.Documents
     /// </summary>
     public sealed class DocumentSerializer
     {
-        /// <summary>Value of the <c>format</c> field.</summary>
+        /// <summary>
+        /// Value of the <c>format</c> field.
+        /// </summary>
         public const string FormatName = "slimdoc";
 
-        /// <summary>The newest version this build reads and writes. Files with a higher version are rejected.</summary>
+        /// <summary>
+        /// The newest version this build reads and writes. Files with a higher version are rejected.
+        /// </summary>
         public const int CurrentVersion = 1;
 
-        /// <summary>Recommended file extension.</summary>
+        /// <summary>
+        /// Recommended file extension.
+        /// </summary>
         public const string FileExtension = ".slimdoc";
 
+        /// <summary>
+        /// The document entry
+        /// </summary>
         private const string DocumentEntry = "document.json";
 
+        /// <summary>
+        /// The layer folder
+        /// </summary>
         private const string LayerFolder = "layers/";
 
+        /// <summary>
+        /// The raster type
+        /// </summary>
         private const string RasterType = "raster";
 
+        /// <summary>
+        /// The shape type
+        /// </summary>
         private const string ShapeType = "shape";
 
+        /// <summary>
+        /// The options
+        /// </summary>
         private static readonly JsonSerializerOptions Options = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -47,17 +68,29 @@ namespace Imaging.Objects.Documents
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
+        /// <summary>
+        /// The read codecs
+        /// </summary>
         private readonly IReadOnlyList<IRasterCodec> _readCodecs;
 
+        /// <summary>
+        /// The write codec
+        /// </summary>
         private readonly IRasterCodec _writeCodec;
 
-        /// <summary>Creates a serializer that stores layers as PNG.</summary>
+        /// <summary>
+        /// Creates a serializer that stores layers as PNG.
+        /// </summary>
         public DocumentSerializer()
             : this(new PngRasterCodec())
         {
         }
 
-        /// <summary>Creates a serializer with a specific codec for writing. Both known codecs are accepted when reading.</summary>
+        /// <summary>
+        /// Creates a serializer with a specific codec for writing. Both known codecs are accepted when reading.
+        /// </summary>
+        /// <param name="writeCodec">The write codec.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public DocumentSerializer(IRasterCodec writeCodec)
         {
             ArgumentNullException.ThrowIfNull(writeCodec);
@@ -77,7 +110,13 @@ namespace Imaging.Objects.Documents
             _readCodecs = codecs;
         }
 
-        /// <summary>Saves to a file. The data goes to a temporary file first, so a crash cannot destroy an existing document.</summary>
+        /// <summary>
+        /// Saves to a file. The data goes to a temporary file first, so a crash cannot destroy an existing document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="path">The path.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentException"></exception>
         public void Save(Document document, string path)
         {
             ArgumentNullException.ThrowIfNull(document);
@@ -100,7 +139,13 @@ namespace Imaging.Objects.Documents
             }
         }
 
-        /// <summary>Saves to a stream (left open).</summary>
+        /// <summary>
+        /// Saves to a stream (left open).
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="output">The output.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.NotSupportedException">Layer type {layer.GetType().Name} cannot be saved.</exception>
         public void Save(Document document, Stream output)
         {
             ArgumentNullException.ThrowIfNull(document);
@@ -165,7 +210,11 @@ namespace Imaging.Objects.Documents
             }
         }
 
-        /// <summary>Loads a document from a file.</summary>
+        /// <summary>
+        /// Loads a document from a file.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>The loaded <see cref="Document"/>.</returns>
         /// <exception cref="DocumentFormatException">The file is damaged, unsupported or too new.</exception>
         public Document Load(string path)
         {
@@ -175,7 +224,17 @@ namespace Imaging.Objects.Documents
             return Load(stream);
         }
 
-        /// <summary>Loads a document from a stream (left open).</summary>
+        /// <summary>
+        /// Loads a document from a stream (left open).
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>The loaded <see cref="Document"/>.</returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="Imaging.Objects.Documents.DocumentFormatException">
+        /// The file is not a valid document container.
+        /// or
+        /// The document description is damaged.
+        /// </exception>
         /// <exception cref="DocumentFormatException">The data is damaged, unsupported or too new.</exception>
         public Document Load(Stream input)
         {
@@ -196,6 +255,26 @@ namespace Imaging.Objects.Documents
             }
         }
 
+        /// <summary>
+        /// Reads the specified zip.
+        /// </summary>
+        /// <param name="zip">The zip.</param>
+        /// <returns>The loaded <see cref="Document"/>.</returns>
+        /// <exception cref="Imaging.Objects.Documents.DocumentFormatException">
+        /// The container has no {DocumentEntry}.
+        /// or
+        /// This is not a SlimViewer document.
+        /// or
+        /// Invalid document version {dto.Version}.
+        /// or
+        /// The document was written by a newer version (format {dto.Version}, this build reads up to {CurrentVersion}).
+        /// or
+        /// Invalid document size {dto.Width}x{dto.Height}.
+        /// or
+        /// The layer list contains an empty entry.
+        /// or
+        /// Layer id {item.Id} appears twice.
+        /// </exception>
         private Document Read(ZipArchive zip)
         {
             var entry = zip.GetEntry(DocumentEntry) ??
@@ -263,6 +342,23 @@ namespace Imaging.Objects.Documents
             }
         }
 
+        /// <summary>
+        /// Reads the layer.
+        /// </summary>
+        /// <param name="zip">The zip.</param>
+        /// <param name="item">The item.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>The loaded <see cref="Layer"/>.</returns>
+        /// <exception cref="Imaging.Objects.Documents.DocumentFormatException">
+        /// Layer {item.Id} uses the unknown blend mode '{item.Blend}'.
+        /// or
+        /// Layer {item.Id} contains an invalid shape.
+        /// or
+        /// Layer {item.Id} contains shape {shape.Id} twice.
+        /// or
+        /// Layer {item.Id} has the unknown type '{item.Type}'.
+        /// </exception>
         private Layer ReadLayer(ZipArchive zip, LayerDto item, int width, int height)
         {
             if (!Enum.TryParse<BlendMode>(item.Blend ?? nameof(BlendMode.Normal), true, out var blend) ||
@@ -309,6 +405,21 @@ namespace Imaging.Objects.Documents
             return layer;
         }
 
+        /// <summary>
+        /// Reads the raster layer.
+        /// </summary>
+        /// <param name="zip">The zip.</param>
+        /// <param name="item">The item.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>The loaded <see cref="Layer"/>.</returns>
+        /// <exception cref="Imaging.Objects.Documents.DocumentFormatException">
+        /// Layer {item.Id} has an invalid pixel file name.
+        /// or
+        /// The pixel data '{file}' of layer {item.Id} is missing.
+        /// or
+        /// Layer {item.Id} uses the unsupported pixel format '{extension}'.
+        /// </exception>
         private RasterLayer ReadRasterLayer(ZipArchive zip, LayerDto item, int width, int height)
         {
             var file = item.File;
@@ -331,36 +442,8 @@ namespace Imaging.Objects.Documents
             return new RasterLayer(item.Id, item.Name, pixels);
         }
 
-        private sealed class DocumentDto
-        {
-            public string? Format { get; set; }
 
-            public int Version { get; set; }
 
-            public int Width { get; set; }
 
-            public int Height { get; set; }
-
-            public List<LayerDto>? Layers { get; set; }
-        }
-
-        private sealed class LayerDto
-        {
-            public string? Type { get; set; }
-
-            public Guid Id { get; set; }
-
-            public string? Name { get; set; }
-
-            public bool Visible { get; set; } = true;
-
-            public double Opacity { get; set; } = 1.0;
-
-            public string? Blend { get; set; }
-
-            public string? File { get; set; }
-
-            public List<Shape>? Shapes { get; set; }
-        }
     }
 }

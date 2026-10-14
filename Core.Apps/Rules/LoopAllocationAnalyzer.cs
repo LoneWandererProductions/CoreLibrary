@@ -178,7 +178,7 @@ namespace Core.Apps.Rules
         /// <param name="creationNode">The creation node.</param>
         /// <param name="semanticModel">The semantic model.</param>
         /// <param name="localSymbol">The local symbol.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the local variable symbol was successfully retrieved; otherwise, <c>false</c>.</returns>
         private static bool TryGetLocalVariableSymbol(
             SyntaxNode creationNode,
             SemanticModel semanticModel,

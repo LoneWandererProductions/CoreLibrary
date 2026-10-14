@@ -83,7 +83,7 @@ namespace Extended.Objects
         /// The <see cref="TV"/>.
         /// </value>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>The value associated with the specified key.</returns>
         /// <exception cref="KeyNotFoundException">Key '{key}' not found.</exception>
         public TV this[TK key]
         {

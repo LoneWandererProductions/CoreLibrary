@@ -71,7 +71,7 @@ namespace Imaging.Interfaces
         /// </summary>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
-        /// <returns></returns>
+        /// <returns>The Pixel32 at the specified coordinates, or null if out of bounds.</returns>
         Pixel32? GetPixel32(int x, int y);
     }
 }

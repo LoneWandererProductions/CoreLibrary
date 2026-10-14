@@ -6,9 +6,10 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents;
-
-/// <summary>
-///     A point in image space with sub-pixel precision.
-/// </summary>
-public readonly record struct PointD(double X, double Y);
+namespace Imaging.Objects.Documents
+{
+    /// <summary>
+    ///     A point in image space with sub-pixel precision.
+    /// </summary>
+    public readonly record struct PointD(double X, double Y);
+}

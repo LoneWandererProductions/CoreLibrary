@@ -309,7 +309,7 @@ namespace Imaging.Tests
         /// </summary>
         /// <param name="iterations">The iterations.</param>
         /// <param name="action">The action.</param>
-        /// <returns></returns>
+        /// <returns>The elapsed time in milliseconds.</returns>
         private static double MeasurePerformance(int iterations, Action action)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -377,7 +377,7 @@ namespace Imaging.Tests
         /// Pixels to uint.
         /// </summary>
         /// <param name="p">The p.</param>
-        /// <returns></returns>
+        /// <returns>An unsigned integer representing the ARGB color.</returns>
         private static uint PixelToUint(Pixel32 p)
         {
             return (uint)p.A << 24 | (uint)p.R << 16 | (uint)p.G << 8 | p.B;
@@ -387,7 +387,7 @@ namespace Imaging.Tests
         /// Pixels to uint c.
         /// </summary>
         /// <param name="c">The c.</param>
-        /// <returns></returns>
+        /// <returns>An unsigned integer representing the ARGB color.</returns>
         private static uint PixelToUintC(Color c)
         {
             return (uint)c.A << 24 | (uint)c.R << 16 | (uint)c.G << 8 | c.B;

@@ -6,19 +6,20 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
-namespace Imaging.Objects.Documents;
-
-internal static class DocumentLimits
+namespace Imaging.Objects.Documents
 {
-    /// <summary>
-    ///     UnmanagedImageBuffer computes its size in 32-bit ints, so a pixel buffer must stay below 2 GiB.
-    /// </summary>
-    internal static void EnsureValidSize(int width, int height)
+    internal static class DocumentLimits
     {
-        if (width <= 0 || height <= 0 || (long)width * height * UnmanagedImageBuffer.BytesPerPixel > int.MaxValue)
+        /// <summary>
+        ///     UnmanagedImageBuffer computes its size in 32-bit ints, so a pixel buffer must stay below 2 GiB.
+        /// </summary>
+        internal static void EnsureValidSize(int width, int height)
         {
-            throw new ArgumentOutOfRangeException(nameof(width),
-                string.Format(ImageResource.ErrorInvalidDocumentSize, width, height));
+            if (width <= 0 || height <= 0 || (long)width * height * UnmanagedImageBuffer.BytesPerPixel > int.MaxValue)
+            {
+                throw new ArgumentOutOfRangeException(nameof(width),
+                    string.Format(ImageResource.ErrorInvalidDocumentSize, width, height));
+            }
         }
     }
 }

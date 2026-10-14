@@ -281,7 +281,7 @@ namespace Extended.Objects
         /// Retrieves metadata for a specific item.
         /// </summary>
         /// <param name="identifier">The identifier.</param>
-        /// <returns></returns>
+        /// <returns>The metadata of the specified item, or null if not found or expired.</returns>
         public VaultMetadata? GetMetadata(long identifier)
         {
             EnsureNotDisposed();

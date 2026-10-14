@@ -507,7 +507,7 @@ namespace Extended.Unmanaged
         /// <summary>
         /// Gets the enumerator.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An <see cref="EntryGenericEnumerator{TValue}"/> that can be used to iterate through the collection.</returns>
         public EntryGenericEnumerator<TValue> GetEnumerator() => new(_entries, Capacity);
 
         /// <inheritdoc />

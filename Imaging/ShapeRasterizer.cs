@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging
  * FILE:        ShapeRasterizer.cs
@@ -138,7 +138,6 @@ namespace Imaging
         /// <param name="start">The start.</param>
         /// <param name="size">The size.</param>
         /// <param name="polygon">The polygon.</param>
-        /// <returns></returns>
         private void FillArea(Bitmap bitmap, FillSpec fill, MaskShape mask, Point start, Size size, Point[]? polygon)
         {
             switch (fill)

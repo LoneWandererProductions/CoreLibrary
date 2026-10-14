@@ -71,7 +71,7 @@ namespace CommonFilter
         /// </summary>
         /// <param name="inputString">The input string.</param>
         /// <param name="term">The term.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the condition is met; otherwise, <c>false</c>.</returns>
         /// <exception cref="System.ArgumentException"></exception>
         private bool EvaluateCondition(string inputString, FilterOption term)
         {

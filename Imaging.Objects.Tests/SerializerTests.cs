@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Tests
  * FILE:        SerializerTests.cs
@@ -36,7 +36,7 @@ namespace Imaging.Objects.Tests
         /// </summary>
         /// <param name="photoId">The photo identifier.</param>
         /// <param name="inkId">The ink identifier.</param>
-        /// <returns></returns>
+        /// <returns>The constructed <see cref="Document"/>.</returns>
         private static Document BuildSampleDocument(out Guid photoId, out Guid inkId)
         {
             var document = new Document(Width, Height);

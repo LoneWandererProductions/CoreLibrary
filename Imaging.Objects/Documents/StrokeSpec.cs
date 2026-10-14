@@ -14,7 +14,12 @@ namespace Imaging.Objects.Documents
     /// </summary>
     public sealed record StrokeSpec(uint Argb, double Width)
     {
-        /// <summary>Gets the default stroke: opaque black, one pixel.</summary>
+        /// <summary>
+        /// Gets the default stroke: opaque black, one pixel.
+        /// </summary>
+        /// <value>
+        /// The default.
+        /// </value>
         public static StrokeSpec Default { get; } = new(0xFF000000, 1.0);
     }
 }

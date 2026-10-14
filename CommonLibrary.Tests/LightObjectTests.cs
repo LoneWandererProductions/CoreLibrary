@@ -321,7 +321,7 @@ namespace CommonLibrary.Tests
         /// <param name="v1">The v1.</param>
         /// <param name="v2">The v2.</param>
         /// <param name="tolerance">The tolerance.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the vectors are equal within the specified tolerance; otherwise, <c>false</c>.</returns>
         private static bool AreVectorsEqual(Vector2 v1, Vector2 v2, float tolerance = 0.0001f)
         {
             return Math.Abs(v1.X - v2.X) < tolerance && Math.Abs(v1.Y - v2.Y) < tolerance;

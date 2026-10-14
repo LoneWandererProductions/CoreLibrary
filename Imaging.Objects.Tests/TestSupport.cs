@@ -98,7 +98,7 @@ namespace Imaging.Objects.Tests
         /// </summary>
         /// <param name="layer">The layer.</param>
         /// <param name="expected">The expected.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the pixels are the same; otherwise, <c>false</c>.</returns>
         internal static bool SamePixels(RasterLayer layer, byte[] expected)
         {
             return layer.Pixels.BufferSpan.SequenceEqual(expected);
