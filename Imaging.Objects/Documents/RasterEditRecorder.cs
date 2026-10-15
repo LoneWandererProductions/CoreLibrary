@@ -18,26 +18,49 @@ namespace Imaging.Objects.Documents
     /// </summary>
     public sealed class RasterEditRecorder
     {
-        /// <summary>Edge length of a tile in pixels.</summary>
+        /// <summary>
+        /// Edge length of a tile in pixels.
+        /// </summary>
         public const int TileSize = 64;
 
+        /// <summary>
+        /// The BPP
+        /// </summary>
         private const int Bpp = UnmanagedImageBuffer.BytesPerPixel;
 
+        /// <summary>
+        /// The before
+        /// </summary>
         private readonly Dictionary<(int Tx, int Ty), byte[]> _before = new();
 
+        /// <summary>
+        /// The layer
+        /// </summary>
         private readonly RasterLayer _layer;
 
-        /// <summary>Initializes a new instance of the <see cref="RasterEditRecorder" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RasterEditRecorder" /> class.
+        /// </summary>
+        /// <param name="layer">The layer.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public RasterEditRecorder(RasterLayer layer)
         {
             ArgumentNullException.ThrowIfNull(layer);
             _layer = layer;
         }
 
-        /// <summary>Gets the number of tiles captured so far.</summary>
+        /// <summary>
+        /// Gets the number of tiles captured so far.
+        /// </summary>
+        /// <value>
+        /// The touched tile count.
+        /// </value>
         public int TouchedTileCount => _before.Count;
 
-        /// <summary>Captures the original pixels of every tile overlapping <paramref name="area" />.</summary>
+        /// <summary>
+        /// Captures the original pixels of every tile overlapping <paramref name="area" />.
+        /// </summary>
+        /// <param name="area">The area.</param>
         public void Touch(PixelRect area)
         {
             area = area.Intersect(new PixelRect(0, 0, _layer.Width, _layer.Height));
@@ -60,16 +83,20 @@ namespace Imaging.Objects.Documents
             }
         }
 
-        /// <summary>Captures the whole layer (for tools that rewrite everything, like a filter).</summary>
+        /// <summary>
+        /// Captures the whole layer (for tools that rewrite everything, like a filter).
+        /// </summary>
         public void TouchAll()
         {
             Touch(new PixelRect(0, 0, _layer.Width, _layer.Height));
         }
 
         /// <summary>
-        ///     Builds the undo step from everything touched since the last commit. Tiles whose pixels ended up
-        ///     unchanged are dropped. Returns null if nothing actually changed.
+        /// Builds the undo step from everything touched since the last commit. Tiles whose pixels ended up
+        /// unchanged are dropped. Returns null if nothing actually changed.
         /// </summary>
+        /// <param name="description">The description.</param>
+        /// <returns>The raster patch command or null if nothing changed.</returns>
         public RasterPatchCommand? Commit(string description = "Edit pixels")
         {
             var tiles = new List<TilePatch>();
@@ -86,7 +113,9 @@ namespace Imaging.Objects.Documents
             return tiles.Count == 0 ? null : new RasterPatchCommand(_layer.Id, description, tiles);
         }
 
-        /// <summary>Puts back everything touched so far (for an aborted stroke) and forgets it.</summary>
+        /// <summary>
+        /// Puts back everything touched so far (for an aborted stroke) and forgets it.
+        /// </summary>
         public void Rollback()
         {
             foreach (var ((tx, ty), before) in _before)
@@ -97,16 +126,32 @@ namespace Imaging.Objects.Documents
             _before.Clear();
         }
 
+        /// <summary>
+        /// Tiles the width.
+        /// </summary>
+        /// <param name="tx">The tx.</param>
+        /// <returns></returns>
         private int TileWidth(int tx)
         {
             return Math.Min(TileSize, _layer.Width - (tx * TileSize));
         }
 
+        /// <summary>
+        /// Tiles the height.
+        /// </summary>
+        /// <param name="ty">The ty.</param>
+        /// <returns>The tile height.</returns>
         private int TileHeight(int ty)
         {
             return Math.Min(TileSize, _layer.Height - (ty * TileSize));
         }
 
+        /// <summary>
+        /// Copies the tile.
+        /// </summary>
+        /// <param name="tx">The tx.</param>
+        /// <param name="ty">The ty.</param>
+        /// <returns>The copied tile as a byte array.</returns>
         private byte[] CopyTile(int tx, int ty)
         {
             var width = TileWidth(tx);
