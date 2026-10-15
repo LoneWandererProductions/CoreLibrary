@@ -151,7 +151,7 @@ namespace Mathematics
         ///     Inverses the specified matrix.
         /// </summary>
         /// <param name="matrix">The matrix.</param>
-        /// <returns></returns>
+        /// <returns>The inverse of the matrix.</returns>
         /// <exception cref="ArithmeticException">Unable to compute inverse</exception>
         internal static double[,]? Inverse(double[,]? matrix)
         {

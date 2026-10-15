@@ -69,11 +69,11 @@ namespace Core.StateExecutive.Builder
         public void Execute(IStateContext context)
         {
             // Atomic transaction: Consume resources then run effects
-            foreach (var claim in _claims)
+            foreach (var (key, amount) in _claims)
             {
-                if (!context.TryClaimResource(claim.key, claim.amount))
+                if (!context.TryClaimResource(key, amount))
                 {
-                    context.Log($"CRITICAL: Thread collision or resource lost for {claim.key} during transition.");
+                    context.Log($"CRITICAL: Thread collision or resource lost for {key} during transition.");
                     return; // Abort
                 }
             }

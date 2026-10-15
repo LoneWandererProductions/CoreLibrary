@@ -16,6 +16,9 @@ namespace Imaging.Objects.Documents
     /// </summary>
     public sealed class RawBgraCodec : IRasterCodec
     {
+        /// <summary>
+        /// The magic
+        /// </summary>
         private static readonly byte[] Magic = { (byte)'S', (byte)'B', (byte)'G', (byte)'R' };
 
         /// <inheritdoc />

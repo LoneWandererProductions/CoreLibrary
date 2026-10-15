@@ -42,7 +42,7 @@ namespace LightVector.Interfaces
         ///     Gets the object by identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns></returns>
+        /// <returns>The SaveObject with the specified ID, or null if not found.</returns>
         SaveObject? GetObjectById(int id);
 
         /// <summary>

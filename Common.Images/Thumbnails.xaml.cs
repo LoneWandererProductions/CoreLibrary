@@ -411,13 +411,12 @@ namespace Common.Images
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
         private static void OnItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var control = sender as Thumbnails;
             if (e.NewValue == e.OldValue)
             {
                 return;
             }
 
-            if (control == null || !control._refresh)
+            if (sender is not Thumbnails control || !control._refresh)
             {
                 return;
             }
@@ -510,7 +509,7 @@ namespace Common.Images
             ImageDct.Clear();
             ChkBox.Clear();
             Border.Clear();
-            Selection.Clear();
+            Selection?.Clear();
 
             // 4. Start the new task and track it
             _loadingTask = LoadImages(token);
@@ -593,7 +592,7 @@ namespace Common.Images
                 Border = new ConcurrentDictionary<int, Border>();
 
                 //needed because of Binding
-                Selection.Clear();
+                Selection?.Clear();
 
                 if (SelectBox) ChkBox = new ConcurrentDictionary<int, CheckBox>();
 
@@ -824,7 +823,7 @@ namespace Common.Images
         /// </summary>
         public void Next()
         {
-            if (Border.Count == 0)
+            if (Border.IsEmpty)
             {
                 return;
             }
@@ -841,7 +840,7 @@ namespace Common.Images
         /// </summary>
         public void Previous()
         {
-            if (Border.Count == 0)
+            if (Border.IsEmpty)
             {
                 return;
             }
@@ -926,7 +925,6 @@ namespace Common.Images
         /// </summary>
         /// <param name="predicate">Called with each item's file path; return <c>true</c> to keep it visible. Pass
         /// <c>null</c> to clear the filter and show everything again.</param>
-        /// <returns></returns>
         public void ApplyFilter(Func<string, bool>? predicate)
         {
             // Remember this so LoadSingleImage can apply it to thumbnails that are still in
@@ -1121,7 +1119,7 @@ namespace Common.Images
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void DeselectAll_Click(object sender, RoutedEventArgs e)
         {
-            if (Selection.IsEmpty || ChkBox.Count == 0)
+            if (Selection.IsEmpty || ChkBox.IsEmpty)
             {
                 return;
             }

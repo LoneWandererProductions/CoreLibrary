@@ -31,7 +31,7 @@ namespace CommonFilter
         ///     Checks the filter.
         /// </summary>
         /// <param name="input">The input.</param>
-        /// <returns></returns>
+        /// <returns>True if the input passes the filter; otherwise, false.</returns>
         bool CheckFilter(string input);
 
         /// <summary>

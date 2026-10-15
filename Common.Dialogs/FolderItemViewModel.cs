@@ -53,7 +53,7 @@ namespace Common.Dialogs
         /// <summary>
         /// True if this folder has child folders. Determined at construction.
         /// </summary>
-        public bool HasChildren { get; private set; }
+        public bool HasChildren { get; }
 
         /// <summary>
         /// The is selected

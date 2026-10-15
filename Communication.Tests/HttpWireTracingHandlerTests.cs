@@ -34,7 +34,7 @@ namespace Communication.Tests
             using var traceListener = new TextWriterTraceListener(stringWriter);
             Trace.Listeners.Add(traceListener);
 
-            var expectedResponseBody = "{\"status\":\"success\",\"message\":\"f81dcbd2\"}";
+            const string expectedResponseBody = "{\"status\":\"success\",\"message\":\"f81dcbd2\"}";
             var innerHandler = new MockHttpMessageHandler(HttpStatusCode.OK, expectedResponseBody);
 
             var tracingHandler = new HttpWireTracingHandler

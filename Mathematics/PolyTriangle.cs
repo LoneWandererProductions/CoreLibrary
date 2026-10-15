@@ -84,7 +84,7 @@ namespace Mathematics
         /// The <see cref="Vector3D"/>.
         /// </value>
         /// <param name="i">The i.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="Vector3D"/> at the specified index.</returns>
         public Vector3D this[int i]
         {
             get => Vertices[i];
@@ -121,7 +121,7 @@ namespace Mathematics
         /// Gets the plot point.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="Vector2D"/> at the specified index, or <see cref="Vector2D.ZeroVector"/> if out of bounds.</returns>
         public Vector2D GetPlotPoint(int id)
         {
             if (id >= VertexCount || id < 0) return Vector2D.ZeroVector;

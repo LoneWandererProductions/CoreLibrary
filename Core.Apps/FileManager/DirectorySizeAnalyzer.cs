@@ -48,7 +48,7 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// The store key
         /// </summary>
-        private string? StoreKey = "directorysize";
+        private readonly string? StoreKey = "directorysize";
 
         /// <inheritdoc />
         public string Name => "DirectorySize";
@@ -194,19 +194,19 @@ namespace Core.Apps.FileManager
             try
             {
                 // Run the analysis
-                var result = AnalyzeDirectory(directoryPath, includeSubDirs);
+                var (TextOutput, RawData) = AnalyzeDirectory(directoryPath, includeSubDirs);
 
-                if (result.RawData != null)
+                if (RawData != null)
                 {
                     // Store the raw data in the VM Heap!
-                    _variables.SetObject(StoreKey, result.RawData);
+                    _variables.SetObject(StoreKey, RawData);
 
                     // Return the string to the console, but pass the StoreKey as the Value payload
-                    return CommandResult.Ok(result.TextOutput, StoreKey, EnumTypes.Wobject);
+                    return CommandResult.Ok(TextOutput, StoreKey, EnumTypes.Wobject);
                 }
 
                 // If it failed (directory didn't exist), just return the error string
-                return CommandResult.Fail(result.TextOutput, EnumTypes.Wstring);
+                return CommandResult.Fail(TextOutput, EnumTypes.Wstring);
             }
             catch (Exception ex)
             {

@@ -104,7 +104,7 @@ namespace RenderEngine
         /// The fallback texture identifier
         ///  Caches the checkerboard texture
         /// </summary>
-        private int _fallbackTextureId = -1;
+        private readonly int _fallbackTextureId = -1;
 
         // --- 2D TEXT ATLAS REGISTRIES ---
 

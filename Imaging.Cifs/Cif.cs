@@ -213,35 +213,37 @@ namespace Imaging.Cifs
             var coordinate = new PointId(x, y, Width);
             var id = coordinate.Id;
 
-            if (id > PixelCount)
+            if (id < 0 || id >= PixelCount)
             {
                 return false;
             }
 
-            foreach (var (key, value) in CifImage)
+            foreach (var (currentColor, pixelSet) in CifImage)
             {
-                if (!value.Contains(id))
+                if (!pixelSet.Contains(id))
                 {
                     continue;
                 }
 
-                if (key == color)
+                if (currentColor == color)
                 {
                     return false;
                 }
 
-                CifImage[key].Remove(id);
+                pixelSet.Remove(id);
 
-                if (CifImage.ContainsKey(color))
+                if (pixelSet.Count == 0)
                 {
-                    CifImage[color].Add(id);
-                }
-                else
-                {
-                    var cache = new SortedSet<int> { id };
-                    CifImage.Add(color, cache);
+                    CifImage.Remove(currentColor);
                 }
 
+                if (!CifImage.TryGetValue(color, out var targetSet))
+                {
+                    targetSet = new SortedSet<int>();
+                    CifImage[color] = targetSet;
+                }
+
+                targetSet.Add(id);
                 return true;
             }
 

@@ -23,11 +23,6 @@ namespace SqliteHelper
         private readonly Action<MessageItem?>? _onMessage;
 
         /// <summary>
-        ///     Logging of System Messages
-        /// </summary>
-        private MessageItem? _message;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="SqliteSyntax" /> class.
         /// </summary>
         /// <param name="onMessage">The action to invoke when a message is set.</param>

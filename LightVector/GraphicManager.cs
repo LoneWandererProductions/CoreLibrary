@@ -149,7 +149,7 @@ namespace LightVector
         /// Gets the type of the graphic.
         /// </summary>
         /// <param name="graphic">The graphic.</param>
-        /// <returns></returns>
+        /// <returns>The type of the graphic.</returns>
         private static GraphicTypes GetGraphicType(GraphicObject graphic)
         {
             return graphic switch

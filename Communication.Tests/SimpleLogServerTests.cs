@@ -97,7 +97,7 @@ namespace Communication.Tests
         {
             // Arrange
             var fakeProcessor = new FakeLogProcessor();
-            var port = TestPort + 1;
+            const int port = TestPort + 1;
 
             // Create server using the INTERFACE constructor
             using var server = new SimpleLogServer(port, fakeProcessor);

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Weaver.ScriptEngine;
  * FILE:        Parser.cs
@@ -307,7 +307,7 @@ namespace Weaver.ScriptEngine
         /// <summary>
         /// Looks the ahead is assignment.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the next token is an assignment; otherwise, <c>false</c>.</returns>
         private bool LookAheadIsAssignment() =>
             _position + 1 < _tokens.Count && _tokens[_position + 1].Type == TokenType.Equal;
 
@@ -329,7 +329,7 @@ namespace Weaver.ScriptEngine
         /// Matches the specified type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the next token matches the specified type; otherwise, <c>false</c>.</returns>
         private bool Match(TokenType type)
         {
             if (IsAtEnd() || Peek().Type != type) return false;

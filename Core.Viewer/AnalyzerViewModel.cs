@@ -263,9 +263,9 @@ namespace Core.Viewer
             var filtered = string.IsNullOrWhiteSpace(FilterText)
                 ? _currentDiagnostics
                 : _currentDiagnostics.Where(d =>
-                    d.FilePath.ToLower().Contains(FilterText.ToLower()) ||
-                    d.Message.ToLower().Contains(FilterText.ToLower()) ||
-                    d.Name.ToLower().Contains(FilterText.ToLower()));
+                    d.FilePath.Contains(FilterText, StringComparison.CurrentCultureIgnoreCase) ||
+                    d.Message.Contains(FilterText, StringComparison.CurrentCultureIgnoreCase) ||
+                    d.Name.Contains(FilterText, StringComparison.CurrentCultureIgnoreCase));
 
             foreach (var d in filtered)
             {

@@ -79,9 +79,9 @@ namespace Weaver.ParseEngine
 
             if (!string.IsNullOrEmpty(extPart))
             {
-                var parsedExt = ParseSignature(extPart);
-                extName = parsedExt.Name;
-                extArgs = parsedExt.Args;
+                var (Name, Args) = ParseSignature(extPart);
+                extName = Name;
+                extArgs = Args;
 
                 if (string.IsNullOrEmpty(extName))
                     throw new FormatException($"Invalid extension format: '{extPart}'");
@@ -211,7 +211,7 @@ namespace Weaver.ParseEngine
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="separator">The separator.</param>
-        /// <returns></returns>
+        /// <returns>List of split strings.</returns>
         private static List<string> SmartSplit(string input, char separator)
         {
             var parts = new List<string>();

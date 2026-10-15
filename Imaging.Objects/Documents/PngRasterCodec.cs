@@ -10,59 +10,60 @@ using Imaging.Objects.Interfaces;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace Imaging.Objects.Documents;
-
-/// <summary>
-///     PNG through GDI+. Layers can be opened in any image tool, alpha is preserved.
-/// </summary>
-public sealed class PngRasterCodec : IRasterCodec
+namespace Imaging.Objects.Documents
 {
-    /// <inheritdoc />
-    public string Extension => ".png";
-
-    /// <inheritdoc />
-    public bool IsCompressed => true;
-
-    /// <inheritdoc />
-    public void Write(UnmanagedImageBuffer buffer, Stream output)
+    /// <summary>
+    ///     PNG through GDI+. Layers can be opened in any image tool, alpha is preserved.
+    /// </summary>
+    public sealed class PngRasterCodec : IRasterCodec
     {
-        ArgumentNullException.ThrowIfNull(buffer);
-        ArgumentNullException.ThrowIfNull(output);
+        /// <inheritdoc />
+        public string Extension => ".png";
 
-        // GDI+ needs a seekable stream to encode PNG, a zip entry stream is not.
-        using var bitmap = buffer.ToBitmap();
-        using var memory = new MemoryStream();
-        bitmap.Save(memory, ImageFormat.Png);
+        /// <inheritdoc />
+        public bool IsCompressed => true;
 
-        memory.Position = 0;
-        memory.CopyTo(output);
-    }
-
-    /// <inheritdoc />
-    public UnmanagedImageBuffer Read(Stream input, int expectedWidth, int expectedHeight)
-    {
-        ArgumentNullException.ThrowIfNull(input);
-
-        using var memory = new MemoryStream();
-        input.CopyTo(memory);
-        memory.Position = 0;
-
-        try
+        /// <inheritdoc />
+        public void Write(UnmanagedImageBuffer buffer, Stream output)
         {
-            using var bitmap = new Bitmap(memory);
+            ArgumentNullException.ThrowIfNull(buffer);
+            ArgumentNullException.ThrowIfNull(output);
 
-            if (bitmap.Width != expectedWidth || bitmap.Height != expectedHeight)
-            {
-                throw new DocumentFormatException(
-                    $"Raster layer is {bitmap.Width}x{bitmap.Height} but the document is {expectedWidth}x{expectedHeight}.");
-            }
+            // GDI+ needs a seekable stream to encode PNG, a zip entry stream is not.
+            using var bitmap = buffer.ToBitmap();
+            using var memory = new MemoryStream();
+            bitmap.Save(memory, ImageFormat.Png);
 
-            return UnmanagedImageBuffer.FromBitmap(bitmap);
+            memory.Position = 0;
+            memory.CopyTo(output);
         }
-        catch (ArgumentException ex)
+
+        /// <inheritdoc />
+        public UnmanagedImageBuffer Read(Stream input, int expectedWidth, int expectedHeight)
         {
-            // GDI+ reports undecodable data as ArgumentException.
-            throw new DocumentFormatException("Raster layer is not a valid image.", ex);
+            ArgumentNullException.ThrowIfNull(input);
+
+            using var memory = new MemoryStream();
+            input.CopyTo(memory);
+            memory.Position = 0;
+
+            try
+            {
+                using var bitmap = new Bitmap(memory);
+
+                if (bitmap.Width != expectedWidth || bitmap.Height != expectedHeight)
+                {
+                    throw new DocumentFormatException(
+                        $"Raster layer is {bitmap.Width}x{bitmap.Height} but the document is {expectedWidth}x{expectedHeight}.");
+                }
+
+                return UnmanagedImageBuffer.FromBitmap(bitmap);
+            }
+            catch (ArgumentException ex)
+            {
+                // GDI+ reports undecodable data as ArgumentException.
+                throw new DocumentFormatException("Raster layer is not a valid image.", ex);
+            }
         }
     }
 }

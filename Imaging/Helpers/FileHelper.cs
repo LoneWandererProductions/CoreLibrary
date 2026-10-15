@@ -67,7 +67,7 @@ namespace Imaging.Helpers
             if (!Directory.Exists(path))
                 return null;
 
-            var searchOption = SearchOption.TopDirectoryOnly;
+            const SearchOption searchOption = SearchOption.TopDirectoryOnly;
 
             // normalize extension
             extension = string.IsNullOrWhiteSpace(extension)

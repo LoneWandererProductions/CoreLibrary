@@ -33,7 +33,7 @@ namespace Communication
         /// <param name="url">The URL.</param>
         /// <param name="progress">The progress.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        /// <returns>True if the file was saved successfully; otherwise, false.</returns>
         internal static async Task<bool> SaveFileAsync(string folderPath, string url, IProgress<int>? progress = null,
             CancellationToken cancellationToken = default)
         {
@@ -117,7 +117,7 @@ namespace Communication
         /// Gets a safe filename from the URI.
         /// </summary>
         /// <param name="uri">The URI.</param>
-        /// <returns></returns>
+        /// <returns>A safe filename derived from the URI.</returns>
         private static string GetFileNameFromUri(Uri uri)
         {
             // Try standard extraction first (e.g., site.com/image.png -> image.png)

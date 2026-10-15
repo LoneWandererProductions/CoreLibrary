@@ -135,7 +135,7 @@ namespace Common.Controls
 #endif
             };
 
-            if (columnWidths != null)
+            if (columnWidths is { })
             {
                 foreach (var colWidth in columnWidths)
                 {
@@ -150,7 +150,7 @@ namespace Common.Controls
                 }
             }
 
-            if (rowHeights != null)
+            if (rowHeights is { })
             {
                 foreach (var rowHeight in rowHeights)
                 {

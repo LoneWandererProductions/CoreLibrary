@@ -39,7 +39,7 @@ namespace Weaver.Messages
         /// Resolves the specified request identifier.
         /// </summary>
         /// <param name="requestId">The request identifier.</param>
-        /// <returns></returns>
+        /// <returns>The command associated with the specified request identifier, or null if not found.</returns>
         public ICommand? Resolve(string requestId)
         {
             return _pending.TryGetValue(requestId, out var cmd) ? cmd : null;

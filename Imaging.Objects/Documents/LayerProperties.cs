@@ -11,5 +11,5 @@ namespace Imaging.Objects.Documents
     /// <summary>
     ///     Snapshot of the user-visible settings of a layer. Used by the undoable property command.
     /// </summary>
-    public sealed record LayerProperties(string Name, bool Visible, double Opacity, BlendMode Blend);
+    public sealed record LayerProperties(string? Name, bool Visible, double Opacity, BlendMode Blend);
 }

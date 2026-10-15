@@ -1205,8 +1205,7 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
 
-            var noiseGen = noiseGenInstance as NoiseGenerator;
-            if (noiseGen == null) return buffer;
+            if (noiseGenInstance is not NoiseGenerator noiseGen) return buffer;
 
             // 1. Get stone heights (0.0 is mortar, 1.0 is peak rock)
             var heightMap = noiseGen.GenerateVoronoiMap(gridCells);
@@ -1218,7 +1217,7 @@ namespace Imaging.Texture
             ly /= lightLen;
             lz /= lightLen;
 
-            var bumpDepth = 4.0;
+            const double bumpDepth = 4.0;
             var pixels = buffer.PixelData;
 
             for (var y = 0; y < height; y++)
@@ -1258,7 +1257,7 @@ namespace Imaging.Texture
                     var intensity = Math.Clamp((nx * lx) + (ny * ly) + (nz * lz), 0.0, 1.0);
 
                     byte r, g, b;
-                    byte alpha = 255;
+                    const byte alpha = 255;
 
                     // Map intensity to RGB palette
                     if (h < 0.15) // Mortar pixel (fillArea is true)
@@ -1592,7 +1591,6 @@ namespace Imaging.Texture
             bool fillArea = false)
         {
             var buffer = new RawTextureBuffer(width, height);
-            var noiseGen = noiseGenInstance as NoiseGenerator;
 
             var activePalette = colorPalette ?? TextureConstants.GetVolumetricLeafCloudConfig().RgbRamp;
             if (activePalette == null || activePalette.Length < 12) return buffer;
@@ -1689,7 +1687,7 @@ namespace Imaging.Texture
                     var relY = closestDy / maxRadius;
                     var light = Math.Clamp(h * 0.6 - (relX + relY) * 0.35 + 0.40, 0.0, 1.0);
 
-                    if (noiseGen != null)
+                    if (noiseGenInstance is NoiseGenerator noiseGen)
                     {
                         var grit = (noiseGen.GetNoise(x, y) - 0.5) * 0.08;
                         light = Math.Clamp(light + grit, 0.0, 1.0);

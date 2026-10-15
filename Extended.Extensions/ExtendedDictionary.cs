@@ -35,14 +35,13 @@ namespace Extended.Extensions
         public static void Add<TKey, TValue>(this IDictionary<TKey, List<TValue>> dic,
             TKey key, TValue value)
         {
-            if (dic.ContainsKey(key))
+            if (dic.TryGetValue(key, out var list))
             {
-                dic[key].Add(value);
+                list.Add(value);
             }
             else
             {
-                dic.Add(key, new List<TValue>());
-                dic[key].Add(value);
+                dic[key] = new List<TValue> { value };
             }
         }
 
@@ -58,15 +57,13 @@ namespace Extended.Extensions
         public static void Add<TKey, TValue>(this IDictionary<TKey, SortedSet<TValue>> dic,
             TKey key, TValue value)
         {
-            if (dic.ContainsKey(key))
+            if (!dic.TryGetValue(key, out var set))
             {
-                dic[key].Add(value);
+                set = new SortedSet<TValue>();
+                dic[key] = set;
             }
-            else
-            {
-                dic.Add(key, new SortedSet<TValue>());
-                dic[key].Add(value);
-            }
+
+            set.Add(value);
         }
 
         /// <summary>
@@ -310,17 +307,24 @@ namespace Extended.Extensions
         /// <typeparam name="TValue">Internal Value</typeparam>
         public static void Swap<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey i, TKey j)
         {
-            if (!dic.ContainsKey(i)) throw new KeyNotFoundException(nameof(i));
+            if (!dic.TryGetValue(i, out var iValue))
+            {
+                throw new KeyNotFoundException($"Key '{i}' non-existent.");
+            }
+
+            if (EqualityComparer<TKey>.Default.Equals(i, j))
+            {
+                return;
+            }
 
             if (dic.TryGetValue(j, out var jValue))
             {
-                var iValue = dic[i];
                 dic[i] = jValue;
                 dic[j] = iValue;
             }
             else
             {
-                dic[j] = dic[i];
+                dic[j] = iValue;
                 dic.Remove(i);
             }
         }
@@ -340,13 +344,13 @@ namespace Extended.Extensions
         }
 
         /// <summary>
-        ///     Converts to list.
+        /// Converts to list.
         /// </summary>
         /// <typeparam name="TId">The type of the identifier.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="dic">The dic.</param>
         /// <returns>
-        ///     A list with the Key as id
+        /// A list with the Key as id
         /// </returns>
         public static List<TValue> ToListId<TId, TValue>(this Dictionary<TId, TValue> dic)
             where TValue : IIdHandling<TId> where TId : notnull

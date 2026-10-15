@@ -80,7 +80,7 @@ namespace Imaging
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="b">The b.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the pixels are equal; otherwise, <c>false</c>.</returns>
         public static bool AreEqual(Pixel32 a, Pixel32 b)
             => a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
 

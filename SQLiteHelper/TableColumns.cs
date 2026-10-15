@@ -64,7 +64,7 @@ namespace SqliteHelper
         /// Enables fluent construction semantics.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns>The current <see cref="TableColumns"/> instance.</returns>
         public TableColumns WithDataType(SqLiteDataTypes type)
         {
             DataType = type;

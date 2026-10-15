@@ -29,7 +29,9 @@ namespace Core.StateExecutive.Interfaces
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="amount">The amount.</param>
-        /// <returns></returns>
+        /// <returns>T</returns>
+        ///   <c>true</c> if the resource was successfully claimed; otherwise, <c>false</c>.
+        /// </returns>
         bool TryClaimResource(string key, int amount = 1);
 
         /// <summary>

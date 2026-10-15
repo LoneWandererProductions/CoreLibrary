@@ -419,8 +419,7 @@ namespace Common.Images
 
             // 1. Get the AVAILABLE space from the parent container (The Grid in Column 0)
             // We cast Parent to FrameworkElement to get its ActualWidth/Height
-            var parent = PickerContainer.Parent as FrameworkElement;
-            if (parent == null || parent.ActualWidth <= 0 || parent.ActualHeight <= 0) return;
+            if (PickerContainer.Parent is not FrameworkElement parent || parent.ActualWidth <= 0 || parent.ActualHeight <= 0) return;
 
             // 2. Calculate the Square Size
             // We assume the available space is the parent's size
@@ -529,7 +528,7 @@ namespace Common.Images
         /// <param name="s">The s.</param>
         /// <param name="v">The v.</param>
         /// <param name="alpha">The alpha.</param>
-        /// <returns></returns>
+        /// <returns>An integer representing the ARGB color.</returns>
         private static int HsvToInt(double h, double s, double v, int alpha)
         {
             var c = v * s;

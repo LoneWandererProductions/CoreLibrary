@@ -126,7 +126,7 @@ namespace CommonLibrary.Tests
         /// Example fast log2 function (integer approximation)
         /// </summary>
         /// <param name="x">The x.</param>
-        /// <returns></returns>
+        /// <returns>The base-2 logarithm of the input value.</returns>
         private static int FastLog2(int x)
         {
             return FastMath.FastLog2(x);
@@ -136,7 +136,7 @@ namespace CommonLibrary.Tests
         /// Example fast sine function (float)
         /// </summary>
         /// <param name="x">The x.</param>
-        /// <returns></returns>
+        /// <returns>The sine of the input value.</returns>
         private static float FastSinF(float x)
         {
             return FastMath.FastSin(x); // Replace with actual fast implementation
@@ -146,7 +146,7 @@ namespace CommonLibrary.Tests
         /// Example fast sine function (float)
         /// </summary>
         /// <param name="x">The x.</param>
-        /// <returns></returns>
+        /// <returns>The sine of the input value.</returns>
         private static float ExtSinF(float x)
         {
             var y = (int)x;
@@ -157,7 +157,7 @@ namespace CommonLibrary.Tests
         /// Example fast cosine function (float)
         /// </summary>
         /// <param name="x">The x.</param>
-        /// <returns></returns>
+        /// <returns>The cosine of the input value.</returns>
         private static float ExtCosF(float x)
         {
             var y = (int)x;
@@ -168,7 +168,7 @@ namespace CommonLibrary.Tests
         /// Example fast tangent function (float)
         /// </summary>
         /// <param name="x">The x.</param>
-        /// <returns></returns>
+        /// <returns>The tangent of the input value.</returns>
         private static float ExtTanF(float x)
         {
             var y = (int)x;

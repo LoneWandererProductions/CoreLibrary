@@ -201,7 +201,6 @@ namespace Core.Apps.Rules
                     continue;
                 }
 
-                var localSymbol = semanticModel.GetDeclaredSymbol(declarator) as ILocalSymbol;
 
                 // 1. Overwrite check: identifier reassigned before the value it held is
                 //    disposed. This is the case a plain "is Dispose() called anywhere in
@@ -212,7 +211,7 @@ namespace Core.Apps.Rules
                     .Where(a => a.Left is IdentifierNameSyntax id &&
                                 id.Identifier.Text == declarator.Identifier.Text &&
                                 a.SpanStart > declarator.SpanStart)
-                    .Where(a => localSymbol == null ||
+                    .Where(a => semanticModel.GetDeclaredSymbol(declarator) is not ILocalSymbol localSymbol ||
                                 SymbolEqualityComparer.Default.Equals(
                                     semanticModel.GetSymbolInfo((IdentifierNameSyntax)a.Left).Symbol, localSymbol));
 

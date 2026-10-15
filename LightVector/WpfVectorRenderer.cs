@@ -250,7 +250,7 @@ namespace LightVector
         /// Gets the graphic bounds.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns></returns>
+        /// <returns>The bounding <see cref="Rect"/> of the graphic.</returns>
         private static Rect GetGraphicBounds(SaveObject obj)
         {
             // Padding to account for half the stroke thickness so edges aren't clipped
