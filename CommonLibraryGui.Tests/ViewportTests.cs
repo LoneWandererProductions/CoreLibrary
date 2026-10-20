@@ -26,7 +26,10 @@ namespace CommonLibraryGui.Tests
         {
             var viewport = new Viewport
             {
-                PanX = 50, PanY = 100, Zoom = 2.0f, Projection = ProjectionMode.Orthographic2D
+                PanX = 50,
+                PanY = 100,
+                Zoom = 2.0f,
+                Projection = ProjectionMode.Orthographic2D
             };
 
             // Tile index 11 -> TileX = 1, TileY = 1 in a 10-wide map, textureSize = 32
@@ -47,7 +50,10 @@ namespace CommonLibraryGui.Tests
         {
             var viewport = new Viewport
             {
-                PanX = 100, PanY = 100, Zoom = 2.0f, Projection = ProjectionMode.Orthographic2D
+                PanX = 100,
+                PanY = 100,
+                Zoom = 2.0f,
+                Projection = ProjectionMode.Orthographic2D
             };
 
             // Click at screen pixel (300, 300)
@@ -55,7 +61,7 @@ namespace CommonLibraryGui.Tests
             // Tile Coordinates (textureSize = 50): TileX = 2, TileY = 2
             // Tile Index = 2 * 10 + 2 = 22
             var clickPoint = new PointF(300f, 300f);
-            var tileIndex = viewport.ScreenToWorld(clickPoint, mapWidth: 10, mapHeight: 10, textureSize: 50);
+            var tileIndex = viewport.ScreenToWorld(clickPoint, width: 10, height: 10, textureSize: 50);
 
             Assert.That(tileIndex, Is.EqualTo(22));
         }
@@ -69,7 +75,7 @@ namespace CommonLibraryGui.Tests
             var viewport = new Viewport { PanX = 0, PanY = 0, Zoom = 1.0f };
 
             var outOfBoundsPoint = new PointF(-50f, -50f);
-            var tileIndex = viewport.ScreenToWorld(outOfBoundsPoint, mapWidth: 10, mapHeight: 10, textureSize: 100);
+            var tileIndex = viewport.ScreenToWorld(outOfBoundsPoint, width: 10, height: 10, textureSize: 100);
 
             Assert.That(tileIndex, Is.EqualTo(-1));
         }

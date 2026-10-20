@@ -90,11 +90,15 @@ namespace Solaris
         /// <summary>
         /// Converts a screen pixel coordinate into a 1D spatial tile index.
         /// </summary>
-        /// <param name="screenPoint">The screen pixel point.</param>
-        /// <param name="mapWidth">The map width in tile units.</param>
-        /// <param name="mapHeight">The map height in tile units.</param>
+        /// <param name="screenPt">The screen pt.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         /// <param name="textureSize">The base tile pixel size.</param>
-        /// <returns>The resolved 1D tile index, or -1 if outside grid bounds.</returns>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>
+        /// The resolved 1D tile index, or -1 if outside grid bounds.
+        /// </returns>
         public int ScreenToWorld(
             PointF screenPt,
             int width,
@@ -105,11 +109,11 @@ namespace Solaris
         {
             if (Mode != ProjectionMode.Isometric)
             {
-                // Default 2D picking (unmodified)
+                // Default 2D picking (with Math.Floor instead of Truncate)
                 var adjX = (screenPt.X - PanX) / Zoom;
                 var adjY = (screenPt.Y - PanY) / Zoom;
-                int x = (int)(adjX / textureSize);
-                int y = (int)(adjY / textureSize);
+                int x = (int)Math.Floor(adjX / textureSize);
+                int y = (int)Math.Floor(adjY / textureSize);
                 return (x >= 0 && x < width && y >= 0 && y < height) ? y * width + x : -1;
             }
 
