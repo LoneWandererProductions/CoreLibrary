@@ -187,7 +187,7 @@ namespace Imaging.Texture
         {
             var activeConfig = config ?? TextureConstants.GetTreeBarkConfig();
 
-            return TextureMathEngine.GenerateTreeBark(
+            return TextureMathEngine.GenerateGnarledTreeBark(
                 width,
                 height,
                 noiseGen,

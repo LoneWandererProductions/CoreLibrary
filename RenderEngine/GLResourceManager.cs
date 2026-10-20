@@ -447,8 +447,8 @@ namespace RenderEngine
 
             var rawBuffer = entry.Generator(_procWidth, _procHeight, _lazyNoiseGen!);
             if (rawBuffer == null) return GetFallbackTexture();
-
-            var glHandle = GetTexture(rawBuffer, linearFilter: true);
+            // IMPORTANT! sharp or blurry.
+            var glHandle = GetTexture(rawBuffer, linearFilter: false);
             _bakedProceduralCache[id] = glHandle;
 
             return glHandle;
@@ -500,10 +500,17 @@ namespace RenderEngine
                 PixelType.UnsignedByte,
                 rawBuffer.PixelData);
 
+            // --- Texture Parameters ---
+
+            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
+            //    (int)TextureWrapMode.ClampToEdge);
+            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
+            //    (int)TextureWrapMode.ClampToEdge);
+
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
-                (int)TextureWrapMode.ClampToEdge);
+                (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
-                (int)TextureWrapMode.ClampToEdge);
+                (int)TextureWrapMode.Repeat);
 
             if (linearFilter)
             {
