@@ -7,7 +7,9 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Solaris
 {
@@ -47,32 +49,42 @@ namespace Solaris
         public ProjectionMode Projection { get; set; } = ProjectionMode.Orthographic2D;
 
         /// <summary>
+        /// Gets or sets the mode.
+        /// </summary>
+        /// <value>
+        /// The mode.
+        /// </value>
+        public ProjectionMode Mode { get; set; } = ProjectionMode.Orthographic2D;
+
+        /// <summary>
         /// Converts a world tile index into screen pixel coordinates based on projection mode, pan, and zoom.
         /// </summary>
         /// <param name="tileIndex">The 1D spatial tile index.</param>
         /// <param name="mapWidth">The map width in tile units.</param>
         /// <param name="textureSize">The base tile pixel size.</param>
         /// <returns>A point representing destination screen pixel coordinates.</returns>
-        public Point WorldToScreen(int tileIndex, int mapWidth, int textureSize)
+        public Point WorldToScreen(int tileIndex, int mapWidth, int textureSize, int elevation = 0, int stepHeight = 16)
         {
-            var tileX = tileIndex % mapWidth;
-            var tileY = tileIndex / mapWidth;
+            int x = tileIndex % mapWidth;
+            int y = tileIndex / mapWidth;
 
-            float worldX = tileX * textureSize;
-            float worldY = tileY * textureSize;
-
-            if (Projection == ProjectionMode.Isometric)
+            if (Mode == ProjectionMode.Isometric)
             {
-                var isoX = (worldX - worldY) * 0.5f;
-                var isoY = (worldX + worldY) * 0.25f;
-                worldX = isoX;
-                worldY = isoY;
+                int halfW = textureSize / 2;
+                int halfH = textureSize / 4; // 2:1 dimetric ratio
+
+                int originX = ScreenWidth > 0 ? ScreenWidth / 2 : (mapWidth * textureSize) / 2;
+                int originY = ScreenHeight > 0 ? textureSize : 80;
+
+                // Apply isometric projection minus vertical elevation
+                int sx = originX + (int)((x - y) * halfW * Zoom) + (int)PanX;
+                int sy = originY + (int)((x + y) * halfH * Zoom) - (int)(elevation * stepHeight * Zoom) + (int)PanY;
+
+                return new Point(sx, sy);
             }
 
-            var screenX = (int)((worldX * Zoom) + PanX);
-            var screenY = (int)((worldY * Zoom) + PanY);
-
-            return new Point(screenX, screenY);
+            // Default Orthographic 2D path (completely unmodified behavior)
+            return new Point((int)(x * textureSize * Zoom + PanX), (int)(y * textureSize * Zoom + PanY));
         }
 
         /// <summary>
@@ -83,31 +95,55 @@ namespace Solaris
         /// <param name="mapHeight">The map height in tile units.</param>
         /// <param name="textureSize">The base tile pixel size.</param>
         /// <returns>The resolved 1D tile index, or -1 if outside grid bounds.</returns>
-        public int ScreenToWorld(PointF screenPoint, int mapWidth, int mapHeight, int textureSize)
+        public int ScreenToWorld(
+            PointF screenPt,
+            int width,
+            int height,
+            int textureSize,
+            Dictionary<int, int>? elevationMap = null,
+            int stepHeight = 16)
         {
-            var unzoomedX = (screenPoint.X - PanX) / Zoom;
-            var unzoomedY = (screenPoint.Y - PanY) / Zoom;
-
-            int tileX;
-            int tileY;
-
-            if (Projection == ProjectionMode.Isometric)
+            if (Mode != ProjectionMode.Isometric)
             {
-                tileX = (int)Math.Floor(((unzoomedX / 0.5f) + (unzoomedY / 0.25f)) / (2 * textureSize));
-                tileY = (int)Math.Floor(((unzoomedY / 0.25f) - (unzoomedX / 0.5f)) / (2 * textureSize));
-            }
-            else
-            {
-                tileX = (int)Math.Floor(unzoomedX / textureSize);
-                tileY = (int)Math.Floor(unzoomedY / textureSize);
+                // Default 2D picking (unmodified)
+                var adjX = (screenPt.X - PanX) / Zoom;
+                var adjY = (screenPt.Y - PanY) / Zoom;
+                int x = (int)(adjX / textureSize);
+                int y = (int)(adjY / textureSize);
+                return (x >= 0 && x < width && y >= 0 && y < height) ? y * width + x : -1;
             }
 
-            if (tileX < 0 || tileX >= mapWidth || tileY < 0 || tileY >= mapHeight)
+            int halfW = textureSize / 2;
+            int halfH = textureSize / 4;
+            int originX = ScreenWidth > 0 ? ScreenWidth / 2 : (width * textureSize) / 2;
+            int originY = ScreenHeight > 0 ? textureSize : 80;
+
+            // Scan top-down from highest elevation to floor (Z = 0)
+            int maxElevation = elevationMap is { Count: > 0 }
+                ? Math.Max(0, elevationMap.Values.Max())
+                : 0;
+
+            for (int z = maxElevation; z >= 0; z--)
             {
-                return -1;
+                float adjX = (screenPt.X - originX - PanX) / Zoom;
+                float adjY = ((screenPt.Y + (z * stepHeight * Zoom)) - originY - PanY) / Zoom;
+
+                int tileX = (int)Math.Floor((adjX / halfW + adjY / halfH) / 2.0f);
+                int tileY = (int)Math.Floor((adjY / halfH - adjX / halfW) / 2.0f);
+
+                if (tileX >= 0 && tileX < width && tileY >= 0 && tileY < height)
+                {
+                    int index = tileY * width + tileX;
+                    int actualElev = elevationMap != null && elevationMap.TryGetValue(index, out int e) ? e : 0;
+
+                    if (actualElev == z)
+                    {
+                        return index;
+                    }
+                }
             }
 
-            return (tileY * mapWidth) + tileX;
+            return -1;
         }
 
         /// <summary>
@@ -119,6 +155,12 @@ namespace Solaris
         /// <returns>A rectangle defining [MinTileX, MinTileY, WidthInTiles, HeightInTiles].</returns>
         public Rectangle GetVisibleTileBounds(int mapWidth, int mapHeight, int textureSize)
         {
+            // Do not apply 2D orthogonal culling to isometric projections
+            if (Mode == ProjectionMode.Isometric)
+            {
+                return new Rectangle(0, 0, mapWidth, mapHeight);
+            }
+
             var scaledTileSize = textureSize * Zoom;
             if (scaledTileSize <= 0) return new Rectangle(0, 0, mapWidth, mapHeight);
 

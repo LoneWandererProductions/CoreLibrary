@@ -35,7 +35,10 @@ namespace Solaris
             TreeBark = 10006,
             Foliage = 10007,
             WoodPlank = 10008,
-            Stones = 10009
+            Stones = 10009,
+            StylizedFoliage = 10038,
+            CobblestoneBeveled = 10040,
+            ConcretePorous = 10041
         }
 
         /// <summary>
@@ -58,6 +61,9 @@ namespace Solaris
             Register(ProceduralTile.Foliage, TextureFactory.GenerateFoliage(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.WoodPlank, TextureFactory.GenerateWoodPlank(textureSize, textureSize, noise), 0);
             Register(ProceduralTile.Stones, TextureFactory.GenerateStoneTexture(textureSize, textureSize, noise), 0);
+            Register(ProceduralTile.StylizedFoliage, TextureMathEngine.GenerateStylizedFoliage(textureSize, textureSize, noise, clusterSize: 32, transparentGaps: false), 0);
+            Register(ProceduralTile.CobblestoneBeveled, TextureMathEngine.GenerateCobblestoneBeveled(textureSize, textureSize, cellSize: 28), 0);
+            Register(ProceduralTile.ConcretePorous, TextureMathEngine.GenerateConcretePorous(textureSize, textureSize, noise, baseTone: 140, gritSpread: 22), 0);
         }
 
         /// <summary>

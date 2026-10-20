@@ -46,5 +46,21 @@ namespace Solaris
         /// The buffer.
         /// </value>
         public UnmanagedImageBuffer Buffer { get; init; }
+
+        /// <summary>
+        /// Gets the tile x.
+        /// </summary>
+        /// <value>
+        /// The tile x.
+        /// </value>
+        public int TileX { get; init; }
+
+        /// <summary>
+        /// Gets the tile y.
+        /// </summary>
+        /// <value>
+        /// The tile y.
+        /// </value>
+        public int TileY { get; init; }
     }
 }

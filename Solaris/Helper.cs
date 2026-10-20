@@ -6,6 +6,9 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+using Extended.Extensions;
+using Imaging.Objects;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,8 +16,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Extended.Extensions;
-using Imaging.Objects;
 using Brushes = System.Drawing.Brushes;
 
 namespace Solaris
@@ -33,24 +34,27 @@ namespace Solaris
         /// <param name="textures">The textures.</param>
         /// <param name="map">The map.</param>
         /// <param name="viewport">The active rendering viewport for frustum culling and projection mapping.</param>
-        /// <returns>Unmanaged image buffer representing rendered visible canvas.</returns>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>
+        /// Unmanaged image buffer representing rendered visible canvas.
+        /// </returns>
         internal static UnmanagedImageBuffer GenerateImage(
             int width, int height, int textureSize,
             Dictionary<int, Texture> textures,
             Dictionary<int, List<int>>? map,
-            Viewport? viewport = null)
+            Viewport? viewport = null,
+            Dictionary<int, int>? elevationMap = null,
+            int stepHeight = 16)
         {
             var canvasWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
-            var canvasHeight = viewport is { ScreenHeight: > 0 }
-                ? viewport.ScreenHeight
-                : height * textureSize;
+            var canvasHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
 
             var canvas = new UnmanagedImageBuffer(canvasWidth, canvasHeight);
             canvas.Clear(0, 0, 0, 0);
 
             if (map == null) return canvas;
 
-            // 1. Pre-warm local map textures into the high-speed integer cache
             if (textures != null)
             {
                 foreach (var tex in textures.Values)
@@ -59,13 +63,12 @@ namespace Solaris
                 }
             }
 
-            // 2. Obtain viewport frustum bounds for spatial culling
             var bounds = viewport?.GetVisibleTileBounds(width, height, textureSize) ??
                          new Rectangle(0, 0, width, height);
 
+            var isIsometric = viewport?.Mode == ProjectionMode.Isometric;
             var tiles = new ConcurrentBag<UnmanagedTileBox>();
 
-            // 3. Parallel spatial translation with frustum culling
             Parallel.ForEach(map, tile =>
             {
                 if (tile.Value is not { Count: > 0 }) return;
@@ -73,43 +76,89 @@ namespace Solaris
                 var tileX = tile.Key % width;
                 var tileY = tile.Key / width;
 
-                // Frustum Culling Check: Skip tiles outside current camera view
                 if (tileX < bounds.Left || tileX >= bounds.Right || tileY < bounds.Top || tileY >= bounds.Bottom)
                 {
                     return;
                 }
 
-                var screenPt = viewport?.WorldToScreen(tile.Key, width, textureSize) ??
+                int elev = elevationMap != null && elevationMap.TryGetValue(tile.Key, out int z) ? z : 0;
+
+                var screenPt = viewport?.WorldToScreen(tile.Key, width, textureSize, elev, stepHeight) ??
                                new Point(tileX * textureSize, tileY * textureSize);
 
                 foreach (var textureId in tile.Value)
                 {
-                    var cachedBuffer = TextureManager.GetBufferById(textureId);
+                    // Automatically fetches the snugly masked diamond in isometric mode
+                    var cachedBuffer = TextureManager.GetBufferById(textureId, isIsometric);
 
                     if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
                         tiles.Add(new UnmanagedTileBox
                         {
-                            X = screenPt.X, Y = screenPt.Y, Layer = texture.Layer, Buffer = cachedBuffer
+                            X = screenPt.X,
+                            Y = screenPt.Y,
+                            Layer = texture.Layer,
+                            Buffer = cachedBuffer,
+                            TileX = tileX,
+                            TileY = tileY
                         });
                     }
                 }
             });
 
             var sortedTiles = tiles.ToList();
-            sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
 
-            // 4. High-performance memory alpha-blitting pass
+            // Back-to-front depth sorting (Painter's Algorithm) for isometric views; otherwise, standard layer sorting
+            if (isIsometric)
+            {
+                sortedTiles.Sort((a, b) =>
+                {
+                    int depthA = a.TileX + a.TileY;
+                    int depthB = b.TileX + b.TileY;
+                    int cmp = depthA.CompareTo(depthB);
+                    return cmp != 0 ? cmp : a.Layer.CompareTo(b.Layer);
+                });
+            }
+            else
+            {
+                sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
+            }
+
+            int halfW = textureSize / 2;
+            int halfH = textureSize / 4;
+            var renderedWalls = new HashSet<int>();
+
             foreach (var slice in sortedTiles)
             {
+                int tileId = slice.TileY * width + slice.TileX;
+                int elev = elevationMap != null && elevationMap.TryGetValue(tileId, out int z) ? z : 0;
+
+                // 1. Draw walls for elevated tiles below the top surface
+                if (isIsometric && elev > 0 && renderedWalls.Add(tileId))
+                {
+                    if (map.TryGetValue(tileId, out var texList) && texList.Count > 0)
+                    {
+                        // Use the original, square texture for the vertical wall
+                        var rawWallBuffer = TextureManager.GetBufferById(texList[0], isometric: false);
+                        if (rawWallBuffer != null)
+                        {
+                            DrawIsometricWall(canvas, slice.X, slice.Y, textureSize, elev, stepHeight, rawWallBuffer);
+                        }
+                    }
+                }
+
+                // 2. Draw the top-cap diamond above
+                int drawX = isIsometric ? slice.X - halfW : slice.X;
+                int drawY = isIsometric ? slice.Y - halfH : slice.Y;
+
                 canvas.BlitRegionBlend(
                     slice.Buffer,
                     srcX: 0,
                     srcY: 0,
                     width: slice.Buffer.Width,
                     height: slice.Buffer.Height,
-                    destX: slice.X,
-                    destY: slice.Y);
+                    destX: drawX,
+                    destY: drawY);
             }
 
             return canvas;
@@ -264,6 +313,117 @@ namespace Solaris
         }
 
         /// <summary>
+        /// Draws the vertical wall facets with tinted selective outlines and soft face shading.
+        /// </summary>
+        /// <param name="canvas">The canvas.</param>
+        /// <param name="centerX">The center x.</param>
+        /// <param name="centerY">The center y.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <param name="elevation">The elevation.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <param name="rawTexture">The raw texture.</param>
+        private static void DrawIsometricWall(
+            UnmanagedImageBuffer canvas,
+            int centerX,
+            int centerY,
+            int textureSize,
+            int elevation,
+            int stepHeight,
+            UnmanagedImageBuffer rawTexture)
+        {
+            int drop = elevation * stepHeight;
+            if (drop <= 0) return;
+
+            int halfW = textureSize / 2;
+            int halfH = textureSize / 4;
+
+            int texW = rawTexture.Width;
+            int texH = rawTexture.Height;
+
+            // 1. Calculate the base color from the texture and create a deeply darkened crease tone (Sel-Out)
+            var samplePixel = rawTexture.GetPixel(texW / 2, texH / 2);
+            byte edgeR = (byte)(samplePixel.r * 0.30f);
+            byte edgeG = (byte)(samplePixel.g * 0.30f);
+            byte edgeB = (byte)(samplePixel.b * 0.30f);
+            byte edgeA = samplePixel.a;
+
+            // 2. LEFT WALL (South-West: 60% shadow side)
+            for (int col = 0; col < halfW; col++)
+            {
+                int sx = (centerX - halfW) + col;
+                if (sx < 0 || sx >= canvas.Width) continue;
+
+                int topY = centerY + (int)(col * (float)halfH / halfW);
+                int srcX = Math.Clamp((int)(col * (float)texW / halfW), 0, texW - 1);
+
+                bool isOuterEdge = col == 0;
+
+                for (int dy = 0; dy < drop; dy++)
+                {
+                    int sy = topY + dy;
+                    if (sy < 0 || sy >= canvas.Height) continue;
+
+                    bool isTopOrBottomEdge = dy == 0 || dy == drop - 1;
+
+                    if (isOuterEdge || isTopOrBottomEdge)
+                    {
+                        // Draw darkened edge crease
+                        canvas.SetPixelUnsafe(sx, sy, edgeR, edgeG, edgeB, edgeA);
+                    }
+                    else
+                    {
+                        int srcY = dy % texH;
+                        var pixel = rawTexture.GetPixel(srcX, srcY);
+
+                        byte r = (byte)(pixel.r * 0.60f);
+                        byte g = (byte)(pixel.g * 0.60f);
+                        byte b = (byte)(pixel.b * 0.60f);
+
+                        canvas.SetPixelUnsafe(sx, sy, r, g, b, pixel.a);
+                    }
+                }
+            }
+
+            // 3. RIGHT WALL (South-East: 80% light side)
+            for (int col = 0; col < halfW; col++)
+            {
+                int sx = centerX + col;
+                if (sx < 0 || sx >= canvas.Width) continue;
+
+                int topY = (centerY + halfH) - (int)(col * (float)halfH / halfW);
+                int srcX = Math.Clamp((int)(col * (float)texW / halfW), 0, texW - 1);
+
+                // col == 0 is the front middle corner; col == halfW - 1 is the outer right silhouette
+                bool isCornerOrOuter = col == 0 || col == halfW - 1;
+
+                for (int dy = 0; dy < drop; dy++)
+                {
+                    int sy = topY + dy;
+                    if (sy < 0 || sy >= canvas.Height) continue;
+
+                    bool isTopOrBottomEdge = dy == 0 || dy == drop - 1;
+
+                    if (isCornerOrOuter || isTopOrBottomEdge)
+                    {
+                        // Draw darkened edge crease
+                        canvas.SetPixelUnsafe(sx, sy, edgeR, edgeG, edgeB, edgeA);
+                    }
+                    else
+                    {
+                        int srcY = dy % texH;
+                        var pixel = rawTexture.GetPixel(srcX, srcY);
+
+                        byte r = (byte)(pixel.r * 0.80f);
+                        byte g = (byte)(pixel.g * 0.80f);
+                        byte b = (byte)(pixel.b * 0.80f);
+
+                        canvas.SetPixelUnsafe(sx, sy, r, g, b, pixel.a);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Generates a transparent vector overlay layer hosting crisp numbers or Unicode symbols.
         /// </summary>
         /// <param name="width">The width.</param>
@@ -271,11 +431,17 @@ namespace Solaris
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="glyphMap">The glyph map.</param>
         /// <returns>Bitmap representing the glyph overlay.</returns>
-        internal static Bitmap GenerateGlyphOverlay(
+        public static Bitmap GenerateGlyphOverlay(
             int width, int height, int textureSize,
-            Dictionary<int, OverlayGlyph>? glyphMap)
+            Dictionary<int, OverlayGlyph>? glyphMap,
+            Viewport? viewport = null,
+            Dictionary<int, int>? elevationMap = null,
+            int stepHeight = 16)
         {
-            var overlayFrame = new Bitmap(width * textureSize, height * textureSize);
+            // Die Leinwand muss nun so groß sein wie der Viewport (sonst werden Symbole abgeschnitten)
+            int cWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
+            int cHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
+            var overlayFrame = new Bitmap(cWidth, cHeight);
 
             if (glyphMap == null || glyphMap.Count == 0) return overlayFrame;
 
@@ -287,6 +453,8 @@ namespace Solaris
             sf.Alignment = StringAlignment.Center;
             sf.LineAlignment = StringAlignment.Center;
 
+            int halfH = textureSize / 4;
+
             foreach (var kp in glyphMap)
             {
                 var tileIndex = kp.Key;
@@ -294,13 +462,27 @@ namespace Solaris
 
                 if (string.IsNullOrEmpty(glyph.Symbol)) continue;
 
-                var cellX = (tileIndex % width) * textureSize;
-                var cellY = (tileIndex / width) * textureSize;
+                // Echte Projektions-Koordinate inkl. Z-Verschub holen
+                int elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out int z) ? z : 0;
+                var pt = viewport?.WorldToScreen(tileIndex, width, textureSize, elev, stepHeight) ??
+                         new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
 
-                var targetRect = new RectangleF(cellX, cellY, textureSize, textureSize);
+                // Das Ziel-Rechteck um den projizierten Punkt zentrieren
+                float rectX = pt.X - (textureSize / 2f);
+                float rectY = pt.Y - (textureSize / 2f);
+
+                // Im isometrischen Modus das Symbol etwas nach oben setzen, 
+                // damit es optisch AUF dem Rauten-Boden "steht" und nicht zentriert IM Boden steckt.
+                if (viewport?.Mode == ProjectionMode.Isometric)
+                {
+                    rectY -= halfH;
+                }
+
+                var targetRect = new RectangleF(rectX, rectY, textureSize, textureSize);
 
                 var fontStyle = glyph.IsBold ? FontStyle.Bold : FontStyle.Regular;
-                using var font = new Font(glyph.FontName, glyph.FontSize, fontStyle);
+                // Bei Emojis empfiehlt sich Segoe UI Emoji oder der System-Fallback
+                using var font = new Font(glyph.FontName ?? "Segoe UI Emoji", glyph.FontSize, fontStyle);
                 using var brush = new SolidBrush(glyph.Color);
                 g.DrawString(glyph.Symbol, font, brush, targetRect, sf);
             }
@@ -468,6 +650,66 @@ namespace Solaris
                 aurora.BitmapLayerThree?.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
 
             aurora.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Generates the grid.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>The generated ImageSource representing the grid.</returns>
+        internal static ImageSource? GenerateGrid(
+            int width, int height, int textureSize,
+            Viewport? viewport = null,
+            Dictionary<int, int>? elevationMap = null,
+            int stepHeight = 16)
+        {
+            if (viewport?.Mode != ProjectionMode.Isometric)
+            {
+                // Existing 2D orthogonal grid (exact original code)
+                using var bitmap = new Bitmap(width * textureSize, height * textureSize);
+                using var graphics = Graphics.FromImage(bitmap);
+                for (var y = 0; y < height; y++)
+                    for (var x = 0; x < width; x++)
+                    {
+                        graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+                    }
+                return bitmap.ToBitmapImage();
+            }
+
+            // Isometric diamond grid
+            int cWidth = viewport.ScreenWidth > 0 ? viewport.ScreenWidth : width * textureSize;
+            int cHeight = viewport.ScreenHeight > 0 ? viewport.ScreenHeight : height * textureSize;
+
+            using var isoBitmap = new Bitmap(cWidth, cHeight);
+            using var g = Graphics.FromImage(isoBitmap);
+            using var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(90, 0, 0, 0), 1f);
+
+            int halfW = textureSize / 2;
+            int halfH = textureSize / 4;
+
+            for (var y = 0; y < height; y++)
+                for (var x = 0; x < width; x++)
+                {
+                    int tileId = y * width + x;
+                    int elev = elevationMap != null && elevationMap.TryGetValue(tileId, out int z) ? z : 0;
+                    var pt = viewport.WorldToScreen(tileId, width, textureSize, elev, stepHeight);
+
+                    Point[] diamond =
+                    [
+                        new Point(pt.X, pt.Y - halfH),
+            new Point(pt.X + halfW, pt.Y),
+            new Point(pt.X, pt.Y + halfH),
+            new Point(pt.X - halfW, pt.Y)
+                    ];
+                    g.DrawPolygon(pen, diamond);
+                }
+
+            return isoBitmap.ToBitmapImage();
         }
 
         /// <summary>

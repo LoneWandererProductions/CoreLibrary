@@ -8,11 +8,12 @@
 
 // ReSharper disable MemberCanBeInternal
 
+using Imaging.Objects;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using Imaging.Objects;
 
 namespace Solaris
 {
@@ -26,6 +27,11 @@ namespace Solaris
         ///  Tier 1: Deduplicates hard drive reads (Path -> Bitmap)
         /// </summary>
         private static readonly ConcurrentDictionary<string, Bitmap> FileCache = new();
+
+        /// <summary>
+        /// The iso render buffer cache
+        /// </summary>
+        private static readonly ConcurrentDictionary<int, UnmanagedImageBuffer> IsoRenderBufferCache = new();
 
         // 
         /// <summary>
@@ -90,9 +96,21 @@ namespace Solaris
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns>The unmanaged buffer if found; otherwise, null.</returns>
-        public static UnmanagedImageBuffer? GetBufferById(int id)
+        public static UnmanagedImageBuffer? GetBufferById(int id, bool isometric = false)
         {
-            return FastRenderBufferCache.TryGetValue(id, out var buffer) ? buffer : null;
+            if (!isometric)
+            {
+                return FastRenderBufferCache.TryGetValue(id, out var buffer) ? buffer : null;
+            }
+
+            return IsoRenderBufferCache.GetOrAdd(id, key =>
+            {
+                if (FastRenderBufferCache.TryGetValue(key, out var raw))
+                {
+                    return CutIsometricDiamond(raw, raw.Width, raw.Height);
+                }
+                return null!;
+            });
         }
 
         /// <summary>
@@ -108,6 +126,44 @@ namespace Solaris
                 return true;
 
             return GlobalTextures.TryGetValue(id, out texture);
+        }
+
+
+        /// <summary>
+        /// Cuts the isometric diamond.
+        /// </summary>
+        /// <param name="squareBuffer">The square buffer.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <returns>The isometric diamond buffer.</returns>
+        public static UnmanagedImageBuffer CutIsometricDiamond(UnmanagedImageBuffer squareBuffer, int width, int height)
+        {
+            int isoHeight = height / 2;
+            var diamondBuffer = new UnmanagedImageBuffer(width, isoHeight);
+            diamondBuffer.Clear(0, 0, 0, 0);
+
+            float halfW = width / 2f;
+            float halfH = isoHeight / 2f;
+
+            for (int y = 0; y < isoHeight; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    float dx = Math.Abs(x + 0.5f - halfW) / halfW;
+                    float dy = Math.Abs(y + 0.5f - halfH) / halfH;
+
+                    if (dx + dy <= 1.0f)
+                    {
+                        int srcY = Math.Min(height - 1, (int)((y / (float)isoHeight) * height));
+                        int srcX = Math.Min(width - 1, x);
+
+                        var pixel = squareBuffer.GetPixel(srcX, srcY);
+                        diamondBuffer.SetPixelUnsafe(x, y, pixel.r, pixel.g, pixel.b, pixel.a);
+                    }
+                }
+            }
+
+            return diamondBuffer;
         }
 
         /// <summary>

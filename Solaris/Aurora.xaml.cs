@@ -27,6 +27,48 @@ namespace Solaris
     /// </summary>
     public sealed partial class Aurora
     {
+        #region Elevation Dependency Properties
+
+        /// <summary>
+        /// The aurora elevation property mapping tile indices to vertical levels.
+        /// </summary>
+        public static readonly DependencyProperty AuroraElevationProperty = DependencyProperty.Register(
+            nameof(AuroraElevation), typeof(Dictionary<int, int>), typeof(Aurora),
+            new PropertyMetadata(null, OnMapChanged)); //
+
+        /// <summary>
+        /// The vertical extrusion height in pixels per elevation step.
+        /// </summary>
+        public static readonly DependencyProperty StepHeightProperty = DependencyProperty.Register(
+            nameof(StepHeight), typeof(int), typeof(Aurora),
+            new PropertyMetadata(16, OnMapChanged)); //[cite: 12]
+
+        /// <summary>
+        /// Gets or sets the aurora elevation.
+        /// </summary>
+        /// <value>
+        /// The aurora elevation.
+        /// </value>
+        public Dictionary<int, int>? AuroraElevation
+        {
+            get => (Dictionary<int, int>?)GetValue(AuroraElevationProperty);
+            set => SetValue(AuroraElevationProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the height of the step.
+        /// </summary>
+        /// <value>
+        /// The height of the step.
+        /// </value>
+        public int StepHeight
+        {
+            get => (int)GetValue(StepHeightProperty);
+            set => SetValue(StepHeightProperty, value);
+        }
+
+        #endregion
+
         #region Dependency Properties
 
         /// <summary>
@@ -386,7 +428,8 @@ namespace Solaris
             var isGridEnabled = (bool)e.NewValue;
 
             control.LayerTwo.Source = isGridEnabled
-                ? Helper.GenerateGrid(control.AuroraWidth, control.AuroraHeight, control.AuroraTextureSize)
+                ? Helper.GenerateGrid(control.AuroraWidth, control.AuroraHeight, control.AuroraTextureSize,
+                                      control.ActiveViewport, control.AuroraElevation, control.StepHeight)
                 : null;
         }
 
@@ -505,10 +548,16 @@ namespace Solaris
         {
             if (_dirtyFlags == DirtyFlags.None) return;
 
-            // Only rebuild full canvas if Viewport moved or FullRedraw was explicitly requested
             if (_dirtyFlags.HasFlag(DirtyFlags.Viewport) || _dirtyFlags.HasFlag(DirtyFlags.FullRedraw))
             {
                 UpdateMapAndBitmap();
+
+                if (AuroraGrid)
+                {
+                    LayerTwo.Source = Helper.GenerateGrid(
+                        AuroraWidth, AuroraHeight, AuroraTextureSize,
+                        ActiveViewport, AuroraElevation, StepHeight);
+                }
             }
             else if (_dirtyFlags.HasFlag(DirtyFlags.TileMap) && BitmapLayerOne != null && AuroraMap != null)
             {
@@ -555,7 +604,8 @@ namespace Solaris
             UpdateMapAndBitmap();
 
             if (AuroraGrid)
-                LayerTwo.Source = Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize);
+                LayerTwo.Source = Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize,
+                                                      ActiveViewport, AuroraElevation, StepHeight);
 
             var initialLayer = new UnmanagedImageBuffer(Touch.Width > 0 ? (int)Touch.Width : 1,
                 Touch.Height > 0 ? (int)Touch.Height : 1);
@@ -571,9 +621,9 @@ namespace Solaris
         {
             if (AuroraTextures == null) return;
 
-            var newBitmap =
-                Helper.GenerateImage(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap,
-                    ActiveViewport);
+            var newBitmap = Helper.GenerateImage(
+                AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap,
+                ActiveViewport, AuroraElevation, StepHeight);
             ReplaceBitmapLayerOne(newBitmap);
         }
 
@@ -602,8 +652,10 @@ namespace Solaris
         /// </summary>
         public void UpdateGlyphLayer()
         {
-            using var overlayBmp =
-                Helper.GenerateGlyphOverlay(AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraGlyphs);
+            using var overlayBmp = Helper.GenerateGlyphOverlay(
+                AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraGlyphs,
+                ActiveViewport, AuroraElevation, StepHeight); // Viewport and heights passed
+
             using var overlayBuffer = UnmanagedImageBuffer.FromBitmap(overlayBmp);
 
             LayerFour.Source = overlayBuffer.UpdateWriteableBitmap(LayerFour.Source as WriteableBitmap);
@@ -619,7 +671,8 @@ namespace Solaris
             var rawPosition = e.GetPosition(Touch);
             var screenPoint = new PointF((float)rawPosition.X, (float)rawPosition.Y);
 
-            var id = ActiveViewport.ScreenToWorld(screenPoint, AuroraWidth, AuroraHeight, AuroraTextureSize);
+            var id = ActiveViewport.ScreenToWorld(
+                screenPoint, AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraElevation, StepHeight);
 
             if (id >= 0)
             {

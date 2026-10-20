@@ -25,6 +25,61 @@ namespace Solaris
     /// </summary>
     public sealed partial class Polaris
     {
+        #region Elevation Dependency Properties
+
+        /// <summary>
+        /// The polaris elevation property mapping tile indices to vertical levels.
+        /// </summary>
+        public static readonly DependencyProperty PolarisElevationProperty = DependencyProperty.Register(
+            nameof(PolarisElevation), typeof(Dictionary<int, int>), typeof(Polaris),
+            new PropertyMetadata(null, OnMapChanged));
+
+        /// <summary>
+        /// The vertical extrusion height in pixels per elevation step.
+        /// </summary>
+        public static readonly DependencyProperty StepHeightProperty = DependencyProperty.Register(
+            nameof(StepHeight), typeof(int), typeof(Polaris),
+            new PropertyMetadata(16, OnMapChanged));
+
+        /// <summary>
+        /// Gets or sets the polaris elevation.
+        /// </summary>
+        /// <value>
+        /// The polaris elevation.
+        /// </value>
+        public Dictionary<int, int>? PolarisElevation
+        {
+            get => (Dictionary<int, int>?)GetValue(PolarisElevationProperty);
+            set => SetValue(PolarisElevationProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the height of the step.
+        /// </summary>
+        /// <value>
+        /// The height of the step.
+        /// </value>
+        public int StepHeight
+        {
+            get => (int)GetValue(StepHeightProperty);
+            set => SetValue(StepHeightProperty, value);
+        }
+
+        /// <summary>
+        /// Editor helper to modify elevation on a cell and trigger dirty redraw.
+        /// </summary>
+        /// <param name="tileIndex">Index of the tile.</param>
+        /// <param name="elevation">The elevation.</param>
+        public void SetTileElevation(int tileIndex, int elevation)
+        {
+            PolarisElevation ??= new Dictionary<int, int>();
+            PolarisElevation[tileIndex] = elevation;
+            MarkLayerDirty(DirtyFlags.TileMap);
+            RenderDirty();
+        }
+
+        #endregion
+
         #region Dependency Properties
 
         /// <summary>
@@ -314,7 +369,8 @@ namespace Solaris
                 if (_dirtyFlags.HasFlag(DirtyFlags.Viewport) || _dirtyTiles.Count == 0)
                 {
                     var newBitmap = Helper.GenerateImage(
-                        PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap, ActiveViewport);
+                        PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap,
+                        ActiveViewport, PolarisElevation, StepHeight); 
                     ReplaceBitmapLayerOne(newBitmap);
                 }
                 else if (_dirtyFlags.HasFlag(DirtyFlags.TileMap) && BitmapLayerOne != null && PolarisMap != null)
@@ -519,7 +575,8 @@ namespace Solaris
             var rawPosition = e.GetPosition(Touch);
             var screenPoint = new System.Drawing.PointF((float)rawPosition.X, (float)rawPosition.Y);
 
-            var id = ActiveViewport.ScreenToWorld(screenPoint, PolarisWidth, PolarisHeight, PolarisTextureSize);
+            var id = ActiveViewport.ScreenToWorld(
+                screenPoint, PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisElevation, StepHeight);
 
             if (id >= 0)
             {
