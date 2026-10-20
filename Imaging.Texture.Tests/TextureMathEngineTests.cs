@@ -463,6 +463,39 @@ namespace Imaging.Texture.Tests
         }
 
         /// <summary>
+        /// Generates the concrete porous visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateConcretePorous_VisualTest()
+        {
+            // Architectural matte concrete with fine aggregate pores and no sine-wave ring artifacts
+            var buffer = TextureMathEngine.GenerateConcretePorous(TestWidth, TestHeight, _noiseGenerator, baseTone: 140, gritSpread: 22);
+            SaveBufferToImage(buffer, "04b_Concrete_Porous.png");
+        }
+
+        /// <summary>
+        /// Generates the stylized foliage visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateStylizedFoliage_VisualTest()
+        {
+            // Clean, stylized leaf clumps with organic alpha cutouts for meshes and terrain
+            var buffer = TextureMathEngine.GenerateStylizedFoliage(TestWidth, TestHeight, _noiseGenerator, clusterSize: 32, transparentGaps: true);
+            SaveBufferToImage(buffer, "13b_Foliage_Stylized.png");
+        }
+
+        /// <summary>
+        /// Generates the cobblestone beveled visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateCobblestoneBeveled_VisualTest()
+        {
+            // Flat-top cobblestones with narrow grout seams instead of spherical bubbles
+            var buffer = TextureMathEngine.GenerateCobblestoneBeveled(TestWidth, TestHeight, cellSize: 28);
+            SaveBufferToImage(buffer, "18b_Cobblestone_Beveled.png");
+        }
+
+        /// <summary>
         /// Converts the RawTextureBuffer span (BGRA) into a standard PNG file.
         /// </summary>
         private void SaveBufferToImage(RawTextureBuffer? buffer, string filename)

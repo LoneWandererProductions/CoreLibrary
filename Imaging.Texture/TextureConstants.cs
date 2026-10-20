@@ -30,23 +30,14 @@ namespace Imaging.Texture
         {
             return new()
             {
-                // Reusing this property for the Voronoi grid size (e.g., 4 cells across)
-                VoronoiGridSize = 4,
-                // Format: Highlight [0-2], Base Stone [3-5], Shadow [6-8], Mortar [9-11]
-                RgbRamp =  [
-                220,
-                220,
-                220, // Bright edge highlight
-                130,
-                130,
-                130, // Base mid-tone
-                40,
-                40,
-                40, // Deep directional shadow
-                15,
-                15,
-                15 // Dark mortar/grout
-                    ]
+                VoronoiGridSize = 6, // Slightly denser distribution avoids massive color patches
+                // Soft gradient: Highlight [0-2], Mid-tone [3-5], Shadow [6-8], Grout [9-11]
+                RgbRamp = [
+                    145, 150, 158, // Subtle edge highlight
+                    110, 115, 122, // Base slate grey
+                    80,  85,  92,  // Soft directional shadow
+                    55,  58,  64   // Muted stone grout/seam
+                ]
             };
         }
 

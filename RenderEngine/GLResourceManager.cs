@@ -315,6 +315,26 @@ namespace RenderEngine
                         var cfg = TextureConstants.GetClayConfig();
                         return TextureMathEngine.GenerateColorMapped(w, h, n, cfg.RgbRamp!, cfg.TurbulenceSize);
                     })
+            },
+            {
+                10038,
+                new("StylizedFoliage", "Clean stylized leaf clumps with smooth canopy gradients for terrain.",
+                    (w, h, n) => TextureMathEngine.GenerateStylizedFoliage(w, h, n, clusterSize: 32, transparentGaps: false))
+            },
+            {
+                10039,
+                new("StylizedFoliageCutout", "Stylized leaf clumps with alpha cutouts for low-poly tree meshes and bushes.",
+                    (w, h, n) => TextureMathEngine.GenerateStylizedFoliage(w, h, n, clusterSize: 32, transparentGaps: true))
+            },
+            {
+                10040,
+                new("CobblestoneBeveled", "Flat-top cobblestones with narrow defined grout seams instead of bubbles.",
+                    (w, h, _) => TextureMathEngine.GenerateCobblestoneBeveled(w, h, cellSize: 28))
+            },
+            {
+                10041,
+                new("ConcretePorous", "Architectural matte concrete with fine aggregate pores and no sine-ring artifacts.",
+                    (w, h, n) => TextureMathEngine.GenerateConcretePorous(w, h, n, baseTone: 140, gritSpread: 22))
             }
         };
 

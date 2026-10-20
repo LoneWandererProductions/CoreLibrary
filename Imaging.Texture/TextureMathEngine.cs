@@ -263,6 +263,54 @@ namespace Imaging.Texture
         }
 
         /// <summary>
+        /// Generates realistic architectural concrete with fine grit, aggregate pores, and no topographic worm-rings.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="baseTone">The base tone.</param>
+        /// <param name="gritSpread">The grit spread.</param>
+        /// <returns>A raw texture buffer containing the generated porous concrete texture.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateConcretePorous(
+            int width,
+            int height,
+            object noiseGenInstance,
+            byte baseTone = 140,
+            byte gritSpread = 22)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // 1. Broad smooth macro patches
+                    var macro = (double)noiseGen.SmoothNoise(x / 48.0, y / 48.0);
+
+                    // 2. Medium concrete aggregate speckles
+                    var mid = (double)noiseGen.SmoothNoise(x / 12.0, y / 12.0) * 0.4;
+
+                    // 3. Fine surface pores (high frequency)
+                    var micro = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.35;
+
+                    var val = Math.Clamp(macro * 0.6 + mid + micro, 0.0, 1.0);
+                    var colorVal = (byte)Math.Clamp(baseTone - gritSpread + (int)(gritSpread * 2.0 * val), 0, 255);
+
+                    span[idx++] = colorVal; // B
+                    span[idx++] = colorVal; // G
+                    span[idx++] = colorVal; // R
+                    span[idx++] = 255;      // A
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
         /// Generates interlocking woven canvas fabric textures with deterministic line cutoffs.
         /// </summary>
         /// <param name="width">The width.</param>
@@ -614,6 +662,99 @@ namespace Imaging.Texture
                     span[idx++] = (byte)(centerG + (edgeG - centerG) * factor); // G
                     span[idx++] = (byte)(centerR + (edgeR - centerR) * factor); // R
                     span[idx++] = (byte)alpha; // A
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates realistic flat-top cobblestones with defined grout lines instead of spherical bubbles.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="cellSize">Size of the cell.</param>
+        /// <param name="stoneR">The stone r.</param>
+        /// <param name="stoneG">The stone g.</param>
+        /// <param name="stoneB">The stone b.</param>
+        /// <param name="groutR">The grout r.</param>
+        /// <param name="groutG">The grout g.</param>
+        /// <param name="groutB">The grout b.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateCobblestoneBeveled(
+            int width,
+            int height,
+            int cellSize = 28,
+            byte stoneR = 128, byte stoneG = 132, byte stoneB = 138,
+            byte groutR = 45, byte groutG = 48, byte groutB = 52)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            var rand = new Random(4242);
+
+            var gridCols = (width / cellSize) + 2;
+            var gridRows = (height / cellSize) + 2;
+            var pointsX = new int[gridCols, gridRows];
+            var pointsY = new int[gridCols, gridRows];
+
+            for (var y = 0; y < gridRows; y++)
+            {
+                for (var x = 0; x < gridCols; x++)
+                {
+                    pointsX[x, y] = (x * cellSize) + rand.Next(2, cellSize - 2);
+                    pointsY[x, y] = (y * cellSize) + rand.Next(2, cellSize - 2);
+                }
+            }
+
+            var idx = 0;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var cellX = x / cellSize;
+                    var cellY = y / cellSize;
+
+                    var d1 = double.MaxValue;
+                    var d2 = double.MaxValue;
+
+                    var startX = Math.Max(0, cellX - 1);
+                    var endX = Math.Min(gridCols - 1, cellX + 1);
+                    var startY = Math.Max(0, cellY - 1);
+                    var endY = Math.Min(gridRows - 1, cellY + 1);
+
+                    for (var cy = startY; cy <= endY; cy++)
+                    {
+                        for (var cx = startX; cx <= endX; cx++)
+                        {
+                            var dx = x - pointsX[cx, cy];
+                            var dy = y - pointsY[cx, cy];
+                            var dist = Math.Sqrt(dx * dx + dy * dy);
+
+                            if (dist < d1)
+                            {
+                                d2 = d1;
+                                d1 = dist;
+                            }
+                            else if (dist < d2)
+                            {
+                                d2 = dist;
+                            }
+                        }
+                    }
+
+                    // F2 - F1 is 0 at the grout border, and large inside the stone
+                    var borderDist = d2 - d1;
+
+                    // Sharp bevel: Stones stay completely flat until 2.5 pixels to the seam
+                    var stoneFactor = Math.Clamp(borderDist / 3.0, 0.0, 1.0);
+                    stoneFactor = Math.Pow(stoneFactor, 0.35); // Rapid curve to flat plateau
+
+                    span[idx++] = (byte)(groutB + (stoneB - groutB) * stoneFactor);
+                    span[idx++] = (byte)(groutG + (stoneG - groutG) * stoneFactor);
+                    span[idx++] = (byte)(groutR + (stoneR - groutR) * stoneFactor);
+                    span[idx++] = 255;
                 }
             }
 
@@ -1045,6 +1186,143 @@ namespace Imaging.Texture
                     span[idx++] = finalG;
                     span[idx++] = finalR;
                     span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates clean, stylized leaf clumps suitable for low-poly tree meshes and terrain overlays.
+        /// Leaves lighting to the 3D engine while providing rich organic micro-shapes and clean alpha silhouettes.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="clusterSize">Size of the cluster.</param>
+        /// <param name="transparentGaps">if set to <c>true</c> [transparent gaps].</param>
+        /// <param name="baseR">The base r.</param>
+        /// <param name="baseG">The base g.</param>
+        /// <param name="baseB">The base b.</param>
+        /// <param name="highlightR">The highlight r.</param>
+        /// <param name="highlightG">The highlight g.</param>
+        /// <param name="highlightB">The highlight b.</param>
+        /// <param name="shadowR">The shadow r.</param>
+        /// <param name="shadowG">The shadow g.</param>
+        /// <param name="shadowB">The shadow b.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateStylizedFoliage(
+            int width,
+            int height,
+            object noiseGenInstance,
+            int clusterSize = 32,
+            bool transparentGaps = true,
+            byte baseR = 52, byte baseG = 125, byte baseB = 38,       // Mid foliage green
+            byte highlightR = 108, byte highlightG = 175, byte highlightB = 45, // Sunlit tint
+            byte shadowR = 28, byte shadowG = 75, byte shadowB = 26)  // Ambient crevice green
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            var rand = new Random(1337);
+            var gridCols = (width / clusterSize) + 2;
+            var gridRows = (height / clusterSize) + 2;
+            var pointsX = new int[gridCols, gridRows];
+            var pointsY = new int[gridCols, gridRows];
+
+            for (var y = 0; y < gridRows; y++)
+            {
+                for (var x = 0; x < gridCols; x++)
+                {
+                    pointsX[x, y] = (x * clusterSize) + rand.Next(2, clusterSize - 2);
+                    pointsY[x, y] = (y * clusterSize) + rand.Next(2, clusterSize - 2);
+                }
+            }
+
+            var idx = 0;
+            var maxRadius = clusterSize * 0.75;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // 1. Organic domain-warp for jagged leaf edges instead of smooth spheres
+                    var warpX = ((double)noiseGen.SmoothNoise(x / 12.0, y / 12.0) - 0.5) * 8.0;
+                    var warpY = ((double)noiseGen.SmoothNoise((x + 64) / 12.0, (y + 64) / 12.0) - 0.5) * 8.0;
+
+                    var px = x + warpX;
+                    var py = y + warpY;
+
+                    var cellX = (int)px / clusterSize;
+                    var cellY = (int)py / clusterSize;
+
+                    var d1 = double.MaxValue;
+                    var d2 = double.MaxValue;
+
+                    var startX = Math.Max(0, cellX - 1);
+                    var endX = Math.Min(gridCols - 1, cellX + 1);
+                    var startY = Math.Max(0, cellY - 1);
+                    var endY = Math.Min(gridRows - 1, cellY + 1);
+
+                    for (var cy = startY; cy <= endY; cy++)
+                    {
+                        for (var cx = startX; cx <= endX; cx++)
+                        {
+                            var dx = px - pointsX[cx, cy];
+                            var dy = py - pointsY[cx, cy];
+                            var dist = Math.Sqrt(dx * dx + dy * dy);
+
+                            if (dist < d1)
+                            {
+                                d2 = d1;
+                                d1 = dist;
+                            }
+                            else if (dist < d2)
+                            {
+                                d2 = dist;
+                            }
+                        }
+                    }
+
+                    // Clump core factor: flat plateau in the center, dropping sharply at edges
+                    var edgeDistance = (d2 - d1) / (clusterSize * 0.45);
+                    var leafCoverage = Math.Clamp(edgeDistance, 0.0, 1.0);
+
+                    // Large macro noise for subtle tone variations across the canopy
+                    var canopyGradient = (double)noiseGen.SmoothNoise(x / 48.0, y / 48.0);
+
+                    if (transparentGaps && leafCoverage < 0.25)
+                    {
+                        span[idx++] = 0;
+                        span[idx++] = 0;
+                        span[idx++] = 0;
+                        span[idx++] = 0; // Transparent cutout for low-poly tree card meshes
+                        continue;
+                    }
+
+                    // Soft color blend (No harsh black crevices!)
+                    byte r, g, b;
+                    if (canopyGradient > 0.5)
+                    {
+                        var t = (canopyGradient - 0.5) * 2.0;
+                        r = (byte)(baseR + (highlightR - baseR) * t);
+                        g = (byte)(baseG + (highlightG - baseG) * t);
+                        b = (byte)(baseB + (highlightB - baseB) * t);
+                    }
+                    else
+                    {
+                        var t = (0.5 - canopyGradient) * 2.0;
+                        r = (byte)(baseR + (shadowR - baseR) * t);
+                        g = (byte)(baseG + (shadowG - baseG) * t);
+                        b = (byte)(baseB + (shadowB - baseB) * t);
+                    }
+
+                    span[idx++] = b;
+                    span[idx++] = g;
+                    span[idx++] = r;
+                    span[idx++] = 255;
                 }
             }
 
