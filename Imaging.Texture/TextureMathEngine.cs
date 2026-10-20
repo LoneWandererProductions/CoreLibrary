@@ -1192,6 +1192,391 @@ namespace Imaging.Texture
             return buffer;
         }
 
+
+        /// <summary>
+        /// Generates a pixel-art volumetric leaf cloud texture with scalloped cluster edges,
+        /// discrete toon-shaded color steps, and a dark outer perimeter outline.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="colorPalette">The color palette.</param>
+        /// <param name="gridCells">The grid cells.</param>
+        /// <param name="clusterCoverage">The cluster coverage.</param>
+        /// <param name="fillArea">if set to <c>true</c> [fill area].</param>
+        /// <returns>
+        /// The generated raw texture buffer.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateVolumetricLeafCloud(
+            int width,
+            int height,
+            object? noiseGenInstance,
+            byte[]? colorPalette = null,
+            int gridCells = 6,
+            double clusterCoverage = 0.72,
+            bool fillArea = false)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+
+            // Paletten-Auflösung: Fängt 12-Byte (Standard) und 15-Byte-Paletten sicher ab
+            byte rHi, gHi, bHi;
+            byte rSun, gSun, bSun;
+            byte rMid, gMid, bMid;
+            byte rShd, gShd, bShd;
+            byte rOut, gOut, bOut;
+
+            if (colorPalette != null && colorPalette.Length >= 15)
+            {
+                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
+                rSun = colorPalette[3]; gSun = colorPalette[4]; bSun = colorPalette[5];
+                rMid = colorPalette[6]; gMid = colorPalette[7]; bMid = colorPalette[8];
+                rShd = colorPalette[9]; gShd = colorPalette[10]; bShd = colorPalette[11];
+                rOut = colorPalette[12]; gOut = colorPalette[13]; bOut = colorPalette[14];
+            }
+            else if (colorPalette != null && colorPalette.Length >= 12)
+            {
+                // 12-Byte-Palette (Highlight, Midtone, Shadow, Gap/Mortar)
+                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
+                rSun = (byte)((colorPalette[0] + colorPalette[3]) / 2);
+                gSun = (byte)((colorPalette[1] + colorPalette[4]) / 2);
+                bSun = (byte)((colorPalette[2] + colorPalette[5]) / 2);
+                rMid = colorPalette[3]; gMid = colorPalette[4]; bMid = colorPalette[5];
+                rShd = colorPalette[6]; gShd = colorPalette[7]; bShd = colorPalette[8];
+                rOut = colorPalette[9]; gOut = colorPalette[10]; bOut = colorPalette[11];
+            }
+            else
+            {
+                // 5-Ton Fallback
+                rHi = 205; gHi = 228; bHi = 135;
+                rSun = 155; gSun = 196; bSun = 82;
+                rMid = 92; gMid = 138; bMid = 56;
+                rShd = 48; gShd = 82; bShd = 40;
+                rOut = 24; gOut = 36; bOut = 22;
+            }
+
+            var cellW = (double)width / gridCells;
+            var cellH = (double)height / gridCells;
+            var maxRadius = (cellW + cellH) * 0.5 * clusterCoverage;
+
+            var rand = new Random(1337);
+            var points = new (double x, double y)[gridCells, gridCells];
+            for (var gy = 0; gy < gridCells; gy++)
+            {
+                for (var gx = 0; gx < gridCells; gx++)
+                {
+                    points[gx, gy] = (
+                        gx * cellW + (0.25 + 0.5 * rand.NextDouble()) * cellW,
+                        gy * cellH + (0.25 + 0.5 * rand.NextDouble()) * cellH
+                    );
+                }
+            }
+
+            dynamic? noiseGen = noiseGenInstance;
+            var idx = 0;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    var warpX = 0.0;
+                    var warpY = 0.0;
+                    if (noiseGen != null)
+                    {
+                        warpX = ((double)noiseGen.SmoothNoise(x / 12.0, y / 12.0) - 0.5) * 7.0;
+                        warpY = ((double)noiseGen.SmoothNoise((x + 64) / 12.0, (y + 64) / 12.0) - 0.5) * 7.0;
+                    }
+
+                    var sampleX = x + warpX;
+                    var sampleY = y + warpY;
+
+                    var cellX = (int)Math.Floor(sampleX / cellW);
+                    var cellY = (int)Math.Floor(sampleY / cellH);
+
+                    var minDist = double.MaxValue;
+                    double cDx = 0.0, cDy = 0.0;
+
+                    for (var ny = -1; ny <= 1; ny++)
+                    {
+                        for (var nx = -1; nx <= 1; nx++)
+                        {
+                            var cx = (cellX + nx + gridCells * 4) % gridCells;
+                            var cy = (cellY + ny + gridCells * 4) % gridCells;
+
+                            var pt = points[cx, cy];
+                            var px = pt.x;
+                            var py = pt.y;
+
+                            if (cellX + nx < 0) px -= width;
+                            if (cellX + nx >= gridCells) px += width;
+                            if (cellY + ny < 0) py -= height;
+                            if (cellY + ny >= gridCells) py += height;
+
+                            var dx = sampleX - px;
+                            var dy = sampleY - py;
+                            var dist = Math.Sqrt(dx * dx + dy * dy);
+
+                            if (dist < minDist)
+                            {
+                                minDist = dist;
+                                cDx = dx;
+                                cDy = dy;
+                            }
+                        }
+                    }
+
+                    var normR = minDist / maxRadius;
+
+                    if (normR >= 1.0)
+                    {
+                        if (fillArea)
+                        {
+                            span[idx++] = bOut;
+                            span[idx++] = gOut;
+                            span[idx++] = rOut;
+                            span[idx++] = 255;
+                        }
+                        else
+                        {
+                            span[idx++] = 0;
+                            span[idx++] = 0;
+                            span[idx++] = 0;
+                            span[idx++] = 0;
+                        }
+                        continue;
+                    }
+
+                    if (normR > 0.88)
+                    {
+                        span[idx++] = bOut;
+                        span[idx++] = gOut;
+                        span[idx++] = rOut;
+                        span[idx++] = 255;
+                        continue;
+                    }
+
+                    var sphereH = Math.Sqrt(Math.Max(0.0, 1.0 - normR * normR));
+                    var light = sphereH * 0.55 - ((cDx + cDy) / maxRadius) * 0.35 + 0.40;
+
+                    if (noiseGen != null)
+                    {
+                        var grit = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.08;
+                        light += grit;
+                    }
+
+                    byte r, g, b;
+                    if (light > 0.82) { r = rHi; g = gHi; b = bHi; }
+                    else if (light > 0.62) { r = rSun; g = gSun; b = bSun; }
+                    else if (light > 0.40) { r = rMid; g = gMid; b = bMid; }
+                    else if (light > 0.22) { r = rShd; g = gShd; b = bShd; }
+                    else { r = rOut; g = gOut; b = bOut; }
+
+                    span[idx++] = b;
+                    span[idx++] = g;
+                    span[idx++] = r;
+                    span[idx++] = 255;
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// Generates the volumetric leaf cloud hard edges.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="colorPalette">The color palette.</param>
+        /// <param name="gridCells">The grid cells.</param>
+        /// <param name="clusterCoverage">The cluster coverage.</param>
+        /// <param name="fillArea">if set to <c>true</c> [fill area].</param>
+        /// <returns>
+        /// The generated raw texture buffer.
+        /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public static RawTextureBuffer GenerateVolumetricLeafCloudHardEdges(
+            int width,
+            int height,
+            object? noiseGenInstance,
+            byte[]? colorPalette = null,
+            int gridCells = 6,
+            double clusterCoverage = 0.72,
+            bool fillArea = false)
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+
+            // Farb-Entpackung: Unterstützt 12-Byte- (4 Farben) und 15-Byte-Paletten (5 Farben)
+            byte rHi, gHi, bHi;
+            byte rSun, gSun, bSun;
+            byte rMid, gMid, bMid;
+            byte rShd, gShd, bShd;
+            byte rOut, gOut, bOut;
+
+            if (colorPalette != null && colorPalette.Length >= 15)
+            {
+                // 5-Farben-Palette: [Tip, Sunlit, Midtone, Shadow, Outline/Mortar]
+                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
+                rSun = colorPalette[3]; gSun = colorPalette[4]; bSun = colorPalette[5];
+                rMid = colorPalette[6]; gMid = colorPalette[7]; bMid = colorPalette[8];
+                rShd = colorPalette[9]; gShd = colorPalette[10]; bShd = colorPalette[11];
+                rOut = colorPalette[12]; gOut = colorPalette[13]; bOut = colorPalette[14];
+            }
+            else if (colorPalette != null && colorPalette.Length >= 12)
+            {
+                // Projekt-Standard (4 Farben): [Highlight, Base/Mid, Shadow, Gap/Mortar]
+                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
+                // Berechne Sunlit als Zwischenton zwischen Highlight und Midtone
+                rSun = (byte)((colorPalette[0] + colorPalette[3]) / 2);
+                gSun = (byte)((colorPalette[1] + colorPalette[4]) / 2);
+                bSun = (byte)((colorPalette[2] + colorPalette[5]) / 2);
+                rMid = colorPalette[3]; gMid = colorPalette[4]; bMid = colorPalette[5];
+                rShd = colorPalette[6]; gShd = colorPalette[7]; bShd = colorPalette[8];
+                rOut = colorPalette[9]; gOut = colorPalette[10]; bOut = colorPalette[11]; // Mortar / Gap
+            }
+            else
+            {
+                // Fallback: 5-Ton Pixel-Art Palette
+                rHi = 205; gHi = 228; bHi = 135; // Highlight Tip (Pale Lime)
+                rSun = 155; gSun = 196; bSun = 82;  // Sunlit (Bright Yellow-Green)
+                rMid = 92; gMid = 138; bMid = 56;  // Midtone Green
+                rShd = 48; gShd = 82; bShd = 40;  // Shadow Green
+                rOut = 24; gOut = 36; bOut = 22;  // Outline / Deep Crevice
+            }
+
+            var cellW = (double)width / gridCells;
+            var cellH = (double)height / gridCells;
+            var maxRadius = (cellW + cellH) * 0.5 * clusterCoverage;
+
+            var rand = new Random(1337);
+            var points = new (double x, double y)[gridCells, gridCells];
+            for (var gy = 0; gy < gridCells; gy++)
+            {
+                for (var gx = 0; gx < gridCells; gx++)
+                {
+                    points[gx, gy] = (
+                        gx * cellW + (0.25 + 0.5 * rand.NextDouble()) * cellW,
+                        gy * cellH + (0.25 + 0.5 * rand.NextDouble()) * cellH
+                    );
+                }
+            }
+
+            dynamic? noiseGen = noiseGenInstance;
+            var idx = 0;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // 1. Domain Warp: Bricht kreisförmige Voronoi-Zellen in Blattkonturen auf
+                    var warpX = 0.0;
+                    var warpY = 0.0;
+                    if (noiseGen != null)
+                    {
+                        warpX = ((double)noiseGen.SmoothNoise(x / 12.0, y / 12.0) - 0.5) * 7.0;
+                        warpY = ((double)noiseGen.SmoothNoise((x + 64) / 12.0, (y + 64) / 12.0) - 0.5) * 7.0;
+                    }
+
+                    var sampleX = x + warpX;
+                    var sampleY = y + warpY;
+
+                    var cellX = (int)Math.Floor(sampleX / cellW);
+                    var cellY = (int)Math.Floor(sampleY / cellH);
+
+                    var minDist = double.MaxValue;
+                    double cDx = 0.0, cDy = 0.0;
+
+                    for (var ny = -1; ny <= 1; ny++)
+                    {
+                        for (var nx = -1; nx <= 1; nx++)
+                        {
+                            var cx = (cellX + nx + gridCells * 4) % gridCells;
+                            var cy = (cellY + ny + gridCells * 4) % gridCells;
+
+                            var pt = points[cx, cy];
+                            var px = pt.x;
+                            var py = pt.y;
+
+                            if (cellX + nx < 0) px -= width;
+                            if (cellX + nx >= gridCells) px += width;
+                            if (cellY + ny < 0) py -= height;
+                            if (cellY + ny >= gridCells) py += height;
+
+                            var dx = sampleX - px;
+                            var dy = sampleY - py;
+                            var dist = Math.Sqrt(dx * dx + dy * dy);
+
+                            if (dist < minDist)
+                            {
+                                minDist = dist;
+                                cDx = dx;
+                                cDy = dy;
+                            }
+                        }
+                    }
+
+                    var normR = minDist / maxRadius;
+
+                    // Außerhalb der Blatt-Puffs
+                    if (normR >= 1.0)
+                    {
+                        if (fillArea)
+                        {
+                            span[idx++] = bOut;
+                            span[idx++] = gOut;
+                            span[idx++] = rOut;
+                            span[idx++] = 255;
+                        }
+                        else
+                        {
+                            span[idx++] = 0;
+                            span[idx++] = 0;
+                            span[idx++] = 0;
+                            span[idx++] = 0;
+                        }
+                        continue;
+                    }
+
+                    // 2. Dunkle Umrandung: Pixel-Art Kontur um jeden Cluster
+                    if (normR > 0.88)
+                    {
+                        span[idx++] = bOut;
+                        span[idx++] = gOut;
+                        span[idx++] = rOut;
+                        span[idx++] = 255;
+                        continue;
+                    }
+
+                    // 3. Sphärische Pseudo-Normalen-Beleuchtung (Licht aus Top-Left)
+                    var sphereH = Math.Sqrt(Math.Max(0.0, 1.0 - normR * normR));
+                    var light = sphereH * 0.55 - ((cDx + cDy) / maxRadius) * 0.35 + 0.40;
+
+                    if (noiseGen != null)
+                    {
+                        var grit = ((double)noiseGen.GetNoise(x, y) - 0.5) * 0.08;
+                        light += grit;
+                    }
+
+                    // 4. Diskrete Quantisierung in Palettenstufen
+                    byte r, g, b;
+                    if (light > 0.82) { r = rHi; g = gHi; b = bHi; }
+                    else if (light > 0.62) { r = rSun; g = gSun; b = bSun; }
+                    else if (light > 0.40) { r = rMid; g = gMid; b = bMid; }
+                    else if (light > 0.22) { r = rShd; g = gShd; b = bShd; }
+                    else { r = rOut; g = gOut; b = bOut; }
+
+                    span[idx++] = b;
+                    span[idx++] = g;
+                    span[idx++] = r;
+                    span[idx++] = 255;
+                }
+            }
+
+            return buffer;
+        }
+
         /// <summary>
         /// Generates clean, stylized leaf clumps suitable for low-poly tree meshes and terrain overlays.
         /// Leaves lighting to the 3D engine while providing rich organic micro-shapes and clean alpha silhouettes.
@@ -1393,6 +1778,91 @@ namespace Imaging.Texture
             return buffer;
         }
 
+
+        /// <summary>
+        /// Generates twisted, corded tree bark with deep longitudinal furrows and quantized toon shading.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="alpha">The alpha.</param>
+        /// <param name="scaleX">The scale x.</param>
+        /// <param name="scaleY">The scale y.</param>
+        /// <param name="warpStrength">The warp strength.</param>
+        /// <param name="barkR">The bark r.</param>
+        /// <param name="barkG">The bark g.</param>
+        /// <param name="barkB">The bark b.</param>
+        /// <param name="woodR">The wood r.</param>
+        /// <param name="woodG">The wood g.</param>
+        /// <param name="woodB">The wood b.</param>
+        /// <returns>The generated raw texture buffer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        internal static RawTextureBuffer GenerateGnarledTreeBark(
+            int width,
+            int height,
+            object? noiseGenInstance,
+            int alpha = 255,
+            double scaleX = 14.0,
+            double scaleY = 64.0,
+            double warpStrength = 16.0,
+            byte barkR = 34, byte barkG = 20, byte barkB = 24,   // Deep Furrow Dark Violet-Brown
+            byte woodR = 145, byte woodG = 82, byte woodB = 58)  // Raised Cord Terracotta-Brown
+        {
+            var buffer = new RawTextureBuffer(width, height);
+            var span = buffer.AsSpan();
+            dynamic noiseGen = noiseGenInstance;
+
+            // Palette steps: [Crevice Shadow, Low Furrow, Midtone Wood, Ridge Warmth, Rim Specular]
+            var barkPalette = new (byte r, byte g, byte b)[]
+            {
+        (34,  20,  24), // 0: Deep Crevice Black-Brown
+        (58,  32,  34), // 1: Furrow Shadow
+        (96,  52,  44), // 2: Body Bark Wood
+        (142, 80,  58), // 3: Sunlit Muscular Cord
+        (185, 118, 88)  // 4: Edge Highlight
+            };
+
+            var idx = 0;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    // 1. Helical spiral warp: skews fibers diagonally to create the twisted trunk effect
+                    var helicalShift = (y / (double)height) * 28.0;
+
+                    // 2. High-frequency domain warp for jagged wood grain
+                    var warpX = (double)noiseGen.SmoothNoise((x + helicalShift) / 18.0, y / 24.0) * warpStrength;
+                    var warpY = (double)noiseGen.SmoothNoise((x - helicalShift) / 24.0, y / 18.0) * (warpStrength * 0.4);
+
+                    var freqX = (x + helicalShift + warpX) / scaleX;
+                    var freqY = (y + warpY) / scaleY;
+
+                    // 3. Multi-frequency longitudinal ridges
+                    var primaryGrain = (double)noiseGen.SmoothNoise(freqX, freqY);
+                    var fineStrands = (double)noiseGen.SmoothNoise((x + helicalShift) / 4.0, y / 8.0) * 0.20;
+
+                    // Power curve sharpens the furrow valleys into dark cuts
+                    var barkVal = Math.Clamp(primaryGrain + fineStrands, 0.0, 1.0);
+                    var cordIntensity = Math.Pow(barkVal, 2.2);
+
+                    // 4. Cel-shading quantization
+                    int step;
+                    if (cordIntensity > 0.78) step = 4;
+                    else if (cordIntensity > 0.54) step = 3;
+                    else if (cordIntensity > 0.32) step = 2;
+                    else if (cordIntensity > 0.14) step = 1;
+                    else step = 0;
+
+                    var c = barkPalette[step];
+                    span[idx++] = c.b;
+                    span[idx++] = c.g;
+                    span[idx++] = c.r;
+                    span[idx++] = (byte)alpha;
+                }
+            }
+
+            return buffer;
+        }
 
         /// <summary>
         /// Generates a longitudinal wooden plank texture with sweeping grain and cathedral arches.
@@ -1841,157 +2311,6 @@ namespace Imaging.Texture
                     span[idx++] = val;
                     span[idx++] = val;
                     span[idx++] = (byte)alpha;
-                }
-            }
-
-            return buffer;
-        }
-
-        /// <summary>
-        /// Generates a smooth, volumetric leaf cloud texture with rounded leaf puffs, natural canopy gaps, and spherical directional shading.
-        /// </summary>
-        /// <param name="width">The width.</param>
-        /// <param name="height">The height.</param>
-        /// <param name="noiseGenInstance">The noise gen instance wrapper.</param>
-        /// <param name="colorPalette">The color palette RGB (Highlight, Base, Shadow, Mortar/Gap).</param>
-        /// <param name="gridCells">The number of cell divisions per axis.</param>
-        /// <param name="clusterCoverage">Controls cluster radius (e.g., 0.68 creates clear gaps between leaf puffs).</param>
-        /// <param name="fillArea">If true, fills background gaps with shadow color; if false, gaps are transparent.</param>
-        /// <returns>The generated raw texture buffer.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        public static RawTextureBuffer GenerateVolumetricLeafCloud(
-            int width,
-            int height,
-            object noiseGenInstance,
-            byte[]? colorPalette,
-            int gridCells = 8,
-            double clusterCoverage = 0.68,
-            bool fillArea = false)
-        {
-            var buffer = new RawTextureBuffer(width, height);
-
-            var activePalette = colorPalette ?? TextureConstants.GetVolumetricLeafCloudConfig().RgbRamp;
-            if (activePalette == null || activePalette.Length < 12) return buffer;
-
-            var cellWidth = (double)width / gridCells;
-            var cellHeight = (double)height / gridCells;
-            var maxRadius = (cellWidth + cellHeight) * 0.5 * clusterCoverage;
-
-            var featurePoints = new (double x, double y)[gridCells, gridCells];
-            var rand = new Random(42);
-
-            for (var gy = 0; gy < gridCells; gy++)
-            {
-                for (var gx = 0; gx < gridCells; gx++)
-                {
-                    var px = gx * cellWidth + (0.2 + 0.6 * rand.NextDouble()) * cellWidth;
-                    var py = gy * cellHeight + (0.2 + 0.6 * rand.NextDouble()) * cellHeight;
-                    featurePoints[gx, gy] = (px, py);
-                }
-            }
-
-            var pixels = buffer.PixelData;
-
-            byte rHi = activePalette[0], gHi = activePalette[1], bHi = activePalette[2];
-            byte rMid = activePalette[3], gMid = activePalette[4], bMid = activePalette[5];
-            byte rShd = activePalette[6], gShd = activePalette[7], bShd = activePalette[8];
-            byte rGap = activePalette[9], gGap = activePalette[10], bGap = activePalette[11];
-
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x++)
-                {
-                    var index = (y * width + x) * 4;
-                    var currentGridX = (int)(x / cellWidth);
-                    var currentGridY = (int)(y / cellHeight);
-
-                    var minDist = double.MaxValue;
-                    double closestDx = 0.0, closestDy = 0.0;
-
-                    for (var ny = -1; ny <= 1; ny++)
-                    {
-                        for (var nx = -1; nx <= 1; nx++)
-                        {
-                            var checkX = (currentGridX + nx + gridCells) % gridCells;
-                            var checkY = (currentGridY + ny + gridCells) % gridCells;
-
-                            var point = featurePoints[checkX, checkY];
-                            var px = point.x;
-                            var py = point.y;
-
-                            if (currentGridX + nx < 0) px -= width;
-                            if (currentGridX + nx >= gridCells) px += width;
-                            if (currentGridY + ny < 0) py -= height;
-                            if (currentGridY + ny >= gridCells) py += height;
-
-                            var dx = x - px;
-                            var dy = y - py;
-                            var dist = Math.Sqrt(dx * dx + dy * dy);
-
-                            if (dist < minDist)
-                            {
-                                minDist = dist;
-                                closestDx = dx;
-                                closestDy = dy;
-                            }
-                        }
-                    }
-
-                    var normRadius = minDist / maxRadius;
-
-                    if (normRadius >= 1.0)
-                    {
-                        if (fillArea)
-                        {
-                            pixels[index] = bGap;
-                            pixels[index + 1] = gGap;
-                            pixels[index + 2] = rGap;
-                            pixels[index + 3] = 255;
-                        }
-                        else
-                        {
-                            pixels[index] = 0;
-                            pixels[index + 1] = 0;
-                            pixels[index + 2] = 0;
-                            pixels[index + 3] = 0;
-                        }
-
-                        continue;
-                    }
-
-                    var h = Math.Sqrt(Math.Max(0.0, 1.0 - normRadius * normRadius));
-
-                    var relX = closestDx / maxRadius;
-                    var relY = closestDy / maxRadius;
-                    var light = Math.Clamp(h * 0.6 - (relX + relY) * 0.35 + 0.40, 0.0, 1.0);
-
-                    if (noiseGenInstance is NoiseGenerator noiseGen)
-                    {
-                        var grit = (noiseGen.GetNoise(x, y) - 0.5) * 0.08;
-                        light = Math.Clamp(light + grit, 0.0, 1.0);
-                    }
-
-                    byte r, g, b;
-
-                    if (light > 0.6)
-                    {
-                        var t = (light - 0.6) / 0.4;
-                        r = (byte)Math.Clamp(rMid + (rHi - rMid) * t, 0, 255);
-                        g = (byte)Math.Clamp(gMid + (gHi - gMid) * t, 0, 255);
-                        b = (byte)Math.Clamp(bMid + (bHi - bMid) * t, 0, 255);
-                    }
-                    else
-                    {
-                        var t = light / 0.6;
-                        r = (byte)Math.Clamp(rShd + (rMid - rShd) * t, 0, 255);
-                        g = (byte)Math.Clamp(gMid + (gHi - gMid) * t, 0, 255);
-                        b = (byte)Math.Clamp(bShd + (bMid - bShd) * t, 0, 255);
-                    }
-
-                    pixels[index] = b;
-                    pixels[index + 1] = g;
-                    pixels[index + 2] = r;
-                    pixels[index + 3] = 255;
                 }
             }
 

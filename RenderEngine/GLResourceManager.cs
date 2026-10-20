@@ -335,6 +335,16 @@ namespace RenderEngine
                 10041,
                 new("ConcretePorous", "Architectural matte concrete with fine aggregate pores and no sine-ring artifacts.",
                     (w, h, n) => TextureMathEngine.GenerateConcretePorous(w, h, n, baseTone: 140, gritSpread: 22))
+            },
+{
+                10042,
+                new("GnarledTreeBark", "Twisted, corded tree bark with deep longitudinal furrows and cel-shading.",
+                    (w, h, n) => TextureFactory.GenerateGnarledTreeBark(w, h, n))
+            },
+            {
+                10043,
+                new("VolumetricLeafCloudHardEdges", "Pixel-art leaf puff clusters with scalloped contours, dark outlines, and hard cel-shading.",
+                    (w, h, n) => TextureFactory.GenerateVolumetricLeafCloudHardEdges(w, h, n))
             }
         };
 

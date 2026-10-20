@@ -194,6 +194,17 @@ namespace Imaging.Texture.Tests
         }
 
         /// <summary>
+        /// Generates the gnarled tree bark visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateGnarledTreeBark_VisualTest()
+        {
+            // Anisotropic domain warped vertical grain lines
+            var buffer = TextureMathEngine.GenerateGnarledTreeBark(TestWidth, TestHeight, _noiseGenerator);
+            SaveBufferToImage(buffer, "12_GnarledTreeBark.png");
+        }
+
+        /// <summary>
         /// Generates the pointed leaf foliage visual test.
         /// </summary>
         [TestMethod]
@@ -360,6 +371,17 @@ namespace Imaging.Texture.Tests
             var buffer =
                 TextureFactory.GenerateVolumetricLeafCloud(TestWidth, TestHeight, _noiseGenerator, fillArea: true);
             SaveBufferToImage(buffer, "24_VolumetricLeafCloud_Solid.png");
+        }
+
+        /// <summary>
+        /// Generates the smooth volumetric leaf cloud with hard edges visual test.
+        /// </summary>
+        [TestMethod]
+        public void GenerateVolumetricLeafCloudHardEdges_VisualTest()
+        {
+            var buffer =
+                TextureFactory.GenerateVolumetricLeafCloudHardEdges(TestWidth, TestHeight, _noiseGenerator, fillArea: false);
+            SaveBufferToImage(buffer, "24_VolumetricLeafCloud_HardEdges.png");
         }
 
         /// <summary>

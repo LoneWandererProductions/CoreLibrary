@@ -171,6 +171,36 @@ namespace Imaging.Texture
             );
         }
 
+
+        /// <summary>
+        /// Generates the gnarled tree bark.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGen">The noise gen.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>
+        /// The generated raw texture buffer containing tree bark.
+        /// </returns>
+        public static RawTextureBuffer? GenerateGnarledTreeBark(int width, int height, object noiseGen,
+            TextureConfig? config = null)
+        {
+            var activeConfig = config ?? TextureConstants.GetTreeBarkConfig();
+
+            return TextureMathEngine.GenerateTreeBark(
+                width,
+                height,
+                noiseGen,
+                255,
+                activeConfig.TurbulenceSize,
+                70.0, // Stretched macro Y-scaling baseline footprint
+                activeConfig.WarpStrength,
+                activeConfig.EdgeRgb[0], activeConfig.EdgeRgb[1], activeConfig.EdgeRgb[2],
+                activeConfig.CenterRgb[0], activeConfig.CenterRgb[1], activeConfig.CenterRgb[2]
+            );
+        }
+
+
         /// <summary>
         /// Generates the interlocking leaf foliage canopy.
         /// </summary>
@@ -414,6 +444,32 @@ namespace Imaging.Texture
                 activeConfig.RgbRamp,
                 activeConfig.VoronoiGridSize,
                 clusterCoverage: 0.68,
+                fillArea: fillArea);
+        }
+
+        /// <summary>
+        /// Generates a pixel-art volumetric leaf cloud texture with scalloped contours and cel-shading.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="noiseGenInstance">The noise gen instance.</param>
+        /// <param name="config">The configuration.</param>
+        /// <param name="fillArea">If false, spaces between leaf clusters remain transparent.</param>
+        /// <returns>
+        /// The generated raw texture buffer containing smooth volumetric leaf clouds.
+        /// </returns>
+        public static RawTextureBuffer? GenerateVolumetricLeafCloudHardEdges(int width, int height, object noiseGenInstance,
+            TextureConfig? config = null, bool fillArea = false)
+        {
+            var activeConfig = config ?? TextureConstants.GetVolumetricLeafCloudConfig();
+
+            return TextureMathEngine.GenerateVolumetricLeafCloudHardEdges(
+                width,
+                height,
+                noiseGenInstance,
+                activeConfig.RgbRamp,
+                activeConfig.VoronoiGridSize > 0 ? activeConfig.VoronoiGridSize : 6,
+                clusterCoverage: 0.72,
                 fillArea: fillArea);
         }
 
