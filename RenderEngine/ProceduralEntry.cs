@@ -18,6 +18,6 @@ namespace RenderEngine
     internal readonly record struct ProceduralEntry(
         string Name,
         string Description,
-        Func<int, int, object, RawTextureBuffer?> Generator
+        Func<int, int, object?, RawTextureBuffer?> Generator
     );
 }

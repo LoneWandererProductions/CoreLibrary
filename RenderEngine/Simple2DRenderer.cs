@@ -49,7 +49,7 @@ namespace RenderEngine
         /// <summary>
         /// The resources
         /// </summary>
-        private readonly GlResourceManager _resources;
+        private readonly GlResourceManager? _resources;
 
         // --- Solid VAO/VBO ---
 
@@ -152,7 +152,7 @@ namespace RenderEngine
         /// <param name="width">Width of the render viewport in pixels.</param>
         /// <param name="height">Height of the render viewport in pixels.</param>
         /// <param name="resources">The GL resource manager instance.</param>
-        public Simple2DRenderer(int width, int height, GlResourceManager resources)
+        public Simple2DRenderer(int width, int height, GlResourceManager? resources)
         {
             Width = width;
             Height = height;

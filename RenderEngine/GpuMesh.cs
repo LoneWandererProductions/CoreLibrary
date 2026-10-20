@@ -30,6 +30,11 @@ namespace RenderEngine
         private bool _isSolidLayoutConfigured;
 
         /// <summary>
+        /// The is translucent layout configured
+        /// </summary>
+        private bool _isTranslucentLayoutConfigured;
+
+        /// <summary>
         /// Gets the textured VAO handle.
         /// </summary>
         public int Vao { get; private set; }
@@ -53,6 +58,21 @@ namespace RenderEngine
         /// Gets the solid vertex count.
         /// </summary>
         public int SolidVertexCount { get; private set; }
+
+        /// <summary>
+        /// Gets the VAO handle of the translucent solid geometry (glass, water): drawn in a separate blended pass.
+        /// </summary>
+        public int TranslucentVao { get; private set; }
+
+        /// <summary>
+        /// Gets the VBO handle of the translucent solid geometry.
+        /// </summary>
+        public int TranslucentVbo { get; private set; }
+
+        /// <summary>
+        /// Gets the translucent vertex count.
+        /// </summary>
+        public int TranslucentVertexCount { get; private set; }
 
         /// <summary>
         /// Gets the sub-mesh ranges for multi-textured rendering.
@@ -164,10 +184,46 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Uploads translucent untextured geometry (7 floats/vertex: X,Y,Z,R,G,B,A). It is kept apart from the opaque
+        /// solid part so the renderer can draw it after everything opaque, with blending on and depth writes off.
+        /// </summary>
+        /// <param name="dataPointer">The data pointer.</param>
+        /// <param name="floatCount">The float count.</param>
+        /// <param name="isDynamic">if set to <c>true</c> [is dynamic].</param>
+        public void UploadTranslucent(IntPtr dataPointer, int floatCount, bool isDynamic = false)
+        {
+            TranslucentVertexCount = floatCount / 7;
+            if (floatCount == 0) return;
+
+            if (TranslucentVao == 0) TranslucentVao = GL.GenVertexArray();
+            if (TranslucentVbo == 0) TranslucentVbo = GL.GenBuffer();
+
+            GL.BindVertexArray(TranslucentVao);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, TranslucentVbo);
+
+            var usage = isDynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw;
+            GL.BufferData(BufferTarget.ArrayBuffer, floatCount * sizeof(float), dataPointer, usage);
+
+            if (!_isTranslucentLayoutConfigured)
+            {
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 7 * sizeof(float), 0);
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(1, 4, VertexAttribPointerType.Float, false, 7 * sizeof(float),
+                    3 * sizeof(float));
+                GL.EnableVertexAttribArray(1);
+
+                _isTranslucentLayoutConfigured = true;
+            }
+
+            GL.BindVertexArray(0);
+        }
+
+        /// <summary>
         /// Resets this instance.
         /// </summary>
         public void Reset()
         {
+            TranslucentVertexCount = 0;
             SolidVertexCount = 0;
             Ranges.Clear();
         }
@@ -199,8 +255,21 @@ namespace RenderEngine
                 SolidVao = 0;
             }
 
+            if (TranslucentVbo != 0)
+            {
+                GL.DeleteBuffer(TranslucentVbo);
+                TranslucentVbo = 0;
+            }
+
+            if (TranslucentVao != 0)
+            {
+                GL.DeleteVertexArray(TranslucentVao);
+                TranslucentVao = 0;
+            }
+
             _isTexturedLayoutConfigured = false;
             _isSolidLayoutConfigured = false;
+            _isTranslucentLayoutConfigured = false;
             Ranges.Clear();
         }
     }

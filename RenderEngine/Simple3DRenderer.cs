@@ -50,7 +50,7 @@ namespace RenderEngine
         /// <summary>
         /// Reference tracker managing engine-level compiled shader assets and texture definitions.
         /// </summary>
-        private readonly GlResourceManager _resources;
+        private readonly GlResourceManager? _resources;
 
         /// <summary>
         /// Hardware layout buffer markers tracking active states
@@ -87,6 +87,12 @@ namespace RenderEngine
         /// <summary>
         /// The active program
         /// </summary>
+        /// <summary>
+        /// Baked meshes that carry translucent geometry (glass, water) drawn this frame. They are drawn once the opaque
+        /// world is complete, in <see cref="DrawTranslucentMeshes"/>, so they blend with what lies behind them.
+        /// </summary>
+        private readonly List<GpuMesh> _translucentMeshes = new();
+
         private int _activeProgram = -1;
 
         /// <summary>
@@ -220,7 +226,7 @@ namespace RenderEngine
         /// <param name="width">The target canvas width.</param>
         /// <param name="height">The target canvas height.</param>
         /// <param name="resources">The shared unmanaged resource coordinator.</param>
-        public Simple3DRenderer(int width, int height, GlResourceManager resources)
+        public Simple3DRenderer(int width, int height, GlResourceManager? resources)
         {
             _resources = resources;
             UpdateProjection(width, height);
@@ -539,6 +545,7 @@ namespace RenderEngine
             _activeProgram = -1;
             _activeVao = -1;
             _activeTexture = -1;
+            _translucentMeshes.Clear();
 
             ApplyFrameState();
 
@@ -590,6 +597,9 @@ namespace RenderEngine
         /// </summary>
         public void EndFrame()
         {
+            // Everything opaque is in the depth buffer by now: blend the glass and the water over it.
+            DrawTranslucentMeshes();
+
             if (!_framePostProcessed || !_fboInitialized) return;
 
             // 1. Restore GLWpfControl's target FBO and Viewport
@@ -808,6 +818,22 @@ namespace RenderEngine
                 GL.DrawArrays(PrimitiveType.Triangles, 0, batch.Solid3DVertices.Length / 7);
             }
 
+            if (batch.Translucent3DVertices.Length > 0)
+            {
+                BindProgram(_shaderSolid);
+                BindVao(_vaoSolid);
+                EnsureSolidMatrices();
+
+                EnsureBufferCapacity(_vboSolid, ref _vboSolidCapacity, batch.Translucent3DVertices.Length);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
+                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero,
+                    batch.Translucent3DVertices.Length * sizeof(float), (IntPtr)batch.Translucent3DVertices.Pointer);
+
+                BeginBlendedPass();
+                GL.DrawArrays(PrimitiveType.Triangles, 0, batch.Translucent3DVertices.Length / 7);
+                EndBlendedPass();
+            }
+
             if (batch.Textured3DBatches.Count > 0)
             {
                 BindProgram(_shaderTex);
@@ -845,6 +871,53 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Switches to alpha blending without depth writes: translucent surfaces still hide behind opaque ones (depth
+        /// test on) but do not hide each other or what is drawn after them.
+        /// </summary>
+        private static void BeginBlendedPass()
+        {
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.DepthMask(false);
+        }
+
+        /// <summary>
+        /// Back to the opaque state set by <see cref="ApplyFrameState"/>.
+        /// </summary>
+        private static void EndBlendedPass()
+        {
+            GL.DepthMask(true);
+            GL.Disable(EnableCap.Blend);
+        }
+
+        /// <summary>
+        /// Draws the translucent part (glass, water) of every mesh drawn this frame, after all opaque geometry.
+        /// </summary>
+        private void DrawTranslucentMeshes()
+        {
+            if (_translucentMeshes.Count == 0) return;
+
+            EnsureInitialized();
+
+            BindProgram(_shaderSolid);
+            EnsureSolidMatrices();
+            BeginBlendedPass();
+
+            for (var i = 0; i < _translucentMeshes.Count; i++)
+            {
+                var mesh = _translucentMeshes[i];
+                if (mesh.TranslucentVao == 0 || mesh.TranslucentVertexCount <= 0) continue;
+
+                BindVao(mesh.TranslucentVao);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, mesh.TranslucentVertexCount);
+            }
+
+            EndBlendedPass();
+            BindVao(0);
+            _translucentMeshes.Clear();
+        }
+
+        /// <summary>
         /// Renders a persistent mesh directly from GPU VRAM with zero PCIe memory transfers.
         /// </summary>
         /// <param name="mesh">The mesh.</param>
@@ -860,6 +933,8 @@ namespace RenderEngine
 
                 GL.DrawArrays(PrimitiveType.Triangles, 0, mesh.SolidVertexCount);
             }
+
+            if (mesh.TranslucentVertexCount > 0) _translucentMeshes.Add(mesh);
 
             if (mesh.Ranges.Count == 0) return;
 

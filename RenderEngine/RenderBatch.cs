@@ -43,6 +43,12 @@ namespace RenderEngine
         public readonly UnmanagedList<float> Solid3DVertices = new(16384);
 
         /// <summary>
+        /// The translucent solid 3D vertices (any vertex alpha below 255: glass, water). Same layout as
+        /// <see cref="Solid3DVertices"/>, but drawn in a later blended pass instead of with the opaque geometry.
+        /// </summary>
+        public readonly UnmanagedList<float> Translucent3DVertices = new(2048);
+
+        /// <summary>
         /// The textured 3D batches
         /// Layout: X, Y, Z, U, V, R, G, B, A (9 floats) - Grouped by TextureId
         /// </summary>
@@ -158,9 +164,10 @@ namespace RenderEngine
         /// <param name="color">The color.</param>
         public void AddSolid3DTriangle(Vector3 v1, Vector3 v2, Vector3 v3, (int r, int g, int b, int a) color)
         {
-            AddColoredVertex3D(v1, color, Solid3DVertices);
-            AddColoredVertex3D(v2, color, Solid3DVertices);
-            AddColoredVertex3D(v3, color, Solid3DVertices);
+            var target = color.a < 255 ? Translucent3DVertices : Solid3DVertices;
+            AddColoredVertex3D(v1, color, target);
+            AddColoredVertex3D(v2, color, target);
+            AddColoredVertex3D(v3, color, target);
         }
 
         /// <summary>
@@ -170,9 +177,10 @@ namespace RenderEngine
             Vector3 v1, Vector3 v2, Vector3 v3,
             (int r, int g, int b, int a) c1, (int r, int g, int b, int a) c2, (int r, int g, int b, int a) c3)
         {
-            AddColoredVertex3D(v1, c1, Solid3DVertices);
-            AddColoredVertex3D(v2, c2, Solid3DVertices);
-            AddColoredVertex3D(v3, c3, Solid3DVertices);
+            var target = c1.a < 255 || c2.a < 255 || c3.a < 255 ? Translucent3DVertices : Solid3DVertices;
+            AddColoredVertex3D(v1, c1, target);
+            AddColoredVertex3D(v2, c2, target);
+            AddColoredVertex3D(v3, c3, target);
         }
 
         /// <summary>
@@ -324,6 +332,7 @@ namespace RenderEngine
             SolidLineVertices.Clear();
             SolidTriangleVertices.Clear();
             Solid3DVertices.Clear();
+            Translucent3DVertices.Clear();
 
             foreach (var list in TexturedBatches.Values)
             {
