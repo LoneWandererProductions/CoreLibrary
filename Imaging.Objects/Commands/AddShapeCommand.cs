@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents
  * FILE:        AddShapeCommand.cs
@@ -34,7 +34,13 @@ namespace Imaging.Objects.Commands
         /// </summary>
         private readonly Shape _shape;
 
-        /// <summary>Initializes a new instance of the <see cref="AddShapeCommand" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddShapeCommand" /> class.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <param name="shape">The shape.</param>
+        /// <param name="index">The index.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public AddShapeCommand(Guid layerId, Shape shape, int? index = null)
         {
             ArgumentNullException.ThrowIfNull(shape);

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents
  * FILE:        Commands.cs
@@ -19,13 +19,25 @@ namespace Imaging.Objects.Commands
     /// <seealso cref="IDisposable" />
     public sealed class RemoveLayerCommand : IDocumentCommand, IDisposable
     {
+        /// <summary>
+        /// The layer identifier
+        /// </summary>
         private readonly Guid _layerId;
 
+        /// <summary>
+        /// The index
+        /// </summary>
         private int _index;
 
+        /// <summary>
+        /// The removed
+        /// </summary>
         private Layer? _removed;
 
-        /// <summary>Initializes a new instance of the <see cref="RemoveLayerCommand" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoveLayerCommand" /> class.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
         public RemoveLayerCommand(Guid layerId)
         {
             _layerId = layerId;
@@ -49,7 +61,10 @@ namespace Imaging.Objects.Commands
             _removed = null;
         }
 
-        /// <summary>Releases the removed layer once it can no longer be restored.</summary>
+        /// <inheritdoc />
+        /// <summary>
+        /// Releases the removed layer once it can no longer be restored.
+        /// </summary>
         public void Dispose()
         {
             (_removed as IDisposable)?.Dispose();

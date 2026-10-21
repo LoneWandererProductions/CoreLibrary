@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents
  * FILE:        RemoveShapeCommand.cs
@@ -16,15 +16,31 @@ namespace Imaging.Objects.Commands
     /// <summary>Removes a shape from a shape layer.</summary>
     public sealed class RemoveShapeCommand : IDocumentCommand
     {
+        /// <summary>
+        /// The layer identifier
+        /// </summary>
         private readonly Guid _layerId;
 
+        /// <summary>
+        /// The shape identifier
+        /// </summary>
         private readonly Guid _shapeId;
 
+        /// <summary>
+        /// The index
+        /// </summary>
         private int _index;
 
+        /// <summary>
+        /// The removed
+        /// </summary>
         private Shape? _removed;
 
-        /// <summary>Initializes a new instance of the <see cref="RemoveShapeCommand" /> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoveShapeCommand" /> class.
+        /// </summary>
+        /// <param name="layerId">The layer identifier.</param>
+        /// <param name="shapeId">The shape identifier.</param>
         public RemoveShapeCommand(Guid layerId, Guid shapeId)
         {
             _layerId = layerId;

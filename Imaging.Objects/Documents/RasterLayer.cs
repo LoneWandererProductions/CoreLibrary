@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents;
  * FILE:        RasterLayer.cs
@@ -65,7 +65,12 @@ namespace Imaging.Objects.Documents
         /// </value>
         public int Width { get; }
 
-        /// <summary>Gets the height in pixels.</summary>
+        /// <summary>
+        /// Gets the height in pixels.
+        /// </summary>
+        /// <value>
+        /// The height.
+        /// </value>
         public int Height { get; }
 
         /// <summary>

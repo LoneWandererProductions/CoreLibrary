@@ -1,8 +1,8 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Documents;
  * FILE:        BlendMode.cs
- * PURPOSE:     Your file purpose here
+ * PURPOSE:     Enum for Blend modes, right now only one.
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
@@ -14,7 +14,9 @@ namespace Imaging.Objects.Documents
     /// </summary>
     public enum BlendMode
     {
-        /// <summary>Straight-alpha "source over".</summary>
+        /// <summary>
+        /// Straight-alpha "source over".
+        /// </summary>
         Normal = 0
     }
 }

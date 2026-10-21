@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Shapes
  * FILE:        Shape.cs
@@ -92,12 +92,21 @@ namespace Imaging.Objects.Shapes
                 ToInt(Math.Ceiling(maxY)) + pad);
         }
 
+        /// <summary>
+        /// Converts the string representation of a number to an integer.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Convert double to int.</returns>
         private static int ToInt(double value)
         {
             return (int)Math.Clamp(value, -1_000_000_000d, 1_000_000_000d);
         }
 
-        /// <summary>Stroke-padded bounds of a point list.</summary>
+        /// <summary>
+        /// Stroke-padded bounds of a point list.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <returns>A Pixel Rectangle see <see cref="PixelRect"/></returns>
         protected PixelRect PointBounds(ImmutableArray<PointD> points)
         {
             if (points.IsDefaultOrEmpty) return PixelRect.Empty;
@@ -114,7 +123,13 @@ namespace Imaging.Objects.Shapes
             return BoundsOf(minX, minY, maxX, maxY);
         }
 
-        /// <summary>Moves every point by the given offset.</summary>
+        /// <summary>
+        /// Moves every point by the given offset.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <param name="dx">The dx.</param>
+        /// <param name="dy">The dy.</param>
+        /// <returns>New array of offeset Points</returns>
         protected static ImmutableArray<PointD> MovePoints(ImmutableArray<PointD> points, double dx, double dy)
         {
             if (points.IsDefaultOrEmpty) return points;
@@ -128,7 +143,12 @@ namespace Imaging.Objects.Shapes
             return builder.MoveToImmutable();
         }
 
-        /// <summary>True if there are at least <paramref name="minimum" /> points and all are finite.</summary>
+        /// <summary>
+        /// True if there are at least <paramref name="minimum" /> points and all are finite.
+        /// </summary>
+        /// <param name="points">The points.</param>
+        /// <param name="minimum">The minimum.</param>
+        /// <returns>True if Points are valid, else false.</returns>
         protected static bool ArePointsValid(ImmutableArray<PointD> points, int minimum)
         {
             if (points.IsDefault || points.Length < minimum) return false;
