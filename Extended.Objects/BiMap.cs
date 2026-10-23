@@ -48,7 +48,7 @@ namespace Extended.Objects
         /// <summary>
         /// The lock
         /// </summary>
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         /// <inheritdoc />
         /// <summary>

@@ -21,7 +21,7 @@ namespace Communication
     /// <seealso cref="DelegatingHandler" />
     public sealed class HttpWireTracingHandler : DelegatingHandler
     {
-        private readonly object _lockObj = new object();
+        private readonly Lock _lockObj = new Lock();
         private string _lastTrace = string.Empty;
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Communication
                 if (!string.IsNullOrEmpty(reqBody))
                 {
                     sb.AppendLine("> ");
-                    sb.AppendLine(reqBody.Length > 1000 ? reqBody.Substring(0, 1000) + "... [TRUNCATED]" : reqBody);
+                    sb.AppendLine(reqBody.Length > 1000 ? $"{reqBody.AsSpan(0, 1000)}... [TRUNCATED]" : reqBody);
                 }
             }
 

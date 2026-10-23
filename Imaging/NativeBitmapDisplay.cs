@@ -45,7 +45,9 @@ namespace Imaging
         {
             _pictureBox = new PictureBox
             {
-                Dock = DockStyle.Fill, SizeMode = PictureBoxSizeMode.Zoom, BackColor = Color.Transparent
+                Dock = DockStyle.Fill,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                BackColor = Color.Transparent
             };
             EnableDoubleBuffering(_pictureBox);
             Child = _pictureBox;

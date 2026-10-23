@@ -1227,7 +1227,7 @@ namespace Imaging.Texture
             byte rShd, gShd, bShd;
             byte rOut, gOut, bOut;
 
-            if (colorPalette != null && colorPalette.Length >= 15)
+            if (colorPalette?.Length >= 15)
             {
                 rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
                 rSun = colorPalette[3]; gSun = colorPalette[4]; bSun = colorPalette[5];
@@ -1235,7 +1235,7 @@ namespace Imaging.Texture
                 rShd = colorPalette[9]; gShd = colorPalette[10]; bShd = colorPalette[11];
                 rOut = colorPalette[12]; gOut = colorPalette[13]; bOut = colorPalette[14];
             }
-            else if (colorPalette != null && colorPalette.Length >= 12)
+            else if (colorPalette?.Length >= 12)
             {
                 // 12-Byte-Palette (Highlight, Midtone, Shadow, Gap/Mortar)
                 rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
@@ -1415,7 +1415,7 @@ namespace Imaging.Texture
             byte rShd, gShd, bShd;
             byte rOut, gOut, bOut;
 
-            if (colorPalette != null && colorPalette.Length >= 15)
+            if (colorPalette?.Length >= 15)
             {
                 // 5-Farben-Palette: [Tip, Sunlit, Midtone, Shadow, Outline/Mortar]
                 rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
@@ -1424,7 +1424,7 @@ namespace Imaging.Texture
                 rShd = colorPalette[9]; gShd = colorPalette[10]; bShd = colorPalette[11];
                 rOut = colorPalette[12]; gOut = colorPalette[13]; bOut = colorPalette[14];
             }
-            else if (colorPalette != null && colorPalette.Length >= 12)
+            else if (colorPalette?.Length >= 12)
             {
                 // Projekt-Standard (4 Farben): [Highlight, Base/Mid, Shadow, Gap/Mortar]
                 rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
@@ -1853,10 +1853,10 @@ namespace Imaging.Texture
                     else if (cordIntensity > 0.14) step = 1;
                     else step = 0;
 
-                    var c = barkPalette[step];
-                    span[idx++] = c.b;
-                    span[idx++] = c.g;
-                    span[idx++] = c.r;
+                    var (r, g, b) = barkPalette[step];
+                    span[idx++] = b;
+                    span[idx++] = g;
+                    span[idx++] = r;
                     span[idx++] = (byte)alpha;
                 }
             }

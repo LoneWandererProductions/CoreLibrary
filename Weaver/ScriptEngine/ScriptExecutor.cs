@@ -154,7 +154,7 @@ namespace Weaver.ScriptEngine
                         if (_debug)
                             DebugLine(category, stmt, StepType.Execute, "Postion", string.Join(",", _position));
 
-                        if (_labelPositions.TryGetValue(stmt!, out var pos))
+                        if (_labelPositions.TryGetValue(stmt, out var pos))
                         {
                             if (_debug)
                                 Trace.WriteLine(
@@ -204,7 +204,7 @@ namespace Weaver.ScriptEngine
 
                         var bodyStart = _doWhileStack.Peek();
 
-                        var cond = _evaluator.Evaluate(stmt!);
+                        var cond = _evaluator.Evaluate(stmt);
 
                         if (_debug)
                             Trace.WriteLine(
@@ -238,7 +238,7 @@ namespace Weaver.ScriptEngine
                         if (_debug)
                             DebugLine(category, stmt, StepType.Execute, "Postion", string.Join(",", _position));
 
-                        var ifcond = _evaluator.Evaluate(stmt!);
+                        var ifcond = _evaluator.Evaluate(stmt);
                         if (_debug)
                             Trace.WriteLine($"[Debug] If_Condition at {_position}, cond={ifcond}");
 
@@ -295,7 +295,7 @@ namespace Weaver.ScriptEngine
                         if (_debug)
                             DebugLine(category, stmt, StepType.Execute, "Postion", string.Join(",", _position));
 
-                        var result = _weave.ProcessInput(stmt!);
+                        var result = _weave.ProcessInput(stmt);
                         if (_debug)
                             DebugLine(category, stmt, StepType.Output, "Result",
                                 $"Success ={result.Success}, Feedback ={(result.Feedback != null ? "<pending>" : "null")}, Pos ={_position}");

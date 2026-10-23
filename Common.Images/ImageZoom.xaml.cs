@@ -126,6 +126,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
@@ -521,7 +522,7 @@ namespace Common.Images
         /// <summary>
         ///     The lock object used for monitor locking (thread-safety).
         /// </summary>
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         /// <summary>
         ///     The disposed

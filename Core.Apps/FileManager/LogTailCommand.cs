@@ -10,6 +10,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using Core.Apps.Interface;
 using Core.Apps.UI;
 using Weaver;
@@ -40,7 +41,7 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// The synchronize root
         /// </summary>
-        private readonly object _syncRoot = new object();
+        private readonly Lock _syncRoot = new Lock();
 
         /// <inheritdoc />
         public CommandSignature Signature => new(Namespace, Name, ParameterCount);

@@ -32,7 +32,7 @@ namespace CommonLibrary.Tests
 
             var result = MatrixUtility.UnsafeMultiplication(m1, m2);
 
-            Assert.AreEqual(result[0, 0], 6, "First");
+            Assert.AreEqual(6, result[0, 0], "First");
 
             x = new double[,] { { 2, 1, 1 }, { 1, 2, 1 }, { 1, 1, 2 } };
             m1 = new BaseMatrix { Matrix = x };
@@ -58,35 +58,35 @@ namespace CommonLibrary.Tests
             timer.Stop();
             Trace.WriteLine($"Test two (unsafe multiplication): {timer.Elapsed}");
 
-            Assert.AreEqual(result[0, 0], 2, "00");
-            Assert.AreEqual(result[1, 0], 1, "10");
-            Assert.AreEqual(result[2, 0], 1, "20");
-            Assert.AreEqual(result[0, 1], 1, "01");
-            Assert.AreEqual(result[1, 1], 2, "11");
-            Assert.AreEqual(result[2, 1], 1, "21");
-            Assert.AreEqual(result[0, 2], 1, "02");
-            Assert.AreEqual(result[1, 2], 1, "12");
-            Assert.AreEqual(result[2, 2], 2, "22");
+            Assert.AreEqual(2, result[0, 0], "00");
+            Assert.AreEqual(1, result[1, 0], "10");
+            Assert.AreEqual(1, result[2, 0], "20");
+            Assert.AreEqual(1, result[0, 1], "01");
+            Assert.AreEqual(2, result[1, 1], "11");
+            Assert.AreEqual(1, result[2, 1], "21");
+            Assert.AreEqual(1, result[0, 2], "02");
+            Assert.AreEqual(1, result[1, 2], "12");
+            Assert.AreEqual(2, result[2, 2], "22");
 
-            Assert.AreEqual(compare1[0, 0], 2, "00");
-            Assert.AreEqual(compare1[1, 0], 1, "10");
-            Assert.AreEqual(compare1[2, 0], 1, "20");
-            Assert.AreEqual(compare1[0, 1], 1, "01");
-            Assert.AreEqual(compare1[1, 1], 2, "11");
-            Assert.AreEqual(compare1[2, 1], 1, "21");
-            Assert.AreEqual(compare1[0, 2], 1, "02");
-            Assert.AreEqual(compare1[1, 2], 1, "12");
-            Assert.AreEqual(compare1[2, 2], 2, "22");
+            Assert.AreEqual(2, compare1[0, 0], "00");
+            Assert.AreEqual(1, compare1[1, 0], "10");
+            Assert.AreEqual(1, compare1[2, 0], "20");
+            Assert.AreEqual(1, compare1[0, 1], "01");
+            Assert.AreEqual(2, compare1[1, 1], "11");
+            Assert.AreEqual(1, compare1[2, 1], "21");
+            Assert.AreEqual(1, compare1[0, 2], "02");
+            Assert.AreEqual(1, compare1[1, 2], "12");
+            Assert.AreEqual(2, compare1[2, 2], "22");
 
-            Assert.AreEqual(compare2[0, 0], 2, "00");
-            Assert.AreEqual(compare2[1, 0], 1, "10");
-            Assert.AreEqual(compare2[2, 0], 1, "20");
-            Assert.AreEqual(compare2[0, 1], 1, "01");
-            Assert.AreEqual(compare2[1, 1], 2, "11");
-            Assert.AreEqual(compare2[2, 1], 1, "21");
-            Assert.AreEqual(compare2[0, 2], 1, "02");
-            Assert.AreEqual(compare2[1, 2], 1, "12");
-            Assert.AreEqual(compare2[2, 2], 2, "22");
+            Assert.AreEqual(2, compare2[0, 0], "00");
+            Assert.AreEqual(1, compare2[1, 0], "10");
+            Assert.AreEqual(1, compare2[2, 0], "20");
+            Assert.AreEqual(1, compare2[0, 1], "01");
+            Assert.AreEqual(2, compare2[1, 1], "11");
+            Assert.AreEqual(1, compare2[2, 1], "21");
+            Assert.AreEqual(1, compare2[0, 2], "02");
+            Assert.AreEqual(1, compare2[1, 2], "12");
+            Assert.AreEqual(2, compare2[2, 2], "22");
 
             x = new double[,] { { 0, -1, 0 }, { 1, 0, 0 }, { 0, 0, 1 } };
             m1 = new BaseMatrix { Matrix = x };
@@ -95,9 +95,9 @@ namespace CommonLibrary.Tests
 
             result = m1 * m2;
 
-            Assert.AreEqual(result[0, 0], 0, "00");
-            Assert.AreEqual(result[1, 0], 1, "10");
-            Assert.AreEqual(result[2, 0], 0, "20");
+            Assert.AreEqual(0, result[0, 0], "00");
+            Assert.AreEqual(1, result[1, 0], "10");
+            Assert.AreEqual(0, result[2, 0], "20");
 
             double[,]? matrix = { { 1, 1, 3, 1 } };
             m1 = new BaseMatrix(matrix);
@@ -141,10 +141,10 @@ namespace CommonLibrary.Tests
 
             var result = MatrixUtility.UnsafeAddition(m1, m2);
 
-            Assert.AreEqual(result[0, 0], 11, "11");
-            Assert.AreEqual(result[0, 1], 9, "9");
-            Assert.AreEqual(result[1, 0], 4, "4");
-            Assert.AreEqual(result[1, 1], 4, "4");
+            Assert.AreEqual(11, result[0, 0], "11");
+            Assert.AreEqual(9, result[0, 1], "9");
+            Assert.AreEqual(4, result[1, 0], "4");
+            Assert.AreEqual(4, result[1, 1], "4");
         }
 
         /// <summary>
@@ -161,10 +161,10 @@ namespace CommonLibrary.Tests
 
             var result = MatrixUtility.UnsafeSubtraction(m1, m2);
 
-            Assert.AreEqual(result[0, 0], 5, "5");
-            Assert.AreEqual(result[0, 1], -1, "-1");
-            Assert.AreEqual(result[1, 0], 2, "2");
-            Assert.AreEqual(result[1, 1], 0, "0");
+            Assert.AreEqual(5, result[0, 0], "5");
+            Assert.AreEqual(-1, result[0, 1], "-1");
+            Assert.AreEqual(2, result[1, 0], "2");
+            Assert.AreEqual(0, result[1, 1], "0");
         }
 
         /// <summary>

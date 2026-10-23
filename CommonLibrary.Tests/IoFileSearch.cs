@@ -55,7 +55,7 @@ namespace CommonLibrary.Tests
 
             Assert.IsTrue(check, "Did not delete Folder:");
 
-            Assert.AreEqual(list[0], PathOperations + ResourcesGeneral.TstExt, "Correct File");
+            Assert.AreEqual(PathOperations + ResourcesGeneral.TstExt, list[0], "Correct File");
 
             check = await FileHandleDelete.DeleteFile(file);
 
@@ -91,7 +91,7 @@ namespace CommonLibrary.Tests
 
             Assert.IsTrue(check, "Correct Number of files");
 
-            Assert.AreEqual(list[0], PathOperations, "Not the correct File");
+            Assert.AreEqual(PathOperations, list[0], "Not the correct File");
 
             //search Test with contains string
             var ext = new List<string> { ResourcesGeneral.TstExt };

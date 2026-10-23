@@ -182,8 +182,8 @@ namespace Solaris
                         int srcY = Math.Min(height - 1, (int)((y / (float)isoHeight) * height));
                         int srcX = Math.Min(width - 1, x);
 
-                        var pixel = squareBuffer.GetPixel(srcX, srcY);
-                        diamondBuffer.SetPixelUnsafe(x, y, pixel.r, pixel.g, pixel.b, pixel.a);
+                        var (r, g, b, a) = squareBuffer.GetPixel(srcX, srcY);
+                        diamondBuffer.SetPixelUnsafe(x, y, r, g, b, a);
                     }
                 }
             }

@@ -77,7 +77,7 @@ namespace CommonLibrary.Tests
             PrintPath(grid, path.FullPath);
 
             Assert.IsNotNull(path, "Path should not be null.");
-            Assert.AreEqual(path.FullPath.Count, 2, "Path length should be 2.");
+            Assert.AreEqual(2, path.FullPath.Count, "Path length should be 2.");
         }
 
 

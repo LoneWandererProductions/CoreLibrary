@@ -153,7 +153,7 @@ namespace Imaging
 
             // 1. Wrap Hue (e.g. 361 becomes 1, -10 becomes 350)
             // This handles cases where the mouse rotation calc goes slightly over 360
-            h = h % 360.0;
+            h %= 360.0;
             if (h < 0) h += 360.0;
 
             // 2. Clamp Saturation and Value to 0.0 - 1.0

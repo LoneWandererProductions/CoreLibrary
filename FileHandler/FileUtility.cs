@@ -12,6 +12,9 @@ using System.IO;
 
 namespace FileHandler
 {
+    /// <summary>
+    /// Shared Helper.
+    /// </summary>
     public static class FileUtility
     {
         /// <summary>
@@ -33,12 +36,10 @@ namespace FileHandler
                 return null;
 
             var newPath = path;
-            var count = 0;
 
-            while (File.Exists(newPath))
+            for (var count = 0; File.Exists(newPath); count++)
             {
                 newPath = Path.Combine(directory, fileNameOnly + "(" + count + ")" + extension);
-                count++;
             }
 
             return newPath;

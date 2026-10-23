@@ -303,7 +303,7 @@ namespace Imaging.Tests
             // Convert individual components to packed uint
             var packedColor = unchecked((uint)(alpha << 24 | red << 16 | green << 8 | blue));
 
-            Assert.AreEqual(packedColor, expectedPackedColor);
+            Assert.AreEqual(expectedPackedColor, packedColor);
         }
 
         /// <summary>

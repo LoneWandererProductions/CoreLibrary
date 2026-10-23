@@ -73,7 +73,7 @@ namespace FileHandler
         /// <exception cref="FileHandlerException">Thrown when paths are null or empty.</exception>
         public static async Task<bool> DeleteFiles(IEnumerable<string> paths)
         {
-            if (paths == null || paths.Count() == 0)
+            if (paths?.Any() != true)
                 throw new FileHandlerException(FileHandlerResources.ErrorEmptyList);
 
             var tasks = paths.Select(DeleteFile);

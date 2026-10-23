@@ -140,6 +140,8 @@ namespace Core.Apps.Rules
         /// <summary>
         /// Builds the shared in-memory compilation used for semantic type resolution.
         /// </summary>
+        /// <param name="trees">The trees.</param>
+        /// <returns>A CSharpCompilation Referemce.</returns>
         private static CSharpCompilation BuildCompilation(IEnumerable<SyntaxTree> trees)
         {
             return CSharpCompilation.Create("DisposableOwnershipAnalysis")
@@ -176,6 +178,13 @@ namespace Core.Apps.Rules
         // Local variables: reassignment-before-dispose, and never-disposed (semantic).
         // ----------------------------------------------------------------------------
 
+        /// <summary>
+        /// Analyzes the locals in method.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="method">The method.</param>
+        /// <param name="semanticModel">The semantic model.</param>
+        /// <returns>List of diagnostic results.</returns>
         private static IEnumerable<Diagnostic> AnalyzeLocalsInMethod(string? filePath,
             MethodDeclarationSyntax method, SemanticModel semanticModel)
         {
@@ -232,7 +241,7 @@ namespace Core.Apps.Rules
                 //    type is disposable (semantic match, or heuristic fallback) - unlike
                 //    DisposableAnalyzer this does not depend on the variable's own name.
                 if (!HasDisposeCallBefore(method, declarator.Identifier.Text, int.MaxValue) &&
-                    !DoesEscape(declarator.Identifier.Text, method, semanticModel))
+                    !DoesEscape(declarator.Identifier.Text, method))
                 {
                     yield return BuildDiagnostic(filePath, declarator,
                         $"'{declarator.Identifier.Text}' ({typeName}) is never disposed and does not escape " +
@@ -245,8 +254,10 @@ namespace Core.Apps.Rules
         /// True if the identifier is returned, passed as an argument, or assigned to a
         /// field/property - i.e. ownership plausibly transfers out of this method.
         /// </summary>
-        private static bool DoesEscape(string identifierName, MethodDeclarationSyntax method,
-            SemanticModel semanticModel)
+        /// <param name="identifierName">Name of the identifier.</param>
+        /// <param name="method">The method.</param>
+        /// <returns>True if escape, else false.</returns>
+        private static bool DoesEscape(string identifierName, MethodDeclarationSyntax method)
         {
             var references = method.DescendantNodes()
                 .OfType<IdentifierNameSyntax>()
@@ -280,6 +291,13 @@ namespace Core.Apps.Rules
         // Fields: the check CA2000 explicitly does not perform.
         // ----------------------------------------------------------------------------
 
+        /// <summary>
+        /// Analyzes the field overwrites in method.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="method">The method.</param>
+        /// <param name="semanticModel">The semantic model.</param>
+        /// <returns>List of diagnostic results.</returns>
         private static IEnumerable<Diagnostic> AnalyzeFieldOverwritesInMethod(string? filePath,
             MethodDeclarationSyntax method, SemanticModel semanticModel)
         {
@@ -314,6 +332,10 @@ namespace Core.Apps.Rules
         /// If the assignment's left side is a disposable-typed instance field (optionally
         /// through 'this.'), returns its name and resolved (or heuristic) type name.
         /// </summary>
+        /// <param name="assignment">The assignment.</param>
+        /// <param name="semanticModel">The semantic model.</param>
+        /// <param name="fieldTypeName">Name of the field type.</param>
+        /// <returns>Name of assigned field.</returns>
         private static string? GetAssignedFieldName(AssignmentExpressionSyntax assignment,
             SemanticModel semanticModel, out string fieldTypeName)
         {
@@ -355,6 +377,12 @@ namespace Core.Apps.Rules
         /// the semantic model first and a widened name heuristic only when the type can't
         /// be resolved (e.g. external assembly not present in this lightweight compilation).
         /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="semanticModel">The semantic model.</param>
+        /// <param name="typeName">Name of the type.</param>
+        /// <returns>
+        ///   <c>true</c> if [is disposable expression] [the specified expression]; otherwise, <c>false</c>.
+        /// </returns>
         private static bool IsDisposableExpression(ExpressionSyntax expression, SemanticModel semanticModel,
             out string typeName)
         {
@@ -379,6 +407,13 @@ namespace Core.Apps.Rules
                 candidateName.IndexOf(hint, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
+        /// <summary>
+        /// Determines whether [is disposable type] [the specified type].
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        ///   <c>true</c> if [is disposable type] [the specified type]; otherwise, <c>false</c>.
+        /// </returns>
         private static bool IsDisposableType(ITypeSymbol? type)
         {
             if (type == null || type.TypeKind == TypeKind.Error)
@@ -390,6 +425,13 @@ namespace Core.Apps.Rules
                    type.AllInterfaces.Any(i => i.ToDisplayString() == "System.IDisposable");
         }
 
+        /// <summary>
+        /// Determines whether [is wrapped in using] [the specified variable].
+        /// </summary>
+        /// <param name="variable">The variable.</param>
+        /// <returns>
+        ///   <c>true</c> if [is wrapped in using] [the specified variable]; otherwise, <c>false</c>.
+        /// </returns>
         private static bool IsWrappedInUsing(VariableDeclaratorSyntax variable)
         {
             if (variable.Parent?.Parent is UsingStatementSyntax)
@@ -412,10 +454,10 @@ namespace Core.Apps.Rules
             // 1. Direct calls: _current.Dispose() or this._current.Dispose()
             var standardCalls = method.DescendantNodes()
                 .OfType<InvocationExpressionSyntax>()
-                .Where(inv => inv.SpanStart < beforePosition)
-                .Any(inv => inv.Expression is MemberAccessExpressionSyntax member &&
+                .Any(inv => inv.SpanStart < beforePosition && inv.Expression is MemberAccessExpressionSyntax member &&
                             member.Name.Identifier.Text == "Dispose" &&
-                            IsTargetVariable(member.Expression, name, allowThisPrefix));
+                            IsTargetVariable(member.Expression, name, allowThisPrefix))
+;
 
             if (standardCalls)
             {
@@ -425,9 +467,9 @@ namespace Core.Apps.Rules
             // 2. Null-conditional calls: _current?.Dispose() or this._current?.Dispose()
             var conditionalCalls = method.DescendantNodes()
                 .OfType<ConditionalAccessExpressionSyntax>()
-                .Where(cond => cond.SpanStart < beforePosition)
-                .Any(cond => IsTargetVariable(cond.Expression, name, allowThisPrefix) &&
-                             IsDisposeInvocation(cond.WhenNotNull));
+                .Any(cond => cond.SpanStart < beforePosition && IsTargetVariable(cond.Expression, name, allowThisPrefix) &&
+                             IsDisposeInvocation(cond.WhenNotNull))
+;
 
             return conditionalCalls;
         }
@@ -435,6 +477,12 @@ namespace Core.Apps.Rules
         /// <summary>
         /// Helper to check if an expression matches the variable name (with optional 'this.' prefix).
         /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="allowThisPrefix">if set to <c>true</c> [allow this prefix].</param>
+        /// <returns>
+        ///   <c>true</c> if [is target variable] [the specified expression]; otherwise, <c>false</c>.
+        /// </returns>
         private static bool IsTargetVariable(ExpressionSyntax expression, string name, bool allowThisPrefix)
         {
             if (expression is IdentifierNameSyntax id && id.Identifier.Text == name)
@@ -457,6 +505,10 @@ namespace Core.Apps.Rules
         /// <summary>
         /// Helper to check if a conditionally accessed expression executes Dispose().
         /// </summary>
+        /// <param name="whenNotNull">The when not null.</param>
+        /// <returns>
+        ///   <c>true</c> if [is dispose invocation] [the specified when not null]; otherwise, <c>false</c>.
+        /// </returns>
         private static bool IsDisposeInvocation(ExpressionSyntax whenNotNull)
         {
             if (whenNotNull is InvocationExpressionSyntax inv)
@@ -481,6 +533,10 @@ namespace Core.Apps.Rules
         /// Builds the diagnostic for a given node, escalating severity/impact when the node
         /// sits inside a loop - the correlation CA2000 has no mechanism to express.
         /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="node">The node.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>List of diagnostic results.</returns>
         private static Diagnostic BuildDiagnostic(string? filePath, SyntaxNode node, string message)
         {
             var loopContext = CoreHelper.GetLoopContext(node);

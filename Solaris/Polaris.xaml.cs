@@ -371,7 +371,7 @@ namespace Solaris
                 {
                     var newBitmap = Helper.GenerateImage(
                         PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures, PolarisMap,
-                        ActiveViewport, PolarisElevation, StepHeight); 
+                        ActiveViewport, PolarisElevation, StepHeight);
                     ReplaceBitmapLayerOne(newBitmap);
                 }
                 else if (_dirtyFlags.HasFlag(DirtyFlags.TileMap) && BitmapLayerOne != null && PolarisMap != null)

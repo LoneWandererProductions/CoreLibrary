@@ -67,7 +67,7 @@ namespace FileHandler
         public static List<string?> GetFileByExtensionWithExtension(string? path, string appendix, bool subdirectories)
         {
             var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
-            return files.Select(Path.GetFileName).ToList();
+            return files.ConvertAll(Path.GetFileName);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace FileHandler
             bool subdirectories)
         {
             var files = FileHandlerProcessing.GetFilesByExtension(path, appendix, subdirectories) ?? new List<string>();
-            return files.Select(Path.GetFileNameWithoutExtension).ToList();
+            return files.ConvertAll(Path.GetFileNameWithoutExtension);
         }
 
         /// <summary>

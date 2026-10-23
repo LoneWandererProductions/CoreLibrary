@@ -26,7 +26,7 @@ namespace Weaver
         /// The synchronization lock object.
         /// We use a private object to prevent deadlocks from external locking on 'this'.
         /// </summary>
-        private readonly object _syncRoot = new();
+        private readonly Lock _syncRoot = new();
 
         /// <summary>
         /// Stores registered commands, keyed by (namespace, name, parameter count)

@@ -32,7 +32,7 @@ namespace Imaging.Compare
             using var scaled = Render.BitmapScaling(bitmap, ImageResources.DuplicateSize, ImageResources.DuplicateSize);
 
             const int size = ImageResources.DuplicateSize;
-            var totalPixels = size * size;
+            const int totalPixels = size * size;
             var imageBytes = new byte[totalPixels];
 
             var rect = new Rectangle(0, 0, size, size);

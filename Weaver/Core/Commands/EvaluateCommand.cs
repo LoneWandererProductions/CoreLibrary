@@ -109,7 +109,7 @@ namespace Weaver.Core.Commands
                     );
                 }
 
-                _registry.Set(targetVar, result!, type);
+                _registry.Set(targetVar, result, type);
 
                 return CommandResult.Ok(
                     $"Stored '{result}' in '{targetVar}'.",

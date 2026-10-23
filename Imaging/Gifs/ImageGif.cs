@@ -161,7 +161,7 @@ namespace Imaging.Gifs
                     return;
 
                 // 3. Convert to BitmapSource (still off UI thread)
-                _frames = rawFrames.Select(b =>
+                _frames = rawFrames.ConvertAll(b =>
                 {
                     var bi = b.BitmapToSource();
 
@@ -170,7 +170,7 @@ namespace Imaging.Gifs
 
                     b.Dispose();
                     return bi;
-                }).ToList();
+                });
 
                 if (token.IsCancellationRequested || _frames.Count == 0)
                     return;

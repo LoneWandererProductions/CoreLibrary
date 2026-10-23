@@ -98,7 +98,7 @@ namespace Imaging.Gifs
         /// <value>
         ///     The frames.
         /// </value>
-        public List<FrameInfo> Frames { get; set; } =  [];
+        public List<FrameInfo> Frames { get; set; } = [];
 
         /// <summary>
         ///     Gets the total duration.

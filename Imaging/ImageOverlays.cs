@@ -186,16 +186,16 @@ namespace Imaging
             using (var dbmTwo = new DirectBitmap(imgTwo))
             {
                 for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++)
-                {
-                    var color1 = dbmOne.GetPixel(x, y);
-                    var color2 = dbmTwo.GetPixel(x, y);
+                    for (var x = 0; x < width; x++)
+                    {
+                        var color1 = dbmOne.GetPixel(x, y);
+                        var color2 = dbmTwo.GetPixel(x, y);
 
-                    // Use the provided pixel operation function
-                    var resultColor = pixelOperation(color1, color2);
+                        // Use the provided pixel operation function
+                        var resultColor = pixelOperation(color1, color2);
 
-                    pixelsToSet.Add((x, y, resultColor));
-                }
+                        pixelsToSet.Add((x, y, resultColor));
+                    }
             }
 
             try

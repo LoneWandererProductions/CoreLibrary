@@ -564,30 +564,30 @@ namespace Common.ExtendedObject.Tests
             int[,] matrix = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 }, { 5, 2, 3, 1 } };
 
             matrix.SwapColumn(0, 2);
-            Assert.AreEqual(matrix[2, 3], 4, "4");
-            Assert.AreEqual(matrix[0, 3], 1, "4");
+            Assert.AreEqual(4, matrix[2, 3], "4");
+            Assert.AreEqual(1, matrix[0, 3], "4");
 
-            Assert.AreEqual(matrix[2, 0], 1, "4");
-            Assert.AreEqual(matrix[0, 0], 5, "4");
+            Assert.AreEqual(1, matrix[2, 0], "4");
+            Assert.AreEqual(5, matrix[0, 0], "4");
 
             matrix = new[,] { { 1, 2, 3, 4 }, { 1, 2, 3, 4 }, { 5, 2, 3, 1 } };
 
             matrix.SwapRow(0, 1);
-            Assert.AreEqual(matrix[0, 0], 2, "4");
-            Assert.AreEqual(matrix[0, 1], 1, "4");
+            Assert.AreEqual(2, matrix[0, 0], "4");
+            Assert.AreEqual(1, matrix[0, 1], "4");
 
-            Assert.AreEqual(matrix[2, 0], 2, "4");
-            Assert.AreEqual(matrix[2, 1], 5, "4");
+            Assert.AreEqual(2, matrix[2, 0], "4");
+            Assert.AreEqual(5, matrix[2, 1], "4");
 
             var str = matrix.ToText();
             Assert.IsFalse(string.IsNullOrEmpty(str), "Null string");
-            Assert.AreEqual(str.Length, 45, "Count");
+            Assert.AreEqual(45, str.Length, "Count");
 
             int[,] normal = { { 1, 2 }, { 1, 2 } };
             var copy = normal.Duplicate();
             normal[0, 0] = 0;
-            Assert.AreEqual(copy[0, 0], 1, "00");
-            Assert.AreEqual(copy[0, 1], 2, "01");
+            Assert.AreEqual(1, copy[0, 0], "00");
+            Assert.AreEqual(2, copy[0, 1], "01");
 
             //see Matrix Multiplication, the speed is sadly slower, but it converts arrays to span in a fast way and the results are the same
 
@@ -599,15 +599,15 @@ namespace Common.ExtendedObject.Tests
 
             var compare1 = HelperMethods.MatrixTestOne(m1, m2);
 
-            Assert.AreEqual(compare1[0, 0], 2, "00");
-            Assert.AreEqual(compare1[1, 0], 1, "10");
-            Assert.AreEqual(compare1[2, 0], 1, "20");
-            Assert.AreEqual(compare1[0, 1], 1, "01");
-            Assert.AreEqual(compare1[1, 1], 2, "11");
-            Assert.AreEqual(compare1[2, 1], 1, "21");
-            Assert.AreEqual(compare1[0, 2], 1, "02");
-            Assert.AreEqual(compare1[1, 2], 1, "12");
-            Assert.AreEqual(compare1[2, 2], 2, "22");
+            Assert.AreEqual(2, compare1[0, 0], "00");
+            Assert.AreEqual(1, compare1[1, 0], "10");
+            Assert.AreEqual(1, compare1[2, 0], "20");
+            Assert.AreEqual(1, compare1[0, 1], "01");
+            Assert.AreEqual(2, compare1[1, 1], "11");
+            Assert.AreEqual(1, compare1[2, 1], "21");
+            Assert.AreEqual(1, compare1[0, 2], "02");
+            Assert.AreEqual(1, compare1[1, 2], "12");
+            Assert.AreEqual(2, compare1[2, 2], "22");
         }
 
         /// <summary>
@@ -654,14 +654,14 @@ namespace Common.ExtendedObject.Tests
 
             //To List
             var lst = dct.ToListId();
-            Assert.AreEqual(lst[0].Id, 0, "Check passed");
-            Assert.AreEqual(lst[1].Id, 10, "Check passed");
+            Assert.AreEqual(0, lst[0].Id, "Check passed");
+            Assert.AreEqual(10, lst[1].Id, "Check passed");
 
             lst[0].Id = 5;
             lst[1].Id = 6;
 
             var dic = lst.ToDictionaryId<Item, int>();
-            Assert.AreEqual(dic.Count, 2, "Check passed");
+            Assert.AreEqual(2, dic.Count, "Check passed");
             Assert.IsTrue(dic.ContainsKey(5), "Key does not exist");
             Assert.IsTrue(dic.ContainsKey(6), "Key does not exist");
         }

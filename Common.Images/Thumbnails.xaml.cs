@@ -432,7 +432,7 @@ namespace Common.Images
         {
             _refresh = false;
 
-            if (ItemsSource != null && !ItemsSource.ContainsKey(id))
+            if (ItemsSource?.ContainsKey(id) == false)
             {
                 return;
             }
@@ -703,7 +703,7 @@ namespace Common.Images
             if (token.IsCancellationRequested) return;
 
             // 1. Heavy lifting (IO) happens on the background thread
-            var bitmap = await ImageStream.GetBitmapImageFileStreamAsync(filePath, cellSize, cellSize);
+            var bitmap = await ImageStream.GetBitmapImageFileStreamAsync(filePath, cellSize);
             if (bitmap == null || token.IsCancellationRequested) return;
 
             // 2. ALL UI element creation and property setting happens on the UI Thread

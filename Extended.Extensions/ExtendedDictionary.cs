@@ -353,7 +353,8 @@ namespace Extended.Extensions
         /// A list with the Key as id
         /// </returns>
         public static List<TValue> ToListId<TId, TValue>(this Dictionary<TId, TValue> dic)
-            where TValue : IIdHandling<TId> where TId : notnull
+            where TValue : IIdHandling<TId>
+            where TId : notnull
         {
             var lst = new List<TValue>();
 

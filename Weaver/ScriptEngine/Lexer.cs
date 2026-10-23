@@ -75,8 +75,8 @@ namespace Weaver.ScriptEngine
             var lexer = new Lexer(input);
 
             return lexer.Tokenize()
-                .Select(t => t.Lexeme!)
-                .ToList();
+                .ConvertAll(t => t.Lexeme!)
+;
         }
 
         /// <summary>

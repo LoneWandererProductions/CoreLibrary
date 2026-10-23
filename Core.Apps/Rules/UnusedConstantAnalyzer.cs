@@ -22,14 +22,17 @@ namespace Core.Apps.Rules
 {
     /// <inheritdoc cref="ICodeAnalyzer" />
     /// <summary>
+    /// <para>
     /// Analyzer that detects unused constants and static readonly fields.
     /// Works by scanning all files for declarations and then checking
     /// whether those constants are referenced anywhere else in the project.
-    ///
+    /// </para>
+    /// <para>
     /// Limitations:
     /// - Simple regex approach (not a full C# parser).
     /// - May flag false positives if a constant is used via reflection, nameof(), etc.
     /// - Project-wide scope is achieved by cross-file matching.
+    /// </para>
     /// </summary>
     public sealed class UnusedConstantAnalyzer : ICodeAnalyzer, ICommand
     {

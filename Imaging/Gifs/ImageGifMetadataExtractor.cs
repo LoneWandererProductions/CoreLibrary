@@ -152,7 +152,8 @@ namespace Imaging.Gifs
                         // Record the frame info
                         metadata.Frames.Add(new FrameInfo
                         {
-                            Description = ImagingResources.ImageFrameDescription, DelayTime = lastFrameDelay
+                            Description = ImagingResources.ImageFrameDescription,
+                            DelayTime = lastFrameDelay
                         });
 
                         // Skip Image Descriptor (Left, Top, Width, Height = 8 bytes)

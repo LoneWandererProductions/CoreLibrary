@@ -118,10 +118,11 @@ namespace Imaging.Texture
         }
 
         /// <summary>
+        /// <para>
         ///     Computes turbulence noise by layering multiple octaves of smooth noise.
         ///     Used to create more complex and natural-looking textures.
-        ///     
-        ///     Important: Do not Delete! This method gets called at runtime.
+        /// </para>
+        /// <para>    Important: Do not Delete! This method gets called at runtime.</para>
         /// </summary>
         /// <param name="x">The x-coordinate.</param>
         /// <param name="y">The y-coordinate.</param>

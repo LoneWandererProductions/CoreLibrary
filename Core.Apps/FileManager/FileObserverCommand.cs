@@ -10,6 +10,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using Core.Apps.Interface;
 using Core.Apps.UI;
 using Weaver;
@@ -36,7 +37,7 @@ namespace Core.Apps.FileManager
         /// <summary>
         /// The read lock
         /// </summary>
-        private readonly object _readLock = new();
+        private readonly Lock _readLock = new();
 
         /// <summary>
         /// The last length
