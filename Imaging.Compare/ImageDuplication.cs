@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     ImageCompare.Compare
  * FILE:        ImageDuplication.cs
@@ -105,7 +105,7 @@ namespace Imaging.Compare
 
             var duplicateGroups = GetDuplicateGroups(images);
 
-            List<List<string>> result = Translate(duplicateGroups);
+            var result = Translate(duplicateGroups);
             localDate = DateTime.Now;
             Trace.WriteLine(localDate.ToString(CultureInfo.InvariantCulture));
             return result;

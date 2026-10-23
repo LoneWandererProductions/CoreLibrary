@@ -35,50 +35,50 @@ namespace Solaris
             // -----------------------------------------------------------------
             // 1. TALL HIGH-CANOPY TREE (Grounded trunk at bottom)
             // -----------------------------------------------------------------
-            int treeH = (int)(textureSize * 1.5); // 96px tall if textureSize=64
+            var treeH = (int)(textureSize * 1.5); // 96px tall if textureSize=64
             var treeBuffer = new UnmanagedImageBuffer(textureSize, treeH);
             treeBuffer.Clear(0, 0, 0, 0);
 
-            int cx = textureSize / 2;
+            var cx = textureSize / 2;
 
             // Trunk: Starts at bottom of buffer (y = treeH - 1) up to canopy base
-            for (int y = treeH / 3; y < treeH; y++)
+            for (var y = treeH / 3; y < treeH; y++)
             {
-                for (int x = cx - 3; x <= cx + 3; x++)
+                for (var x = cx - 3; x <= cx + 3; x++)
                 {
-                    bool isTrunkBorder = x == cx - 3 || x == cx + 3;
-                    byte shade = (byte)(75 + (x - cx) * 8);
-                    byte r = isTrunkBorder ? (byte)45 : (byte)(shade * 1.1);
-                    byte g = isTrunkBorder ? (byte)30 : (byte)(shade * 0.7);
-                    byte b = isTrunkBorder ? (byte)15 : (byte)(shade * 0.4);
+                    var isTrunkBorder = x == cx - 3 || x == cx + 3;
+                    var shade = (byte)(75 + (x - cx) * 8);
+                    var r = isTrunkBorder ? (byte)45 : (byte)(shade * 1.1);
+                    var g = isTrunkBorder ? (byte)30 : (byte)(shade * 0.7);
+                    var b = isTrunkBorder ? (byte)15 : (byte)(shade * 0.4);
                     treeBuffer.SetPixelUnsafe(x, y, r, g, b, 255);
                 }
             }
 
             // Small, dark contact mark/root collar at the base of the trunk
-            for (int x = cx - 5; x <= cx + 5; x++)
+            for (var x = cx - 5; x <= cx + 5; x++)
             {
                 treeBuffer.SetPixelUnsafe(x, treeH - 1, 30, 20, 10, 200);
             }
 
             // Canopy: High foliage canopy (radius 22px)
-            int canopyCenterY = treeH / 4;
-            int radiusX = (int)(textureSize * 0.38);
-            int radiusY = (int)(radiusX * 0.75);
+            var canopyCenterY = treeH / 4;
+            var radiusX = (int)(textureSize * 0.38);
+            var radiusY = (int)(radiusX * 0.75);
 
-            for (int y = canopyCenterY - radiusY; y <= canopyCenterY + radiusY; y++)
+            for (var y = canopyCenterY - radiusY; y <= canopyCenterY + radiusY; y++)
             {
-                for (int x = cx - radiusX; x <= cx + radiusX; x++)
+                for (var x = cx - radiusX; x <= cx + radiusX; x++)
                 {
-                    float dx = (x - cx) / (float)radiusX;
-                    float dy = (y - canopyCenterY) / (float)radiusY;
+                    var dx = (x - cx) / (float)radiusX;
+                    var dy = (y - canopyCenterY) / (float)radiusY;
 
                     if ((dx * dx) + (dy * dy) <= 1.0f)
                     {
-                        bool isEdge = (dx * dx) + (dy * dy) > 0.85f;
-                        byte gVal = isEdge ? (byte)60 : (byte)Math.Clamp(140 - (int)(dy * 30), 70, 175);
-                        byte rVal = isEdge ? (byte)20 : (byte)(gVal * 0.35);
-                        byte bVal = isEdge ? (byte)15 : (byte)(gVal * 0.25);
+                        var isEdge = (dx * dx) + (dy * dy) > 0.85f;
+                        var gVal = isEdge ? (byte)60 : (byte)Math.Clamp(140 - (int)(dy * 30), 70, 175);
+                        var rVal = isEdge ? (byte)20 : (byte)(gVal * 0.35);
+                        var bVal = isEdge ? (byte)15 : (byte)(gVal * 0.25);
                         treeBuffer.SetPixelUnsafe(x, y, rVal, gVal, bVal, 255);
                     }
                 }
@@ -89,63 +89,63 @@ namespace Solaris
             // -----------------------------------------------------------------
             // 2. ISOMETRIC WOODEN CRATE
             // -----------------------------------------------------------------
-            int crateSize = (int)(textureSize * 0.55); // ~35px
+            var crateSize = (int)(textureSize * 0.55); // ~35px
             var crateBuffer = new UnmanagedImageBuffer(crateSize, crateSize);
             crateBuffer.Clear(0, 0, 0, 0);
 
-            int halfC = crateSize / 2;
-            int qtrC = crateSize / 4;
-            int wallDrop = (int)(crateSize * 0.45);
+            var halfC = crateSize / 2;
+            var qtrC = crateSize / 4;
+            var wallDrop = (int)(crateSize * 0.45);
 
             // Left Face (Shadow 60%)
-            for (int col = 0; col < halfC; col++)
+            for (var col = 0; col < halfC; col++)
             {
-                int sx = col;
-                int topY = qtrC + (int)(col * 0.5f);
-                for (int y = topY; y < topY + wallDrop; y++)
+                var sx = col;
+                var topY = qtrC + (int)(col * 0.5f);
+                for (var y = topY; y < topY + wallDrop; y++)
                 {
                     if (y < crateSize)
                     {
-                        bool border = col == 0 || y == topY || y == topY + wallDrop - 1;
-                        byte r = border ? (byte)65 : (byte)110;
-                        byte g = border ? (byte)45 : (byte)75;
-                        byte b = border ? (byte)20 : (byte)35;
+                        var border = col == 0 || y == topY || y == topY + wallDrop - 1;
+                        var r = border ? (byte)65 : (byte)110;
+                        var g = border ? (byte)45 : (byte)75;
+                        var b = border ? (byte)20 : (byte)35;
                         crateBuffer.SetPixelUnsafe(sx, y, r, g, b, 255);
                     }
                 }
             }
 
             // Right Face (Lit 85%)
-            for (int col = 0; col < halfC; col++)
+            for (var col = 0; col < halfC; col++)
             {
-                int sx = halfC + col;
-                int topY = (qtrC + (halfC / 2)) - (int)(col * 0.5f);
-                for (int y = topY; y < topY + wallDrop; y++)
+                var sx = halfC + col;
+                var topY = (qtrC + (halfC / 2)) - (int)(col * 0.5f);
+                for (var y = topY; y < topY + wallDrop; y++)
                 {
                     if (y < crateSize)
                     {
-                        bool border = col == halfC - 1 || y == topY || y == topY + wallDrop - 1;
-                        byte r = border ? (byte)85 : (byte)150;
-                        byte g = border ? (byte)55 : (byte)105;
-                        byte b = border ? (byte)25 : (byte)50;
+                        var border = col == halfC - 1 || y == topY || y == topY + wallDrop - 1;
+                        var r = border ? (byte)85 : (byte)150;
+                        var g = border ? (byte)55 : (byte)105;
+                        var b = border ? (byte)25 : (byte)50;
                         crateBuffer.SetPixelUnsafe(sx, y, r, g, b, 255);
                     }
                 }
             }
 
             // Top Face (Light surface)
-            for (int y = 0; y < halfC; y++)
+            for (var y = 0; y < halfC; y++)
             {
-                for (int x = 0; x < crateSize; x++)
+                for (var x = 0; x < crateSize; x++)
                 {
-                    float dx = Math.Abs(x - halfC) / (float)halfC;
-                    float dy = Math.Abs(y - qtrC) / (float)qtrC;
+                    var dx = Math.Abs(x - halfC) / (float)halfC;
+                    var dy = Math.Abs(y - qtrC) / (float)qtrC;
                     if (dx + dy <= 1.0f)
                     {
-                        bool border = dx + dy > 0.88f;
-                        byte r = border ? (byte)95 : (byte)175;
-                        byte g = border ? (byte)65 : (byte)125;
-                        byte b = border ? (byte)30 : (byte)65;
+                        var border = dx + dy > 0.88f;
+                        var r = border ? (byte)95 : (byte)175;
+                        var g = border ? (byte)65 : (byte)125;
+                        var b = border ? (byte)30 : (byte)65;
                         crateBuffer.SetPixelUnsafe(x, y, r, g, b, 255);
                     }
                 }

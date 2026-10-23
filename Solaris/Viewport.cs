@@ -77,23 +77,27 @@ namespace Solaris
         /// <param name="tileIndex">The 1D spatial tile index.</param>
         /// <param name="mapWidth">The map width in tile units.</param>
         /// <param name="textureSize">The base tile pixel size.</param>
-        /// <returns>A point representing destination screen pixel coordinates.</returns>
+        /// <param name="elevation">The elevation.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>
+        /// A point representing destination screen pixel coordinates.
+        /// </returns>
         public Point WorldToScreen(int tileIndex, int mapWidth, int textureSize, int elevation = 0, int stepHeight = 16)
         {
-            int x = tileIndex % mapWidth;
-            int y = tileIndex / mapWidth;
+            var x = tileIndex % mapWidth;
+            var y = tileIndex / mapWidth;
 
             if (Mode == ProjectionMode.Isometric)
             {
-                int halfW = textureSize / 2;
-                int halfH = textureSize / 4; // 2:1 dimetric ratio
+                var halfW = textureSize / 2;
+                var halfH = textureSize / 4; // 2:1 dimetric ratio
 
-                int originX = ScreenWidth > 0 ? ScreenWidth / 2 : (mapWidth * textureSize) / 2;
-                int originY = ScreenHeight > 0 ? textureSize : 80;
+                var originX = ScreenWidth > 0 ? ScreenWidth / 2 : (mapWidth * textureSize) / 2;
+                var originY = ScreenHeight > 0 ? textureSize : 80;
 
                 // Apply isometric projection minus vertical elevation
-                int sx = originX + (int)((x - y) * halfW * Zoom) + (int)PanX;
-                int sy = originY + (int)((x + y) * halfH * Zoom) - (int)(elevation * stepHeight * Zoom) + (int)PanY;
+                var sx = originX + (int)((x - y) * halfW * Zoom) + (int)PanX;
+                var sy = originY + (int)((x + y) * halfH * Zoom) - (int)(elevation * stepHeight * Zoom) + (int)PanY;
 
                 return new Point(sx, sy);
             }
@@ -129,34 +133,34 @@ namespace Solaris
                 var adjY = (screenPt.Y - PanY) / Zoom;
 
                 // Use Math.Floor so negative values correctly round down to -1
-                int x = (int)Math.Floor(adjX / textureSize);
-                int y = (int)Math.Floor(adjY / textureSize);
+                var x = (int)Math.Floor(adjX / textureSize);
+                var y = (int)Math.Floor(adjY / textureSize);
 
                 return (x >= 0 && x < width && y >= 0 && y < height) ? y * width + x : -1;
             }
 
-            int halfW = textureSize / 2;
-            int halfH = textureSize / 4;
-            int originX = ScreenWidth > 0 ? ScreenWidth / 2 : (width * textureSize) / 2;
-            int originY = ScreenHeight > 0 ? textureSize : 80;
+            var halfW = textureSize / 2;
+            var halfH = textureSize / 4;
+            var originX = ScreenWidth > 0 ? ScreenWidth / 2 : (width * textureSize) / 2;
+            var originY = ScreenHeight > 0 ? textureSize : 80;
 
             // Scan top-down from highest elevation to floor (Z = 0)
-            int maxElevation = elevationMap is { Count: > 0 }
+            var maxElevation = elevationMap is { Count: > 0 }
                 ? Math.Max(0, elevationMap.Values.Max())
                 : 0;
 
-            for (int z = maxElevation; z >= 0; z--)
+            for (var z = maxElevation; z >= 0; z--)
             {
-                float adjX = (screenPt.X - originX - PanX) / Zoom;
-                float adjY = ((screenPt.Y + (z * stepHeight * Zoom)) - originY - PanY) / Zoom;
+                var adjX = (screenPt.X - originX - PanX) / Zoom;
+                var adjY = ((screenPt.Y + (z * stepHeight * Zoom)) - originY - PanY) / Zoom;
 
-                int tileX = (int)Math.Floor((adjX / halfW + adjY / halfH) / 2.0f);
-                int tileY = (int)Math.Floor((adjY / halfH - adjX / halfW) / 2.0f);
+                var tileX = (int)Math.Floor((adjX / halfW + adjY / halfH) / 2.0f);
+                var tileY = (int)Math.Floor((adjY / halfH - adjX / halfW) / 2.0f);
 
                 if (tileX >= 0 && tileX < width && tileY >= 0 && tileY < height)
                 {
-                    int index = tileY * width + tileX;
-                    int actualElev = elevationMap != null && elevationMap.TryGetValue(index, out int e) ? e : 0;
+                    var index = tileY * width + tileX;
+                    var actualElev = elevationMap != null && elevationMap.TryGetValue(index, out var e) ? e : 0;
 
                     if (actualElev == z)
                     {
@@ -175,7 +179,11 @@ namespace Solaris
         /// <param name="mapWidth">The map width in tile units.</param>
         /// <param name="mapHeight">The map height in tile units.</param>
         /// <param name="textureSize">The base tile pixel size.</param>
-        /// <returns>A rectangle defining [MinTileX, MinTileY, WidthInTiles, HeightInTiles].</returns>
+        /// <param name="maxElevation">The maximum elevation.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>
+        /// A rectangle defining [MinTileX, MinTileY, WidthInTiles, HeightInTiles].
+        /// </returns>
         public Rectangle GetVisibleTileBounds(int mapWidth, int mapHeight, int textureSize, int maxElevation = 8,
             int stepHeight = 16)
         {
@@ -201,14 +209,14 @@ namespace Solaris
             }
 
             // --- ISOMETRISCHES CULLING ---
-            int halfW = textureSize / 2;
-            int halfH = textureSize / 4;
-            int originX = ScreenWidth > 0 ? ScreenWidth / 2 : (mapWidth * textureSize) / 2;
-            int originY = ScreenHeight > 0 ? textureSize : 80;
+            var halfW = textureSize / 2;
+            var halfH = textureSize / 4;
+            var originX = ScreenWidth > 0 ? ScreenWidth / 2 : (mapWidth * textureSize) / 2;
+            var originY = ScreenHeight > 0 ? textureSize : 80;
 
             // Raised tiles or tall sprites extend beyond the top and bottom of the screen: extend the top and bottom edges of the screen
-            float elevBufferPx = maxElevation * stepHeight * Zoom;
-            float spriteBufferPx = textureSize * 2.0f * Zoom; // Puffer für hohe Bäume/Wände
+            var elevBufferPx = maxElevation * stepHeight * Zoom;
+            var spriteBufferPx = textureSize * 2.0f * Zoom; // Puffer für hohe Bäume/Wände
 
             // The 4 corners of the visible screen (with buffer)
             var corners = new[]
@@ -219,19 +227,19 @@ namespace Solaris
                 new PointF(-spriteBufferPx, ScreenHeight + spriteBufferPx + elevBufferPx)
             };
 
-            float minTileX = float.MaxValue;
-            float maxTileX = float.MinValue;
-            float minTileY = float.MaxValue;
-            float maxTileY = float.MinValue;
+            var minTileX = float.MaxValue;
+            var maxTileX = float.MinValue;
+            var minTileY = float.MaxValue;
+            var maxTileY = float.MinValue;
 
             foreach (var pt in corners)
             {
-                float adjX = (pt.X - originX - PanX) / (Zoom * halfW);
-                float adjY = (pt.Y - originY - PanY) / (Zoom * halfH);
+                var adjX = (pt.X - originX - PanX) / (Zoom * halfW);
+                var adjY = (pt.Y - originY - PanY) / (Zoom * halfH);
 
                 // Inverse 2:1-Projection
-                float tx = (adjX + adjY) / 2.0f;
-                float ty = (adjY - adjX) / 2.0f;
+                var tx = (adjX + adjY) / 2.0f;
+                var ty = (adjY - adjX) / 2.0f;
 
                 if (tx < minTileX) minTileX = tx;
                 if (tx > maxTileX) maxTileX = tx;
@@ -240,10 +248,10 @@ namespace Solaris
             }
 
             // Clip to map size (Flat Map Bounds)
-            int left = Math.Clamp((int)Math.Floor(minTileX) - 1, 0, mapWidth);
-            int top = Math.Clamp((int)Math.Floor(minTileY) - 1, 0, mapHeight);
-            int right = Math.Clamp((int)Math.Ceiling(maxTileX) + 1, 0, mapWidth);
-            int bottom = Math.Clamp((int)Math.Ceiling(maxTileY) + 1, 0, mapHeight);
+            var left = Math.Clamp((int)Math.Floor(minTileX) - 1, 0, mapWidth);
+            var top = Math.Clamp((int)Math.Floor(minTileY) - 1, 0, mapHeight);
+            var right = Math.Clamp((int)Math.Ceiling(maxTileX) + 1, 0, mapWidth);
+            var bottom = Math.Clamp((int)Math.Ceiling(maxTileY) + 1, 0, mapHeight);
 
             return new Rectangle(left, top, Math.Max(1, right - left), Math.Max(1, bottom - top));
         }

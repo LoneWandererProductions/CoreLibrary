@@ -94,7 +94,7 @@ namespace Imaging
                         g => g.DrawLine(StrokePen(shape.Stroke), ToPoint(line.From), ToPoint(line.To)));
                     break;
 
-                case PolylineShape polyline when polyline.Points.Length > 1:
+                case PolylineShape { Points.Length: > 1 } polyline:
                     var openPoints = polyline.Points.Select(ToPoint).ToArray();
                     DrawStroke(bitmap, shape, g => g.DrawLines(StrokePen(shape.Stroke), openPoints));
                     break;
@@ -117,7 +117,7 @@ namespace Imaging
                         (float)Math.Abs(ellipse.Width), (float)Math.Abs(ellipse.Height)));
                     break;
 
-                case PolygonShape polygon when polygon.Points.Length > 2:
+                case PolygonShape { Points.Length: > 2 } polygon:
                     var closedPoints = polygon.Points.Select(ToPoint).ToArray();
 
                     // Texture/filter fills go through the same area-fill code the rectangle/ellipse cases use

@@ -164,24 +164,24 @@ namespace Solaris
         /// <returns>The isometric diamond buffer.</returns>
         public static UnmanagedImageBuffer CutIsometricDiamond(UnmanagedImageBuffer squareBuffer, int width, int height)
         {
-            int isoHeight = height / 2;
+            var isoHeight = height / 2;
             var diamondBuffer = new UnmanagedImageBuffer(width, isoHeight);
             diamondBuffer.Clear(0, 0, 0, 0);
 
-            float halfW = width / 2f;
-            float halfH = isoHeight / 2f;
+            var halfW = width / 2f;
+            var halfH = isoHeight / 2f;
 
-            for (int y = 0; y < isoHeight; y++)
+            for (var y = 0; y < isoHeight; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
-                    float dx = Math.Abs(x + 0.5f - halfW) / halfW;
-                    float dy = Math.Abs(y + 0.5f - halfH) / halfH;
+                    var dx = Math.Abs(x + 0.5f - halfW) / halfW;
+                    var dy = Math.Abs(y + 0.5f - halfH) / halfH;
 
                     if (dx + dy <= 1.0f)
                     {
-                        int srcY = Math.Min(height - 1, (int)((y / (float)isoHeight) * height));
-                        int srcX = Math.Min(width - 1, x);
+                        var srcY = Math.Min(height - 1, (int)((y / (float)isoHeight) * height));
+                        var srcX = Math.Min(width - 1, x);
 
                         var (r, g, b, a) = squareBuffer.GetPixel(srcX, srcY);
                         diamondBuffer.SetPixelUnsafe(x, y, r, g, b, a);

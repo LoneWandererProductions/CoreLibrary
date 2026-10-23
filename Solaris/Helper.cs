@@ -36,6 +36,10 @@ namespace Solaris
         /// <param name="viewport">The active rendering viewport for frustum culling and projection mapping.</param>
         /// <param name="elevationMap">The elevation map.</param>
         /// <param name="stepHeight">Height of the step.</param>
+        /// <param name="avatarTile">The avatar tile.</param>
+        /// <param name="avatarBuffer">The avatar buffer.</param>
+        /// <param name="actors">The actors.</param>
+        /// <param name="fogMap">The fog map.</param>
         /// <returns>
         /// Unmanaged image buffer representing rendered visible canvas.
         /// </returns>
@@ -71,10 +75,10 @@ namespace Solaris
                          new Rectangle(0, 0, width, height);
 
             // Extra Frustum padding to prevent tall walls/sprites from culling too early when panning
-            int safeLeft = bounds.Left - 4;
-            int safeRight = bounds.Right + 4;
-            int safeTop = bounds.Top - 8;
-            int safeBottom = bounds.Bottom + 4;
+            var safeLeft = bounds.Left - 4;
+            var safeRight = bounds.Right + 4;
+            var safeTop = bounds.Top - 8;
+            var safeBottom = bounds.Bottom + 4;
             var safeBounds = new Rectangle(safeLeft, safeTop, safeRight - safeLeft, safeBottom - safeTop);
 
             var isIsometric = viewport?.Mode == ProjectionMode.Isometric;
@@ -85,7 +89,7 @@ namespace Solaris
             {
                 if (tile.Value is not { Count: > 0 }) return;
 
-                byte fog = (fogMap != null && tile.Key >= 0 && tile.Key < fogMap.Length)
+                var fog = (fogMap != null && tile.Key >= 0 && tile.Key < fogMap.Length)
                     ? fogMap[tile.Key]
                     : (byte)FogState.Visible;
 
@@ -97,7 +101,7 @@ namespace Solaris
                 if (tileX < safeLeft || tileX >= safeRight || tileY < safeTop || tileY >= safeBottom)
                     return;
 
-                int elev = elevationMap != null && elevationMap.TryGetValue(tile.Key, out int z) ? z : 0;
+                var elev = elevationMap != null && elevationMap.TryGetValue(tile.Key, out var z) ? z : 0;
                 var screenPt = viewport?.WorldToScreen(tile.Key, width, textureSize, elev, stepHeight) ??
                                new Point(tileX * textureSize, tileY * textureSize);
 
@@ -107,8 +111,8 @@ namespace Solaris
 
                     if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
-                        int anchorX = texture.AnchorX ?? (cachedBuffer.Width / 2);
-                        int anchorY = (texture.AnchorY ?? cachedBuffer.Height) + texture.HeightOffset;
+                        var anchorX = texture.AnchorX ?? (cachedBuffer.Width / 2);
+                        var anchorY = (texture.AnchorY ?? cachedBuffer.Height) + texture.HeightOffset;
 
                         tiles.Add(new UnmanagedTileBox
                         {
@@ -129,7 +133,7 @@ namespace Solaris
             // 2. Add avatar (visible only when the field is revealed)
             if (avatarBuffer != null && avatarTile >= 0 && avatarTile < width * height)
             {
-                byte avatarFog = (fogMap != null && avatarTile < fogMap.Length)
+                var avatarFog = (fogMap != null && avatarTile < fogMap.Length)
                     ? fogMap[avatarTile]
                     : (byte)FogState.Visible;
                 if (avatarFog == (byte)FogState.Visible)
@@ -147,7 +151,7 @@ namespace Solaris
                     if (actor.Buffer == null || actor.TileIndex < 0 || actor.TileIndex >= width * height)
                         continue;
 
-                    byte actorFog = (fogMap != null && actor.TileIndex < fogMap.Length)
+                    var actorFog = (fogMap != null && actor.TileIndex < fogMap.Length)
                         ? fogMap[actor.TileIndex]
                         : (byte)FogState.Visible;
                     if (actorFog == (byte)FogState.Visible)
@@ -165,25 +169,25 @@ namespace Solaris
             {
                 sortedTiles.Sort((a, b) =>
                 {
-                    int depthA = a.TileX + a.TileY;
-                    int depthB = b.TileX + b.TileY;
-                    int cmp = depthA.CompareTo(depthB);
+                    var depthA = a.TileX + a.TileY;
+                    var depthB = b.TileX + b.TileY;
+                    var cmp = depthA.CompareTo(depthB);
                     if (cmp != 0) return cmp;
 
-                    int tileIdA = a.TileY * width + a.TileX;
-                    int tileIdB = b.TileY * width + b.TileX;
+                    var tileIdA = a.TileY * width + a.TileX;
+                    var tileIdB = b.TileY * width + b.TileX;
 
-                    int elevA = elevationMap != null && elevationMap.TryGetValue(tileIdA, out int zA) ? zA : 0;
-                    int elevB = elevationMap != null && elevationMap.TryGetValue(tileIdB, out int zB) ? zB : 0;
+                    var elevA = elevationMap != null && elevationMap.TryGetValue(tileIdA, out var zA) ? zA : 0;
+                    var elevB = elevationMap != null && elevationMap.TryGetValue(tileIdB, out var zB) ? zB : 0;
 
-                    int elevCmp = elevA.CompareTo(elevB);
+                    var elevCmp = elevA.CompareTo(elevB);
                     if (elevCmp != 0) return elevCmp;
 
-                    int layerCmp = a.Layer.CompareTo(b.Layer);
+                    var layerCmp = a.Layer.CompareTo(b.Layer);
                     if (layerCmp != 0) return layerCmp;
 
                     // Tie-breaker: Draw flat surfaces (false) before standing sprites (true)
-                    int standingCmp = a.IsStanding.CompareTo(b.IsStanding);
+                    var standingCmp = a.IsStanding.CompareTo(b.IsStanding);
                     if (standingCmp != 0) return standingCmp;
 
                     return a.TileX.CompareTo(b.TileX);
@@ -193,25 +197,25 @@ namespace Solaris
             {
                 sortedTiles.Sort((a, b) =>
                 {
-                    int layerCmp = a.Layer.CompareTo(b.Layer);
+                    var layerCmp = a.Layer.CompareTo(b.Layer);
                     if (layerCmp != 0) return layerCmp;
 
-                    int standingCmp = a.IsStanding.CompareTo(b.IsStanding);
+                    var standingCmp = a.IsStanding.CompareTo(b.IsStanding);
                     if (standingCmp != 0) return standingCmp;
 
-                    int rowCmp = a.TileY.CompareTo(b.TileY);
+                    var rowCmp = a.TileY.CompareTo(b.TileY);
                     return rowCmp != 0 ? rowCmp : a.TileX.CompareTo(b.TileX);
                 });
             }
 
-            int halfW = textureSize / 2;
-            int halfH = textureSize / 4;
+            var halfW = textureSize / 2;
+            var halfH = textureSize / 4;
             var renderedWalls = new HashSet<int>();
 
             foreach (var slice in sortedTiles)
             {
-                int tileId = slice.TileY * width + slice.TileX;
-                int elev = elevationMap != null && elevationMap.TryGetValue(tileId, out int z) ? z : 0;
+                var tileId = slice.TileY * width + slice.TileX;
+                var elev = elevationMap != null && elevationMap.TryGetValue(tileId, out var z) ? z : 0;
 
                 if (isIsometric && elev > 0 && !slice.IsStanding && renderedWalls.Add(tileId))
                 {
@@ -247,10 +251,10 @@ namespace Solaris
                     drawY = slice.IsStanding ? slice.Y - slice.AnchorY : slice.Y;
                 }
 
-                byte currentFog = (fogMap != null && tileId >= 0 && tileId < fogMap.Length)
+                var currentFog = (fogMap != null && tileId >= 0 && tileId < fogMap.Length)
                     ? fogMap[tileId]
                     : (byte)FogState.Visible;
-                float tintFactor = (currentFog == (byte)FogState.Explored) ? 0.45f : 1.0f;
+                var tintFactor = (currentFog == (byte)FogState.Explored) ? 0.45f : 1.0f;
 
                 canvas.BlitRegionBlendTint(
                     slice.Buffer,
@@ -276,6 +280,9 @@ namespace Solaris
         /// <param name="textures">The global texture mapping dictionary.</param>
         /// <param name="map">The active tile map data structure.</param>
         /// <param name="viewport">Optional active viewport camera.</param>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns></returns>
         internal static void RedrawTileRegion(
             UnmanagedImageBuffer? canvas,
             int tileIndex,
@@ -290,7 +297,7 @@ namespace Solaris
             if (canvas == null || width <= 0 || textureSize <= 0) return;
 
             // ADDED: Apply elevation to the redraw coordinates so it doesn't snap to Z=0
-            int elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out int z) ? z : 0;
+            var elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out var z) ? z : 0;
             var destPt = viewport?.WorldToScreen(tileIndex, width, textureSize, elev, stepHeight) ??
                          new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
 
@@ -437,39 +444,39 @@ namespace Solaris
             int stepHeight,
             UnmanagedImageBuffer rawTexture)
         {
-            int drop = elevation * stepHeight;
+            var drop = elevation * stepHeight;
             if (drop <= 0) return;
 
-            int halfW = textureSize / 2;
-            int halfH = textureSize / 4;
+            var halfW = textureSize / 2;
+            var halfH = textureSize / 4;
 
-            int texW = rawTexture.Width;
-            int texH = rawTexture.Height;
+            var texW = rawTexture.Width;
+            var texH = rawTexture.Height;
 
             // 1. Calculate the base color from the texture and create a deeply darkened crease tone (Sel-Out)
             var samplePixel = rawTexture.GetPixel(texW / 2, texH / 2);
-            byte edgeR = (byte)(samplePixel.r * 0.30f);
-            byte edgeG = (byte)(samplePixel.g * 0.30f);
-            byte edgeB = (byte)(samplePixel.b * 0.30f);
-            byte edgeA = samplePixel.a;
+            var edgeR = (byte)(samplePixel.r * 0.30f);
+            var edgeG = (byte)(samplePixel.g * 0.30f);
+            var edgeB = (byte)(samplePixel.b * 0.30f);
+            var edgeA = samplePixel.a;
 
             // 2. LEFT WALL (South-West: 60% shadow side)
-            for (int col = 0; col < halfW; col++)
+            for (var col = 0; col < halfW; col++)
             {
-                int sx = (centerX - halfW) + col;
+                var sx = (centerX - halfW) + col;
                 if (sx < 0 || sx >= canvas.Width) continue;
 
-                int topY = centerY + (int)(col * (float)halfH / halfW);
-                int srcX = Math.Clamp((int)(col * (float)texW / halfW), 0, texW - 1);
+                var topY = centerY + (int)(col * (float)halfH / halfW);
+                var srcX = Math.Clamp((int)(col * (float)texW / halfW), 0, texW - 1);
 
-                bool isOuterEdge = col == 0;
+                var isOuterEdge = col == 0;
 
-                for (int dy = 0; dy < drop; dy++)
+                for (var dy = 0; dy < drop; dy++)
                 {
-                    int sy = topY + dy;
+                    var sy = topY + dy;
                     if (sy < 0 || sy >= canvas.Height) continue;
 
-                    bool isTopOrBottomEdge = dy == 0 || dy == drop - 1;
+                    var isTopOrBottomEdge = dy == 0 || dy == drop - 1;
 
                     if (isOuterEdge || isTopOrBottomEdge)
                     {
@@ -478,12 +485,12 @@ namespace Solaris
                     }
                     else
                     {
-                        int srcY = dy % texH;
+                        var srcY = dy % texH;
                         var pixel = rawTexture.GetPixel(srcX, srcY);
 
-                        byte r = (byte)(pixel.r * 0.60f);
-                        byte g = (byte)(pixel.g * 0.60f);
-                        byte b = (byte)(pixel.b * 0.60f);
+                        var r = (byte)(pixel.r * 0.60f);
+                        var g = (byte)(pixel.g * 0.60f);
+                        var b = (byte)(pixel.b * 0.60f);
 
                         canvas.SetPixelUnsafe(sx, sy, r, g, b, pixel.a);
                     }
@@ -491,23 +498,23 @@ namespace Solaris
             }
 
             // 3. RIGHT WALL (South-East: 80% light side)
-            for (int col = 0; col < halfW; col++)
+            for (var col = 0; col < halfW; col++)
             {
-                int sx = centerX + col;
+                var sx = centerX + col;
                 if (sx < 0 || sx >= canvas.Width) continue;
 
-                int topY = (centerY + halfH) - (int)(col * (float)halfH / halfW);
-                int srcX = Math.Clamp((int)(col * (float)texW / halfW), 0, texW - 1);
+                var topY = (centerY + halfH) - (int)(col * (float)halfH / halfW);
+                var srcX = Math.Clamp((int)(col * (float)texW / halfW), 0, texW - 1);
 
                 // col == 0 is the front middle corner; col == halfW - 1 is the outer right silhouette
-                bool isCornerOrOuter = col == 0 || col == halfW - 1;
+                var isCornerOrOuter = col == 0 || col == halfW - 1;
 
-                for (int dy = 0; dy < drop; dy++)
+                for (var dy = 0; dy < drop; dy++)
                 {
-                    int sy = topY + dy;
+                    var sy = topY + dy;
                     if (sy < 0 || sy >= canvas.Height) continue;
 
-                    bool isTopOrBottomEdge = dy == 0 || dy == drop - 1;
+                    var isTopOrBottomEdge = dy == 0 || dy == drop - 1;
 
                     if (isCornerOrOuter || isTopOrBottomEdge)
                     {
@@ -516,12 +523,12 @@ namespace Solaris
                     }
                     else
                     {
-                        int srcY = dy % texH;
+                        var srcY = dy % texH;
                         var pixel = rawTexture.GetPixel(srcX, srcY);
 
-                        byte r = (byte)(pixel.r * 0.80f);
-                        byte g = (byte)(pixel.g * 0.80f);
-                        byte b = (byte)(pixel.b * 0.80f);
+                        var r = (byte)(pixel.r * 0.80f);
+                        var g = (byte)(pixel.g * 0.80f);
+                        var b = (byte)(pixel.b * 0.80f);
 
                         canvas.SetPixelUnsafe(sx, sy, r, g, b, pixel.a);
                     }
@@ -536,7 +543,12 @@ namespace Solaris
         /// <param name="height">The height.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <param name="glyphMap">The glyph map.</param>
-        /// <returns>Bitmap representing the glyph overlay.</returns>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>
+        /// Bitmap representing the glyph overlay.
+        /// </returns>
         public static Bitmap GenerateGlyphOverlay(
             int width, int height, int textureSize,
             Dictionary<int, OverlayGlyph>? glyphMap,
@@ -544,9 +556,9 @@ namespace Solaris
             Dictionary<int, int>? elevationMap = null,
             int stepHeight = 16)
         {
-            // Die Leinwand muss nun so groß sein wie der Viewport (sonst werden Symbole abgeschnitten)
-            int cWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
-            int cHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
+            // The canvas must now be the same size as the viewport (otherwise icons will be cut off)
+            var cWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
+            var cHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
             var overlayFrame = new Bitmap(cWidth, cHeight);
 
             if (glyphMap == null || glyphMap.Count == 0) return overlayFrame;
@@ -559,7 +571,7 @@ namespace Solaris
             sf.Alignment = StringAlignment.Center;
             sf.LineAlignment = StringAlignment.Center;
 
-            int halfH = textureSize / 4;
+            var halfH = textureSize / 4;
 
             foreach (var kp in glyphMap)
             {
@@ -569,13 +581,13 @@ namespace Solaris
                 if (string.IsNullOrEmpty(glyph.Symbol)) continue;
 
                 // Echte Projektions-Koordinate inkl. Z-Verschub holen
-                int elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out int z) ? z : 0;
+                var elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out var z) ? z : 0;
                 var pt = viewport?.WorldToScreen(tileIndex, width, textureSize, elev, stepHeight) ??
                          new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
 
                 // Das Ziel-Rechteck um den projizierten Punkt zentrieren
-                float rectX = pt.X - (textureSize / 2f);
-                float rectY = pt.Y - (textureSize / 2f);
+                var rectX = pt.X - (textureSize / 2f);
+                var rectY = pt.Y - (textureSize / 2f);
 
                 // Im isometrischen Modus das Symbol etwas nach oben setzen, 
                 // damit es optisch AUF dem Rauten-Boden "steht" und nicht zentriert IM Boden steckt.
@@ -656,7 +668,12 @@ namespace Solaris
         /// <param name="textures">The textures.</param>
         /// <param name="layer">The layer.</param>
         /// <param name="idTile">The identifier tile.</param>
-        /// <returns>Image on screen</returns>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>
+        /// Image on screen
+        /// </returns>
         public static UnmanagedImageBuffer AddDisplay(
             int width, int height, int textureSize,
             Dictionary<int, Texture> textures,
@@ -666,8 +683,8 @@ namespace Solaris
             Dictionary<int, int>? elevationMap = null,
             int stepHeight = 16)
         {
-            int cWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
-            int cHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
+            var cWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
+            var cHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
 
             if (layer == null || layer.Width != cWidth || layer.Height != cHeight)
             {
@@ -677,11 +694,11 @@ namespace Solaris
             }
 
             var (position, tileId) = idTile;
-            int elev = elevationMap != null && elevationMap.TryGetValue(position, out int z) ? z : 0;
+            var elev = elevationMap != null && elevationMap.TryGetValue(position, out var z) ? z : 0;
             var pt = viewport?.WorldToScreen(position, width, textureSize, elev, stepHeight) ??
                      new Point((position % width) * textureSize, (position / width) * textureSize);
 
-            bool isIso = viewport?.Mode == ProjectionMode.Isometric;
+            var isIso = viewport?.Mode == ProjectionMode.Isometric;
             var tileBuffer = TextureManager.GetBufferById(tileId, isIso);
 
             if (tileBuffer == null && TextureManager.TryGetTexture(tileId, textures, out var texture))
@@ -756,7 +773,11 @@ namespace Solaris
         /// <param name="width">The width in tile units.</param>
         /// <param name="height">The height in tile units.</param>
         /// <param name="textureSize">Size of the texture.</param>
-        /// <returns>Task representing the asynchronous operation.</returns>
+        /// <param name="useUnifiedLayerOne">if set to <c>true</c> [use unified layer one].</param>
+        /// <param name="stepDelayMs">The step delay ms.</param>
+        /// <returns>
+        /// Task representing the asynchronous operation.
+        /// </returns>
         internal static async Task DisplayMovement(
             Aurora aurora,
             IEnumerable<int> steps,
@@ -789,31 +810,31 @@ namespace Solaris
                 else
                 {
                     // Mode B: Fast LayerThree blitting with viewport transforms and zero GC allocations
-                    int canvasW = aurora.ActiveViewport.ScreenWidth > 0
+                    var canvasW = aurora.ActiveViewport.ScreenWidth > 0
                         ? aurora.ActiveViewport.ScreenWidth
                         : width * textureSize;
-                    int canvasH = aurora.ActiveViewport.ScreenHeight > 0
+                    var canvasH = aurora.ActiveViewport.ScreenHeight > 0
                         ? aurora.ActiveViewport.ScreenHeight
                         : height * textureSize;
 
                     using var avatarBuffer = UnmanagedImageBuffer.FromBitmap(avatarBmp);
                     using var frameBuffer = new UnmanagedImageBuffer(canvasW, canvasH);
 
-                    bool isIso = aurora.ActiveViewport.Mode == ProjectionMode.Isometric;
+                    var isIso = aurora.ActiveViewport.Mode == ProjectionMode.Isometric;
 
                     foreach (var step in steps)
                     {
                         frameBuffer.Clear(0, 0, 0, 0);
 
-                        int elev = aurora.AuroraElevation != null && aurora.AuroraElevation.TryGetValue(step, out int z)
+                        var elev = aurora.AuroraElevation != null && aurora.AuroraElevation.TryGetValue(step, out var z)
                             ? z
                             : 0;
                         var pt = aurora.ActiveViewport.WorldToScreen(step, width, textureSize, elev, aurora.StepHeight);
 
-                        int drawX = isIso
+                        var drawX = isIso
                             ? pt.X - (avatarBuffer.Width / 2)
                             : pt.X + (textureSize - avatarBuffer.Width) / 2;
-                        int drawY = isIso ? pt.Y - avatarBuffer.Height : pt.Y + (textureSize - avatarBuffer.Height);
+                        var drawY = isIso ? pt.Y - avatarBuffer.Height : pt.Y + (textureSize - avatarBuffer.Height);
 
                         frameBuffer.BlitRegionBlend(avatarBuffer, 0, 0, avatarBuffer.Width, avatarBuffer.Height, drawX,
                             drawY);
@@ -865,18 +886,18 @@ namespace Solaris
         {
             if (layer == null) return null;
 
-            int elev = elevationMap != null && elevationMap.TryGetValue(position, out int z) ? z : 0;
+            var elev = elevationMap != null && elevationMap.TryGetValue(position, out var z) ? z : 0;
             var pt = viewport?.WorldToScreen(position, width, textureSize, elev, stepHeight) ??
                      new Point((position % width) * textureSize, (position / width) * textureSize);
 
-            int halfW = textureSize / 2;
-            int halfH = textureSize / 4;
+            var halfW = textureSize / 2;
+            var halfH = textureSize / 4;
 
-            int clearX = viewport?.Mode == ProjectionMode.Isometric ? pt.X - halfW : pt.X;
+            var clearX = viewport?.Mode == ProjectionMode.Isometric ? pt.X - halfW : pt.X;
 
             // INCREASE bounding box height and shift Y up to fully erase tall standing sprites
-            int clearY = viewport?.Mode == ProjectionMode.Isometric ? pt.Y - textureSize : pt.Y;
-            int clearH = viewport?.Mode == ProjectionMode.Isometric ? textureSize + halfH : textureSize;
+            var clearY = viewport?.Mode == ProjectionMode.Isometric ? pt.Y - textureSize : pt.Y;
+            var clearH = viewport?.Mode == ProjectionMode.Isometric ? textureSize + halfH : textureSize;
 
             ClearTileRegion(layer, clearX, clearY, Math.Max(textureSize, clearH));
             return layer;
@@ -913,21 +934,21 @@ namespace Solaris
             }
 
             // Isometric diamond grid
-            int cWidth = viewport.ScreenWidth > 0 ? viewport.ScreenWidth : width * textureSize;
-            int cHeight = viewport.ScreenHeight > 0 ? viewport.ScreenHeight : height * textureSize;
+            var cWidth = viewport.ScreenWidth > 0 ? viewport.ScreenWidth : width * textureSize;
+            var cHeight = viewport.ScreenHeight > 0 ? viewport.ScreenHeight : height * textureSize;
 
             using var isoBitmap = new Bitmap(cWidth, cHeight);
             using var g = Graphics.FromImage(isoBitmap);
             using var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(90, 0, 0, 0), 1f);
 
-            int halfW = textureSize / 2;
-            int halfH = textureSize / 4;
+            var halfW = textureSize / 2;
+            var halfH = textureSize / 4;
 
             for (var y = 0; y < height; y++)
             for (var x = 0; x < width; x++)
             {
-                int tileId = y * width + x;
-                int elev = elevationMap != null && elevationMap.TryGetValue(tileId, out int z) ? z : 0;
+                var tileId = y * width + x;
+                var elev = elevationMap != null && elevationMap.TryGetValue(tileId, out var z) ? z : 0;
                 var pt = viewport.WorldToScreen(tileId, width, textureSize, elev, stepHeight);
 
                 Point[] diamond = 
@@ -936,9 +957,9 @@ namespace Solaris
                     new Point(pt.X, pt.Y
 
                 -halfH),
-                new Point(pt.X + halfW, pt.Y),
-                new Point(pt.X, pt.Y + halfH),
-                new Point(pt.X - halfW, pt.Y)
+                pt with { X = pt.X + halfW },
+                pt with { Y = pt.Y + halfH },
+                pt with { X = pt.X - halfW }
                     ];
                 g.DrawPolygon(pen, diamond);
             }
@@ -979,7 +1000,7 @@ namespace Solaris
             if (tx < bounds.Left || tx >= bounds.Right || ty < bounds.Top || ty >= bounds.Bottom)
                 return;
 
-            int elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out int z) ? z : 0;
+            var elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out var z) ? z : 0;
             var pt = viewport?.WorldToScreen(tileIndex, mapWidth, textureSize, elev, stepHeight) ??
                      new Point(tx * textureSize, ty * textureSize);
 
@@ -1191,7 +1212,7 @@ namespace Solaris
             var pDestBase = (byte*)dest.Buffer.ToPointer() + (destY * destStride) +
                             (destX * UnmanagedImageBuffer.BytesPerPixel);
 
-            bool applyTint = tintFactor < 0.99f;
+            var applyTint = tintFactor < 0.99f;
 
             for (var y = 0; y < height; y++)
             {

@@ -355,8 +355,8 @@ namespace Solaris
             if (tileIndex < 0 || tileIndex >= AuroraWidth * AuroraHeight || AuroraMap == null)
                 return;
 
-            int x = tileIndex % AuroraWidth;
-            int y = tileIndex / AuroraWidth;
+            var x = tileIndex % AuroraWidth;
+            var y = tileIndex / AuroraWidth;
 
             // 4-Bit Richtungs-Maske: Nord (1), Ost (2), Süd (4), West (8)
             byte mask = 0;

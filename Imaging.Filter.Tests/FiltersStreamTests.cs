@@ -194,10 +194,10 @@ namespace Imaging.Filter.Tests
 
             // 3. Noise/Detail area (Tests blurring and sharpening)
             var rand = new Random(42); // Fixed seed for reproducible tests
-            for (int i = 0; i < 500; i++)
+            for (var i = 0; i < 500; i++)
             {
-                int x = rand.Next(width / 2, width);
-                int y = rand.Next(0, height / 2);
+                var x = rand.Next(width / 2, width);
+                var y = rand.Next(0, height / 2);
                 bmp.SetPixel(x, y, Color.Yellow);
             }
 

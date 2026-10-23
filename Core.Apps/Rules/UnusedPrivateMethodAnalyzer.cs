@@ -64,12 +64,10 @@ namespace Core.Apps.Rules
             foreach (var methodDecl in root.DescendantNodes().OfType<MethodDeclarationSyntax>())
             {
                 var symbol = model.GetDeclaredSymbol(methodDecl);
-                if (symbol == null)
+                if (symbol is not { DeclaredAccessibility: Microsoft.CodeAnalysis.Accessibility.Private })
                     continue;
 
                 // Ensure it is private
-                if (symbol.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Private)
-                    continue;
 
                 // Exclude entry points, constructors, overrides, or interface implementations
                 if (symbol.Name == "Main" || symbol.IsOverride || symbol.ExplicitInterfaceImplementations.Length > 0)
