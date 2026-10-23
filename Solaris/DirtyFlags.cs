@@ -16,11 +16,33 @@ namespace Solaris
     [Flags]
     public enum DirtyFlags
     {
+        /// <summary>
+        /// The none
+        /// </summary>
         None = 0,
-        TileMap = 1 << 0, // Layer 1: Base terrain / static tiles
-        Grid = 1 << 1, // Layer 2: Polaris grid overlay
-        Overlays = 1 << 2, // Layer 3: Selection, glyphs, dynamic cursors
+        /// <summary>
+        /// Layer 1: Base terrain / static tiles
+        /// </summary>
+        TileMap = 1 << 0,
+
+        /// <summary>
+        /// Layer 2: Polaris grid overlay
+        /// </summary>
+        Grid = 1 << 1,
+
+        /// <summary>
+        /// Layer 3: Selection, glyphs, dynamic cursors
+        /// </summary>
+        Overlays = 1 << 2,
+
+        /// <summary>
+        /// The viewport
+        /// </summary>
         Viewport = 1 << 3,
+
+        /// <summary>
+        /// The full redraw
+        /// </summary>
         FullRedraw = TileMap | Grid | Overlays | Viewport
     }
 }

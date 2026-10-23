@@ -314,7 +314,8 @@ namespace Solaris
             var isGridEnabled = (bool)e.NewValue;
 
             control.LayerTwo.Source = isGridEnabled
-                ? Helper.GenerateGrid(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize)
+                ? Helper.GenerateGrid(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize,
+                                      control.ActiveViewport, control.PolarisElevation, control.StepHeight)
                 : null;
         }
 
@@ -544,11 +545,13 @@ namespace Solaris
         /// <param name="tileData">The tile data.</param>
         public void AddDisplay(KeyValuePair<int, int> tileData)
         {
-            var newBmp = Helper.AddDisplay(PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures,
-                BitmapLayerThree, tileData);
+            var newBmp = Helper.AddDisplay(
+                PolarisWidth, PolarisHeight, PolarisTextureSize, PolarisTextures,
+                BitmapLayerThree, tileData,
+                ActiveViewport, PolarisElevation, StepHeight);
+
             BitmapLayerThree = newBmp;
             LayerThree.Source = newBmp.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
-
             MarkTileDirty(tileData.Key, DirtyFlags.Overlays);
         }
 
@@ -558,10 +561,12 @@ namespace Solaris
         /// <param name="position">The position.</param>
         public void RemoveDisplay(int position)
         {
-            var newBmp = Helper.RemoveDisplay(PolarisWidth, PolarisTextureSize, BitmapLayerThree, position);
-            BitmapLayerThree = newBmp;
-            LayerThree.Source = newBmp.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
+            var newBmp = Helper.RemoveDisplay(
+                PolarisWidth, PolarisTextureSize, BitmapLayerThree, position,
+                ActiveViewport, PolarisElevation, StepHeight);
 
+            BitmapLayerThree = newBmp;
+            LayerThree.Source = newBmp?.UpdateWriteableBitmap(LayerThree.Source as WriteableBitmap);
             MarkTileDirty(position, DirtyFlags.Overlays);
         }
 

@@ -45,7 +45,11 @@ namespace Solaris
             Dictionary<int, List<int>>? map,
             Viewport? viewport = null,
             Dictionary<int, int>? elevationMap = null,
-            int stepHeight = 16)
+            int stepHeight = 16,
+            int avatarTile = -1,
+            UnmanagedImageBuffer? avatarBuffer = null,
+            Dictionary<int, GameActor>? actors = null,
+            byte[]? fogMap = null)
         {
             var canvasWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
             var canvasHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
@@ -63,36 +67,49 @@ namespace Solaris
                 }
             }
 
-            var bounds = viewport?.GetVisibleTileBounds(width, height, textureSize) ??
+            var bounds = viewport?.GetVisibleTileBounds(width, height, textureSize, 8, stepHeight) ??
                          new Rectangle(0, 0, width, height);
+
+            // Extra Frustum padding to prevent tall walls/sprites from culling too early when panning
+            int safeLeft = bounds.Left - 4;
+            int safeRight = bounds.Right + 4;
+            int safeTop = bounds.Top - 8;
+            int safeBottom = bounds.Bottom + 4;
+            var safeBounds = new Rectangle(safeLeft, safeTop, safeRight - safeLeft, safeBottom - safeTop);
 
             var isIsometric = viewport?.Mode == ProjectionMode.Isometric;
             var tiles = new ConcurrentBag<UnmanagedTileBox>();
 
+            // 1. Collect static tiles (with fog check)
             Parallel.ForEach(map, tile =>
             {
                 if (tile.Value is not { Count: > 0 }) return;
 
+                byte fog = (fogMap != null && tile.Key >= 0 && tile.Key < fogMap.Length)
+                    ? fogMap[tile.Key]
+                    : (byte)FogState.Visible;
+
+                if (fog == (byte)FogState.Unexplored) return;
+
                 var tileX = tile.Key % width;
                 var tileY = tile.Key / width;
 
-                if (tileX < bounds.Left || tileX >= bounds.Right || tileY < bounds.Top || tileY >= bounds.Bottom)
-                {
+                if (tileX < safeLeft || tileX >= safeRight || tileY < safeTop || tileY >= safeBottom)
                     return;
-                }
 
                 int elev = elevationMap != null && elevationMap.TryGetValue(tile.Key, out int z) ? z : 0;
-
                 var screenPt = viewport?.WorldToScreen(tile.Key, width, textureSize, elev, stepHeight) ??
                                new Point(tileX * textureSize, tileY * textureSize);
 
                 foreach (var textureId in tile.Value)
                 {
-                    // Automatically fetches the snugly masked diamond in isometric mode
                     var cachedBuffer = TextureManager.GetBufferById(textureId, isIsometric);
 
                     if (cachedBuffer != null && TextureManager.TryGetTexture(textureId, textures, out var texture))
                     {
+                        int anchorX = texture.AnchorX ?? (cachedBuffer.Width / 2);
+                        int anchorY = (texture.AnchorY ?? cachedBuffer.Height) + texture.HeightOffset;
+
                         tiles.Add(new UnmanagedTileBox
                         {
                             X = screenPt.X,
@@ -100,15 +117,44 @@ namespace Solaris
                             Layer = texture.Layer,
                             Buffer = cachedBuffer,
                             TileX = tileX,
-                            TileY = tileY
+                            TileY = tileY,
+                            IsStanding = texture.IsStandingSprite,
+                            AnchorX = anchorX,
+                            AnchorY = anchorY
                         });
                     }
                 }
             });
 
+            // 2. Add avatar (visible only when the field is revealed)
+            if (avatarBuffer != null && avatarTile >= 0 && avatarTile < width * height)
+            {
+                byte avatarFog = (fogMap != null && avatarTile < fogMap.Length) ? fogMap[avatarTile] : (byte)FogState.Visible;
+                if (avatarFog == (byte)FogState.Visible)
+                {
+                    InjectActorTile(tiles, avatarTile, avatarBuffer, safeBounds, width, textureSize, viewport, elevationMap, stepHeight, 10, true);
+                }
+            }
+
+            // 3. Load enemies and units (only in the visible area)
+            if (actors != null)
+            {
+                foreach (var actor in actors.Values)
+                {
+                    if (actor.Buffer == null || actor.TileIndex < 0 || actor.TileIndex >= width * height)
+                        continue;
+
+                    byte actorFog = (fogMap != null && actor.TileIndex < fogMap.Length) ? fogMap[actor.TileIndex] : (byte)FogState.Visible;
+                    if (actorFog == (byte)FogState.Visible)
+                    {
+                        InjectActorTile(tiles, actor.TileIndex, actor.Buffer, safeBounds, width, textureSize, viewport, elevationMap, stepHeight, actor.Layer, actor.IsStandingSprite);
+                    }
+                }
+            }
+
             var sortedTiles = tiles.ToList();
 
-            // Back-to-front depth sorting (Painter's Algorithm) for isometric views; otherwise, standard layer sorting
+            // 4. Painter Algorithm (Depth Sort)
             if (isIsometric)
             {
                 sortedTiles.Sort((a, b) =>
@@ -116,12 +162,40 @@ namespace Solaris
                     int depthA = a.TileX + a.TileY;
                     int depthB = b.TileX + b.TileY;
                     int cmp = depthA.CompareTo(depthB);
-                    return cmp != 0 ? cmp : a.Layer.CompareTo(b.Layer);
+                    if (cmp != 0) return cmp;
+
+                    int tileIdA = a.TileY * width + a.TileX;
+                    int tileIdB = b.TileY * width + b.TileX;
+
+                    int elevA = elevationMap != null && elevationMap.TryGetValue(tileIdA, out int zA) ? zA : 0;
+                    int elevB = elevationMap != null && elevationMap.TryGetValue(tileIdB, out int zB) ? zB : 0;
+
+                    int elevCmp = elevA.CompareTo(elevB);
+                    if (elevCmp != 0) return elevCmp;
+
+                    int layerCmp = a.Layer.CompareTo(b.Layer);
+                    if (layerCmp != 0) return layerCmp;
+
+                    // Tie-breaker: Draw flat surfaces (false) before standing sprites (true)
+                    int standingCmp = a.IsStanding.CompareTo(b.IsStanding);
+                    if (standingCmp != 0) return standingCmp;
+
+                    return a.TileX.CompareTo(b.TileX);
                 });
             }
             else
             {
-                sortedTiles.Sort((a, b) => a.Layer.CompareTo(b.Layer));
+                sortedTiles.Sort((a, b) =>
+                {
+                    int layerCmp = a.Layer.CompareTo(b.Layer);
+                    if (layerCmp != 0) return layerCmp;
+
+                    int standingCmp = a.IsStanding.CompareTo(b.IsStanding);
+                    if (standingCmp != 0) return standingCmp;
+
+                    int rowCmp = a.TileY.CompareTo(b.TileY);
+                    return rowCmp != 0 ? rowCmp : a.TileX.CompareTo(b.TileX);
+                });
             }
 
             int halfW = textureSize / 2;
@@ -133,12 +207,10 @@ namespace Solaris
                 int tileId = slice.TileY * width + slice.TileX;
                 int elev = elevationMap != null && elevationMap.TryGetValue(tileId, out int z) ? z : 0;
 
-                // 1. Draw walls for elevated tiles below the top surface
-                if (isIsometric && elev > 0 && renderedWalls.Add(tileId))
+                if (isIsometric && elev > 0 && !slice.IsStanding && renderedWalls.Add(tileId))
                 {
                     if (map.TryGetValue(tileId, out var texList) && texList.Count > 0)
                     {
-                        // Use the original, square texture for the vertical wall
                         var rawWallBuffer = TextureManager.GetBufferById(texList[0], isometric: false);
                         if (rawWallBuffer != null)
                         {
@@ -147,18 +219,40 @@ namespace Solaris
                     }
                 }
 
-                // 2. Draw the top-cap diamond above
-                int drawX = isIsometric ? slice.X - halfW : slice.X;
-                int drawY = isIsometric ? slice.Y - halfH : slice.Y;
+                int drawX;
+                int drawY;
 
-                canvas.BlitRegionBlend(
+                if (isIsometric)
+                {
+                    if (slice.IsStanding)
+                    {
+                        drawX = slice.X - slice.AnchorX;
+                        drawY = slice.Y - slice.AnchorY;
+                    }
+                    else
+                    {
+                        drawX = slice.X - halfW;
+                        drawY = slice.Y - halfH;
+                    }
+                }
+                else
+                {
+                    drawX = slice.IsStanding ? slice.X - slice.AnchorX : slice.X;
+                    drawY = slice.IsStanding ? slice.Y - slice.AnchorY : slice.Y;
+                }
+
+                byte currentFog = (fogMap != null && tileId >= 0 && tileId < fogMap.Length) ? fogMap[tileId] : (byte)FogState.Visible;
+                float tintFactor = (currentFog == (byte)FogState.Explored) ? 0.45f : 1.0f;
+
+                canvas.BlitRegionBlendTint(
                     slice.Buffer,
                     srcX: 0,
                     srcY: 0,
                     width: slice.Buffer.Width,
                     height: slice.Buffer.Height,
                     destX: drawX,
-                    destY: drawY);
+                    destY: drawY,
+                    tintFactor: tintFactor);
             }
 
             return canvas;
@@ -181,11 +275,15 @@ namespace Solaris
             int textureSize,
             Dictionary<int, Texture>? textures,
             Dictionary<int, List<int>>? map,
-            Viewport? viewport = null)
+            Viewport? viewport = null,
+            Dictionary<int, int>? elevationMap = null,
+            int stepHeight = 16)
         {
             if (canvas == null || width <= 0 || textureSize <= 0) return;
 
-            var destPt = viewport?.WorldToScreen(tileIndex, width, textureSize) ??
+            // ADDED: Apply elevation to the redraw coordinates so it doesn't snap to Z=0
+            int elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out int z) ? z : 0;
+            var destPt = viewport?.WorldToScreen(tileIndex, width, textureSize, elev, stepHeight) ??
                          new Point((tileIndex % width) * textureSize, (tileIndex / width) * textureSize);
 
             // 1. Clear only the sub-region bounding box
@@ -552,33 +650,66 @@ namespace Solaris
         /// <param name="idTile">The identifier tile.</param>
         /// <returns>Image on screen</returns>
         public static UnmanagedImageBuffer AddDisplay(
-            int width, int height, int textureSize, Dictionary<int, Texture> textures, UnmanagedImageBuffer? layer,
-            KeyValuePair<int, int> idTile)
+            int width, int height, int textureSize,
+            Dictionary<int, Texture> textures,
+            UnmanagedImageBuffer? layer,
+            KeyValuePair<int, int> idTile,
+            Viewport? viewport = null,
+            Dictionary<int, int>? elevationMap = null,
+            int stepHeight = 16)
         {
-            var (position, tileId) = idTile;
-            var x = (position % width) * textureSize;
-            var y = (position / width) * textureSize;
+            int cWidth = viewport is { ScreenWidth: > 0 } ? viewport.ScreenWidth : width * textureSize;
+            int cHeight = viewport is { ScreenHeight: > 0 } ? viewport.ScreenHeight : height * textureSize;
 
-            var tileBuffer = TextureManager.GetBufferById(tileId);
+            if (layer == null || layer.Width != cWidth || layer.Height != cHeight)
+            {
+                layer?.Dispose();
+                layer = new UnmanagedImageBuffer(cWidth, cHeight);
+                layer.Clear(0, 0, 0, 0);
+            }
+
+            var (position, tileId) = idTile;
+            int elev = elevationMap != null && elevationMap.TryGetValue(position, out int z) ? z : 0;
+            var pt = viewport?.WorldToScreen(position, width, textureSize, elev, stepHeight) ??
+                     new Point((position % width) * textureSize, (position / width) * textureSize);
+
+            bool isIso = viewport?.Mode == ProjectionMode.Isometric;
+            var tileBuffer = TextureManager.GetBufferById(tileId, isIso);
 
             if (tileBuffer == null && TextureManager.TryGetTexture(tileId, textures, out var texture))
             {
                 TextureManager.RegisterTexture(texture);
-                tileBuffer = TextureManager.GetBufferById(tileId);
-            }
-
-            if (layer == null)
-            {
-                layer = new UnmanagedImageBuffer(width * textureSize, height * textureSize);
-                layer.Clear(0, 0, 0, 0);
+                tileBuffer = TextureManager.GetBufferById(tileId, isIso);
             }
 
             if (tileBuffer == null) return layer;
 
-            layer.BlitRegionBlend(tileBuffer, 0, 0, tileBuffer.Width, tileBuffer.Height, x, y);
+            int drawX;
+            int drawY;
 
+            if (isIso)
+            {
+                if (TextureManager.TryGetTexture(tileId, textures, out var texDef) && texDef.IsStandingSprite)
+                {
+                    drawX = pt.X - (tileBuffer.Width / 2);
+                    drawY = pt.Y - tileBuffer.Height;
+                }
+                else
+                {
+                    drawX = pt.X - (textureSize / 2);
+                    drawY = pt.Y - (textureSize / 4);
+                }
+            }
+            else
+            {
+                drawX = pt.X;
+                drawY = pt.Y;
+            }
+
+            layer.BlitRegionBlend(tileBuffer, 0, 0, tileBuffer.Width, tileBuffer.Height, drawX, drawY);
             return layer;
         }
+
 
         /// <summary>
         /// Removes a tile image from the display layer.
@@ -608,7 +739,8 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Displays movement animation frame by frame and resets temporary frames when finished.
+        /// Animates movement across tile steps.
+        /// Supports both unified LayerOne depth sorting and LayerThree overlay projection.
         /// </summary>
         /// <param name="aurora">The aurora control instance.</param>
         /// <param name="steps">The tile steps sequence.</param>
@@ -617,39 +749,121 @@ namespace Solaris
         /// <param name="height">The height in tile units.</param>
         /// <param name="textureSize">Size of the texture.</param>
         /// <returns>Task representing the asynchronous operation.</returns>
-        internal static async Task DisplayMovement(Aurora aurora, IEnumerable<int> steps, Bitmap? avatar,
-            int width, int height, int textureSize)
+        internal static async Task DisplayMovement(
+            Aurora aurora,
+            IEnumerable<int> steps,
+            Bitmap? avatar,
+            int width,
+            int height,
+            int textureSize,
+            bool useUnifiedLayerOne = true,
+            int stepDelayMs = 100)
         {
-            if (avatar == null) return;
+            var avatarBmp = avatar ?? aurora.AuroraAvatar;
+            if (avatarBmp == null) return;
 
             aurora.IsEnabled = false;
 
-            using var avatarBuffer = UnmanagedImageBuffer.FromBitmap(avatar);
-
-            var frameWidth = width * textureSize;
-            var frameHeight = height * textureSize;
-
-            foreach (var step in steps)
+            try
             {
-                var x = (step % width) * textureSize;
-                var y = (step / width) * textureSize;
+                if (useUnifiedLayerOne)
+                {
+                    // Mode A: Dynamic sorting in LayerOne (properly occludes behind foreground walls/trees)
+                    foreach (var step in steps)
+                    {
+                        aurora.AvatarPosition = step;
+                        aurora.MarkLayerDirty(DirtyFlags.FullRedraw);
+                        aurora.RenderDirty();
 
-                using var frame = new UnmanagedImageBuffer(frameWidth, frameHeight);
-                frame.Clear(0, 0, 0, 0);
+                        await Task.Delay(stepDelayMs);
+                    }
+                }
+                else
+                {
+                    // Mode B: Fast LayerThree blitting with viewport transforms and zero GC allocations
+                    int canvasW = aurora.ActiveViewport.ScreenWidth > 0
+                        ? aurora.ActiveViewport.ScreenWidth
+                        : width * textureSize;
+                    int canvasH = aurora.ActiveViewport.ScreenHeight > 0
+                        ? aurora.ActiveViewport.ScreenHeight
+                        : height * textureSize;
 
-                frame.BlitRegionBlend(avatarBuffer, 0, 0, avatarBuffer.Width, avatarBuffer.Height, x, y);
+                    using var avatarBuffer = UnmanagedImageBuffer.FromBitmap(avatarBmp);
+                    using var frameBuffer = new UnmanagedImageBuffer(canvasW, canvasH);
 
-                using var tempBmp = frame.ToBitmap();
-                aurora.LayerThree.Source = tempBmp.ToBitmapImage();
+                    bool isIso = aurora.ActiveViewport.Mode == ProjectionMode.Isometric;
 
-                await Task.Delay(100);
+                    foreach (var step in steps)
+                    {
+                        frameBuffer.Clear(0, 0, 0, 0);
+
+                        int elev = aurora.AuroraElevation != null && aurora.AuroraElevation.TryGetValue(step, out int z) ? z : 0;
+                        var pt = aurora.ActiveViewport.WorldToScreen(step, width, textureSize, elev, aurora.StepHeight);
+
+                        int drawX = isIso ? pt.X - (avatarBuffer.Width / 2) : pt.X + (textureSize - avatarBuffer.Width) / 2;
+                        int drawY = isIso ? pt.Y - avatarBuffer.Height : pt.Y + (textureSize - avatarBuffer.Height);
+
+                        frameBuffer.BlitRegionBlend(avatarBuffer, 0, 0, avatarBuffer.Width, avatarBuffer.Height, drawX, drawY);
+
+                        aurora.LayerThree.Source = frameBuffer.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
+
+                        await Task.Delay(stepDelayMs);
+                    }
+
+                    // Restore LayerThree to static display buffer or clear
+                    if (aurora.BitmapLayerThree != null)
+                    {
+                        aurora.LayerThree.Source = aurora.BitmapLayerThree.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
+                    }
+                    else
+                    {
+                        frameBuffer.Clear(0, 0, 0, 0);
+                        aurora.LayerThree.Source = frameBuffer.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
+                    }
+                }
             }
+            finally
+            {
+                aurora.IsEnabled = true;
+            }
+        }
 
-            // Cleanly restore LayerThree to its static display buffer or null
-            aurora.LayerThree.Source =
-                aurora.BitmapLayerThree?.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
 
-            aurora.IsEnabled = true;
+        /// <summary>
+        /// Removes the display.
+        /// </summary>
+        /// <param name="width">The width.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <param name="layer">The layer.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <returns>The UnmanagedImageBuffer.</returns>
+        public static UnmanagedImageBuffer? RemoveDisplay(
+            int width, int textureSize, UnmanagedImageBuffer? layer,
+            int position,
+            Viewport? viewport = null,
+            Dictionary<int, int>? elevationMap = null,
+            int stepHeight = 16)
+        {
+            if (layer == null) return null;
+
+            int elev = elevationMap != null && elevationMap.TryGetValue(position, out int z) ? z : 0;
+            var pt = viewport?.WorldToScreen(position, width, textureSize, elev, stepHeight) ??
+                     new Point((position % width) * textureSize, (position / width) * textureSize);
+
+            int halfW = textureSize / 2;
+            int halfH = textureSize / 4;
+
+            int clearX = viewport?.Mode == ProjectionMode.Isometric ? pt.X - halfW : pt.X;
+
+            // INCREASE bounding box height and shift Y up to fully erase tall standing sprites
+            int clearY = viewport?.Mode == ProjectionMode.Isometric ? pt.Y - textureSize : pt.Y;
+            int clearH = viewport?.Mode == ProjectionMode.Isometric ? textureSize + halfH : textureSize;
+
+            ClearTileRegion(layer, clearX, clearY, Math.Max(textureSize, clearH));
+            return layer;
         }
 
         /// <summary>
@@ -710,6 +924,55 @@ namespace Solaris
                 }
 
             return isoBitmap.ToBitmapImage();
+        }
+
+        /// <summary>
+        /// Injects the actor tile.
+        /// </summary>
+        /// <param name="bag">The bag.</param>
+        /// <param name="tileIndex">Index of the tile.</param>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="bounds">The bounds.</param>
+        /// <param name="mapWidth">Width of the map.</param>
+        /// <param name="textureSize">Size of the texture.</param>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="elevationMap">The elevation map.</param>
+        /// <param name="stepHeight">Height of the step.</param>
+        /// <param name="layer">The layer.</param>
+        /// <param name="isStanding">if set to <c>true</c> [is standing].</param>
+        private static void InjectActorTile(
+            ConcurrentBag<UnmanagedTileBox> bag,
+            int tileIndex,
+            UnmanagedImageBuffer buffer,
+            Rectangle bounds,
+            int mapWidth,
+            int textureSize,
+            Viewport? viewport,
+            Dictionary<int, int>? elevationMap,
+            int stepHeight,
+            int layer,
+            bool isStanding)
+        {
+            var tx = tileIndex % mapWidth;
+            var ty = tileIndex / mapWidth;
+
+            if (tx < bounds.Left || tx >= bounds.Right || ty < bounds.Top || ty >= bounds.Bottom)
+                return;
+
+            int elev = elevationMap != null && elevationMap.TryGetValue(tileIndex, out int z) ? z : 0;
+            var pt = viewport?.WorldToScreen(tileIndex, mapWidth, textureSize, elev, stepHeight) ??
+                     new Point(tx * textureSize, ty * textureSize);
+
+            bag.Add(new UnmanagedTileBox
+            {
+                X = pt.X,
+                Y = pt.Y,
+                Layer = layer,
+                Buffer = buffer,
+                TileX = tx,
+                TileY = ty,
+                IsStanding = isStanding
+            });
         }
 
         /// <summary>
@@ -828,6 +1091,93 @@ namespace Solaris
 
                     var invAlpha = 255 - alpha;
 
+                    var outB = (byte)((srcB * alpha + dstB * invAlpha) / 255);
+                    var outG = (byte)((srcG * alpha + dstG * invAlpha) / 255);
+                    var outR = (byte)((srcR * alpha + dstR * invAlpha) / 255);
+                    var outA = (byte)(alpha + (dstA * invAlpha) / 255);
+
+                    pDest[x] = ((uint)outA << 24) | ((uint)outR << 16) | ((uint)outG << 8) | outB;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Blits the region blend tint.
+        /// </summary>
+        /// <param name="dest">The dest.</param>
+        /// <param name="src">The source.</param>
+        /// <param name="srcX">The source x.</param>
+        /// <param name="srcY">The source y.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="destX">The dest x.</param>
+        /// <param name="destY">The dest y.</param>
+        /// <param name="tintFactor">The tint factor.</param>
+        private static unsafe void BlitRegionBlendTint(
+            this UnmanagedImageBuffer? dest,
+            UnmanagedImageBuffer? src,
+            int srcX, int srcY,
+            int width, int height,
+            int destX, int destY,
+            float tintFactor = 1.0f)
+        {
+            if (dest == null || src == null) return;
+
+            if (destX < 0) { var shift = -destX; srcX += shift; width -= shift; destX = 0; }
+            if (destY < 0) { var shift = -destY; srcY += shift; height -= shift; destY = 0; }
+            if (destX + width > dest.Width) width = dest.Width - destX;
+            if (destY + height > dest.Height) height = dest.Height - destY;
+
+            if (srcX < 0) { var shift = -srcX; destX += shift; width -= shift; srcX = 0; }
+            if (srcY < 0) { var shift = -srcY; destY += shift; height -= shift; srcY = 0; }
+            if (srcX + width > src.Width) width = src.Width - srcX;
+            if (srcY + height > src.Height) height = src.Height - srcY;
+
+            if (width <= 0 || height <= 0) return;
+
+            var srcStride = src.Width * UnmanagedImageBuffer.BytesPerPixel;
+            var destStride = dest.Width * UnmanagedImageBuffer.BytesPerPixel;
+
+            var pSrcBase = (byte*)src.Buffer.ToPointer() + (srcY * srcStride) + (srcX * UnmanagedImageBuffer.BytesPerPixel);
+            var pDestBase = (byte*)dest.Buffer.ToPointer() + (destY * destStride) + (destX * UnmanagedImageBuffer.BytesPerPixel);
+
+            bool applyTint = tintFactor < 0.99f;
+
+            for (var y = 0; y < height; y++)
+            {
+                var pSrc = (uint*)(pSrcBase + y * srcStride);
+                var pDest = (uint*)(pDestBase + y * destStride);
+
+                for (var x = 0; x < width; x++)
+                {
+                    var srcPixel = pSrc[x];
+                    var alpha = (byte)(srcPixel >> 24);
+                    if (alpha == 0) continue;
+
+                    var srcB = (byte)(srcPixel & 0xFF);
+                    var srcG = (byte)((srcPixel >> 8) & 0xFF);
+                    var srcR = (byte)((srcPixel >> 16) & 0xFF);
+
+                    if (applyTint)
+                    {
+                        srcB = (byte)(srcB * tintFactor);
+                        srcG = (byte)(srcG * tintFactor);
+                        srcR = (byte)(srcR * tintFactor);
+                    }
+
+                    if (alpha == 255)
+                    {
+                        pDest[x] = (255u << 24) | ((uint)srcR << 16) | ((uint)srcG << 8) | srcB;
+                        continue;
+                    }
+
+                    var dstPixel = pDest[x];
+                    var dstB = (byte)(dstPixel & 0xFF);
+                    var dstG = (byte)((dstPixel >> 8) & 0xFF);
+                    var dstR = (byte)((dstPixel >> 16) & 0xFF);
+                    var dstA = (byte)((dstPixel >> 24) & 0xFF);
+
+                    var invAlpha = 255 - alpha;
                     var outB = (byte)((srcB * alpha + dstB * invAlpha) / 255);
                     var outG = (byte)((srcG * alpha + dstG * invAlpha) / 255);
                     var outR = (byte)((srcR * alpha + dstR * invAlpha) / 255);

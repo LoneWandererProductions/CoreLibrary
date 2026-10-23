@@ -69,9 +69,29 @@ namespace Solaris
         /// <param name="id">The texture ID (e.g., 10000+).</param>
         /// <param name="buffer">The unmanaged buffer.</param>
         /// <param name="layer">The layer index.</param>
-        public static void RegisterGeneratedTexture(int id, UnmanagedImageBuffer buffer, int layer = 0)
+        /// <param name="isStandingSprite">if set to <c>true</c> [is standing sprite].</param>
+        /// <param name="anchorX">The anchor x.</param>
+        /// <param name="anchorY">The anchor y.</param>
+        /// <param name="heightOffset">The height offset.</param>
+        public static void RegisterGeneratedTexture(
+            int id,
+            UnmanagedImageBuffer buffer,
+            int layer = 0,
+            bool isStandingSprite = false,
+            int? anchorX = null,
+            int? anchorY = null,
+            int heightOffset = 0)
         {
-            var tex = new Texture { Id = id, Path = $"[Procedural:{id}]", Layer = layer };
+            var tex = new Texture
+            {
+                Id = id,
+                Path = $"[Procedural:{id}]",
+                Layer = layer,
+                IsStandingSprite = isStandingSprite,
+                AnchorX = anchorX,
+                AnchorY = anchorY,
+                HeightOffset = heightOffset
+            };
             GlobalTextures[id] = tex;
             FastRenderBufferCache[id] = buffer;
         }
@@ -103,6 +123,12 @@ namespace Solaris
                 return FastRenderBufferCache.TryGetValue(id, out var buffer) ? buffer : null;
             }
 
+            // Upright sprites keep their original rectangular buffer and transparency
+            if (GlobalTextures.TryGetValue(id, out var tex) && tex.IsStandingSprite)
+            {
+                return FastRenderBufferCache.TryGetValue(id, out var buffer) ? buffer : null;
+            }
+
             return IsoRenderBufferCache.GetOrAdd(id, key =>
             {
                 if (FastRenderBufferCache.TryGetValue(key, out var raw))
@@ -127,7 +153,6 @@ namespace Solaris
 
             return GlobalTextures.TryGetValue(id, out texture);
         }
-
 
         /// <summary>
         /// Cuts the isometric diamond.

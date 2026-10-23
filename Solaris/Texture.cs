@@ -42,5 +42,36 @@ namespace Solaris
         ///     The identifier.
         /// </value>
         public int Id { get; init; }
+
+        /// <summary>
+        /// When true, the sprite remains upright with its full height and alpha channels
+        /// instead of being clipped into a horizontal isometric floor diamond.
+        /// </summary>
+        public bool IsStandingSprite { get; init; } = false;
+
+        /// <summary>
+        /// Gets the anchor x. (Standard: Width / 2).
+        /// </summary>
+        /// <value>
+        /// The anchor x.
+        /// </value>
+        public int? AnchorX { get; init; }
+
+        /// <summary>
+        /// Vertical bottom anchor point in the buffer that aligns with the center of the tile (slice.Y).
+        /// If set to 0 or null, Buffer.Height (bottom edge of the buffer) is used.
+        /// </summary>
+        /// <value>
+        /// The anchor y.
+        /// </value>
+        public int? AnchorY { get; init; }
+
+        /// <summary>
+        /// Gets the height offset.
+        /// </summary>
+        /// <value>
+        /// The height offset.
+        /// </value>
+        public int HeightOffset { get; init; } = 0;
     }
 }

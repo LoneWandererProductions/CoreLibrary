@@ -160,6 +160,255 @@ namespace Solaris
 
         #endregion
 
+        #region Avatar & Dynamic Sorting Dependency Properties
+
+        /// <summary>
+        /// The current tile index of the avatar actor.
+        /// </summary>
+        public static readonly DependencyProperty AvatarPositionProperty = DependencyProperty.Register(
+            nameof(AvatarPosition), typeof(int), typeof(Aurora),
+            new PropertyMetadata(-1, OnAvatarPositionChanged));
+
+        /// <summary>
+        /// Enables sorting dynamic actors directly on LayerOne alongside standing props.
+        /// </summary>
+        public static readonly DependencyProperty UseUnifiedLayerOneProperty = DependencyProperty.Register(
+            nameof(UseUnifiedLayerOne), typeof(bool), typeof(Aurora),
+            new PropertyMetadata(true));
+
+        /// <summary>
+        /// Gets or sets the avatar position.
+        /// </summary>
+        /// <value>
+        /// The avatar position.
+        /// </value>
+        public int AvatarPosition
+        {
+            get => (int)GetValue(AvatarPositionProperty);
+            set => SetValue(AvatarPositionProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [use unified layer one].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [use unified layer one]; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseUnifiedLayerOne
+        {
+            get => (bool)GetValue(UseUnifiedLayerOneProperty);
+            set => SetValue(UseUnifiedLayerOneProperty, value);
+        }
+
+        /// <summary>
+        /// Called when [avatar position changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnAvatarPositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Aurora)d;
+            control.MarkLayerDirty(DirtyFlags.FullRedraw);
+            control.RenderDirty();
+        }
+
+        #endregion
+
+        #region Actor & Avatar Dependency Properties
+
+        /// <summary>
+        /// Liste oder Dictionary aller dynamischen Einheiten (Gegner, NPCs, Verbündete).
+        /// </summary>
+        public static readonly DependencyProperty AuroraActorsProperty = DependencyProperty.Register(
+            nameof(AuroraActors), typeof(Dictionary<int, GameActor>), typeof(Aurora),
+            new PropertyMetadata(null, OnActorsChanged));
+
+        /// <summary>
+        /// Gets or sets the aurora actors.
+        /// </summary>
+        /// <value>
+        /// The aurora actors.
+        /// </value>
+        public Dictionary<int, GameActor>? AuroraActors
+        {
+            get => (Dictionary<int, GameActor>?)GetValue(AuroraActorsProperty);
+            set => SetValue(AuroraActorsProperty, value);
+        }
+
+        /// <summary>
+        /// Called when [actors changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnActorsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Aurora)d;
+            if (e.NewValue is Dictionary<int, GameActor> actors)
+            {
+                foreach (var actor in actors.Values)
+                {
+                    actor.UpdateBuffer();
+                }
+            }
+            control.MarkLayerDirty(DirtyFlags.FullRedraw);
+            control.RenderDirty();
+        }
+
+        /// <summary>
+        /// Called when the player's avatar is assigned or replaced.
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnAvatarChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Aurora)d;
+            control.UpdateAvatarBuffer();
+            control.MarkLayerDirty(DirtyFlags.FullRedraw);
+            control.RenderDirty();
+        }
+
+        /// <summary>
+        /// Converts the allocated avatar bitmap into a fast unmanaged buffer.
+        /// </summary>
+        private void UpdateAvatarBuffer()
+        {
+            _avatarBuffer?.Dispose();
+            _avatarBuffer = AuroraAvatar != null ? UnmanagedImageBuffer.FromBitmap(AuroraAvatar) : null;
+        }
+
+        #endregion
+
+        #region Fog of War Dependency Properties
+
+        /// <summary>
+        /// Status of the Warring Mist by tile index (0 = Unexplored, 1 = Explored, 2 = Visible).
+        /// </summary>
+        public static readonly DependencyProperty AuroraFogProperty = DependencyProperty.Register(
+            nameof(AuroraFog), typeof(byte[]), typeof(Aurora),
+            new PropertyMetadata(null, OnFogChanged));
+
+        /// <summary>
+        /// Gets or sets the aurora fog.
+        /// </summary>
+        /// <value>
+        /// The aurora fog.
+        /// </value>
+        public byte[]? AuroraFog
+        {
+            get => (byte[]?)GetValue(AuroraFogProperty);
+            set => SetValue(AuroraFogProperty, value);
+        }
+
+        /// <summary>
+        /// Called when [fog changed].
+        /// </summary>
+        /// <param name="d">The d.</param>
+        /// <param name="e">The <see cref="System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <returns></returns>
+        private static void OnFogChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Aurora)d;
+            control.MarkLayerDirty(DirtyFlags.FullRedraw);
+            control.RenderDirty();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Assigns a new list of texture layers to a tile and re-renders it.
+        /// </summary>
+        /// <param name="tileIndex">The 1D tile index.</param>
+        /// <param name="tiles">The new list of texture IDs on this tile.</param>
+        public void ChangeTiles(int tileIndex, List<int> tiles)
+        {
+            if (tileIndex < 0 || tileIndex >= AuroraWidth * AuroraHeight) return;
+
+            AuroraMap ??= new Dictionary<int, List<int>>();
+
+            if (tiles == null || tiles.Count == 0)
+            {
+                AuroraMap.Remove(tileIndex);
+            }
+            else
+            {
+                AuroraMap[tileIndex] = new List<int>(tiles);
+            }
+
+            MarkTileDirty(tileIndex, DirtyFlags.TileMap);
+            RenderDirty();
+        }
+
+        /// <summary>
+        /// Berechnet anhand einer 4-Bit-Nachbarschaftsmaske (N=1, E=2, S=4, W=8)
+        /// die passenden Übergangs-/Autotiling-Texturen für eine Kachel und aktualisiert sie.
+        /// Verhindert Zeilenüberläufe an den Rändern (Flat Map Bounds).
+        /// </summary>
+        /// <param name="tileIndex">Der Kachelindex.</param>
+        /// <param name="targetBaseTextureId">Die Textur-ID des Basis-Geländes (z. B. Wasser oder Straße).</param>
+        /// <param name="getTransitionTextureId">Optionale Lookup-Funktion: (bitmask) => texturId.</param>
+        public void UpdateTileTransitions(
+            int tileIndex,
+            int targetBaseTextureId,
+            Func<byte, int?>? getTransitionTextureId = null)
+        {
+            if (tileIndex < 0 || tileIndex >= AuroraWidth * AuroraHeight || AuroraMap == null)
+                return;
+
+            int x = tileIndex % AuroraWidth;
+            int y = tileIndex / AuroraWidth;
+
+            // 4-Bit Richtungs-Maske: Nord (1), Ost (2), Süd (4), West (8)
+            byte mask = 0;
+
+            // Nord (y > 0)
+            if (y > 0 && HasMatchingTexture(tileIndex - AuroraWidth, targetBaseTextureId))
+                mask |= 1;
+
+            // Ost (x < Width - 1: kein Zeilenumbruch!)
+            if (x < AuroraWidth - 1 && HasMatchingTexture(tileIndex + 1, targetBaseTextureId))
+                mask |= 2;
+
+            // Süd (y < Height - 1)
+            if (y < AuroraHeight - 1 && HasMatchingTexture(tileIndex + AuroraWidth, targetBaseTextureId))
+                mask |= 4;
+
+            // West (x > 0: kein Zeilenübertrag!)
+            if (x > 0 && HasMatchingTexture(tileIndex - 1, targetBaseTextureId))
+                mask |= 8;
+
+            if (getTransitionTextureId != null)
+            {
+                var resolvedTransition = getTransitionTextureId(mask);
+                if (resolvedTransition.HasValue)
+                {
+                    if (!AuroraMap.TryGetValue(tileIndex, out var layers))
+                    {
+                        layers = new List<int>();
+                        AuroraMap[tileIndex] = layers;
+                    }
+
+                    // Fügt die Übergangstextur auf oberster Ebene hinzu oder tauscht sie aus
+                    if (!layers.Contains(resolvedTransition.Value))
+                    {
+                        layers.Add(resolvedTransition.Value);
+                        MarkTileDirty(tileIndex, DirtyFlags.TileMap);
+                        RenderDirty();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Prüft sicher, ob eine Kachel eine bestimmte Textur-ID enthält.
+        /// </summary>
+        private bool HasMatchingTexture(int checkTileIndex, int matchTextureId)
+        {
+            if (AuroraMap == null || !AuroraMap.TryGetValue(checkTileIndex, out var list))
+                return false;
+
+            return list.Contains(matchTextureId);
+        }
+
         /// <summary>
         /// The third layer
         /// </summary>
@@ -179,6 +428,11 @@ namespace Solaris
         /// Gets the camera viewport managing dynamic zoom and entity tracking projection.
         /// </summary>
         public Viewport ActiveViewport { get; } = new();
+
+        /// <summary>
+        /// The avatar buffer
+        /// </summary>
+        private UnmanagedImageBuffer? _avatarBuffer;
 
         /// <inheritdoc />
         /// <summary>
@@ -385,16 +639,6 @@ namespace Solaris
         }
 
         /// <summary>
-        /// Called when [avatar changed].
-        /// </summary>
-        /// <param name="d">The d.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnAvatarChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            // Optional hook: If you need to immediately draw the avatar when it's assigned, do it here.
-        }
-
-        /// <summary>
         /// Called when [movement changed].
         /// </summary>
         /// <param name="d">The d.</param>
@@ -406,13 +650,12 @@ namespace Solaris
 
             try
             {
-                // Safely await the animation without blocking the main UI thread
-                await Helper.DisplayMovement(control, movement, control.AuroraAvatar, control.AuroraWidth,
-                    control.AuroraHeight, control.AuroraTextureSize);
+                await Helper.DisplayMovement(
+                    control, movement, control.AuroraAvatar, control.AuroraWidth,
+                    control.AuroraHeight, control.AuroraTextureSize, control.UseUnifiedLayerOne);
             }
             catch (Exception ex)
             {
-                // Log or handle animation failure gracefully rather than crashing the app silently
                 Trace.WriteLine($"Movement animation failed: {ex.Message}");
             }
         }
@@ -479,11 +722,13 @@ namespace Solaris
             var control = (Aurora)d;
             var value = (KeyValuePair<int, int>)e.NewValue;
 
-            var newBmp = Helper.AddDisplay(control.AuroraWidth, control.AuroraHeight, control.AuroraTextureSize,
-                control.AuroraTextures, control._thirdLayer, value);
+            var newBmp = Helper.AddDisplay(
+                control.AuroraWidth, control.AuroraHeight, control.AuroraTextureSize,
+                control.AuroraTextures, control._thirdLayer, value,
+                control.ActiveViewport, control.AuroraElevation, control.StepHeight);
+
             control._thirdLayer = newBmp;
             control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
-
             control.MarkTileDirty(value.Key, DirtyFlags.Overlays);
         }
 
@@ -497,11 +742,12 @@ namespace Solaris
             var control = (Aurora)d;
             var value = (int)e.NewValue;
 
-            var newBmp = Helper.RemoveDisplay(control.AuroraWidth, control.AuroraTextureSize, control._thirdLayer,
-                value);
-            control._thirdLayer = newBmp;
-            control.LayerThree.Source = newBmp.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
+            var newBmp = Helper.RemoveDisplay(
+                control.AuroraWidth, control.AuroraTextureSize, control._thirdLayer, value,
+                control.ActiveViewport, control.AuroraElevation, control.StepHeight);
 
+            control._thirdLayer = newBmp;
+            control.LayerThree.Source = newBmp?.UpdateWriteableBitmap(control.LayerThree.Source as WriteableBitmap);
             control.MarkTileDirty(value, DirtyFlags.Overlays);
         }
 
@@ -623,7 +869,9 @@ namespace Solaris
 
             var newBitmap = Helper.GenerateImage(
                 AuroraWidth, AuroraHeight, AuroraTextureSize, AuroraTextures, AuroraMap,
-                ActiveViewport, AuroraElevation, StepHeight);
+                ActiveViewport, AuroraElevation, StepHeight,
+                AvatarPosition, _avatarBuffer, AuroraActors, AuroraFog);
+
             ReplaceBitmapLayerOne(newBitmap);
         }
 

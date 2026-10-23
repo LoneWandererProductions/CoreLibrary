@@ -62,5 +62,29 @@ namespace Solaris
         /// The tile y.
         /// </value>
         public int TileY { get; init; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is standing.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is standing; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsStanding { get; init; }
+
+        /// <summary>
+        /// Gets the anchor x.
+        /// </summary>
+        /// <value>
+        /// The anchor x.
+        /// </value>
+        public int AnchorX { get; init; }
+
+        /// <summary>
+        /// Gets the anchor y.
+        /// </summary>
+        /// <value>
+        /// The anchor y.
+        /// </value>
+        public int AnchorY { get; init; }
     }
 }
