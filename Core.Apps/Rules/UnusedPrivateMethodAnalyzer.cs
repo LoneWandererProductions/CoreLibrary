@@ -77,9 +77,10 @@ namespace Core.Apps.Rules
 
                 // Check for usages (invocations, method group conversions, nameof, etc.)
                 var isReferenced = root.DescendantNodes()
-                    .OfType<IdentifierNameSyntax>()
-                    .Any(id => id.Parent != methodDecl && id.Identifier.Text == symbol.Name && SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, symbol))
-;
+                        .OfType<IdentifierNameSyntax>()
+                        .Any(id => id.Parent != methodDecl && id.Identifier.Text == symbol.Name &&
+                                   SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(id).Symbol, symbol))
+                    ;
 
                 if (!isReferenced)
                 {

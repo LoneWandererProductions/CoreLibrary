@@ -24,7 +24,7 @@ namespace FileHandler
         /// <param name="fileExtList">The file extension list. Null elements are converted to empty strings.</param>
         /// <returns>A cleaned list of file extensions without dots.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="fileExtList"/> is null.</exception>
-        internal static List<string> CleanUpExtensionList(IEnumerable<string> fileExtList)
+        internal static List<string>? CleanUpExtensionList(IEnumerable<string>? fileExtList)
         {
             if (fileExtList == null)
             {
@@ -44,7 +44,7 @@ namespace FileHandler
         /// <param name="target">The target directory path to combine with.</param>
         /// <returns>The combined target folder path.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="element"/> is not under <paramref name="root"/>.</exception>
-        internal static string GetSubFolder(string element, string root, string target)
+        internal static string GetSubFolder(string? element, string? root, string target)
         {
             if (string.IsNullOrEmpty(element) || string.IsNullOrEmpty(root) || string.IsNullOrEmpty(target))
                 throw new ArgumentException(FileHandlerResources.ErrorInvalidPath);

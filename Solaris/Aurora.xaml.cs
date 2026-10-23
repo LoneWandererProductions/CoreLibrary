@@ -250,6 +250,7 @@ namespace Solaris
                     actor.UpdateBuffer();
                 }
             }
+
             control.MarkLayerDirty(DirtyFlags.FullRedraw);
             control.RenderDirty();
         }
@@ -672,7 +673,7 @@ namespace Solaris
 
             control.LayerTwo.Source = isGridEnabled
                 ? Helper.GenerateGrid(control.AuroraWidth, control.AuroraHeight, control.AuroraTextureSize,
-                                      control.ActiveViewport, control.AuroraElevation, control.StepHeight)
+                    control.ActiveViewport, control.AuroraElevation, control.StepHeight)
                 : null;
         }
 
@@ -851,7 +852,7 @@ namespace Solaris
 
             if (AuroraGrid)
                 LayerTwo.Source = Helper.GenerateGrid(AuroraWidth, AuroraHeight, AuroraTextureSize,
-                                                      ActiveViewport, AuroraElevation, StepHeight);
+                    ActiveViewport, AuroraElevation, StepHeight);
 
             var initialLayer = new UnmanagedImageBuffer(Touch.Width > 0 ? (int)Touch.Width : 1,
                 Touch.Height > 0 ? (int)Touch.Height : 1);

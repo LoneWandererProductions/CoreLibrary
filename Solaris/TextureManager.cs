@@ -38,7 +38,7 @@ namespace Solaris
         /// The fast render buffer cache
         /// Tier 2: Unmanaged render cache for O(1) row blitting lookups (Id -> UnmanagedImageBuffer)
         /// </summary>
-        private static readonly ConcurrentDictionary<int, UnmanagedImageBuffer> FastRenderBufferCache = new();
+        private static readonly ConcurrentDictionary<int, UnmanagedImageBuffer?> FastRenderBufferCache = new();
 
         /// <summary>
         /// The global textures mapping IDs to Texture definitions.
@@ -75,7 +75,7 @@ namespace Solaris
         /// <param name="heightOffset">The height offset.</param>
         public static void RegisterGeneratedTexture(
             int id,
-            UnmanagedImageBuffer buffer,
+            UnmanagedImageBuffer? buffer,
             int layer = 0,
             bool isStandingSprite = false,
             int? anchorX = null,
@@ -135,6 +135,7 @@ namespace Solaris
                 {
                     return CutIsometricDiamond(raw, raw.Width, raw.Height);
                 }
+
                 return null!;
             });
         }

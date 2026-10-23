@@ -30,12 +30,12 @@ namespace Imaging
         /// <summary>
         /// The render
         /// </summary>
-        private readonly IImageRender _render;
+        private readonly IImageRender? _render;
 
         /// <summary>
         /// The texture generator
         /// </summary>
-        private readonly ITextureGenerator _textureGenerator;
+        private readonly ITextureGenerator? _textureGenerator;
 
         /// <summary>
         /// Creates a rasterizer with its own <see cref="ImageRender" /> and <see cref="TextureGenerator" />.
@@ -51,7 +51,7 @@ namespace Imaging
         /// <param name="render">The render.</param>
         /// <param name="textureGenerator">The texture generator.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public ShapeRasterizer(IImageRender render, ITextureGenerator textureGenerator)
+        public ShapeRasterizer(IImageRender? render, ITextureGenerator? textureGenerator)
         {
             ArgumentNullException.ThrowIfNull(render);
             ArgumentNullException.ThrowIfNull(textureGenerator);
@@ -61,7 +61,7 @@ namespace Imaging
         }
 
         /// <inheritdoc />
-        public void Rasterize(IReadOnlyList<Shape> shapes, UnmanagedImageBuffer target)
+        public void Rasterize(IReadOnlyList<Shape>? shapes, UnmanagedImageBuffer? target)
         {
             ArgumentNullException.ThrowIfNull(shapes);
             ArgumentNullException.ThrowIfNull(target);

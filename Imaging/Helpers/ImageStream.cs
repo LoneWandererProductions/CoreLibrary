@@ -392,11 +392,11 @@ namespace Imaging.Helpers
             var images = new List<Bitmap?>(x * y);
 
             for (var j = 0; j < y; j++)
-                for (var i = 0; i < x; i++)
-                {
-                    var img = CutBitmap(image, i * width, j * height, height, width);
-                    images.Add(img);
-                }
+            for (var i = 0; i < x; i++)
+            {
+                var img = CutBitmap(image, i * width, j * height, height, width);
+                images.Add(img);
+            }
 
             return images;
         }
@@ -515,7 +515,7 @@ namespace Imaging.Helpers
             var bounds = ImageHelper.GetNonTransparentBounds(image);
 
             if (bounds.Width <= 0 || bounds.Height <= 0)
-            // Return an empty image or handle this case as needed
+                // Return an empty image or handle this case as needed
             {
                 return new Bitmap(1, 1);
             }
@@ -609,19 +609,19 @@ namespace Imaging.Helpers
             var pixelsToSet = new List<(int x, int y, Color color)>();
 
             for (var x = 0; x < dbm.Width; x++)
-                for (var y = 0; y < dbm.Height; y++)
+            for (var y = 0; y < dbm.Height; y++)
+            {
+                var color = dbm.GetPixel(x, y);
+
+                //not in the area? continue, 255 is White
+                if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
                 {
-                    var color = dbm.GetPixel(x, y);
-
-                    //not in the area? continue, 255 is White
-                    if (255 - color.R >= threshold || 255 - color.G >= threshold || 255 - color.B >= threshold)
-                    {
-                        continue;
-                    }
-
-                    //replace Value under the threshold with pure White
-                    pixelsToSet.Add((x, y, replacementColor));
+                    continue;
                 }
+
+                //replace Value under the threshold with pure White
+                pixelsToSet.Add((x, y, replacementColor));
+            }
 
             try
             {
@@ -755,17 +755,17 @@ namespace Imaging.Helpers
             using var dbm = new DirectBitmap(source.Width, source.Height);
 
             for (var y = 0; y < source.Height; y++)
-                for (var x = 0; x < source.Width; x++)
-                {
-                    var pixelColor = source.GetPixel(x, y);
+            for (var x = 0; x < source.Width; x++)
+            {
+                var pixelColor = source.GetPixel(x, y);
 
-                    // Adjust brightness by multiplying each color component by the brightness factor
-                    var newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
-                    var newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
-                    var newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
+                // Adjust brightness by multiplying each color component by the brightness factor
+                var newRed = ImageHelper.Clamp(pixelColor.R * brightnessFactor);
+                var newGreen = ImageHelper.Clamp(pixelColor.G * brightnessFactor);
+                var newBlue = ImageHelper.Clamp(pixelColor.B * brightnessFactor);
 
-                    dbm.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
-                }
+                dbm.SetPixel(x, y, Color.FromArgb(newRed, newGreen, newBlue));
+            }
 
             return dbm.ToBitmap();
         }

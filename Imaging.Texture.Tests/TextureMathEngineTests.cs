@@ -31,12 +31,12 @@ namespace Imaging.Texture.Tests
         /// <summary>
         /// The output directory
         /// </summary>
-        private string _outputDirectory;
+        private string? _outputDirectory;
 
         /// <summary>
         /// The noise generator
         /// </summary>
-        private NoiseGenerator _noiseGenerator;
+        private NoiseGenerator? _noiseGenerator;
 
         /// <summary>
         /// Setups this instance.
@@ -380,7 +380,8 @@ namespace Imaging.Texture.Tests
         public void GenerateVolumetricLeafCloudHardEdges_VisualTest()
         {
             var buffer =
-                TextureFactory.GenerateVolumetricLeafCloudHardEdges(TestWidth, TestHeight, _noiseGenerator, fillArea: false);
+                TextureFactory.GenerateVolumetricLeafCloudHardEdges(TestWidth, TestHeight, _noiseGenerator,
+                    fillArea: false);
             SaveBufferToImage(buffer, "24_VolumetricLeafCloud_HardEdges.png");
         }
 
@@ -491,7 +492,8 @@ namespace Imaging.Texture.Tests
         public void GenerateConcretePorous_VisualTest()
         {
             // Architectural matte concrete with fine aggregate pores and no sine-wave ring artifacts
-            var buffer = TextureMathEngine.GenerateConcretePorous(TestWidth, TestHeight, _noiseGenerator, baseTone: 140, gritSpread: 22);
+            var buffer = TextureMathEngine.GenerateConcretePorous(TestWidth, TestHeight, _noiseGenerator, baseTone: 140,
+                gritSpread: 22);
             SaveBufferToImage(buffer, "04b_Concrete_Porous.png");
         }
 
@@ -502,7 +504,8 @@ namespace Imaging.Texture.Tests
         public void GenerateStylizedFoliage_VisualTest()
         {
             // Clean, stylized leaf clumps with organic alpha cutouts for meshes and terrain
-            var buffer = TextureMathEngine.GenerateStylizedFoliage(TestWidth, TestHeight, _noiseGenerator, clusterSize: 32, transparentGaps: true);
+            var buffer = TextureMathEngine.GenerateStylizedFoliage(TestWidth, TestHeight, _noiseGenerator,
+                clusterSize: 32, transparentGaps: true);
             SaveBufferToImage(buffer, "13b_Foliage_Stylized.png");
         }
 
@@ -540,6 +543,11 @@ namespace Imaging.Texture.Tests
             }
 
             bmp.UnlockBits(bmpData);
+
+            if (_outputDirectory == null)
+            {
+                return;
+            }
 
             var filePath = Path.Combine(_outputDirectory, filename);
 

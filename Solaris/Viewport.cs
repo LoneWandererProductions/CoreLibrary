@@ -176,7 +176,8 @@ namespace Solaris
         /// <param name="mapHeight">The map height in tile units.</param>
         /// <param name="textureSize">The base tile pixel size.</param>
         /// <returns>A rectangle defining [MinTileX, MinTileY, WidthInTiles, HeightInTiles].</returns>
-        public Rectangle GetVisibleTileBounds(int mapWidth, int mapHeight, int textureSize, int maxElevation = 8, int stepHeight = 16)
+        public Rectangle GetVisibleTileBounds(int mapWidth, int mapHeight, int textureSize, int maxElevation = 8,
+            int stepHeight = 16)
         {
             if (mapWidth <= 0 || mapHeight <= 0 || textureSize <= 0)
                 return new Rectangle(0, 0, 0, 0);
@@ -195,7 +196,8 @@ namespace Solaris
                 var maxOrthX = Math.Min(mapWidth, minOrthX + visibleCols);
                 var maxOrthY = Math.Min(mapHeight, minOrthY + visibleRows);
 
-                return new Rectangle(minOrthX, minOrthY, Math.Max(1, maxOrthX - minOrthX), Math.Max(1, maxOrthY - minOrthY));
+                return new Rectangle(minOrthX, minOrthY, Math.Max(1, maxOrthX - minOrthX),
+                    Math.Max(1, maxOrthY - minOrthY));
             }
 
             // --- ISOMETRISCHES CULLING ---

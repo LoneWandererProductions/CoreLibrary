@@ -29,7 +29,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The identifier.
         /// </value>
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -37,7 +37,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The name.
         /// </value>
-        public string? Name { get; set; }
+        public string? Name { get; init; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="LayerDto"/> is visible.
@@ -45,7 +45,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         ///   <c>true</c> if visible; otherwise, <c>false</c>.
         /// </value>
-        public bool Visible { get; set; } = true;
+        public bool Visible { get; init; } = true;
 
         /// <summary>
         /// Gets or sets the opacity.
@@ -53,7 +53,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The opacity.
         /// </value>
-        public double Opacity { get; set; } = 1.0;
+        public double Opacity { get; init; } = 1.0;
 
         /// <summary>
         /// Gets or sets the blend.
@@ -61,7 +61,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The blend.
         /// </value>
-        public string? Blend { get; set; }
+        public string? Blend { get; init; }
 
         /// <summary>
         /// Gets or sets the file.

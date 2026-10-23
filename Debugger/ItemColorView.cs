@@ -21,12 +21,12 @@ namespace Debugger
         /// <summary>
         ///     The color name
         /// </summary>
-        private string _colorName;
+        private string? _colorName;
 
         /// <summary>
         ///     The entry text
         /// </summary>
-        private string _entryText;
+        private string? _entryText;
 
         /// <summary>
         ///     Gets the options.
@@ -42,7 +42,7 @@ namespace Debugger
         /// <value>
         ///     The entry text.
         /// </value>
-        public string EntryText
+        public string? EntryText
         {
             get => _entryText;
             set
@@ -58,14 +58,18 @@ namespace Debugger
         /// <value>
         ///     The name of the color.
         /// </value>
-        public string ColorName
+        public string? ColorName
         {
             get => _colorName;
             set
             {
                 _colorName = value;
                 //set Color of the Color Selection
-                Reference.ColorPicker.StartColor = value;
+                if (Reference != null)
+                {
+                    Reference.ColorPicker.StartColor = value;
+                }
+
                 OnPropertyChanged(nameof(ColorName));
             }
         }
@@ -76,7 +80,7 @@ namespace Debugger
         /// <value>
         ///     The reference.
         /// </value>
-        public ItemColor Reference { get; set; }
+        public ItemColor? Reference { get; set; }
 
         /// <summary>
         ///     Gets the delete command.

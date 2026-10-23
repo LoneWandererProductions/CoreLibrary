@@ -19,7 +19,7 @@ namespace Debugger
         /// <value>
         ///     The name of the color.
         /// </value>
-        public string ColorName { get; init; }
+        public string? ColorName { get; init; }
 
         /// <summary>
         ///     Gets or sets the entry text.
@@ -27,6 +27,6 @@ namespace Debugger
         /// <value>
         ///     The entry text.
         /// </value>
-        public string EntryText { get; init; }
+        public string? EntryText { get; init; }
     }
 }

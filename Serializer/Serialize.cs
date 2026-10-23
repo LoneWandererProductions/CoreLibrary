@@ -30,19 +30,19 @@ namespace Serializer
         /// <summary>
         ///     Occurs when [on error].
         /// </summary>
-        public static event Action<string, Exception> OnError;
+        public static event Action<string, Exception?>? OnError;
 
         /// <summary>
         ///     Occurs when [on information].
         /// </summary>
-        public static event Action<string> OnInformation;
+        public static event Action<string>? OnInformation;
 
         /// <summary>
         ///     Logs an error message and invokes the OnError event.
         /// </summary>
         /// <param name="message">The error message</param>
         /// <param name="ex">Optional exception to log</param>
-        private static void LogError(string message, Exception ex = null)
+        private static void LogError(string message, Exception? ex = null)
         {
             OnError?.Invoke(message, ex); // Notify any listeners of the error
             Trace.WriteLine($"[{DateTime.Now}] ERROR: {message}"); // Log error to trace
@@ -93,8 +93,8 @@ namespace Serializer
                 new XmlSerializer(typeof(T)).Serialize(writer, obj);
                 LogInformation($"Object of type {typeof(T)} successfully serialized to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception? ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 // Handle serialization errors and log them
                 LogError($"Error during serialization: {ex.Message}", ex);
@@ -124,8 +124,8 @@ namespace Serializer
                 new XmlSerializer(typeof(List<T>)).Serialize(fileStream, obj);
                 LogInformation($"List of type {typeof(T)} successfully serialized to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception? ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 // Handle serialization errors and log them
                 LogError($"Error during serialization: {ex.Message}", ex);
@@ -140,7 +140,7 @@ namespace Serializer
         /// <typeparam name="TValue">The type of the dictionary value</typeparam>
         /// <param name="dct">The dictionary to serialize</param>
         /// <param name="path">The file path where the dictionary will be saved</param>
-        public static void SaveDctObjectToXml<TKey, TValue>(Dictionary<TKey, TValue> dct, string path)
+        public static void SaveDctObjectToXml<TKey, TValue>(Dictionary<TKey, TValue> dct, string path) where TKey : notnull
         {
             if (dct == null)
             {
@@ -160,8 +160,8 @@ namespace Serializer
                 LogInformation(
                     $"Dictionary with key type {typeof(TKey)} and value type {typeof(TValue)} serialized to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception? ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 // Handle serialization errors and log them
                 LogError($"Error during serialization: {ex.Message}", ex);
@@ -211,8 +211,8 @@ namespace Serializer
                 streamWriter.Write(stringWriter.ToString()); // Write serialized data to file
                 LogInformation($"Dictionary serialized and saved to {path}");
             }
-            catch (Exception ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
-                                           or UnauthorizedAccessException or ArgumentException or IOException)
+            catch (Exception? ex) when (ex is InvalidOperationException or XmlException or NullReferenceException
+                                            or UnauthorizedAccessException or ArgumentException or IOException)
             {
                 // Handle serialization errors and log them
                 LogError($"Error during serialization: {ex.Message}", ex);

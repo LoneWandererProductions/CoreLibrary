@@ -1,12 +1,42 @@
-﻿using Imaging.Objects;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Solaris
+ * FILE:        ProceduralWallFactory.cs
+ * PURPOSE:     Factory to generate custom Walls.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
+
+using Imaging.Objects;
 
 namespace Solaris
 {
+    /// <summary>
+    /// Provides walls for Aurora.
+    /// </summary>
     public static class ProceduralWallFactory
     {
+        /// <summary>
+        /// The identifier intact
+        /// </summary>
         public const int IdIntact = 9001;
+
+        /// <summary>
+        /// The identifier cutaway
+        /// </summary>
         public const int IdCutaway = 9002;
+
+        /// <summary>
+        /// The identifier ruined
+        /// </summary>
         public const int IdRuined = 9003;
+
+        /// <summary>
+        /// The identifier rubble
+        /// </summary>
         public const int IdRubble = 9004;
 
         /// <summary>
@@ -26,7 +56,7 @@ namespace Solaris
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="buffer">The buffer.</param>
-        private static void RegisterWall(int id, UnmanagedImageBuffer buffer)
+        private static void RegisterWall(int id, UnmanagedImageBuffer? buffer)
         {
             var tex = new Texture
             {
@@ -44,7 +74,7 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with Dummy.</returns>
-        private static UnmanagedImageBuffer CreateIntactDummy(int size)
+        private static UnmanagedImageBuffer? CreateIntactDummy(int size)
         {
             var buf = new UnmanagedImageBuffer(size, size);
             buf.Clear(0, 0, 0, 0);
@@ -63,7 +93,7 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with cutaway Dummy.</returns>
-        private static UnmanagedImageBuffer CreateCutawayDummy(int size)
+        private static UnmanagedImageBuffer? CreateCutawayDummy(int size)
         {
             var buf = new UnmanagedImageBuffer(size, size);
             buf.Clear(0, 0, 0, 0);
@@ -82,7 +112,7 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with ruined Dummy.</returns>
-        private static UnmanagedImageBuffer CreateRuinedDummy(int size)
+        private static UnmanagedImageBuffer? CreateRuinedDummy(int size)
         {
             var buf = new UnmanagedImageBuffer(size, size);
             buf.Clear(0, 0, 0, 0);
@@ -100,7 +130,7 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with rubble Dummy.</returns>
-        private static UnmanagedImageBuffer CreateRubbleDummy(int size)
+        private static UnmanagedImageBuffer? CreateRubbleDummy(int size)
         {
             // Rubble is flat against the floor diamond
             var buf = new UnmanagedImageBuffer(size, size / 2);
@@ -125,7 +155,7 @@ namespace Solaris
         /// <param name="topY">The top y.</param>
         /// <param name="botY">The bot y.</param>
         /// <param name="isRuined">if set to <c>true</c> [is ruined].</param>
-        private static void DrawPrismFacets(UnmanagedImageBuffer buf, int size, int topY, int botY, bool isRuined)
+        private static void DrawPrismFacets(UnmanagedImageBuffer? buf, int size, int topY, int botY, bool isRuined)
         {
             int halfW = size / 2;
             int halfH = size / 4;
@@ -180,7 +210,7 @@ namespace Solaris
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>
         /// <param name="b">The b.</param>
-        private static void DrawStone(UnmanagedImageBuffer buf, int x, int y, int w, int h, byte r, byte g, byte b)
+        private static void DrawStone(UnmanagedImageBuffer? buf, int x, int y, int w, int h, byte r, byte g, byte b)
         {
             for (int row = y; row < y + h; row++)
             {

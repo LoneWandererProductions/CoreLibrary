@@ -28,7 +28,7 @@ namespace LightVector.Interfaces
         /// <param name="startCoordinates">The start coordinates.</param>
         /// <param name="attributes">The attributes.</param>
         void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates,
-            Dictionary<string, object>? attributes = null);
+            Dictionary<string?, object>? attributes = null);
 
         /// <summary>
         ///     Applies the transformation.
@@ -66,7 +66,7 @@ namespace LightVector.Interfaces
         /// <param name="id">The identifier.</param>
         /// <param name="newAttributes">The new attributes.</param>
         /// <returns>Status of operation. if failed false, if success, true.</returns>
-        bool UpdateObjectAttributes(int id, Dictionary<string, object> newAttributes);
+        bool UpdateObjectAttributes(int id, Dictionary<string?, object> newAttributes);
 
         /// <summary>
         /// Saves to file.

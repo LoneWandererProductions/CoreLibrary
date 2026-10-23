@@ -227,7 +227,7 @@ namespace LightVector
         /// </summary>
         /// <param name="colorString">The color string.</param>
         /// <returns>Parsed Hex to wpf color.</returns>
-        private static SolidColorBrush ParseColor(string colorString)
+        private static SolidColorBrush ParseColor(string? colorString)
         {
             if (string.IsNullOrEmpty(colorString)) return Brushes.Transparent;
 

@@ -40,7 +40,7 @@ namespace Serializer
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="ex">The ex.</param>
-        private static void LogError(string message, Exception ex = null)
+        private static void LogError(string message, Exception? ex = null)
         {
             OnError?.Invoke(message, ex);
         }

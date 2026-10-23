@@ -453,11 +453,12 @@ namespace Core.Apps.Rules
         {
             // 1. Direct calls: _current.Dispose() or this._current.Dispose()
             var standardCalls = method.DescendantNodes()
-                .OfType<InvocationExpressionSyntax>()
-                .Any(inv => inv.SpanStart < beforePosition && inv.Expression is MemberAccessExpressionSyntax member &&
-                            member.Name.Identifier.Text == "Dispose" &&
-                            IsTargetVariable(member.Expression, name, allowThisPrefix))
-;
+                    .OfType<InvocationExpressionSyntax>()
+                    .Any(inv => inv.SpanStart < beforePosition &&
+                                inv.Expression is MemberAccessExpressionSyntax member &&
+                                member.Name.Identifier.Text == "Dispose" &&
+                                IsTargetVariable(member.Expression, name, allowThisPrefix))
+                ;
 
             if (standardCalls)
             {
@@ -466,10 +467,11 @@ namespace Core.Apps.Rules
 
             // 2. Null-conditional calls: _current?.Dispose() or this._current?.Dispose()
             var conditionalCalls = method.DescendantNodes()
-                .OfType<ConditionalAccessExpressionSyntax>()
-                .Any(cond => cond.SpanStart < beforePosition && IsTargetVariable(cond.Expression, name, allowThisPrefix) &&
-                             IsDisposeInvocation(cond.WhenNotNull))
-;
+                    .OfType<ConditionalAccessExpressionSyntax>()
+                    .Any(cond => cond.SpanStart < beforePosition &&
+                                 IsTargetVariable(cond.Expression, name, allowThisPrefix) &&
+                                 IsDisposeInvocation(cond.WhenNotNull))
+                ;
 
             return conditionalCalls;
         }

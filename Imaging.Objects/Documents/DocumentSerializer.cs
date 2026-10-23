@@ -441,9 +441,5 @@ namespace Imaging.Objects.Documents
             var pixels = codec.Read(stream, width, height);
             return new RasterLayer(item.Id, item.Name, pixels);
         }
-
-
-
-
     }
 }

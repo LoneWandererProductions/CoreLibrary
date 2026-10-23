@@ -32,7 +32,7 @@ namespace SQLiteGui
         /// <summary>
         ///     The selected item
         /// </summary>
-        private DataRowView _selectedItem;
+        private DataRowView? _selectedItem;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DataOverviewViewModel" /> class.
@@ -71,7 +71,7 @@ namespace SQLiteGui
         /// <value>
         ///     The selected item.
         /// </value>
-        public DataRowView SelectedItem
+        public DataRowView? SelectedItem
         {
             get => _selectedItem;
             set

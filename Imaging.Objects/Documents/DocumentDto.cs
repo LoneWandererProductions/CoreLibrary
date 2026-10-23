@@ -19,7 +19,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The format.
         /// </value>
-        public string? Format { get; set; }
+        public string? Format { get; init; }
 
         /// <summary>
         /// Gets or sets the version.
@@ -27,7 +27,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The version.
         /// </value>
-        public int Version { get; set; }
+        public int Version { get; init; }
 
         /// <summary>
         /// Gets or sets the width.
@@ -35,7 +35,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The width.
         /// </value>
-        public int Width { get; set; }
+        public int Width { get; init; }
 
         /// <summary>
         /// Gets or sets the height.
@@ -43,7 +43,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The height.
         /// </value>
-        public int Height { get; set; }
+        public int Height { get; init; }
 
         /// <summary>
         /// Gets or sets the layers.
@@ -51,6 +51,6 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The layers.
         /// </value>
-        public List<LayerDto>? Layers { get; set; }
+        public List<LayerDto>? Layers { get; init; }
     }
 }

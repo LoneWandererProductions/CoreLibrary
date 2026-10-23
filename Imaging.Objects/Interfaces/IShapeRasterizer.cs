@@ -20,6 +20,6 @@ namespace Imaging.Objects.Interfaces
         ///     Draws <paramref name="shapes" /> (bottom to top) into <paramref name="target" />.
         ///     The target is fully transparent, straight-alpha BGRA and as large as the document.
         /// </summary>
-        void Rasterize(IReadOnlyList<Shape> shapes, UnmanagedImageBuffer target);
+        void Rasterize(IReadOnlyList<Shape>? shapes, UnmanagedImageBuffer? target);
     }
 }

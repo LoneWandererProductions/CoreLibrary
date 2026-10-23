@@ -26,10 +26,7 @@ namespace CommonLibraryGui.Tests
         {
             var viewport = new Viewport
             {
-                PanX = 50,
-                PanY = 100,
-                Zoom = 2.0f,
-                Projection = ProjectionMode.Orthographic2D
+                PanX = 50, PanY = 100, Zoom = 2.0f, Projection = ProjectionMode.Orthographic2D
             };
 
             // Tile index 11 -> TileX = 1, TileY = 1 in a 10-wide map, textureSize = 32
@@ -50,10 +47,7 @@ namespace CommonLibraryGui.Tests
         {
             var viewport = new Viewport
             {
-                PanX = 100,
-                PanY = 100,
-                Zoom = 2.0f,
-                Projection = ProjectionMode.Orthographic2D
+                PanX = 100, PanY = 100, Zoom = 2.0f, Projection = ProjectionMode.Orthographic2D
             };
 
             // Click at screen pixel (300, 300)

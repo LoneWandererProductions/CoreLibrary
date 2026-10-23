@@ -35,14 +35,14 @@ namespace Extended.Objects
         /// <summary>
         /// Secondary index mapping categories to sets of keys for fast category lookups.
         /// </summary>
-        private readonly Dictionary<string, HashSet<TK>> _categories;
+        private readonly Dictionary<string?, HashSet<TK>> _categories;
 
         /// <summary>
         /// Normalizes the category.
         /// </summary>
         /// <param name="category">The category.</param>
         /// <returns>string Empty if category was empty.</returns>
-        private static string NormalizeCategory(string? category) => category ?? string.Empty;
+        private static string? NormalizeCategory(string? category) => category ?? string.Empty;
 
         /// <summary>
         /// Lock for thread-safety.
@@ -55,7 +55,7 @@ namespace Extended.Objects
         public CategorizedDictionary()
         {
             _data = new Dictionary<TK, (string, TV)>();
-            _categories = new Dictionary<string, HashSet<TK>>(StringComparer.OrdinalIgnoreCase);
+            _categories = new Dictionary<string?, HashSet<TK>>(StringComparer.OrdinalIgnoreCase);
             _lock = new ReaderWriterLockSlim();
         }
 
@@ -129,7 +129,7 @@ namespace Extended.Objects
         /// <param name="category">The category.</param>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
-        public void Add(string category, TK key, TV value)
+        public void Add(string? category, TK key, TV value)
         {
             _lock.EnterWriteLock();
             try { AddInternal(NormalizeCategory(category), key, value); }
@@ -140,7 +140,7 @@ namespace Extended.Objects
         /// Internal helper for adding a new entry. Updates both _data and _categories.
         /// Throws <see cref="ArgumentException"/> if the key already exists.
         /// </summary>
-        private void AddInternal(string category, TK key, TV value)
+        private void AddInternal(string? category, TK key, TV value)
         {
             if (_data.ContainsKey(key))
                 throw new ArgumentException($"Key '{key}' already exists.");
@@ -272,7 +272,7 @@ namespace Extended.Objects
         /// <param name="key">The key.</param>
         /// <param name="newCategory">The new category.</param>
         /// <returns>True if success.</returns>
-        public bool SetCategory(TK key, string newCategory)
+        public bool SetCategory(TK key, string? newCategory)
         {
             // Normalize input category to ensure consistency with Add()
             newCategory = NormalizeCategory(newCategory);
@@ -329,7 +329,7 @@ namespace Extended.Objects
         /// </summary>
         /// <param name="category">The category.</param>
         /// <returns>All keys by category</returns>
-        public IEnumerable<TK> GetKeys(string category)
+        public IEnumerable<TK> GetKeys(string? category)
         {
             category = NormalizeCategory(category);
             _lock.EnterReadLock();
@@ -387,7 +387,7 @@ namespace Extended.Objects
         /// </summary>
         /// <param name="category">The category.</param>
         /// <returns>Get Key Value by category</returns>
-        public Dictionary<TK, TV> GetCategory(string category)
+        public Dictionary<TK, TV> GetCategory(string? category)
         {
             category = NormalizeCategory(category);
             _lock.EnterReadLock();

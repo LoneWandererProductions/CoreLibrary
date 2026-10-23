@@ -95,7 +95,7 @@ namespace Debugger
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="color">The color.</param>
-        private void ColorPicker_ColorChanged(object sender, string color)
+        private void ColorPicker_ColorChanged(object sender, string? color)
         {
             View.ColorName = color;
         }

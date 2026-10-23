@@ -39,7 +39,7 @@ namespace Serializer
         /// <summary>
         ///     Logs the provided message.
         /// </summary>
-        private static void Log(string message, Exception ex = null)
+        private static void Log(string message, Exception? ex = null)
         {
             OnError?.Invoke(message, ex);
             Trace.WriteLine($"[{DateTime.Now}] {message}");

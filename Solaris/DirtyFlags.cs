@@ -20,6 +20,7 @@ namespace Solaris
         /// The none
         /// </summary>
         None = 0,
+
         /// <summary>
         /// Layer 1: Base terrain / static tiles
         /// </summary>

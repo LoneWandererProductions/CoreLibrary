@@ -35,7 +35,7 @@ namespace Imaging.Objects.Documents
         /// </summary>
         /// <param name="pixels">The pixels.</param>
         /// <param name="name">The name.</param>
-        public RasterLayer(UnmanagedImageBuffer pixels, string name = "Layer")
+        public RasterLayer(UnmanagedImageBuffer? pixels, string name = "Layer")
             : this(Guid.NewGuid(), name, pixels)
         {
         }
@@ -47,7 +47,7 @@ namespace Imaging.Objects.Documents
         /// <param name="name">The name.</param>
         /// <param name="pixels">The pixels.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public RasterLayer(Guid id, string? name, UnmanagedImageBuffer pixels)
+        public RasterLayer(Guid id, string? name, UnmanagedImageBuffer? pixels)
             : base(id, name)
         {
             ArgumentNullException.ThrowIfNull(pixels);
@@ -88,7 +88,7 @@ namespace Imaging.Objects.Documents
         /// The pixels.
         /// </value>
         /// <exception cref="System.ObjectDisposedException">RasterLayer</exception>
-        public UnmanagedImageBuffer Pixels => _pixels ?? throw new ObjectDisposedException(nameof(RasterLayer));
+        public UnmanagedImageBuffer? Pixels => _pixels ?? throw new ObjectDisposedException(nameof(RasterLayer));
 
         /// <inheritdoc />
         public override Layer Duplicate(string? name = null)
@@ -111,7 +111,7 @@ namespace Imaging.Objects.Documents
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         /// <returns>The created <see cref="UnmanagedImageBuffer"/>.</returns>
-        private static UnmanagedImageBuffer CreateTransparent(int width, int height)
+        private static UnmanagedImageBuffer? CreateTransparent(int width, int height)
         {
             DocumentLimits.EnsureValidSize(width, height);
 

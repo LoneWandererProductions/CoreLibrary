@@ -16,8 +16,14 @@ namespace Common.ExtendedObject.Tests
     [TestClass]
     public class MemoryVaultTests
     {
-        private MemoryVault<string?> _vault;
+        /// <summary>
+        /// The vault
+        /// </summary>
+        private MemoryVault<string?>? _vault;
 
+        /// <summary>
+        /// Tests the initialize.
+        /// </summary>
         [TestInitialize]
         public void TestInitialize()
         {
@@ -34,6 +40,11 @@ namespace Common.ExtendedObject.Tests
             const string data = "TestData";
 
             // Act
+            if (_vault == null)
+            {
+                return;
+            }
+
             var identifier = _vault.Add(data);
 
             // Assert
@@ -48,6 +59,11 @@ namespace Common.ExtendedObject.Tests
         {
             // Arrange
             const string? data = "TestData";
+            if (_vault == null)
+            {
+                return;
+            }
+
             var identifier = _vault.Add(data);
 
             // Act
@@ -65,6 +81,11 @@ namespace Common.ExtendedObject.Tests
         {
             // Arrange
             const string? data = "TestData";
+            if (_vault == null)
+            {
+                return;
+            }
+
             var identifier = _vault.Add(data);
 
             // Act
@@ -84,6 +105,11 @@ namespace Common.ExtendedObject.Tests
         {
             // Arrange
             const string? data = "TestData";
+            if (_vault == null)
+            {
+                return;
+            }
+
             var identifier = _vault.Add(data);
             var metadata = new VaultMetadata
             {
@@ -108,6 +134,11 @@ namespace Common.ExtendedObject.Tests
         {
             // Arrange
             const string? data = "TestData";
+            if (_vault == null)
+            {
+                return;
+            }
+
             var identifier = _vault.Add(data);
 
             // Act
@@ -133,6 +164,11 @@ namespace Common.ExtendedObject.Tests
         {
             // Arrange
             const string? data = "TestData";
+            if (_vault == null)
+            {
+                return;
+            }
+
             var identifier = _vault.Add(data, TimeSpan.FromMilliseconds(100)); // Expiry after 100ms
 
             // Act

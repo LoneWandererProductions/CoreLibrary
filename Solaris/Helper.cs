@@ -129,10 +129,13 @@ namespace Solaris
             // 2. Add avatar (visible only when the field is revealed)
             if (avatarBuffer != null && avatarTile >= 0 && avatarTile < width * height)
             {
-                byte avatarFog = (fogMap != null && avatarTile < fogMap.Length) ? fogMap[avatarTile] : (byte)FogState.Visible;
+                byte avatarFog = (fogMap != null && avatarTile < fogMap.Length)
+                    ? fogMap[avatarTile]
+                    : (byte)FogState.Visible;
                 if (avatarFog == (byte)FogState.Visible)
                 {
-                    InjectActorTile(tiles, avatarTile, avatarBuffer, safeBounds, width, textureSize, viewport, elevationMap, stepHeight, 10, true);
+                    InjectActorTile(tiles, avatarTile, avatarBuffer, safeBounds, width, textureSize, viewport,
+                        elevationMap, stepHeight, 10, true);
                 }
             }
 
@@ -144,10 +147,13 @@ namespace Solaris
                     if (actor.Buffer == null || actor.TileIndex < 0 || actor.TileIndex >= width * height)
                         continue;
 
-                    byte actorFog = (fogMap != null && actor.TileIndex < fogMap.Length) ? fogMap[actor.TileIndex] : (byte)FogState.Visible;
+                    byte actorFog = (fogMap != null && actor.TileIndex < fogMap.Length)
+                        ? fogMap[actor.TileIndex]
+                        : (byte)FogState.Visible;
                     if (actorFog == (byte)FogState.Visible)
                     {
-                        InjectActorTile(tiles, actor.TileIndex, actor.Buffer, safeBounds, width, textureSize, viewport, elevationMap, stepHeight, actor.Layer, actor.IsStandingSprite);
+                        InjectActorTile(tiles, actor.TileIndex, actor.Buffer, safeBounds, width, textureSize, viewport,
+                            elevationMap, stepHeight, actor.Layer, actor.IsStandingSprite);
                     }
                 }
             }
@@ -241,7 +247,9 @@ namespace Solaris
                     drawY = slice.IsStanding ? slice.Y - slice.AnchorY : slice.Y;
                 }
 
-                byte currentFog = (fogMap != null && tileId >= 0 && tileId < fogMap.Length) ? fogMap[tileId] : (byte)FogState.Visible;
+                byte currentFog = (fogMap != null && tileId >= 0 && tileId < fogMap.Length)
+                    ? fogMap[tileId]
+                    : (byte)FogState.Visible;
                 float tintFactor = (currentFog == (byte)FogState.Explored) ? 0.45f : 1.0f;
 
                 canvas.BlitRegionBlendTint(
@@ -797,15 +805,21 @@ namespace Solaris
                     {
                         frameBuffer.Clear(0, 0, 0, 0);
 
-                        int elev = aurora.AuroraElevation != null && aurora.AuroraElevation.TryGetValue(step, out int z) ? z : 0;
+                        int elev = aurora.AuroraElevation != null && aurora.AuroraElevation.TryGetValue(step, out int z)
+                            ? z
+                            : 0;
                         var pt = aurora.ActiveViewport.WorldToScreen(step, width, textureSize, elev, aurora.StepHeight);
 
-                        int drawX = isIso ? pt.X - (avatarBuffer.Width / 2) : pt.X + (textureSize - avatarBuffer.Width) / 2;
+                        int drawX = isIso
+                            ? pt.X - (avatarBuffer.Width / 2)
+                            : pt.X + (textureSize - avatarBuffer.Width) / 2;
                         int drawY = isIso ? pt.Y - avatarBuffer.Height : pt.Y + (textureSize - avatarBuffer.Height);
 
-                        frameBuffer.BlitRegionBlend(avatarBuffer, 0, 0, avatarBuffer.Width, avatarBuffer.Height, drawX, drawY);
+                        frameBuffer.BlitRegionBlend(avatarBuffer, 0, 0, avatarBuffer.Width, avatarBuffer.Height, drawX,
+                            drawY);
 
-                        aurora.LayerThree.Source = frameBuffer.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
+                        aurora.LayerThree.Source =
+                            frameBuffer.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
 
                         await Task.Delay(stepDelayMs);
                     }
@@ -813,12 +827,14 @@ namespace Solaris
                     // Restore LayerThree to static display buffer or clear
                     if (aurora.BitmapLayerThree != null)
                     {
-                        aurora.LayerThree.Source = aurora.BitmapLayerThree.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
+                        aurora.LayerThree.Source =
+                            aurora.BitmapLayerThree.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
                     }
                     else
                     {
                         frameBuffer.Clear(0, 0, 0, 0);
-                        aurora.LayerThree.Source = frameBuffer.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
+                        aurora.LayerThree.Source =
+                            frameBuffer.UpdateWriteableBitmap(aurora.LayerThree.Source as WriteableBitmap);
                     }
                 }
             }
@@ -888,10 +904,11 @@ namespace Solaris
                 using var bitmap = new Bitmap(width * textureSize, height * textureSize);
                 using var graphics = Graphics.FromImage(bitmap);
                 for (var y = 0; y < height; y++)
-                    for (var x = 0; x < width; x++)
-                    {
-                        graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
-                    }
+                for (var x = 0; x < width; x++)
+                {
+                    graphics.DrawRectangle(Pens.Black, x * textureSize, y * textureSize, textureSize, textureSize);
+                }
+
                 return bitmap.ToBitmapImage();
             }
 
@@ -907,21 +924,24 @@ namespace Solaris
             int halfH = textureSize / 4;
 
             for (var y = 0; y < height; y++)
-                for (var x = 0; x < width; x++)
-                {
-                    int tileId = y * width + x;
-                    int elev = elevationMap != null && elevationMap.TryGetValue(tileId, out int z) ? z : 0;
-                    var pt = viewport.WorldToScreen(tileId, width, textureSize, elev, stepHeight);
+            for (var x = 0; x < width; x++)
+            {
+                int tileId = y * width + x;
+                int elev = elevationMap != null && elevationMap.TryGetValue(tileId, out int z) ? z : 0;
+                var pt = viewport.WorldToScreen(tileId, width, textureSize, elev, stepHeight);
 
-                    Point[] diamond =
-                    [
-                        new Point(pt.X, pt.Y - halfH),
-            new Point(pt.X + halfW, pt.Y),
-            new Point(pt.X, pt.Y + halfH),
-            new Point(pt.X - halfW, pt.Y)
+                Point[] diamond = 
+
+                [
+                    new Point(pt.X, pt.Y
+
+                -halfH),
+                new Point(pt.X + halfW, pt.Y),
+                new Point(pt.X, pt.Y + halfH),
+                new Point(pt.X - halfW, pt.Y)
                     ];
-                    g.DrawPolygon(pen, diamond);
-                }
+                g.DrawPolygon(pen, diamond);
+            }
 
             return isoBitmap.ToBitmapImage();
         }
@@ -1123,13 +1143,41 @@ namespace Solaris
         {
             if (dest == null || src == null) return;
 
-            if (destX < 0) { var shift = -destX; srcX += shift; width -= shift; destX = 0; }
-            if (destY < 0) { var shift = -destY; srcY += shift; height -= shift; destY = 0; }
+            if (destX < 0)
+            {
+                var shift = -destX;
+                srcX += shift;
+                width -= shift;
+                destX = 0;
+            }
+
+            if (destY < 0)
+            {
+                var shift = -destY;
+                srcY += shift;
+                height -= shift;
+                destY = 0;
+            }
+
             if (destX + width > dest.Width) width = dest.Width - destX;
             if (destY + height > dest.Height) height = dest.Height - destY;
 
-            if (srcX < 0) { var shift = -srcX; destX += shift; width -= shift; srcX = 0; }
-            if (srcY < 0) { var shift = -srcY; destY += shift; height -= shift; srcY = 0; }
+            if (srcX < 0)
+            {
+                var shift = -srcX;
+                destX += shift;
+                width -= shift;
+                srcX = 0;
+            }
+
+            if (srcY < 0)
+            {
+                var shift = -srcY;
+                destY += shift;
+                height -= shift;
+                srcY = 0;
+            }
+
             if (srcX + width > src.Width) width = src.Width - srcX;
             if (srcY + height > src.Height) height = src.Height - srcY;
 
@@ -1138,8 +1186,10 @@ namespace Solaris
             var srcStride = src.Width * UnmanagedImageBuffer.BytesPerPixel;
             var destStride = dest.Width * UnmanagedImageBuffer.BytesPerPixel;
 
-            var pSrcBase = (byte*)src.Buffer.ToPointer() + (srcY * srcStride) + (srcX * UnmanagedImageBuffer.BytesPerPixel);
-            var pDestBase = (byte*)dest.Buffer.ToPointer() + (destY * destStride) + (destX * UnmanagedImageBuffer.BytesPerPixel);
+            var pSrcBase = (byte*)src.Buffer.ToPointer() + (srcY * srcStride) +
+                           (srcX * UnmanagedImageBuffer.BytesPerPixel);
+            var pDestBase = (byte*)dest.Buffer.ToPointer() + (destY * destStride) +
+                            (destX * UnmanagedImageBuffer.BytesPerPixel);
 
             bool applyTint = tintFactor < 0.99f;
 

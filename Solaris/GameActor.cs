@@ -75,7 +75,6 @@ namespace Solaris
         }
 
 
-
         //<inheritdoc />
         public void Dispose()
         {

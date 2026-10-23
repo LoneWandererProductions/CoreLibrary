@@ -29,7 +29,7 @@ namespace LightVector
 
         /// <inheritdoc />
         public void AddObject(int id, GraphicObject graphic, int layer, Point startCoordinates,
-            Dictionary<string, object>? attributes = null)
+            Dictionary<string?, object>? attributes = null)
         {
             if (_objects.ContainsKey(id))
             {
@@ -109,7 +109,7 @@ namespace LightVector
         }
 
         /// <inheritdoc />
-        public bool UpdateObjectAttributes(int id, Dictionary<string, object> newAttributes)
+        public bool UpdateObjectAttributes(int id, Dictionary<string?, object> newAttributes)
         {
             if (!_objects.TryGetValue(id, out var obj)) return false;
 

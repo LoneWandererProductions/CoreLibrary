@@ -31,7 +31,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateNoise(int width,
             int height,
-            object noiseGenInstance, // Pass your custom NoiseGenerator wrapper
+            object? noiseGenInstance, // Pass your custom NoiseGenerator wrapper
             int minValue = 0,
             int maxValue = 255,
             int alpha = 255,
@@ -85,7 +85,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateWood(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double xyPeriod = 12.0,
             double turbulencePower = 0.1,
@@ -228,7 +228,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateConcrete(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int minValue = 50,
             int maxValue = 200,
             int alpha = 255,
@@ -275,7 +275,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateConcretePorous(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte baseTone = 140,
             byte gritSpread = 22)
         {
@@ -303,7 +303,7 @@ namespace Imaging.Texture
                     span[idx++] = colorVal; // B
                     span[idx++] = colorVal; // G
                     span[idx++] = colorVal; // R
-                    span[idx++] = 255;      // A
+                    span[idx++] = 255; // A
                 }
             }
 
@@ -443,7 +443,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateClouds(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double turbulenceSize = 64)
         {
@@ -490,7 +490,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateMarble(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             double xPeriod = 5.0,
             double yPeriod = 10.0,
             int alpha = 255,
@@ -539,7 +539,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateWave(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double xyPeriod = 12.0,
             double turbulencePower = 0.1,
@@ -775,7 +775,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateColorMapped(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[] colorRampRgb, // Format: [R1,G1,B1, R2,G2,B2, ...]
             double turbulenceSize = 64.0,
             int alpha = 255)
@@ -933,7 +933,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         internal static RawTextureBuffer GenerateWarpedMapped(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[] colorRampRgb,
             double turbulenceSize,
             double warpScale,
@@ -999,7 +999,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         internal static RawTextureBuffer GenerateRidgedMapped(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[] colorRampRgb,
             double turbulenceSize,
             int octaves,
@@ -1101,7 +1101,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         internal static RawTextureBuffer GenerateFoliage(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int leafSize = 40,
             int alpha = 255,
             byte leafR = 34, byte leafG = 110, byte leafB = 24, // Main Leaf Green
@@ -1229,31 +1229,59 @@ namespace Imaging.Texture
 
             if (colorPalette?.Length >= 15)
             {
-                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
-                rSun = colorPalette[3]; gSun = colorPalette[4]; bSun = colorPalette[5];
-                rMid = colorPalette[6]; gMid = colorPalette[7]; bMid = colorPalette[8];
-                rShd = colorPalette[9]; gShd = colorPalette[10]; bShd = colorPalette[11];
-                rOut = colorPalette[12]; gOut = colorPalette[13]; bOut = colorPalette[14];
+                rHi = colorPalette[0];
+                gHi = colorPalette[1];
+                bHi = colorPalette[2];
+                rSun = colorPalette[3];
+                gSun = colorPalette[4];
+                bSun = colorPalette[5];
+                rMid = colorPalette[6];
+                gMid = colorPalette[7];
+                bMid = colorPalette[8];
+                rShd = colorPalette[9];
+                gShd = colorPalette[10];
+                bShd = colorPalette[11];
+                rOut = colorPalette[12];
+                gOut = colorPalette[13];
+                bOut = colorPalette[14];
             }
             else if (colorPalette?.Length >= 12)
             {
                 // 12-Byte-Palette (Highlight, Midtone, Shadow, Gap/Mortar)
-                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
+                rHi = colorPalette[0];
+                gHi = colorPalette[1];
+                bHi = colorPalette[2];
                 rSun = (byte)((colorPalette[0] + colorPalette[3]) / 2);
                 gSun = (byte)((colorPalette[1] + colorPalette[4]) / 2);
                 bSun = (byte)((colorPalette[2] + colorPalette[5]) / 2);
-                rMid = colorPalette[3]; gMid = colorPalette[4]; bMid = colorPalette[5];
-                rShd = colorPalette[6]; gShd = colorPalette[7]; bShd = colorPalette[8];
-                rOut = colorPalette[9]; gOut = colorPalette[10]; bOut = colorPalette[11];
+                rMid = colorPalette[3];
+                gMid = colorPalette[4];
+                bMid = colorPalette[5];
+                rShd = colorPalette[6];
+                gShd = colorPalette[7];
+                bShd = colorPalette[8];
+                rOut = colorPalette[9];
+                gOut = colorPalette[10];
+                bOut = colorPalette[11];
             }
             else
             {
                 // 5-Ton Fallback
-                rHi = 205; gHi = 228; bHi = 135;
-                rSun = 155; gSun = 196; bSun = 82;
-                rMid = 92; gMid = 138; bMid = 56;
-                rShd = 48; gShd = 82; bShd = 40;
-                rOut = 24; gOut = 36; bOut = 22;
+                rHi = 205;
+                gHi = 228;
+                bHi = 135;
+                rSun = 155;
+                gSun = 196;
+                bSun = 82;
+                rMid = 92;
+                gMid = 138;
+                bMid = 56;
+                rShd = 48;
+                gShd = 82;
+                bShd = 40;
+                rOut = 24;
+                gOut = 36;
+                bOut = 22;
             }
 
             var cellW = (double)width / gridCells;
@@ -1344,6 +1372,7 @@ namespace Imaging.Texture
                             span[idx++] = 0;
                             span[idx++] = 0;
                         }
+
                         continue;
                     }
 
@@ -1366,11 +1395,36 @@ namespace Imaging.Texture
                     }
 
                     byte r, g, b;
-                    if (light > 0.82) { r = rHi; g = gHi; b = bHi; }
-                    else if (light > 0.62) { r = rSun; g = gSun; b = bSun; }
-                    else if (light > 0.40) { r = rMid; g = gMid; b = bMid; }
-                    else if (light > 0.22) { r = rShd; g = gShd; b = bShd; }
-                    else { r = rOut; g = gOut; b = bOut; }
+                    if (light > 0.82)
+                    {
+                        r = rHi;
+                        g = gHi;
+                        b = bHi;
+                    }
+                    else if (light > 0.62)
+                    {
+                        r = rSun;
+                        g = gSun;
+                        b = bSun;
+                    }
+                    else if (light > 0.40)
+                    {
+                        r = rMid;
+                        g = gMid;
+                        b = bMid;
+                    }
+                    else if (light > 0.22)
+                    {
+                        r = rShd;
+                        g = gShd;
+                        b = bShd;
+                    }
+                    else
+                    {
+                        r = rOut;
+                        g = gOut;
+                        b = bOut;
+                    }
 
                     span[idx++] = b;
                     span[idx++] = g;
@@ -1418,32 +1472,60 @@ namespace Imaging.Texture
             if (colorPalette?.Length >= 15)
             {
                 // 5-Farben-Palette: [Tip, Sunlit, Midtone, Shadow, Outline/Mortar]
-                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
-                rSun = colorPalette[3]; gSun = colorPalette[4]; bSun = colorPalette[5];
-                rMid = colorPalette[6]; gMid = colorPalette[7]; bMid = colorPalette[8];
-                rShd = colorPalette[9]; gShd = colorPalette[10]; bShd = colorPalette[11];
-                rOut = colorPalette[12]; gOut = colorPalette[13]; bOut = colorPalette[14];
+                rHi = colorPalette[0];
+                gHi = colorPalette[1];
+                bHi = colorPalette[2];
+                rSun = colorPalette[3];
+                gSun = colorPalette[4];
+                bSun = colorPalette[5];
+                rMid = colorPalette[6];
+                gMid = colorPalette[7];
+                bMid = colorPalette[8];
+                rShd = colorPalette[9];
+                gShd = colorPalette[10];
+                bShd = colorPalette[11];
+                rOut = colorPalette[12];
+                gOut = colorPalette[13];
+                bOut = colorPalette[14];
             }
             else if (colorPalette?.Length >= 12)
             {
                 // Projekt-Standard (4 Farben): [Highlight, Base/Mid, Shadow, Gap/Mortar]
-                rHi = colorPalette[0]; gHi = colorPalette[1]; bHi = colorPalette[2];
+                rHi = colorPalette[0];
+                gHi = colorPalette[1];
+                bHi = colorPalette[2];
                 // Berechne Sunlit als Zwischenton zwischen Highlight und Midtone
                 rSun = (byte)((colorPalette[0] + colorPalette[3]) / 2);
                 gSun = (byte)((colorPalette[1] + colorPalette[4]) / 2);
                 bSun = (byte)((colorPalette[2] + colorPalette[5]) / 2);
-                rMid = colorPalette[3]; gMid = colorPalette[4]; bMid = colorPalette[5];
-                rShd = colorPalette[6]; gShd = colorPalette[7]; bShd = colorPalette[8];
-                rOut = colorPalette[9]; gOut = colorPalette[10]; bOut = colorPalette[11]; // Mortar / Gap
+                rMid = colorPalette[3];
+                gMid = colorPalette[4];
+                bMid = colorPalette[5];
+                rShd = colorPalette[6];
+                gShd = colorPalette[7];
+                bShd = colorPalette[8];
+                rOut = colorPalette[9];
+                gOut = colorPalette[10];
+                bOut = colorPalette[11]; // Mortar / Gap
             }
             else
             {
                 // Fallback: 5-Ton Pixel-Art Palette
-                rHi = 205; gHi = 228; bHi = 135; // Highlight Tip (Pale Lime)
-                rSun = 155; gSun = 196; bSun = 82;  // Sunlit (Bright Yellow-Green)
-                rMid = 92; gMid = 138; bMid = 56;  // Midtone Green
-                rShd = 48; gShd = 82; bShd = 40;  // Shadow Green
-                rOut = 24; gOut = 36; bOut = 22;  // Outline / Deep Crevice
+                rHi = 205;
+                gHi = 228;
+                bHi = 135; // Highlight Tip (Pale Lime)
+                rSun = 155;
+                gSun = 196;
+                bSun = 82; // Sunlit (Bright Yellow-Green)
+                rMid = 92;
+                gMid = 138;
+                bMid = 56; // Midtone Green
+                rShd = 48;
+                gShd = 82;
+                bShd = 40; // Shadow Green
+                rOut = 24;
+                gOut = 36;
+                bOut = 22; // Outline / Deep Crevice
             }
 
             var cellW = (double)width / gridCells;
@@ -1536,6 +1618,7 @@ namespace Imaging.Texture
                             span[idx++] = 0;
                             span[idx++] = 0;
                         }
+
                         continue;
                     }
 
@@ -1561,11 +1644,36 @@ namespace Imaging.Texture
 
                     // 4. Diskrete Quantisierung in Palettenstufen
                     byte r, g, b;
-                    if (light > 0.82) { r = rHi; g = gHi; b = bHi; }
-                    else if (light > 0.62) { r = rSun; g = gSun; b = bSun; }
-                    else if (light > 0.40) { r = rMid; g = gMid; b = bMid; }
-                    else if (light > 0.22) { r = rShd; g = gShd; b = bShd; }
-                    else { r = rOut; g = gOut; b = bOut; }
+                    if (light > 0.82)
+                    {
+                        r = rHi;
+                        g = gHi;
+                        b = bHi;
+                    }
+                    else if (light > 0.62)
+                    {
+                        r = rSun;
+                        g = gSun;
+                        b = bSun;
+                    }
+                    else if (light > 0.40)
+                    {
+                        r = rMid;
+                        g = gMid;
+                        b = bMid;
+                    }
+                    else if (light > 0.22)
+                    {
+                        r = rShd;
+                        g = gShd;
+                        b = bShd;
+                    }
+                    else
+                    {
+                        r = rOut;
+                        g = gOut;
+                        b = bOut;
+                    }
 
                     span[idx++] = b;
                     span[idx++] = g;
@@ -1600,12 +1708,12 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateStylizedFoliage(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int clusterSize = 32,
             bool transparentGaps = true,
-            byte baseR = 52, byte baseG = 125, byte baseB = 38,       // Mid foliage green
+            byte baseR = 52, byte baseG = 125, byte baseB = 38, // Mid foliage green
             byte highlightR = 108, byte highlightG = 175, byte highlightB = 45, // Sunlit tint
-            byte shadowR = 28, byte shadowG = 75, byte shadowB = 26)  // Ambient crevice green
+            byte shadowR = 28, byte shadowG = 75, byte shadowB = 26) // Ambient crevice green
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
@@ -1734,7 +1842,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         internal static RawTextureBuffer GenerateTreeBark(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double scaleX = 16.0,
             double scaleY = 70.0,
@@ -1805,8 +1913,8 @@ namespace Imaging.Texture
             double scaleX = 14.0,
             double scaleY = 64.0,
             double warpStrength = 16.0,
-            byte barkR = 34, byte barkG = 20, byte barkB = 24,   // Deep Furrow Dark Violet-Brown
-            byte woodR = 145, byte woodG = 82, byte woodB = 58)  // Raised Cord Terracotta-Brown
+            byte barkR = 34, byte barkG = 20, byte barkB = 24, // Deep Furrow Dark Violet-Brown
+            byte woodR = 145, byte woodG = 82, byte woodB = 58) // Raised Cord Terracotta-Brown
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
@@ -1815,11 +1923,11 @@ namespace Imaging.Texture
             // Palette steps: [Crevice Shadow, Low Furrow, Midtone Wood, Ridge Warmth, Rim Specular]
             var barkPalette = new (byte r, byte g, byte b)[]
             {
-        (34,  20,  24), // 0: Deep Crevice Black-Brown
-        (58,  32,  34), // 1: Furrow Shadow
-        (96,  52,  44), // 2: Body Bark Wood
-        (142, 80,  58), // 3: Sunlit Muscular Cord
-        (185, 118, 88)  // 4: Edge Highlight
+                (34, 20, 24), // 0: Deep Crevice Black-Brown
+                (58, 32, 34), // 1: Furrow Shadow
+                (96, 52, 44), // 2: Body Bark Wood
+                (142, 80, 58), // 3: Sunlit Muscular Cord
+                (185, 118, 88) // 4: Edge Highlight
             };
 
             var idx = 0;
@@ -1832,7 +1940,8 @@ namespace Imaging.Texture
 
                     // 2. High-frequency domain warp for jagged wood grain
                     var warpX = (double)noiseGen.SmoothNoise((x + helicalShift) / 18.0, y / 24.0) * warpStrength;
-                    var warpY = (double)noiseGen.SmoothNoise((x - helicalShift) / 24.0, y / 18.0) * (warpStrength * 0.4);
+                    var warpY = (double)noiseGen.SmoothNoise((x - helicalShift) / 24.0, y / 18.0) *
+                                (warpStrength * 0.4);
 
                     var freqX = (x + helicalShift + warpX) / scaleX;
                     var freqY = (y + warpY) / scaleY;
@@ -1884,7 +1993,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         internal static RawTextureBuffer GenerateWoodPlank(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double xyPeriod = 6.0,
             double turbulencePower = 0.15,
@@ -1946,7 +2055,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateDirectionalStone(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorPalette,
             int gridCells = 4,
             bool fillArea = false)
@@ -2072,7 +2181,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateBrushedSteel(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double grainStretchY = 80.0,
             double grainFrequencyX = 2.0,
@@ -2126,7 +2235,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateLatex(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double turbulenceSize = 64.0,
             double specularExponent = 18.0,
@@ -2179,7 +2288,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateLeather(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int cellSize = 16,
             int alpha = 255,
             double warpStrength = 8.0,
@@ -2280,7 +2389,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GeneratePolishedSteel(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double reflectionBands = 2.0,
             double warpScale = 48.0,
@@ -2331,7 +2440,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateTerrainGrass(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorRampRgb = null,
             double macroScale = 48.0,
             int alpha = 255)
@@ -2394,7 +2503,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateTerrainDirt(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorRampRgb = null,
             double macroScale = 32.0,
             int alpha = 255)
@@ -2457,7 +2566,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateMountainRock(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorRampRgb = null,
             double turbulenceSize = 64.0,
             int alpha = 255)
@@ -2539,7 +2648,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateDungeonSandstone(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorRampRgb = null,
             double layerSpacing = 16.0,
             double warpScale = 40.0,
@@ -2607,7 +2716,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateDungeonSandstoneFlat(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorRampRgb = null,
             double macroScale = 40.0,
             int alpha = 255)
@@ -2674,7 +2783,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateRawIron(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int alpha = 255,
             double macroScale = 32.0,
             byte baseR = 55, byte baseG = 58, byte baseB = 62,
@@ -2723,7 +2832,7 @@ namespace Imaging.Texture
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public static RawTextureBuffer GenerateWroughtIron(int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             int cellSize = 28,
             int alpha = 255,
             double warpStrength = 4.0,
@@ -2812,7 +2921,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateDesertSand(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorRampRgb = null,
             double rippleScale = 24.0,
             double warpScale = 48.0,
@@ -2881,7 +2990,7 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateDesertSandFlat(
             int width,
             int height,
-            object noiseGenInstance,
+            object? noiseGenInstance,
             byte[]? colorRampRgb = null,
             double macroScale = 48.0,
             int alpha = 255)
