@@ -411,7 +411,7 @@ namespace RenderEngine
 
             EnsureNoiseGenerator();
 
-            var rawBuffer = entry.Generator(_procWidth, _procHeight, _lazyNoiseGen);
+            var rawBuffer = entry.Generator(_procWidth, _procHeight, _lazyNoiseGen!);
             if (rawBuffer == null) return GetFallbackTexture();
             // IMPORTANT! sharp or blurry.
             var glHandle = GetTexture(rawBuffer, linearFilter: false);
@@ -493,11 +493,10 @@ namespace RenderEngine
                     (int)TextureMagFilter.Nearest);
             }
 
-            GL.GetFloat(GetPName.MaxTextureMaxAnisotropy, out float maxAniso);
+            GL.GetFloat((GetPName)0x84FF, out float maxAniso);
             if (maxAniso > 0.0f)
             {
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxAnisotropy,
-                    Math.Min(maxAniso, 4.0f));
+                GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)0x84FE, Math.Min(maxAniso, 4.0f));
             }
 
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
@@ -566,11 +565,10 @@ namespace RenderEngine
 
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
-            GL.GetFloat(GetPName.MaxTextureMaxAnisotropy, out float maxAniso);
+            GL.GetFloat((GetPName)0x84FF, out float maxAniso);
             if (maxAniso > 0.0f)
             {
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxAnisotropy,
-                    Math.Min(maxAniso, 16.0f));
+                GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)0x84FE, Math.Min(maxAniso, 16.0f));
             }
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
@@ -676,7 +674,7 @@ namespace RenderEngine
                     vertexSrc = ShaderResource.InstancingVertexShader;
                     fragmentSrc = ShaderResource.InstancingFragmentShader;
                     break;
-                case ShaderTypeApp.PostProcessing: // Now active for Painterly & Stylized Filters
+                case ShaderTypeApp.PostProcessing:
                     vertexSrc = ShaderResource.PostProcessingVertexShader;
                     fragmentSrc = ShaderResource.PostProcessingFragmentShader;
                     break;
@@ -693,6 +691,12 @@ namespace RenderEngine
                 case ShaderTypeApp.TerrainSplat:
                     vertexSrc = ShaderResource.TerrainSplatVertexShader;
                     fragmentSrc = ShaderResource.TerrainSplatFragmentShader;
+                    break;
+
+                // --- NEU: Kombinierter Shader für Bäume & Laub ---
+                case ShaderTypeApp.TexturedVertexColor:
+                    vertexSrc = ShaderResource.TexturedVertexColorVertexShader;
+                    fragmentSrc = ShaderResource.TexturedVertexColorFragmentShader;
                     break;
 
                 default:

@@ -66,7 +66,10 @@ namespace Core.Apps.Rules
                 foreach (var variable in fieldDecl.Declaration.Variables)
                 {
                     var symbol = model.GetDeclaredSymbol(variable);
-                    if (symbol is not IFieldSymbol { DeclaredAccessibility: Microsoft.CodeAnalysis.Accessibility.Private } fieldSymbol)
+                    if (symbol is not IFieldSymbol
+                        {
+                            DeclaredAccessibility: Microsoft.CodeAnalysis.Accessibility.Private
+                        } fieldSymbol)
                         continue;
 
                     // 1. Rely on Semantic Model for accessibility (catches implicit private)

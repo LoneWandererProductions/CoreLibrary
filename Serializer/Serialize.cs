@@ -140,7 +140,8 @@ namespace Serializer
         /// <typeparam name="TValue">The type of the dictionary value</typeparam>
         /// <param name="dct">The dictionary to serialize</param>
         /// <param name="path">The file path where the dictionary will be saved</param>
-        public static void SaveDctObjectToXml<TKey, TValue>(Dictionary<TKey, TValue> dct, string path) where TKey : notnull
+        public static void SaveDctObjectToXml<TKey, TValue>(Dictionary<TKey, TValue> dct, string path)
+            where TKey : notnull
         {
             if (dct == null)
             {
