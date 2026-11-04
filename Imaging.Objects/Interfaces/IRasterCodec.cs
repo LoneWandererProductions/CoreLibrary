@@ -36,7 +36,7 @@ namespace Imaging.Objects.Interfaces
         /// </summary>
         /// <param name="buffer">The buffer.</param>
         /// <param name="output">The output.</param>
-        void Write(UnmanagedImageBuffer buffer, Stream output);
+        void Write(UnmanagedImageBuffer? buffer, Stream output);
 
         /// <summary>
         /// Reads a buffer of exactly the expected size, or throws <see cref="DocumentFormatException" />.
@@ -45,6 +45,6 @@ namespace Imaging.Objects.Interfaces
         /// <param name="expectedWidth">The expected width.</param>
         /// <param name="expectedHeight">The expected height.</param>
         /// <returns>Our Image data as <see cref="UnmanagedImageBuffer"/</returns>
-        UnmanagedImageBuffer Read(Stream input, int expectedWidth, int expectedHeight);
+        UnmanagedImageBuffer? Read(Stream input, int expectedWidth, int expectedHeight);
     }
 }

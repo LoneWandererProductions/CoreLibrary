@@ -315,7 +315,7 @@ namespace Solaris
 
             control.LayerTwo.Source = isGridEnabled
                 ? Helper.GenerateGrid(control.PolarisWidth, control.PolarisHeight, control.PolarisTextureSize,
-                                      control.ActiveViewport, control.PolarisElevation, control.StepHeight)
+                    control.ActiveViewport, control.PolarisElevation, control.StepHeight)
                 : null;
         }
 

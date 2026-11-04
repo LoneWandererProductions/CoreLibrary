@@ -52,8 +52,8 @@ namespace CommonLibrary.Tests
         public void GetSubFolderInvalidElementPathThrowsArgumentException()
         {
             // Arrange
-            const string element = null;
-            const string root = @"C:\root\folder";
+            const string? element = null;
+            const string? root = @"C:\root\folder";
             const string target = @"D:\target";
 
             // Act
@@ -68,8 +68,8 @@ namespace CommonLibrary.Tests
         public void GetSubFolderInvalidRootPathThrowsArgumentException()
         {
             // Arrange
-            const string element = @"C:\root\folder\subfolder\file.txt";
-            const string root = null;
+            const string? element = @"C:\root\folder\subfolder\file.txt";
+            const string? root = null;
             const string target = @"D:\target";
 
             // Act
@@ -83,8 +83,8 @@ namespace CommonLibrary.Tests
         public void GetSubFolderValidPathsReturnsRelativePath()
         {
             // Arrange
-            const string element = @"C:\root\folder\subfolder\";
-            const string root = @"C:\root\folder";
+            const string? element = @"C:\root\folder\subfolder\";
+            const string? root = @"C:\root\folder";
             const string target = @"D:\target";
 
             const string expected = @"D:\target\subfolder\";

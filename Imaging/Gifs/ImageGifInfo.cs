@@ -9,6 +9,9 @@
  *              http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
  */
 
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 using System.Collections.Generic;
 using System.Linq;
@@ -98,15 +101,27 @@ namespace Imaging.Gifs
         /// <value>
         ///     The frames.
         /// </value>
-        public List<FrameInfo> Frames { get; set; } = [];
+        public List<FrameInfo>? Frames { get; set; } =  [];
 
         /// <summary>
         ///     Gets the total duration.
+        ///     In seconds
         /// </summary>
         /// <value>
         ///     The total duration.
         /// </value>
-        public double TotalDuration => Frames.Sum(f => f.DelayTime); // In seconds
+        public double TotalDuration
+        {
+            get
+            {
+                if (Frames != null)
+                {
+                    return Frames.Sum(f => f.DelayTime);
+                }
+
+                return 0;
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the name.
@@ -114,7 +129,7 @@ namespace Imaging.Gifs
         /// <value>
         ///     The name.
         /// </value>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         ///     Gets or sets the size.

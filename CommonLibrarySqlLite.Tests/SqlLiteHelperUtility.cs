@@ -356,12 +356,12 @@ namespace CommonLibrarySqlLite.Tests
             /// <summary>
             ///     Gets or sets the first.
             /// </summary>
-            public string First { get; init; }
+            public string? First { get; init; }
 
             /// <summary>
             ///     Gets or sets the second.
             /// </summary>
-            public string Second { get; init; }
+            public string? Second { get; init; }
 
             /// <summary>
             ///     Gets or sets the third.
@@ -382,7 +382,7 @@ namespace CommonLibrarySqlLite.Tests
             /// <summary>
             ///     Gets or sets the start.
             /// </summary>
-            public string Start { get; init; }
+            public string? Start { get; init; }
 
             /// <summary>
             ///     Gets or sets the end.
@@ -398,27 +398,27 @@ namespace CommonLibrarySqlLite.Tests
             /// <summary>
             ///     Gets or sets the first.
             /// </summary>
-            public string First { get; init; }
+            public string? First { get; init; }
 
             /// <summary>
             ///     Gets or sets the stout.
             /// </summary>
-            public string Stout { get; init; }
+            public string? Stout { get; init; }
 
             /// <summary>
             ///     Gets or sets the fourth.
             /// </summary>
-            public string Fourth { get; init; }
+            public string? Fourth { get; init; }
 
             /// <summary>
             ///     Gets or sets the herewego.
             /// </summary>
-            public string HereWeGo { get; init; }
+            public string? HereWeGo { get; init; }
 
             /// <summary>
             ///     Gets or sets the alpha.
             /// </summary>
-            public string Alpha { get; init; }
+            public string? Alpha { get; init; }
         }
     }
 }

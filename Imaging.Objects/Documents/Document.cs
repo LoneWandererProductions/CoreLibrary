@@ -80,7 +80,7 @@ namespace Imaging.Objects.Documents
         /// <param name="backgroundName">Name of the background.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public static Document FromBuffer(UnmanagedImageBuffer pixels, string backgroundName = "Background")
+        public static Document FromBuffer(UnmanagedImageBuffer? pixels, string backgroundName = "Background")
         {
             ArgumentNullException.ThrowIfNull(pixels);
 

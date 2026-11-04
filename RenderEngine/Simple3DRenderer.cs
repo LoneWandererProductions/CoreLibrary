@@ -455,7 +455,7 @@ namespace RenderEngine
             GL.BindVertexArray(0);
 
             _shaderSolid = _resources.GetShaderProgram(ShaderTypeApp.VertexColor);
-            _shaderTex = _resources.GetShaderProgram(ShaderTypeApp.TexturedQuad);
+            _shaderTex = _resources.GetShaderProgram(ShaderTypeApp.TexturedVertexColor);
 
             _locModelSolid = GL.GetUniformLocation(_shaderSolid, "model");
             _locViewSolid = GL.GetUniformLocation(_shaderSolid, "view");
@@ -724,6 +724,105 @@ namespace RenderEngine
             }
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        }
+
+        /// <summary>
+        /// Directly emits a solid flat-shaded 3D primitive quad to the active context canvas.
+        /// </summary>
+        /// <param name="v0">The v0.</param>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="color">The color.</param>
+        public unsafe void DrawQuad(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, (int r, int g, int b, int a) color)
+        {
+            EnsureInitialized();
+            BindProgram(_shaderSolid);
+            BindVao(_vaoSolid);
+            EnsureSolidMatrices();
+
+            var r = color.r / 255f;
+            var g = color.g / 255f;
+            var b = color.b / 255f;
+            var a = color.a / 255f;
+
+            // 2 Triangles: (v0, v1, v2) and (v0, v2, v3) -> 6 vertices * 7 floats = 42 floats
+            Span<float> data = stackalloc float[42]
+            {
+                v0.X, v0.Y, v0.Z, r, g, b, a, v1.X, v1.Y, v1.Z, r, g, b, a, v2.X, v2.Y, v2.Z, r, g, b, a, v0.X,
+                v0.Y, v0.Z, r, g, b, a, v2.X, v2.Y, v2.Z, r, g, b, a, v3.X, v3.Y, v3.Z, r, g, b, a
+            };
+
+            fixed (float* ptr = data)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vboSolid);
+                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), (IntPtr)ptr);
+            }
+
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+        }
+
+        /// <summary>
+        /// Draws a textured quad face structure.
+        /// </summary>
+        /// <param name="v0">The v0.</param>
+        /// <param name="uv0">The uv0.</param>
+        /// <param name="v1">The v1.</param>
+        /// <param name="uv1">The uv1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="uv2">The uv2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="uv3">The uv3.</param>
+        /// <param name="textureId">The texture identifier.</param>
+        /// <param name="color">The color.</param>
+        public unsafe void DrawTexturedQuad(
+            Vector3 v0, Vector2 uv0,
+            Vector3 v1, Vector2 uv1,
+            Vector3 v2, Vector2 uv2,
+            Vector3 v3, Vector2 uv3,
+            int textureId, (int r, int g, int b, int a)? color = null)
+        {
+            textureId = _resources.ResolveTextureId(textureId);
+
+            EnsureInitialized();
+            BindProgram(_shaderTex);
+            BindVao(_vaoTex);
+
+            if (_locTexSampler >= 0)
+            {
+                GL.Uniform1(_locTexSampler, 0);
+            }
+
+            EnsureTexMatrices();
+            BindTexture(textureId);
+
+            var c = color ?? (255, 255, 255, 255);
+            var r = c.r / 255f;
+            var g = c.g / 255f;
+            var b = c.b / 255f;
+            var a = c.a / 255f;
+
+            // 6 vertices * 9 floats = 54 floats
+            Span<float> data = 
+
+            [
+                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, r, g, b, a,
+                v1.X, v1.Y, v1.Z, uv1.X, uv1.Y, r, g, b, a,
+                v2.X, v2.Y, v2.Z, uv2.X, uv2.Y, r, g, b, a,
+                v0.X, v0.Y, v0.Z, uv0.X, uv0.Y, r, g, b, a,
+                v2.X, v2.Y, v2.Z, uv2.X, uv2.Y, r, g, b, a,
+                v3.X, v3.Y, v3.Z, uv3.X, uv3.Y, r, g, b, a
+            ]
+
+            ;
+
+            fixed (float* ptr = data)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
+                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), (IntPtr)ptr);
+            }
+
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
         }
 
         /// <summary>

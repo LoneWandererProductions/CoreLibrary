@@ -1,4 +1,4 @@
-/*
+﻿/*
  * COPYRIGHT:   See COPYING in the top level directory
  * PROJECT:     Imaging.Objects.Tests
  * FILE:        FlattenTests.cs
@@ -14,13 +14,26 @@ namespace Imaging.Objects.Tests
     [TestClass]
     public sealed class FlattenTests
     {
+        /// <summary>
+        /// Solid specified size.
+        /// </summary>
+        /// <param name="size">The size.</param>
+        /// <param name="r">The r.</param>
+        /// <param name="g">The g.</param>
+        /// <param name="b">The b.</param>
+        /// <param name="a">a.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         private static RasterLayer Solid(int size, byte r, byte g, byte b, byte a, string name = "layer")
         {
             var layer = new RasterLayer(size, size, name);
-            layer.Pixels.Clear(r, g, b, a);
+            layer.Pixels?.Clear(r, g, b, a);
             return layer;
         }
 
+        /// <summary>
+        /// Empties document flattens to transparent.
+        /// </summary>
         [TestMethod]
         public void EmptyDocument_FlattensToTransparent()
         {
@@ -31,6 +44,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(result, 2, 2), (0, 0, 0, 0), 0);
         }
 
+        /// <summary>
+        /// Opaque layer on top wins.
+        /// </summary>
         [TestMethod]
         public void OpaqueLayerOnTop_Wins()
         {
@@ -43,6 +59,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(result, 1, 1), (0, 255, 0, 255), 0);
         }
 
+        /// <summary>
+        /// Half transparent pixel blends with straight alpha.
+        /// </summary>
         [TestMethod]
         public void HalfTransparentPixel_BlendsWithStraightAlpha()
         {
@@ -55,6 +74,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(result, 0, 0), (128, 0, 127, 255));
         }
 
+        /// <summary>
+        /// Layers opacity scales the layer alpha.
+        /// </summary>
         [TestMethod]
         public void LayerOpacity_ScalesTheLayerAlpha()
         {
@@ -69,6 +91,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(result, 0, 0), (128, 0, 127, 255));
         }
 
+        /// <summary>
+        /// Hidden and fully transparent layers are skipped.
+        /// </summary>
         [TestMethod]
         public void HiddenAndFullyTransparentLayers_AreSkipped()
         {
@@ -86,6 +111,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(result, 0, 0), (0, 0, 255, 255), 0);
         }
 
+        /// <summary>
+        /// Transparent pixels of a layer leave the background alone.
+        /// </summary>
         [TestMethod]
         public void TransparentPixelsOfALayer_LeaveTheBackgroundAlone()
         {
@@ -101,6 +129,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(result, 0, 0), (0, 0, 255, 255), 0);
         }
 
+        /// <summary>
+        /// Shapes the layer if it is rasterized and composited in stack order.
+        /// </summary>
         [TestMethod]
         public void ShapeLayer_IsRasterizedAndCompositedInStackOrder()
         {
@@ -118,6 +149,9 @@ namespace Imaging.Objects.Tests
             TestSupport.AssertColor(TestSupport.Pixel(result, 0, 0), (0, 0, 255, 255), 0);
         }
 
+        /// <summary>
+        /// Shapes the layer without rasterizer throws but empty or hidden ones do not.
+        /// </summary>
         [TestMethod]
         public void ShapeLayerWithoutRasterizer_Throws_ButEmptyOrHiddenOnesDoNot()
         {
@@ -139,6 +173,9 @@ namespace Imaging.Objects.Tests
             TestSupport.Throws<InvalidOperationException>(() => DocumentRenderer.Flatten(document));
         }
 
+        /// <summary>
+        /// Flattens does not modify the layers.
+        /// </summary>
         [TestMethod]
         public void Flatten_DoesNotModifyTheLayers()
         {
@@ -152,6 +189,9 @@ namespace Imaging.Objects.Tests
             Assert.IsTrue(TestSupport.SamePixels(layer, before));
         }
 
+        /// <summary>
+        /// Layered image container keeps its blend behaviour.
+        /// </summary>
         [TestMethod]
         public void LayeredImageContainer_KeepsItsBlendBehaviour()
         {

@@ -74,7 +74,7 @@ namespace Imaging.Objects
         ///     Blends the pixels of <paramref name="source" /> inside <paramref name="region" /> over the same
         ///     region of <paramref name="destination" />. The region is clipped to both buffers.
         /// </summary>
-        internal static void Over(UnmanagedImageBuffer destination, UnmanagedImageBuffer source, PixelRect region,
+        internal static void Over(UnmanagedImageBuffer destination, UnmanagedImageBuffer? source, PixelRect region,
             int opacity = 255)
         {
             var bounds = new PixelRect(0, 0, Math.Min(destination.Width, source.Width),

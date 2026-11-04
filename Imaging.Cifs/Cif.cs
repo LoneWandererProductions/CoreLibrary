@@ -43,7 +43,7 @@ namespace Imaging.Cifs
         /// <param name="imageFormat">The image format.</param>
         /// <exception cref="ArgumentNullException">Interface was null. - ICustomImageFormat</exception>
         /// <exception cref="ArgumentException">Path was empty. - path</exception>
-        public Cif(string path, ICustomImageFormat imageFormat)
+        public Cif(string path, ICustomImageFormat? imageFormat)
         {
             if (imageFormat == null)
             {

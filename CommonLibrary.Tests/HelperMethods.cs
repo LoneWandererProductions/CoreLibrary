@@ -21,7 +21,7 @@ namespace CommonLibrary.Tests
         /// </summary>
         /// <param name="path">target Path</param>
         /// <param name="fileExtList">Extension List</param>
-        internal static void CreateFiles(string path, IEnumerable<string> fileExtList)
+        internal static void CreateFiles(string path, IEnumerable<string>? fileExtList)
         {
             if (!Directory.Exists(path))
             {

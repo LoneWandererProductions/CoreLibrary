@@ -22,7 +22,7 @@ namespace FileHandler
         /// <summary>
         ///     Gets or sets the file name.
         /// </summary>
-        public string FileName { get; internal init; }
+        public string? FileName { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the original filename.
@@ -32,12 +32,12 @@ namespace FileHandler
         /// <summary>
         ///     Gets or sets the path.
         /// </summary>
-        public string Path { get; internal init; }
+        public string? Path { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the extension.
         /// </summary>
-        public string Extension { get; internal init; }
+        public string? Extension { get; internal init; }
 
         /// <summary>
         ///     Gets or sets the size.

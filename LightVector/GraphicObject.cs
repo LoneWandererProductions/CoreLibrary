@@ -30,12 +30,12 @@ namespace LightVector
         /// The fill
         /// Default null/transparent
         /// </summary>
-        public string Fill { get; set; }
+        public string? Fill { get; set; }
 
         /// <summary>
         /// The stroke
         /// </summary>
-        public string Stroke { get; set; } = "#FF000000";
+        public string? Stroke { get; set; } = "#FF000000";
 
         /// <summary>
         ///     Optional
@@ -49,7 +49,7 @@ namespace LightVector
         /// The optional attributes.
         /// </value>
         [XmlIgnore]
-        public Dictionary<string, object> OptionalAttributes { get; set; } = new();
+        public Dictionary<string, object?> OptionalAttributes { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the serializable attributes.
@@ -60,7 +60,7 @@ namespace LightVector
         /// </value>
         [XmlArray("OptionalAttributes")]
         [XmlArrayItem("Attribute")]
-        public List<SerializableAttribute> SerializableAttributes
+        public List<SerializableAttribute>? SerializableAttributes
         {
             get
             {
@@ -75,9 +75,14 @@ namespace LightVector
             set
             {
                 OptionalAttributes.Clear();
-                if (value != null)
+                if (value == null)
                 {
-                    foreach (var attr in value)
+                    return;
+                }
+
+                foreach (var attr in value)
+                {
+                    if (attr.Key != null)
                     {
                         OptionalAttributes[attr.Key] = attr.Value;
                     }
@@ -122,7 +127,7 @@ namespace LightVector
             ///     The key.
             /// </value>
             [XmlAttribute(nameof(Key))]
-            public string Key { get; set; }
+            public string? Key { get; set; }
 
             /// <summary>
             ///     Gets or sets the value.
@@ -131,7 +136,7 @@ namespace LightVector
             ///     The value.
             /// </value>
             [XmlAttribute(nameof(Value))]
-            public string Value { get; set; }
+            public string? Value { get; set; }
         }
     }
 }

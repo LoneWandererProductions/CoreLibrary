@@ -19,7 +19,7 @@ namespace Imaging.Objects.Documents
         /// <summary>
         /// The shapes
         /// </summary>
-        private readonly List<Shape> _shapes = new();
+        private readonly List<Shape>? _shapes = new();
 
         /// <summary>
         /// Creates an empty shape layer.
@@ -46,7 +46,7 @@ namespace Imaging.Objects.Documents
         /// <value>
         /// The shapes.
         /// </value>
-        public IReadOnlyList<Shape> Shapes => _shapes;
+        public IReadOnlyList<Shape>? Shapes => _shapes;
 
         /// <summary>
         /// Gets the index of the shape with the given id, or -1.

@@ -30,12 +30,12 @@ namespace Imaging
         /// <summary>
         /// The render
         /// </summary>
-        private readonly IImageRender _render;
+        private readonly IImageRender? _render;
 
         /// <summary>
         /// The texture generator
         /// </summary>
-        private readonly ITextureGenerator _textureGenerator;
+        private readonly ITextureGenerator? _textureGenerator;
 
         /// <summary>
         /// Creates a rasterizer with its own <see cref="ImageRender" /> and <see cref="TextureGenerator" />.
@@ -51,7 +51,7 @@ namespace Imaging
         /// <param name="render">The render.</param>
         /// <param name="textureGenerator">The texture generator.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public ShapeRasterizer(IImageRender render, ITextureGenerator textureGenerator)
+        public ShapeRasterizer(IImageRender? render, ITextureGenerator? textureGenerator)
         {
             ArgumentNullException.ThrowIfNull(render);
             ArgumentNullException.ThrowIfNull(textureGenerator);
@@ -61,7 +61,7 @@ namespace Imaging
         }
 
         /// <inheritdoc />
-        public void Rasterize(IReadOnlyList<Shape> shapes, UnmanagedImageBuffer target)
+        public void Rasterize(IReadOnlyList<Shape>? shapes, UnmanagedImageBuffer? target)
         {
             ArgumentNullException.ThrowIfNull(shapes);
             ArgumentNullException.ThrowIfNull(target);
@@ -94,7 +94,7 @@ namespace Imaging
                         g => g.DrawLine(StrokePen(shape.Stroke), ToPoint(line.From), ToPoint(line.To)));
                     break;
 
-                case PolylineShape polyline when polyline.Points.Length > 1:
+                case PolylineShape { Points.Length: > 1 } polyline:
                     var openPoints = polyline.Points.Select(ToPoint).ToArray();
                     DrawStroke(bitmap, shape, g => g.DrawLines(StrokePen(shape.Stroke), openPoints));
                     break;
@@ -117,7 +117,7 @@ namespace Imaging
                         (float)Math.Abs(ellipse.Width), (float)Math.Abs(ellipse.Height)));
                     break;
 
-                case PolygonShape polygon when polygon.Points.Length > 2:
+                case PolygonShape { Points.Length: > 2 } polygon:
                     var closedPoints = polygon.Points.Select(ToPoint).ToArray();
 
                     // Texture/filter fills go through the same area-fill code the rectangle/ellipse cases use

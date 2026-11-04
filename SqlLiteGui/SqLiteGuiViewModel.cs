@@ -181,7 +181,7 @@ namespace SQLiteGui
 
             try
             {
-                List<List<string?>>? csvData = CsvHandler.ReadCsv(csvFilePath, ',');
+                var csvData = CsvHandler.ReadCsv(csvFilePath, ',');
 
                 if (csvData == null)
                 {

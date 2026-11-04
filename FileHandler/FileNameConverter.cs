@@ -102,7 +102,7 @@ namespace FileHandler
             bool subFolder,
             Func<string, string> renameSelector)
         {
-            List<string?>? lst = FileHandleSearch.GetAllFiles(folder, subFolder);
+            var lst = FileHandleSearch.GetAllFiles(folder, subFolder);
 
             if (lst == null || lst.Count == 0)
                 return 0;

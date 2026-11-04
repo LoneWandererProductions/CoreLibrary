@@ -184,6 +184,20 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Adds the solid3 d quad.
+        /// </summary>
+        /// <param name="v0">The v0.</param>
+        /// <param name="v1">The v1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="color">The color.</param>
+        public void AddSolid3DQuad(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, (int r, int g, int b, int a) color)
+        {
+            AddSolid3DTriangle(v0, v1, v2, color);
+            AddSolid3DTriangle(v0, v2, v3, color);
+        }
+
+        /// <summary>
         /// Adds a textured triangle with one tint color per vertex (interpolated across the face).
         /// </summary>
         public void AddTextured3DTriangle(

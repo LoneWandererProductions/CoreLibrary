@@ -386,7 +386,7 @@ namespace Imaging.Objects
         /// </summary>
         /// <param name="bmp">Source bitmap.</param>
         /// <returns>A new unmanaged buffer containing the bitmap data.</returns>
-        public static UnmanagedImageBuffer FromBitmap(Bitmap bmp)
+        public static UnmanagedImageBuffer? FromBitmap(Bitmap bmp)
         {
             var width = bmp.Width;
             var height = bmp.Height;

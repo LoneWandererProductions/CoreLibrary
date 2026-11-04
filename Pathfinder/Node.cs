@@ -28,7 +28,7 @@ namespace Pathfinder
         /// <param name="h">The H cost, which is the heuristic estimated cost from this node to the goal.</param>
         /// <param name="movementCost">The expected cost.</param>
         /// <param name="parent">The parent node, which is used to reconstruct the path once the goal is reached.</param>
-        internal Node(int x, int y, int g, int h, int movementCost, Node parent = null)
+        internal Node(int x, int y, int g, int h, int movementCost, Node? parent = null)
         {
             X = x;
             Y = y;
@@ -76,7 +76,7 @@ namespace Pathfinder
         /// <value>
         ///     The parent node.
         /// </value>
-        internal Node Parent { get; set; }
+        internal Node? Parent { get; set; }
 
         /// <summary>
         ///     Gets the movement cost.

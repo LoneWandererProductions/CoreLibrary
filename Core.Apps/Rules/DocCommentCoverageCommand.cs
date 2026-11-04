@@ -75,7 +75,7 @@ namespace Core.Apps.Rules
                 }
 
                 // Retrieve members safely based on the specific declaration type
-                IEnumerable<MemberDeclarationSyntax> members = typeDecl switch
+                var members = typeDecl switch
                 {
                     TypeDeclarationSyntax t => t.Members,
                     EnumDeclarationSyntax e => e.Members,

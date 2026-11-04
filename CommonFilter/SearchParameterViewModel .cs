@@ -24,7 +24,7 @@ namespace CommonFilter
         /// <summary>
         ///     The entry text
         /// </summary>
-        private string _entryText;
+        private string? _entryText;
 
         /// <summary>
         ///     The selected compare operator
@@ -55,7 +55,7 @@ namespace CommonFilter
         /// <value>
         ///     The entry text.
         /// </value>
-        public string EntryText
+        public string? EntryText
         {
             get => _entryText;
             set

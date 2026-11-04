@@ -33,37 +33,37 @@ namespace FileHandler
                 if (char.IsDigit(x[ix]) && char.IsDigit(y[iy]))
                 {
                     // Skip leading zeros to accurately check significant length
-                    int startX = ix;
+                    var startX = ix;
                     while (ix < lx && x[ix] == '0') ix++;
 
-                    int startY = iy;
+                    var startY = iy;
                     while (iy < ly && y[iy] == '0') iy++;
 
                     // Track start of non-zero digits
-                    int nonZeroX = ix;
-                    int nonZeroY = iy;
+                    var nonZeroX = ix;
+                    var nonZeroY = iy;
 
                     // Count total digit length
                     while (ix < lx && char.IsDigit(x[ix])) ix++;
                     while (iy < ly && char.IsDigit(y[iy])) iy++;
 
-                    int lenX = ix - nonZeroX;
-                    int lenY = iy - nonZeroY;
+                    var lenX = ix - nonZeroX;
+                    var lenY = iy - nonZeroY;
 
                     // 1. The number with more non-zero digits is larger
                     if (lenX != lenY)
                         return lenX.CompareTo(lenY);
 
                     // 2. Same digit count: compare digit by digit
-                    for (int i = 0; i < lenX; i++)
+                    for (var i = 0; i < lenX; i++)
                     {
                         if (x[nonZeroX + i] != y[nonZeroY + i])
                             return x[nonZeroX + i].CompareTo(y[nonZeroY + i]);
                     }
 
                     // 3. Numbers are numerically equal: tie-break using leading zero count (e.g., "01" vs "1")
-                    int zeroCountX = nonZeroX - startX;
-                    int zeroCountY = nonZeroY - startY;
+                    var zeroCountX = nonZeroX - startX;
+                    var zeroCountY = nonZeroY - startY;
 
                     if (zeroCountX != zeroCountY)
                         return zeroCountY.CompareTo(zeroCountX); // More leading zeros comes first ("01" < "1")
@@ -78,7 +78,7 @@ namespace FileHandler
                     // (A-Z are 65-90, a-z are 97-122), so any folder with mixed-case
                     // names - camera files next to renamed ones, "IMG_1.jpg" next to
                     // "sunset.jpg" - ends up in an order that looks essentially random.
-                    int r = char.ToUpperInvariant(x[ix]).CompareTo(char.ToUpperInvariant(y[iy]));
+                    var r = char.ToUpperInvariant(x[ix]).CompareTo(char.ToUpperInvariant(y[iy]));
                     if (r != 0) return r;
 
                     ix++;

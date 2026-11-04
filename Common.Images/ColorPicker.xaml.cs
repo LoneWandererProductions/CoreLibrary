@@ -419,7 +419,8 @@ namespace Common.Images
 
             // 1. Get the AVAILABLE space from the parent container (The Grid in Column 0)
             // We cast Parent to FrameworkElement to get its ActualWidth/Height
-            if (PickerContainer.Parent is not FrameworkElement parent || parent.ActualWidth <= 0 || parent.ActualHeight <= 0) return;
+            if (PickerContainer.Parent is not FrameworkElement parent || parent.ActualWidth <= 0 ||
+                parent.ActualHeight <= 0) return;
 
             // 2. Calculate the Square Size
             // We assume the available space is the parent's size

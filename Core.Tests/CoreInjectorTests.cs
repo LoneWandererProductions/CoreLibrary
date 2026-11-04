@@ -37,10 +37,10 @@ namespace Core.Tests
         [TestMethod]
         public void RegisterSingletonShouldCreateSingleInstance()
         {
-            _injector.RegisterSingleton<IService, Service>();
+            _injector?.RegisterSingleton<IService, Service>();
 
-            var firstInstance = _injector.Resolve<IService>();
-            var secondInstance = _injector.Resolve<IService>();
+            var firstInstance = _injector?.Resolve<IService>();
+            var secondInstance = _injector?.Resolve<IService>();
 
             Assert.AreSame(firstInstance, secondInstance, "Singleton instances should be the same.");
         }

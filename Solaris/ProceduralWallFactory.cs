@@ -1,12 +1,42 @@
-﻿using Imaging.Objects;
+﻿/*
+ * COPYRIGHT:   See COPYING in the top level directory
+ * PROJECT:     Solaris
+ * FILE:        ProceduralWallFactory.cs
+ * PURPOSE:     Factory to generate custom Walls.
+ * PROGRAMMER:  Peter Geinitz (Wayfarer)
+ */
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable MemberCanBePrivate.Global
+
+using Imaging.Objects;
 
 namespace Solaris
 {
+    /// <summary>
+    /// Provides walls for Aurora.
+    /// </summary>
     public static class ProceduralWallFactory
     {
+        /// <summary>
+        /// The identifier intact
+        /// </summary>
         public const int IdIntact = 9001;
+
+        /// <summary>
+        /// The identifier cutaway
+        /// </summary>
         public const int IdCutaway = 9002;
+
+        /// <summary>
+        /// The identifier ruined
+        /// </summary>
         public const int IdRuined = 9003;
+
+        /// <summary>
+        /// The identifier rubble
+        /// </summary>
         public const int IdRubble = 9004;
 
         /// <summary>
@@ -26,7 +56,7 @@ namespace Solaris
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="buffer">The buffer.</param>
-        private static void RegisterWall(int id, UnmanagedImageBuffer buffer)
+        private static void RegisterWall(int id, UnmanagedImageBuffer? buffer)
         {
             var tex = new Texture
             {
@@ -44,15 +74,15 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with Dummy.</returns>
-        private static UnmanagedImageBuffer CreateIntactDummy(int size)
+        private static UnmanagedImageBuffer? CreateIntactDummy(int size)
         {
             var buf = new UnmanagedImageBuffer(size, size);
             buf.Clear(0, 0, 0, 0);
 
-            int halfW = size / 2;
-            int halfH = size / 4;
-            int topY = halfH;
-            int botY = size - halfH;
+            var halfW = size / 2;
+            var halfH = size / 4;
+            var topY = halfH;
+            var botY = size - halfH;
 
             DrawPrismFacets(buf, size, topY, botY, isRuined: false);
             return buf;
@@ -63,15 +93,15 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with cutaway Dummy.</returns>
-        private static UnmanagedImageBuffer CreateCutawayDummy(int size)
+        private static UnmanagedImageBuffer? CreateCutawayDummy(int size)
         {
             var buf = new UnmanagedImageBuffer(size, size);
             buf.Clear(0, 0, 0, 0);
 
-            int halfH = size / 4;
+            var halfH = size / 4;
             // Cutaway starts much lower (top 65% is transparent air)
-            int topY = size - (int)(halfH * 2.2);
-            int botY = size - halfH;
+            var topY = size - (int)(halfH * 2.2);
+            var botY = size - halfH;
 
             DrawPrismFacets(buf, size, topY, botY, isRuined: false);
             return buf;
@@ -82,14 +112,14 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with ruined Dummy.</returns>
-        private static UnmanagedImageBuffer CreateRuinedDummy(int size)
+        private static UnmanagedImageBuffer? CreateRuinedDummy(int size)
         {
             var buf = new UnmanagedImageBuffer(size, size);
             buf.Clear(0, 0, 0, 0);
 
-            int halfH = size / 4;
-            int topY = (int)(halfH * 1.5);
-            int botY = size - halfH;
+            var halfH = size / 4;
+            var topY = (int)(halfH * 1.5);
+            var botY = size - halfH;
 
             DrawPrismFacets(buf, size, topY, botY, isRuined: true);
             return buf;
@@ -100,14 +130,14 @@ namespace Solaris
         /// </summary>
         /// <param name="size">The size.</param>
         /// <returns>The UnmanagedImageBuffer with rubble Dummy.</returns>
-        private static UnmanagedImageBuffer CreateRubbleDummy(int size)
+        private static UnmanagedImageBuffer? CreateRubbleDummy(int size)
         {
             // Rubble is flat against the floor diamond
             var buf = new UnmanagedImageBuffer(size, size / 2);
             buf.Clear(0, 0, 0, 0);
 
-            int cx = size / 2;
-            int cy = size / 4;
+            var cx = size / 2;
+            var cy = size / 4;
 
             // Draw 3 scattered stone chunks
             DrawStone(buf, cx - 10, cy - 2, 8, 5, 110, 110, 115);
@@ -125,44 +155,44 @@ namespace Solaris
         /// <param name="topY">The top y.</param>
         /// <param name="botY">The bot y.</param>
         /// <param name="isRuined">if set to <c>true</c> [is ruined].</param>
-        private static void DrawPrismFacets(UnmanagedImageBuffer buf, int size, int topY, int botY, bool isRuined)
+        private static void DrawPrismFacets(UnmanagedImageBuffer? buf, int size, int topY, int botY, bool isRuined)
         {
-            int halfW = size / 2;
-            int halfH = size / 4;
-            int wallDrop = botY - topY;
+            var halfW = size / 2;
+            var halfH = size / 4;
+            var wallDrop = botY - topY;
 
             // Left Face (South-West: Shadow 60%)
-            for (int col = 0; col < halfW; col++)
+            for (var col = 0; col < halfW; col++)
             {
-                int sx = col;
-                int faceTop = topY + (int)(col * (float)halfH / halfW);
+                var sx = col;
+                var faceTop = topY + (int)(col * (float)halfH / halfW);
 
                 // Ruined profile: notch in center and sloped damage
                 if (isRuined && col > halfW * 0.45) faceTop += 6;
 
-                for (int y = faceTop; y < botY + (int)(col * (float)halfH / halfW); y++)
+                for (var y = faceTop; y < botY + (int)(col * (float)halfH / halfW); y++)
                 {
                     if (y >= 0 && y < size)
                     {
-                        byte shade = (byte)(y == faceTop ? 180 : 100);
+                        var shade = (byte)(y == faceTop ? 180 : 100);
                         buf.SetPixelUnsafe(sx, y, shade, shade, (byte)(shade + 10), 255);
                     }
                 }
             }
 
             // Right Face (South-East: Light 80%)
-            for (int col = 0; col < halfW; col++)
+            for (var col = 0; col < halfW; col++)
             {
-                int sx = halfW + col;
-                int faceTop = (topY + halfH) - (int)(col * (float)halfH / halfW);
+                var sx = halfW + col;
+                var faceTop = (topY + halfH) - (int)(col * (float)halfH / halfW);
 
                 if (isRuined) faceTop += (int)(col * 0.35); // Sloping crumbling edge
 
-                for (int y = faceTop; y < (botY + halfH) - (int)(col * (float)halfH / halfW); y++)
+                for (var y = faceTop; y < (botY + halfH) - (int)(col * (float)halfH / halfW); y++)
                 {
                     if (y >= 0 && y < size)
                     {
-                        byte shade = (byte)(y == faceTop ? 220 : 140);
+                        var shade = (byte)(y == faceTop ? 220 : 140);
                         buf.SetPixelUnsafe(sx, y, shade, shade, (byte)(shade + 10), 255);
                     }
                 }
@@ -180,11 +210,11 @@ namespace Solaris
         /// <param name="r">The r.</param>
         /// <param name="g">The g.</param>
         /// <param name="b">The b.</param>
-        private static void DrawStone(UnmanagedImageBuffer buf, int x, int y, int w, int h, byte r, byte g, byte b)
+        private static void DrawStone(UnmanagedImageBuffer? buf, int x, int y, int w, int h, byte r, byte g, byte b)
         {
-            for (int row = y; row < y + h; row++)
+            for (var row = y; row < y + h; row++)
             {
-                for (int col = x; col < x + w; col++)
+                for (var col = x; col < x + w; col++)
                 {
                     if (col >= 0 && col < buf.Width && row >= 0 && row < buf.Height)
                     {

@@ -134,7 +134,7 @@ namespace Imaging.Objects.Tests
             internal int Calls { get; private set; }
 
             /// <inheritdoc />
-            public void Rasterize(IReadOnlyList<Shape> shapes, UnmanagedImageBuffer target)
+            public void Rasterize(IReadOnlyList<Shape>? shapes, UnmanagedImageBuffer? target)
             {
                 Calls++;
 

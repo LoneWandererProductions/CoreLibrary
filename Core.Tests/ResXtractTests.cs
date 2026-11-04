@@ -20,7 +20,7 @@ namespace Core.Tests
         /// <summary>
         ///     The resource xtract
         /// </summary>
-        private ResXtract _resXtract;
+        private ResXtract? _resXtract;
 
         /// <summary>
         ///     Setups this instance.

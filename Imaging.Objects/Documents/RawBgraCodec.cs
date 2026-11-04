@@ -28,7 +28,7 @@ namespace Imaging.Objects.Documents
         public bool IsCompressed => false;
 
         /// <inheritdoc />
-        public void Write(UnmanagedImageBuffer buffer, Stream output)
+        public void Write(UnmanagedImageBuffer? buffer, Stream output)
         {
             ArgumentNullException.ThrowIfNull(buffer);
             ArgumentNullException.ThrowIfNull(output);
@@ -43,7 +43,7 @@ namespace Imaging.Objects.Documents
         }
 
         /// <inheritdoc />
-        public UnmanagedImageBuffer Read(Stream input, int expectedWidth, int expectedHeight)
+        public UnmanagedImageBuffer? Read(Stream input, int expectedWidth, int expectedHeight)
         {
             ArgumentNullException.ThrowIfNull(input);
 

@@ -33,7 +33,7 @@ namespace SQLiteGui
         /// <summary>
         ///     Table Details
         /// </summary>
-        private static dynamic TblItem { get; set; }
+        private static dynamic? TblItem { get; set; }
 
         /// <summary>
         ///     Provide a Unique Index if we have one
@@ -91,7 +91,7 @@ namespace SQLiteGui
         /// </summary>
         /// <param name="isDetailActive">Is an Row selected</param>
         /// <param name="tbi">Selected Row</param>
-        internal static void SelectionChanged(bool isDetailActive, dynamic tbi)
+        internal static void SelectionChanged(bool isDetailActive, dynamic? tbi)
         {
             IsDetailActive = isDetailActive;
             TblItem = tbi;

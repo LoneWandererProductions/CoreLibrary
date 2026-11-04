@@ -51,7 +51,7 @@ namespace CommonLibrary.Tests
         /// <summary>
         ///     Collection of Extensions
         /// </summary>
-        internal static readonly List<string> FileExtList = new()
+        internal static readonly List<string>? FileExtList = new()
         {
             Anp,
             Evd,

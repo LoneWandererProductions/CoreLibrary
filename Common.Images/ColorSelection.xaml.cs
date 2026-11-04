@@ -64,7 +64,7 @@ namespace Common.Images
         ///     Initializes a new instance of the <see cref="T:Common.Controls.ColorPicker" /> class.
         /// </summary>
         /// <param name="color">The color.</param>
-        public ColorSelection(string color)
+        public ColorSelection(string? color)
         {
             InitializeComponent();
             StartColor = color;
@@ -73,7 +73,7 @@ namespace Common.Images
         /// <summary>
         ///     Gets or sets the Start color.
         /// </summary>
-        public string StartColor
+        public string? StartColor
         {
             get => (string)GetValue(StartColorProperty);
             set => SetValue(StartColorProperty, value);
@@ -97,7 +97,7 @@ namespace Common.Images
         /// <summary>
         ///     Occurs when [color changed].
         /// </summary>
-        public event EventHandler<string>? ColorChanged;
+        public event EventHandler<string?>? ColorChanged;
 
         /// <summary>
         ///     The initiate.
