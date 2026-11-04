@@ -109,46 +109,161 @@ foreach (var entry in logger.GetLogs())
 ---
 
 ## Project Overview
+Module                         | Purpose / Description                                           | 
+------------------------------ | --------------------------------------------------------------- | 
+Common.Controls                | WPF custom controls                                             | 
+Common.Converter               | WPF/XAML value converters for UI data binding                   | 
+Common.Dialogs                 | Prebuilt WPF dialog windows                                     | 
+Common.ExtendedObject.Tests    | Unit tests for Extended.Objects and unmanaged memory structures | 
+Common.Images                  | WPF custom controls for image display and manipulation          | 
+CommonFilter                   | WPF control to filter data tables                               | 
+CommonLibrary.Tests            | Unit tests for common utility libraries                         | 
+CommonLibraryGui.Tests         | GUI testing for common WPF components                           | 
+CommonLibrarySqlLite.Tests     | Tests for SQLite-related features and abstractions              | 
+Communication                  | Networking, socket, and web service helpers                     | 
+Communication.Tests            | Unit tests for communication and network features               | 
+Contracts                      | Shared interfaces and cross-cutting abstractions                | 
+Core.Apps                      | Built-in command modules and applications for Weaver            | 
+Core.Inject                    | Minimal dependency injection / IoC container support            | 
+Core.MemoryLog                 | In-memory structured logger, UI-ready and thread-safe           | 
+Core.StateExecutive            | Experimental state machine and fluent engine execution          | 
+Core.StateExecutive.Builder    | Fluent builder for configuring StateExecutive execution flows   | 
+Core.StateExecutive.Interfaces | Interfaces and contracts for StateExecutive                     | 
+Core.Tests                     | Unit tests for core infrastructure and StateExecutive           | 
+Core.Viewer                    | WPF GUI frontend and visual shell for Core apps                 | 
+CoreBuilder                    | Utilities and helper tools for Weaver engine development        | 
+DataFormatter                  | CSV reading/writing and structured data formatting              | 
+Debugger                       | Debugging framework and log viewer integration                  | 
+Extended.Extensions            | Extension methods for base .NET types and collections           | 
+Extended.Objects               | Custom data structures and extended system object types         | 
+Extended.Unmanaged             | Unmanaged memory allocation, native buffers, and pointers       | 
+FileHandler                    | File system abstraction and I/O utilities                       | 
+Imaging                        | Image processing and manipulation tools                         | 
+Imaging.Cifs                   | Parser and serializer for CIFS custom image format              | 
+Imaging.Compare                | Pixel-based image comparison utility                            | 
+Imaging.Filter.Tests           | Unit tests for image filters and algorithms                     | 
+Imaging.Objects                | Domain models, pixel buffers, and color primitives              | 
+Imaging.Objects.Tests          | Unit tests for Imaging.Objects primitives                       | 
+Imaging.Plugins                | Image manipulation plugins and custom filters                   | 
+Imaging.Plugins.Interface      | Plugin interfaces and contracts for extensible imaging          | 
+Imaging.Tests                  | Unit tests for imaging library and processing pipeline          | 
+Imaging.Texture                | 2D/3D texture mapping, tiling, and sprite management            | 
+Imaging.Texture.Tests          | Unit tests for texture structures and operations                | 
+InterOp                        | Windows API P/Invoke bindings and native interop                | 
+Lector                         | CLI integration and console runner for Weaver                   | 
+LightVector                    | Lightweight vector math tools                                   | 
+Loader                         | Generic plugin loading via interface                            | 
+Mathematics                    | Math utilities and calculation libraries                        | 
+Mathematics.Constants          | Mathematical and scientific constants                           | 
+Pathfinder                     | A\* pathfinding for grid-based maps                             | 
+Plugin                         | Base plugin interfaces and lifecycle contracts                  | 
+PluginLoader                   | Dynamic plugin loading and MVVM lifecycle management            | 
+RenderEngine                   | Experimental 2D/3D rendering backend                            | 
+RenderEngine.Tests             | Rendering-related unit and integration tests                    | 
+Serializer                     | XML serialization of data and complex structures                | 
+Solaris                        | 2D chessboard-style tile renderer                               | 
+SQLiteGui                      | UI frontend for SQLiteHelper                                    | 
+SQLiteHelper                   | SQLite database interaction and abstraction layer               | 
+ViewModel                      | ViewModel base classes and WPF MVVM binding support             | 
+Weaver                         | Command interpreter replacing legacy scripting                  | 
 
-| Module                      | Purpose / Description                           |
-| --------------------------- | ----------------------------------------------- |
-| `Weaver`                    | New command interpreter replacing legacy scripting |
-| `Lector`                    | CLI integration of Weaver                       |
-| `CommonLibraryTests`        | Unit tests for common libraries                 |
-| `CommonExtendedObjectsTests`| Unit tests for ExtendedSystemObjects            |
-| `Imaging`                   | Image manipulation tools                        |
-| `ImagingTests`              | Tests for imaging library                       |
-| `CommonControls`            | WPF custom controls                             |
-| `CommonControls.Images`     | WPF custom controls, mostly related to images   |
-| `SQLiteHelper`              | SQLite DB interaction & abstraction             |
-| `Mathematics`               | Math utilities and calculation libraries        |
-| `Mathematics.Constants`     | Math Constants                                  |
-| `CommonLibrarySqlLiteTests` | Tests for SQLite-related features               |
-| `ExtendedSystemObjects`     | Extensions for .NET base classes                |
-| `FileHandler`               | File system abstraction                          |
-| `RenderEngine`              | Experimental 2D/3D rendering backend            |
-| `RenderEngineTests`         | Rendering-related tests                          |
-| `SQLiteGui`                 | UI frontend for SQLiteHelper                    |
-| `Debugger`                  | Debugging framework + log viewer integration    |
-| `ImageCompare`              | Pixel-based image comparison utility            |
-| `CommonDialogs`             | Prebuilt WPF dialogs                             |
-| `CommonLibraryGuiTests`     | GUI testing for common components               |
-| `Solaris`                   | 2D chessboard-style tile renderer               |
-| `LightVector`               | Lightweight vector math tools                   |
-| `Serializer`                | XML serialization of data and structures        |
-| `DataFormatter`             | CSV reading/writing and formatting              |
-| `Communication`             | Networking and web service helpers,Port stuff   |
-| `CommunicationTests`        | Tests for the Network stuff                     |
-| `Core.Tests`                | Tests for, mostly related to core namespace     |
-| `Loader`                    | Generic Plugin loading, via Interface           |
-| `CommonFilter`              | WPF control to filter data tables               |
-| `CoreBuilder`               | Utilities and small programs for Weaver engine  |
-| `Pathfinder`                | A* pathfinding for grid-based maps              |
-| `InterOp`                   | Windows API bindings                             |
-| `Core.Inject`               | Minimal DI/injection support                    |
-| `Core.MemoryLog`            | In-memory logger, structured, UI-ready          |
-| `ViewModel`                 | ViewModel bindings for WPF MVVM support         |
-| `Core.StateExecutive`       | Experiment with fluent Engines                  |
-| `Core.StateExecutive.Builder` | Experiment with fluent Engines                |
-| `Core.StateExecutive.Interfaces`  | Experiment with fluent Engines            |
-| `Contracts`                 | Holds all shared Interfaces                      |
+
+```mermaid
+graph TD
+    Common_Controls["Common.Controls"] --> Extended_Extensions["Extended.Extensions"]
+    Common_Controls["Common.Controls"] --> Extended_Objects["Extended.Objects"]
+    Common_Controls["Common.Controls"] --> ViewModel["ViewModel"]
+    Common_Dialogs["Common.Dialogs"] --> ViewModel["ViewModel"]
+    Common_ExtendedObject_Tests["Common.ExtendedObject.Tests"] --> Extended_Objects["Extended.Objects"]
+    Common_ExtendedObject_Tests["Common.ExtendedObject.Tests"] --> Extended_Unmanaged["Extended.Unmanaged"]
+    Common_ExtendedObject_Tests["Common.ExtendedObject.Tests"] --> Mathematics["Mathematics"]
+    Common_Images["Common.Images"] --> Common_Converter["Common.Converter"]
+    Common_Images["Common.Images"] --> Common_Dialogs["Common.Dialogs"]
+    Common_Images["Common.Images"] --> Imaging_Cifs["Imaging.Cifs"]
+    Common_Images["Common.Images"] --> Imaging["Imaging"]
+    CommonFilter["CommonFilter"] --> ViewModel["ViewModel"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> CommonFilter["CommonFilter"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> Core_MemoryLog["Core.MemoryLog"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> Extended_Objects["Extended.Objects"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> FileHandler["FileHandler"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> InterOp["InterOp"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> LightVector["LightVector"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> Mathematics_Constants["Mathematics.Constants"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> Mathematics["Mathematics"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> Pathfinder["Pathfinder"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> Serializer["Serializer"]
+    CommonLibrary_Tests["CommonLibrary.Tests"] --> SqliteHelper["SqliteHelper"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> Common_Controls["Common.Controls"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> Common_Dialogs["Common.Dialogs"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> Common_Images["Common.Images"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> CommonFilter["CommonFilter"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> Imaging_Cifs["Imaging.Cifs"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> Imaging_Compare["Imaging.Compare"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> InterOp["InterOp"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> LightVector["LightVector"]
+    CommonLibraryGui_Tests["CommonLibraryGui.Tests"] --> Solaris["Solaris"]
+    CommonLibrarySqlLite_Tests["CommonLibrarySqlLite.Tests"] --> SqliteHelper["SqliteHelper"]
+    Communication_Tests["Communication.Tests"] --> Communication["Communication"]
+    Core_Apps["Core.Apps"] --> Weaver["Weaver"]
+    Core_StateExecutive["Core.StateExecutive"] --> Core_StateExecutive_Interfaces["Core.StateExecutive.Interfaces"]
+    Core_StateExecutive_Builder["Core.StateExecutive.Builder"] --> Core_StateExecutive_Interfaces["Core.StateExecutive.Interfaces"]
+    Core_StateExecutive_Builder["Core.StateExecutive.Builder"] --> Extended_Extensions["Extended.Extensions"]
+    Core_Tests["Core.Tests"] --> Contracts["Contracts"]
+    Core_Tests["Core.Tests"] --> Core_Apps["Core.Apps"]
+    Core_Tests["Core.Tests"] --> Core_Inject["Core.Inject"]
+    Core_Tests["Core.Tests"] --> Core_MemoryLog["Core.MemoryLog"]
+    Core_Tests["Core.Tests"] --> Core_StateExecutive_Builder["Core.StateExecutive.Builder"]
+    Core_Tests["Core.Tests"] --> Core_StateExecutive_Interfaces["Core.StateExecutive.Interfaces"]
+    Core_Tests["Core.Tests"] --> Core_StateExecutive["Core.StateExecutive"]
+    Core_Viewer["Core.Viewer"] --> Common_Converter["Common.Converter"]
+    Core_Viewer["Core.Viewer"] --> Common_Dialogs["Common.Dialogs"]
+    Core_Viewer["Core.Viewer"] --> Core_Apps["Core.Apps"]
+    Core_Viewer["Core.Viewer"] --> ViewModel["ViewModel"]
+    Debugger["Debugger"] --> Common_Dialogs["Common.Dialogs"]
+    Debugger["Debugger"] --> Common_Images["Common.Images"]
+    Debugger["Debugger"] --> CommonFilter["CommonFilter"]
+    Debugger["Debugger"] --> Core_MemoryLog["Core.MemoryLog"]
+    Extended_Objects["Extended.Objects"] --> Extended_Unmanaged["Extended.Unmanaged"]
+    Imaging["Imaging"] --> Extended_Extensions["Extended.Extensions"]
+    Imaging["Imaging"] --> Imaging_Objects["Imaging.Objects"]
+    Imaging["Imaging"] --> Imaging_Plugins_Interface["Imaging.Plugins.Interface"]
+    Imaging["Imaging"] --> Imaging_Texture["Imaging.Texture"]
+    Imaging["Imaging"] --> Mathematics_Constants["Mathematics.Constants"]
+    Imaging_Cifs["Imaging.Cifs"] --> DataFormatter["DataFormatter"]
+    Imaging_Cifs["Imaging.Cifs"] --> Extended_Objects["Extended.Objects"]
+    Imaging_Cifs["Imaging.Cifs"] --> Imaging["Imaging"]
+    Imaging_Compare["Imaging.Compare"] --> FileHandler["FileHandler"]
+    Imaging_Compare["Imaging.Compare"] --> Imaging_Objects["Imaging.Objects"]
+    Imaging_Compare["Imaging.Compare"] --> Imaging["Imaging"]
+    Imaging_Filter_Tests["Imaging.Filter.Tests"] --> Imaging["Imaging"]
+    Imaging_Objects_Tests["Imaging.Objects.Tests"] --> Imaging_Objects["Imaging.Objects"]
+    Imaging_Plugins["Imaging.Plugins"] --> Imaging_Plugins_Interface["Imaging.Plugins.Interface"]
+    Imaging_Tests["Imaging.Tests"] --> FileHandler["FileHandler"]
+    Imaging_Tests["Imaging.Tests"] --> Imaging_Cifs["Imaging.Cifs"]
+    Imaging_Tests["Imaging.Tests"] --> Imaging_Compare["Imaging.Compare"]
+    Imaging_Tests["Imaging.Tests"] --> Imaging["Imaging"]
+    Imaging_Tests["Imaging.Tests"] --> Mathematics["Mathematics"]
+    Imaging_Texture_Tests["Imaging.Texture.Tests"] --> Imaging_Texture["Imaging.Texture"]
+    Imaging_Texture_Tests["Imaging.Texture.Tests"] --> Imaging["Imaging"]
+    Lector["Lector"] --> Core_Apps["Core.Apps"]
+    Lector["Lector"] --> Weaver["Weaver"]
+    LightVector["LightVector"] --> DataFormatter["DataFormatter"]
+    LightVector["LightVector"] --> Mathematics["Mathematics"]
+    Mathematics["Mathematics"] --> DataFormatter["DataFormatter"]
+    Mathematics["Mathematics"] --> Extended_Extensions["Extended.Extensions"]
+    PluginLoader["PluginLoader"] --> Plugin["Plugin"]
+    PluginLoader["PluginLoader"] --> ViewModel["ViewModel"]
+    RenderEngine["RenderEngine"] --> Extended_Unmanaged["Extended.Unmanaged"]
+    RenderEngine["RenderEngine"] --> Imaging_Objects["Imaging.Objects"]
+    RenderEngine["RenderEngine"] --> Imaging_Texture["Imaging.Texture"]
+    RenderEngine_Tests["RenderEngine.Tests"] --> RenderEngine["RenderEngine"]
+    Solaris["Solaris"] --> Extended_Extensions["Extended.Extensions"]
+    Solaris["Solaris"] --> Imaging_Objects["Imaging.Objects"]
+    Solaris["Solaris"] --> Imaging_Texture["Imaging.Texture"]
+    SQLiteGui["SQLiteGui"] --> Contracts["Contracts"]
+    SQLiteGui["SQLiteGui"] --> DataFormatter["DataFormatter"]
+    SQLiteGui["SQLiteGui"] --> SqliteHelper["SqliteHelper"]
+    SQLiteGui["SQLiteGui"] --> ViewModel["ViewModel"]
+    SQLiteHelper["SQLiteHelper"] --> Core_MemoryLog["Core.MemoryLog"]
+    Weaver["Weaver"] --> Loader["Loader"]
+```
