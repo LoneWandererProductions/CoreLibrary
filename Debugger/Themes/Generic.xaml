@@ -44,6 +44,14 @@
     <SolidColorBrush x:Key="PressedBrush" Color="{StaticResource PressedColor}" />
     <SolidColorBrush x:Key="DisabledBrush" Color="{StaticResource DisabledColor}" />
 
+    <!-- Global System Color Overrides (Prevents white/blue flashes on un-templated popups/selections) -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{StaticResource SurfaceColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="{StaticResource WindowBackgroundColor}" />
+
     <!-- Style for Window -->
     <Style TargetType="Window">
         <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}" />
@@ -828,7 +836,7 @@
         </Setter>
     </Style>
 
-    <!-- CONTEXT MENU THEMING                                                -->
+    <!-- CONTEXT MENU THEMING                                            -->
     <Style TargetType="ContextMenu">
         <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
@@ -883,21 +891,79 @@
 
     <!--
         Basic property-level styling (Foreground/Background/BorderBrush only, no custom
-        ControlTemplate) for CheckBox/RadioButton/ListBox - unlike Menu/ComboBox/TabControl, these
+        ControlTemplate) for RadioButton/ListBox - unlike Menu/ComboBox/TabControl, these
         don't have a large opaque background of their own by default, so plain property setters
-        get most of the way there. The checkbox/radio glyph itself may still show default OS
-        chrome (a light box/circle) since that would need a full template like Menu got - a
-        smaller, lower-priority inconsistency than what a solid opaque background mismatch caused
-        elsewhere.
+        get most of the way there. CheckBox has been replaced with a full dark mode template below.
     -->
-    <Style TargetType="CheckBox">
-        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-    </Style>
-
     <Style TargetType="ListBox">
         <Setter Property="Background" Value="{StaticResource PanelBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+    </Style>
+
+    <!-- Dark Mode CheckBox Template replacing the OS default -->
+    <Style TargetType="CheckBox">
+        <Setter Property="Background" Value="{StaticResource InputBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="6,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border x:Name="checkBoxBorder"
+                                Width="16" Height="16"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="2"
+                                VerticalAlignment="Center">
+                            <Path x:Name="checkMark"
+                                  Data="M 3 8 L 6 11 L 12 4"
+                                  Stroke="{StaticResource AccentBrush}"
+                                  StrokeThickness="2"
+                                  Visibility="Collapsed"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" />
+                        </Border>
+
+                        <ContentPresenter Grid.Column="1"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          RecognizesAccessKey="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkMark" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource TextMutedBrush}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource BorderSubtleBrush}" />
+                            <Setter TargetName="checkMark" Property="Stroke" Value="{StaticResource TextMutedBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- Style for RadioButton -->
@@ -1039,6 +1105,23 @@
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
+    <!-- ADDED: Style for ListViewItem to override the Windows Light Blue highlight -->
+    <Style TargetType="ListViewItem">
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource HoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+                <Setter Property="Foreground" Value="White" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- Style for the ListView's Column Headers (The "Menu Band") -->
     <Style TargetType="GridViewColumnHeader">
         <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
@@ -1093,31 +1176,30 @@
         </Setter>
     </Style>
 
-    <!-- Panel-level header (icon glyph + title) at the top of a whole side panel. -->
-    <Style x:Key="SidePanelTitleStyle" TargetType="TextBlock">
+    <!-- Panel-level header (icon glyph + title) at the top of a whole side panel. Inherits base TextBlock rules. -->
+    <Style x:Key="SidePanelTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <!-- Card-level section header, e.g. "General Settings" within a card. -->
-    <Style x:Key="SidePanelSectionHeaderStyle" TargetType="TextBlock">
+    <!-- Card-level section header, e.g. "General Settings" within a card. Inherits base TextBlock rules. -->
+    <Style x:Key="SidePanelSectionHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="Margin" Value="0,0,0,10" />
     </Style>
 
-    <!-- Left-hand parameter label inside a settings card. -->
-    <Style x:Key="ParameterLabelStyle" TargetType="TextBlock">
+    <!-- Left-hand parameter label inside a settings card. Inherits base TextBlock rules. -->
+    <Style x:Key="ParameterLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0,0,8,0" />
     </Style>
 
-    <!-- Numeric/text parameter input: adds a visible red outline + tooltip on invalid input
-         instead of silently ignoring bad values or leaving the binding in an ambiguous state. -->
-    <Style x:Key="ParameterTextBoxStyle" TargetType="TextBox">
+    <!-- Numeric/text parameter input: inherits standard dark TextBox styling and adds validation UI -->
+    <Style x:Key="ParameterTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="4,3" />
         <Style.Triggers>
