@@ -57,14 +57,14 @@ namespace Core.Viewer
             // Map the UI header string to the actual nested property path on DiagnosticItemViewModel
             var sortBy = header switch
             {
-                "Status" => "SeveritySymbol",
-                "Level" => "Level",
-                "Analyzer" => "Name",
-                "File" => "FileName",
-                "FilePath" => "FilePath",
-                "Message" => "Message",
-                "LineNumber" => "LineNumber",
-                "Source" => "Source",
+                "Status" => "Diagnostic.SeveritySymbol",
+                "Level" => "Diagnostic.Level",
+                "Analyzer" => "Diagnostic.Name",
+                "File" => "Diagnostic.FileName",
+                "FilePath" => "Diagnostic.FilePath",
+                "Message" => "Diagnostic.Message",
+                "LineNumber" => "Diagnostic.LineNumber",
+                "Source" => "Diagnostic.Source",
                 _ => null // Ignore the "Actions" column
             };
 
