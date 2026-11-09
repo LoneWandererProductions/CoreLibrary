@@ -126,8 +126,7 @@ namespace Core.Apps.Development
                 var metaKey = $"{projName}_meta";
                 var projDescriptor = new Dictionary<string?, VmValue>
                 {
-                    ["packages"] = VmValue.FromString(pkgKey),
-                    ["references"] = VmValue.FromString(refKey)
+                    ["packages"] = VmValue.FromString(pkgKey), ["references"] = VmValue.FromString(refKey)
                 };
 
                 _variables.SetObject(metaKey, projDescriptor);
@@ -166,7 +165,8 @@ namespace Core.Apps.Development
             sb.AppendLine("Projects that depend on others but are never referenced as a library:");
             foreach (var ep in entryPoints)
             {
-                sb.AppendLine($"  * {ep,-25} -> {rawProjectRefs[ep].Count,2} Project Refs | {rawPackageRefs[ep].Count,2} NuGet Packages");
+                sb.AppendLine(
+                    $"  * {ep,-25} -> {rawProjectRefs[ep].Count,2} Project Refs | {rawPackageRefs[ep].Count,2} NuGet Packages");
             }
 
             // Categorization: High-Coupling Architectural Hubs
@@ -181,7 +181,8 @@ namespace Core.Apps.Development
                 sb.AppendLine("Intermediate libraries with heavy incoming and outgoing dependencies:");
                 foreach (var hub in hubs)
                 {
-                    sb.AppendLine($"  ! {hub,-25} (Used by {inDegree[hub]} projects | References {rawProjectRefs[hub].Count} projects)");
+                    sb.AppendLine(
+                        $"  ! {hub,-25} (Used by {inDegree[hub]} projects | References {rawProjectRefs[hub].Count} projects)");
                 }
             }
 
@@ -195,7 +196,8 @@ namespace Core.Apps.Development
             sb.AppendLine("Clean leaf libraries (no downstream project dependencies):");
             foreach (var fl in foundations)
             {
-                sb.AppendLine($"  * {fl,-25} (Inbound References: {inDegree[fl],2} | NuGet: {rawPackageRefs[fl].Count,2})");
+                sb.AppendLine(
+                    $"  * {fl,-25} (Inbound References: {inDegree[fl],2} | NuGet: {rawPackageRefs[fl].Count,2})");
             }
 
             // Categorization: Isolated / Orphan Projects

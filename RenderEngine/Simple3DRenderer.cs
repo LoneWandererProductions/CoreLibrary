@@ -45,12 +45,34 @@ namespace RenderEngine
         /// </summary>
         public TK.Matrix4 ViewMatrix => _view;
 
+        // --- INSTANCING FIELDS ---
+
+        /// <summary>
+        /// The shader instanced
+        /// </summary>
+        private int _shaderInstanced = -1;
+
+        /// <summary>
+        /// The loc view instanced
+        /// </summary>
+        private int _locViewInstanced, _locProjInstanced, _locInstancedTexSampler;
+
+        /// <summary>
+        /// The matrices dirty instanced
+        /// </summary>
+        private bool _matricesDirtyInstanced = true;
+
         // --- PRIVATE STORAGE FIELDS ---
 
         /// <summary>
         /// Reference tracker managing engine-level compiled shader assets and texture definitions.
         /// </summary>
         private readonly GlResourceManager? _resources;
+
+        /// <summary>
+        /// The instanced cache
+        /// </summary>
+        private InstancedVaoCache? _instancedCache;
 
         /// <summary>
         /// Hardware layout buffer markers tracking active states
@@ -453,6 +475,14 @@ namespace RenderEngine
             GL.EnableVertexAttribArray(2);
 
             GL.BindVertexArray(0);
+
+            // --- SHADER PROGRAMS, especially for Clutter ---
+            _shaderInstanced = _resources.GetShaderProgram(ShaderTypeApp.Instancing);
+            _locViewInstanced = GL.GetUniformLocation(_shaderInstanced, "view");
+            _locProjInstanced = GL.GetUniformLocation(_shaderInstanced, "projection");
+            _locInstancedTexSampler = GL.GetUniformLocation(_shaderInstanced, "uTexture");
+
+            // --- SHADER PROGRAMS ---
 
             _shaderSolid = _resources.GetShaderProgram(ShaderTypeApp.VertexColor);
             _shaderTex = _resources.GetShaderProgram(ShaderTypeApp.TexturedVertexColor);
@@ -881,8 +911,77 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Draws an instanced mesh (e.g., for grass or clutter) with a single draw call.
+        /// </summary>
+        /// <param name="vao">The Vertex Array Object containing the base mesh (index 0) and the instance buffer (index 1+).</param>
+        /// <param name="vertexCount">The number of vertices in the actual base mesh (e.g., 18 for a 3x2 grid).</param>
+        /// <param name="instanceCount">The number of instances to be drawn (your thousands of blades of grass).</param>
+        /// <param name="textureId">The texture ID for the material.</param>
+        public void DrawInstancedMesh(int vao, int vertexCount, int instanceCount, int textureId)
+        {
+            if (instanceCount == 0 || vertexCount == 0) return;
+
+            EnsureInitialized();
+
+            BindProgram(_shaderInstanced);
+            BindVao(vao);
+
+            // Textur binden
+            if (_locInstancedTexSampler >= 0)
+            {
+                GL.Uniform1(_locInstancedTexSampler, 0);
+            }
+
+            BindTexture(_resources.ResolveTextureId(textureId));
+
+            // Update global matrices (The model matrix is not needed here,
+            // since each instance brings its own matrix or position via the VBO)
+            if (_matricesDirtyInstanced)
+            {
+                GL.UniformMatrix4(_locViewInstanced, false, ref _view);
+                GL.UniformMatrix4(_locProjInstanced, false, ref _projection);
+                _matricesDirtyInstanced = false;
+            }
+
+            // The hardware instancing call
+            GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, vertexCount, instanceCount);
+
+            BindVao(0);
+        }
+
+        /// <summary>
+        /// Resolves high-level clutter metadata into a hardware VAO and draws it.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="seed">The seed.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="textureId">The texture identifier.</param>
+        /// <param name="dataProvider">The data provider.</param>
+        public void DrawClutter(
+            Vector3 position,
+            int seed,
+            int type,
+            int textureId,
+            Func<(float[] Vertices, Matrix4x4[] Matrices)> dataProvider)
+        {
+            EnsureInitialized();
+
+            if (_instancedCache == null && _resources != null)
+            {
+                _instancedCache = new InstancedVaoCache(_resources);
+            }
+
+            if (_instancedCache == null) return;
+
+            var (vao, instanceCount, vertexCount) = _instancedCache.GetOrBuildVao(position, seed, type, dataProvider);
+
+            DrawInstancedMesh(vao, vertexCount, instanceCount, textureId);
+        }
+
+        /// <summary>
         /// Manually registers an unmanaged configuration layout schema matrix coordinate.
         /// </summary>
+        /// <param name="projection">The projection.</param>
         public void SetCustomProjection(Matrix4x4 projection)
         {
             _projection = new TK.Matrix4(
@@ -966,7 +1065,84 @@ namespace RenderEngine
                 }
             }
 
+            DrawGlowBatches(batch);
+
             BindVao(0);
+        }
+
+        /// <summary>
+        /// Draws the glow sprites of the batch after all opaque geometry: additive blending (the soft edge of the picture adds light
+        /// instead of covering the scene), depth test on so walls hide a glow, no depth writes so glows do not hide each other.
+        /// TODO(extend): a second blend mode (plain alpha for smoke or dust) would need its own batch list per mode.
+        /// </summary>
+        /// <param name="batch">The batch of this frame.</param>
+        private unsafe void DrawGlowBatches(RenderBatch batch)
+        {
+            if (batch.Glow3DBatches.Count == 0) return;
+
+            BindProgram(_shaderTex);
+            BindVao(_vaoTex);
+
+            if (_locTexSampler >= 0)
+            {
+                GL.Uniform1(_locTexSampler, 0);
+            }
+
+            EnsureTexMatrices();
+            BeginGlowPass();
+
+            foreach (var kvp in batch.Glow3DBatches)
+            {
+                if (kvp.Value.Count == 0) continue;
+
+                BindTexture(_resources.ResolveTextureId(kvp.Key));
+
+                var span = CollectionsMarshal.AsSpan(kvp.Value);
+                EnsureBufferCapacity(_vboTex, ref _vboTexCapacity, span.Length);
+
+                fixed (float* ptr = span)
+                {
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, _vboTex);
+                    GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, span.Length * sizeof(float), (IntPtr)ptr);
+                }
+
+                GL.DrawArrays(PrimitiveType.Triangles, 0, span.Length / 9);
+            }
+
+            EndGlowPass();
+        }
+
+        /// <summary>
+        /// Draws one glow sprite at once (the immediate mode of <c>GlowSpriteCommand</c>).
+        /// </summary>
+        /// <param name="position">The centre.</param>
+        /// <param name="radius">The radius.</param>
+        /// <param name="textureId">The texture identifier.</param>
+        public void DrawGlowSprite(Vector3 position, float radius, int textureId)
+        {
+            BeginGlowPass();
+            DrawSprite(position, radius, textureId);
+            EndGlowPass();
+        }
+
+        /// <summary>
+        /// Additive blending without depth writes (the depth test stays on).
+        /// </summary>
+        private static void BeginGlowPass()
+        {
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
+            GL.DepthMask(false);
+        }
+
+        /// <summary>
+        /// Back to the opaque state set by <see cref="ApplyFrameState"/> (and the usual blend function).
+        /// </summary>
+        private static void EndGlowPass()
+        {
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.DepthMask(true);
+            GL.Disable(EnableCap.Blend);
         }
 
         /// <summary>

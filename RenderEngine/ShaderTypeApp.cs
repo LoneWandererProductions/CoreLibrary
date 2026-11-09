@@ -41,6 +41,6 @@ namespace RenderEngine
         /// <summary>
         /// Kombinierter Shader für Texturierung und Vertex-Farben (z. B. für Bäume/Laub).
         /// </summary>
-        TexturedVertexColor = 14
+        TexturedVertexColor = 14,
     }
 }

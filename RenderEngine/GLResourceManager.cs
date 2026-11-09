@@ -44,6 +44,12 @@ namespace RenderEngine
         private readonly Dictionary<int, int> _bakedProceduralCache = new();
 
         /// <summary>
+        /// The procedural textures that must be smoothed when they are enlarged (soft glows: with nearest filtering a 256 px
+        /// glow shows its pixels as blocks). All others stay sharp. TODO(extend): make it a flag of <c>ProceduralEntry</c>.
+        /// </summary>
+        private static readonly HashSet<int> SmoothProcedurals = new() { 10044, 10045, 10046 };
+
+        /// <summary>
         /// The disposed state tracker.
         /// </summary>
         private bool _disposed;
@@ -52,6 +58,16 @@ namespace RenderEngine
         /// The fallback texture identifier
         /// </summary>
         private int _fallbackTextureId = -1;
+
+        /// <summary>
+        /// The tracked vaos
+        /// </summary>
+        private readonly HashSet<int> _trackedVaos = new();
+
+        /// <summary>
+        /// The tracked vbos
+        /// </summary>
+        private readonly HashSet<int> _trackedVbos = new();
 
         /// <summary>
         /// Texture ids (same ids as everywhere else, virtual ids allowed) of the four terrain splat layers.
@@ -311,6 +327,20 @@ namespace RenderEngine
                 10043, new("VolumetricLeafCloudHardEdges",
                     "Pixel-art leaf puff clusters with scalloped contours, dark outlines, and hard cel-shading.",
                     (w, h, n) => TextureFactory.GenerateVolumetricLeafCloudHardEdges(w, h, n))
+            },
+            {
+                10044, new("BoltGlow", "Round blue-white glow with alpha falloff for magic bolts (billboard sprite).",
+                    (w, h, _) => GlowTextures.GenerateBolt(w, h))
+            },
+            {
+                10045, new("FireballGlow",
+                    "Round orange-yellow glow with alpha falloff for fireballs and explosions (billboard sprite).",
+                    (w, h, _) => GlowTextures.GenerateFireball(w, h))
+            },
+            {
+                10046, new("BeaconGlow",
+                    "Round sea-green glow with alpha falloff for place markers such as exit zones (billboard sprite).",
+                    (w, h, _) => GlowTextures.GenerateBeacon(w, h))
             }
         };
 
@@ -414,7 +444,7 @@ namespace RenderEngine
             var rawBuffer = entry.Generator(_procWidth, _procHeight, _lazyNoiseGen!);
             if (rawBuffer == null) return GetFallbackTexture();
             // IMPORTANT! sharp or blurry.
-            var glHandle = GetTexture(rawBuffer, linearFilter: false);
+            var glHandle = GetTexture(rawBuffer, linearFilter: SmoothProcedurals.Contains(id));
             _bakedProceduralCache[id] = glHandle;
 
             return glHandle;
@@ -781,6 +811,60 @@ namespace RenderEngine
             _lazyNoiseGen ??= new NoiseGenerator(_procWidth, _procHeight);
         }
 
+        /// <summary>
+        /// Creates a VAO for hardware instancing, configuring the base mesh and instance transform buffers.
+        /// </summary>
+        /// <param name="baseMeshVertices">The static base mesh vertices (e.g., 5 floats per vertex: 3 Pos, 2 UV).</param>
+        /// <param name="instanceTransforms">Array of transformation matrices for each instance.</param>
+        /// <param name="instanceVbo">Outputs the VBO ID of the instance buffer for dynamic position updates.</param>
+        /// <returns>The generated VAO ID.</returns>
+        public int CreateInstancedVao(float[] baseMeshVertices, OpenTK.Mathematics.Matrix4[] instanceTransforms,
+            out int instanceVbo)
+        {
+            var vao = GL.GenVertexArray();
+            GL.BindVertexArray(vao);
+            _trackedVaos.Add(vao);
+
+            // 1. BASE MESH VBO
+            var meshVbo = GL.GenBuffer();
+            _trackedVbos.Add(meshVbo);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, meshVbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, baseMeshVertices.Length * sizeof(float), baseMeshVertices,
+                BufferUsageHint.StaticDraw);
+
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
+
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
+
+            // 2. INSTANCE VBO
+            instanceVbo = GL.GenBuffer();
+            _trackedVbos.Add(instanceVbo);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, instanceVbo);
+
+            var matrixSize = 16 * sizeof(float);
+            GL.BufferData(BufferTarget.ArrayBuffer, instanceTransforms.Length * matrixSize, instanceTransforms,
+                BufferUsageHint.DynamicDraw);
+
+            var vec4Size = 4 * sizeof(float);
+            for (var i = 0; i < 4; i++)
+            {
+                var attributeLocation = 2 + i;
+                GL.EnableVertexAttribArray(attributeLocation);
+                GL.VertexAttribPointer(attributeLocation, 4, VertexAttribPointerType.Float, false, matrixSize,
+                    i * vec4Size);
+                GL.VertexAttribDivisor(attributeLocation, 1);
+            }
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindVertexArray(0);
+
+            return vao;
+        }
+
         // --- CLEANUP UNMANAGED ASSET STACK ---
 
         /// <summary>
@@ -801,6 +885,12 @@ namespace RenderEngine
             {
                 GL.DeleteProgram(program);
             }
+
+            foreach (var vbo in _trackedVbos) GL.DeleteBuffer(vbo);
+            foreach (var vao in _trackedVaos) GL.DeleteVertexArray(vao);
+
+            _trackedVbos.Clear();
+            _trackedVaos.Clear();
 
             _textureCache.Clear();
             _bakedProceduralCache.Clear();

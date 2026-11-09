@@ -7,6 +7,8 @@
  */
 
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable MemberCanBeInternal
+// ReSharper disable UnusedMember.Global
 
 namespace Imaging.Texture
 {
@@ -31,23 +33,13 @@ namespace Imaging.Texture
         private readonly int _width;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="NoiseGenerator" /> class.
-        ///     Generates a 2D noise map with random values.
-        /// </summary>
-        /// <param name="width">The width of the noise map.</param>
-        /// <param name="height">The height of the noise map.</param>
-        public NoiseGenerator(int width, int height) : this(width, height, null)
-        {
-        }
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="NoiseGenerator" /> class with a deterministic seed.
         ///     The same seed and size always produce the same noise map, which is what texture variants rely on.
         /// </summary>
         /// <param name="width">The width of the noise map.</param>
         /// <param name="height">The height of the noise map.</param>
         /// <param name="seed">Seed for the random source. <c>null</c> keeps the legacy non-deterministic behavior.</param>
-        public NoiseGenerator(int width, int height, int? seed)
+        public NoiseGenerator(int width, int height, int? seed = null)
         {
             _width = width;
             _height = height;

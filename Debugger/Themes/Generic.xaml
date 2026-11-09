@@ -47,8 +47,10 @@
     <!-- Global System Color Overrides (Prevents white/blue flashes on un-templated popups/selections) -->
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource AccentColor}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource HoverColor}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                     Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                     Color="{StaticResource TextPrimaryColor}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{StaticResource SurfaceColor}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="{StaticResource WindowBackgroundColor}" />
 
@@ -943,20 +945,24 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="checkMark" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush"
+                                    Value="{StaticResource AccentBrush}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource TextMutedBrush}" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush"
+                                    Value="{StaticResource TextMutedBrush}" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True" />
                                 <Condition Property="IsChecked" Value="True" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush"
+                                    Value="{StaticResource AccentBrush}" />
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource BorderSubtleBrush}" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush"
+                                    Value="{StaticResource BorderSubtleBrush}" />
                             <Setter TargetName="checkMark" Property="Stroke" Value="{StaticResource TextMutedBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
                         </Trigger>

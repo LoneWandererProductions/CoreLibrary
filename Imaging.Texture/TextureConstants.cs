@@ -15,11 +15,6 @@ namespace Imaging.Texture
     /// </summary>
     public static class TextureConstants
     {
-        /// <summary>
-        /// The seed for procedural determinism.
-        /// </summary>
-        public const int DefaultSeed = 42;
-
         // --- RECIPES (CONFIGURATIONS) ---
 
         /// <summary>

@@ -440,23 +440,56 @@ void main() {
         /// Vertex shader for instanced rendering.
         /// </summary>
         public const string InstancingVertexShader = @"#version 450 core
+// Base mesh attributes (Divisor = 0)
 layout(location = 0) in vec3 aPosition;
-layout(location = 1) in mat4 aInstanceMatrix;
+layout(location = 1) in vec2 aTexCoord;
+
+// Instance transform matrix attributes (Divisor = 1)
+// A mat4 takes up 4 consecutive locations starting at 2 (locations 2, 3, 4, 5)
+layout(location = 2) in mat4 aInstanceMatrix;
+
+out vec2 vTexCoord;
+out vec3 vWorldPos;
+
 uniform mat4 view;
 uniform mat4 projection;
 
 void main() {
-    gl_Position = projection * view * aInstanceMatrix * vec4(aPosition, 1.0);
+    vTexCoord = aTexCoord;
+    
+    // Transform local base mesh position into world space using the instance matrix
+    vec4 worldPos = aInstanceMatrix * vec4(aPosition, 1.0);
+    vWorldPos = worldPos.xyz;
+
+    gl_Position = projection * view * worldPos;
 }";
 
         /// <summary>
         /// Fragment shader for instanced rendering.
         /// </summary>
         public const string InstancingFragmentShader = @"#version 450 core
+in vec2 vTexCoord;
+in vec3 vWorldPos;
 out vec4 FragColor;
-uniform vec4 uColor;
+
+uniform sampler2D uTexture;
+
 void main() {
-    FragColor = uColor;
+    vec4 texColor = texture(uTexture, vTexCoord);
+    
+    // Simple alpha discard for grass/foliage cutouts
+    if(texColor.a < 0.1) {
+        discard;
+    }
+    
+    // Simple directional lighting (hardcoded for clutter efficiency)
+    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));
+    float ambient = 0.4;
+    float diffuse = 0.6; // We assume normals point up for simple grass
+    
+    vec3 finalColor = texColor.rgb * (ambient + diffuse);
+    
+    FragColor = vec4(finalColor, texColor.a);
 }";
 
         /// <summary>

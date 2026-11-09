@@ -55,6 +55,13 @@ namespace RenderEngine
         public readonly Dictionary<int, List<float>> Textured3DBatches = new();
 
         /// <summary>
+        /// The glow sprites (magic bolts, fireballs, flashes), grouped by texture. Same layout as <see cref="Textured3DBatches"/>,
+        /// but drawn in a later pass with additive blending and without depth writes: a picture with a soft alpha edge needs
+        /// blending, the opaque textured pass would turn it into a square.
+        /// </summary>
+        public readonly Dictionary<int, List<float>> Glow3DBatches = new();
+
+        /// <summary>
         /// The host actions
         /// </summary>
         public readonly List<Action> HostActions = new();
@@ -248,6 +255,33 @@ namespace RenderEngine
         }
 
         /// <summary>
+        /// Adds a triangle of a glow sprite (white tint) to the blended glow pass, grouped by texture ID.
+        /// </summary>
+        /// <param name="v1">The v1.</param>
+        /// <param name="uv1">The uv1.</param>
+        /// <param name="v2">The v2.</param>
+        /// <param name="uv2">The uv2.</param>
+        /// <param name="v3">The v3.</param>
+        /// <param name="uv3">The uv3.</param>
+        /// <param name="textureId">The texture identifier.</param>
+        public void AddGlow3DTriangle(
+            Vector3 v1, Vector2 uv1,
+            Vector3 v2, Vector2 uv2,
+            Vector3 v3, Vector2 uv3,
+            int textureId)
+        {
+            if (!Glow3DBatches.TryGetValue(textureId, out var list))
+            {
+                list = new List<float>(1024);
+                Glow3DBatches[textureId] = list;
+            }
+
+            AddTexturedVertex3D(v1, uv1, list);
+            AddTexturedVertex3D(v2, uv2, list);
+            AddTexturedVertex3D(v3, uv3, list);
+        }
+
+        /// <summary>
         /// Helper for 3D textured vertex: X, Y, Z, U, V, R, G, B, A (9 floats).
         /// Applies the provided color tint or defaults to White (1,1,1,1).
         /// </summary>
@@ -354,6 +388,11 @@ namespace RenderEngine
             }
 
             foreach (var list in Textured3DBatches.Values)
+            {
+                list.Clear();
+            }
+
+            foreach (var list in Glow3DBatches.Values)
             {
                 list.Clear();
             }

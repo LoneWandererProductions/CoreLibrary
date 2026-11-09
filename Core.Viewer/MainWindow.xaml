@@ -105,20 +105,20 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <!-- Open File (Go To) -->
-                                    <Button Content="Go To" 
-                                            Command="{Binding OpenFileCommand}" 
-                                            Margin="0,0,5,0" 
+                                    <Button Content="Go To"
+                                            Command="{Binding OpenFileCommand}"
+                                            Margin="0,0,5,0"
                                             Padding="8,2" />
 
                                     <!-- Ignore -->
-                                    <Button Content="Ignore" 
-                                            Command="{Binding IgnoreCommand}" 
-                                            Margin="0,0,5,0" 
+                                    <Button Content="Ignore"
+                                            Command="{Binding IgnoreCommand}"
+                                            Margin="0,0,5,0"
                                             Padding="8,2" />
 
                                     <!-- (Only enabled if the view model provides a FixCommand) -->
-                                    <Button Content="Fix" 
-                                            Command="{Binding FixCommand}" 
+                                    <Button Content="Fix"
+                                            Command="{Binding FixCommand}"
                                             IsEnabled="{Binding CanFix}"
                                             Padding="8,2" />
                                 </StackPanel>

@@ -6,6 +6,8 @@
  * PROGRAMMER:  Peter Geinitz (Wayfarer)
  */
 
+// ReSharper disable MemberCanBeInternal
+
 using System.Runtime.CompilerServices;
 
 namespace Imaging.Texture
@@ -41,6 +43,12 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance; // Resolves method call dynamically based on your class structure
 
             var idx = 0;
@@ -96,6 +104,12 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -239,6 +253,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -281,6 +300,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -449,6 +473,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -502,6 +531,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -547,6 +581,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -776,12 +815,23 @@ namespace Imaging.Texture
         public static RawTextureBuffer GenerateColorMapped(int width,
             int height,
             object? noiseGenInstance,
-            byte[] colorRampRgb, // Format: [R1,G1,B1, R2,G2,B2, ...]
+            byte[]? colorRampRgb, // Format: [R1,G1,B1, R2,G2,B2, ...]
             double turbulenceSize = 64.0,
             int alpha = 255)
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
+            if (colorRampRgb == null || colorRampRgb.Length < 12)
+            {
+                return buffer; // Invalid palette, return empty buffer
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var numColors = colorRampRgb.Length / 3;
@@ -836,10 +886,16 @@ namespace Imaging.Texture
             int height,
             int cellSize,
             int alpha,
-            byte[] centerRgb,
-            byte[] edgeRgb)
+            byte[]? centerRgb,
+            byte[]? edgeRgb)
         {
             var buffer = new RawTextureBuffer(width, height);
+
+            if (centerRgb == null ||
+                centerRgb.Length < 3 ||
+                edgeRgb == null ||
+                edgeRgb.Length < 3) return buffer; // Invalid color arrays, return empty buffer
+
             var span = buffer.AsSpan();
             var rand = new Random(12345);
 
@@ -934,7 +990,7 @@ namespace Imaging.Texture
         internal static RawTextureBuffer GenerateWarpedMapped(int width,
             int height,
             object? noiseGenInstance,
-            byte[] colorRampRgb,
+            byte[]? colorRampRgb,
             double turbulenceSize,
             double warpScale,
             double warpStrength,
@@ -942,6 +998,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var numColors = colorRampRgb.Length / 3;
@@ -1000,7 +1061,7 @@ namespace Imaging.Texture
         internal static RawTextureBuffer GenerateRidgedMapped(int width,
             int height,
             object? noiseGenInstance,
-            byte[] colorRampRgb,
+            byte[]? colorRampRgb,
             double turbulenceSize,
             int octaves,
             double persistence,
@@ -1008,6 +1069,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var numColors = colorRampRgb.Length / 3;
@@ -1110,6 +1176,11 @@ namespace Imaging.Texture
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
             var rand = new Random(54321); // Grounded stable seed
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var gridCols = (width / leafSize) + 2;
@@ -1462,7 +1533,7 @@ namespace Imaging.Texture
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
 
-            // Farb-Entpackung: Unterstützt 12-Byte- (4 Farben) und 15-Byte-Paletten (5 Farben)
+            // Color unpacking: Supports 12-byte (4 colors) and 15-byte palettes (5 colors)
             byte rHi, gHi, bHi;
             byte rSun, gSun, bSun;
             byte rMid, gMid, bMid;
@@ -1471,7 +1542,7 @@ namespace Imaging.Texture
 
             if (colorPalette?.Length >= 15)
             {
-                // 5-Farben-Palette: [Tip, Sunlit, Midtone, Shadow, Outline/Mortar]
+                // 5-Color Palette: [Tip, Sunlit, Midtone, Shadow, Outline/Mortar]
                 rHi = colorPalette[0];
                 gHi = colorPalette[1];
                 bHi = colorPalette[2];
@@ -1490,11 +1561,11 @@ namespace Imaging.Texture
             }
             else if (colorPalette?.Length >= 12)
             {
-                // Projekt-Standard (4 Farben): [Highlight, Base/Mid, Shadow, Gap/Mortar]
+                // Project-Standard (4 colors): [Highlight, Base/Mid, Shadow, Gap/Mortar]
                 rHi = colorPalette[0];
                 gHi = colorPalette[1];
                 bHi = colorPalette[2];
-                // Berechne Sunlit als Zwischenton zwischen Highlight und Midtone
+                // Calculate Sunlit as an intermediate tone between Highlight and Midtone
                 rSun = (byte)((colorPalette[0] + colorPalette[3]) / 2);
                 gSun = (byte)((colorPalette[1] + colorPalette[4]) / 2);
                 bSun = (byte)((colorPalette[2] + colorPalette[5]) / 2);
@@ -1510,7 +1581,7 @@ namespace Imaging.Texture
             }
             else
             {
-                // Fallback: 5-Ton Pixel-Art Palette
+                // Fallback: 5-Tone Pixel-Art Palette
                 rHi = 205;
                 gHi = 228;
                 bHi = 135; // Highlight Tip (Pale Lime)
@@ -1552,7 +1623,7 @@ namespace Imaging.Texture
             {
                 for (var x = 0; x < width; x++)
                 {
-                    // 1. Domain Warp: Bricht kreisförmige Voronoi-Zellen in Blattkonturen auf
+                    // 1. Domain Warp: Breaks circular Voronoi cells into leaf contours
                     var warpX = 0.0;
                     var warpY = 0.0;
                     if (noiseGen != null)
@@ -1601,7 +1672,7 @@ namespace Imaging.Texture
 
                     var normR = minDist / maxRadius;
 
-                    // Außerhalb der Blatt-Puffs
+                    // Outside the leaf puffs
                     if (normR >= 1.0)
                     {
                         if (fillArea)
@@ -1622,7 +1693,7 @@ namespace Imaging.Texture
                         continue;
                     }
 
-                    // 2. Dunkle Umrandung: Pixel-Art Kontur um jeden Cluster
+                    // 2. Dark Outline: Pixel-Art contour around each cluster
                     if (normR > 0.88)
                     {
                         span[idx++] = bOut;
@@ -1632,7 +1703,7 @@ namespace Imaging.Texture
                         continue;
                     }
 
-                    // 3. Sphärische Pseudo-Normalen-Beleuchtung (Licht aus Top-Left)
+                    // 3. Spherical Pseudo-Normal Lighting (Light from Top-Left)
                     var sphereH = Math.Sqrt(Math.Max(0.0, 1.0 - normR * normR));
                     var light = sphereH * 0.55 - ((cDx + cDy) / maxRadius) * 0.35 + 0.40;
 
@@ -1642,7 +1713,7 @@ namespace Imaging.Texture
                         light += grit;
                     }
 
-                    // 4. Diskrete Quantisierung in Palettenstufen
+                    // 4. Discreet Quantization in Palette Steps
                     byte r, g, b;
                     if (light > 0.82)
                     {
@@ -1717,6 +1788,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var rand = new Random(1337);
@@ -1735,7 +1811,6 @@ namespace Imaging.Texture
             }
 
             var idx = 0;
-            var maxRadius = clusterSize * 0.75;
 
             for (var y = 0; y < height; y++)
             {
@@ -1852,6 +1927,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -1918,6 +1998,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             // Palette steps: [Crevice Shadow, Low Furrow, Midtone Wood, Ridge Warmth, Rim Specular]
@@ -2003,6 +2088,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -2061,6 +2151,11 @@ namespace Imaging.Texture
             bool fillArea = false)
         {
             var buffer = new RawTextureBuffer(width, height);
+
+            if (colorPalette == null || colorPalette.Length < 12)
+            {
+                return buffer; // Invalid palette, return empty buffer
+            }
 
             if (noiseGenInstance is not NoiseGenerator noiseGen) return buffer;
 
@@ -2190,6 +2285,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -2244,6 +2344,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -2298,6 +2403,11 @@ namespace Imaging.Texture
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
             var rand = new Random(12345);
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var gridCols = (width / cellSize) + 2;
@@ -2397,6 +2507,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -2447,6 +2562,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var ramp = colorRampRgb ?? TextureConstants.GetTerrainGrassConfig().RgbRamp!;
@@ -2510,6 +2630,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var ramp = colorRampRgb ?? TextureConstants.GetTerrainDirtConfig().RgbRamp!;
@@ -2573,6 +2698,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var ramp = colorRampRgb ?? TextureConstants.GetMountainRockConfig().RgbRamp!;
@@ -2657,6 +2787,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var ramp = colorRampRgb ?? TextureConstants.GetDungeonSandstoneConfig().RgbRamp!;
@@ -2723,6 +2858,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var ramp = colorRampRgb ?? TextureConstants.GetDungeonSandstoneFlatConfig().RgbRamp!;
@@ -2791,6 +2931,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var idx = 0;
@@ -2842,6 +2987,11 @@ namespace Imaging.Texture
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
             var rand = new Random(54321);
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var gridCols = (width / cellSize) + 2;
@@ -2930,6 +3080,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var ramp = colorRampRgb ?? TextureConstants.GetDesertSandConfig().RgbRamp!;
@@ -2997,6 +3152,11 @@ namespace Imaging.Texture
         {
             var buffer = new RawTextureBuffer(width, height);
             var span = buffer.AsSpan();
+            if (noiseGenInstance == null)
+            {
+                return buffer;
+            }
+
             dynamic noiseGen = noiseGenInstance;
 
             var ramp = colorRampRgb ?? TextureConstants.GetDesertSandFlatConfig().RgbRamp!;
